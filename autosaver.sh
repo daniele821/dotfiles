@@ -7,7 +7,7 @@
 #
 # WARNING: this file MUST be in the root of the dotfiles directory
 
-### VARIABLES
+### VARIABLES ###
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 SCRIPT_NAME="$(basename "${SCRIPT_PWD}")"
@@ -30,8 +30,7 @@ CONFIG_FILES=(
     "${DIRS[1]}/init-scripts.txt"
 )
 
-### COLOR FUNCTIONS
-
+### COLOR FUNCTIONS ###
 # color file path 
 # 1: file name
 function clr_file(){
@@ -57,8 +56,7 @@ function clr_err_quit(){
     exit 1
 }
 
-### GIT FUNCTIONS
-
+### GIT FUNCTIONS ###
 # make the necessary git check, if any fails exit script
 function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
