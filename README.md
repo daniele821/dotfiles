@@ -14,7 +14,6 @@ full rewrite of [autosaver script](https://github.com/daniele821/dotfiles)
 ## flags (options)
 
 - y   : auto answer yes [DANGEROUS]
-- f   : force allow dangerous operations [DANGEROUS]
 - v   : verbose (show more info)
 - d   : show diffs 
 - u   : show untracked files
