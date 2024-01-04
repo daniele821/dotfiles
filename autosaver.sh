@@ -12,18 +12,21 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 SCRIPT_NAME="$(basename "${SCRIPT_PWD}")"
 DIRS=(
+    # backup files
     "${SCRIPT_DIR}/backup"
+    # config files
     "${SCRIPT_DIR}/config"
+    # init scripts
     "${SCRIPT_DIR}/init"
 )
 CONFIG_FILES=(
-    # contains: list of files to be tracked
+    # list of files to be tracked
     "${DIRS[1]}/files_to_track.txt"
-    # contains: branch on which all actions are allowed
+    # branch on which all actions are allowed
     "${DIRS[1]}/whitelisted_branch.txt"
-    # contains: editor for editing files
+    # editor for editing files
     "${DIRS[1]}/file_editor.txt"
-    # contains: list of init scripts
+    # list of init scripts
     "${DIRS[1]}/init-scripts.txt"
 )
 
@@ -43,12 +46,15 @@ function clr_err_quit(){
 }
 
 ### GIT FUNCTIONS
-function git_is_repo_empty(){
+function git_check_branch_quit(){
+    # check and exits if git repo is empty (ie: no commits)
     GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2>/dev/null | awk '{print $1}')"
-    [[ "${GIT_OBJECTS}" -gt "0" ]]
-}
-function git_current_branch(){
-    git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD 
+    [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
+
+    # checks and exit if current branch is not whitelisted
+    CURRENT="$(git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD)"
+    WHITELISTED="$(cat "${USER_CONFIG_FILES[0]}" 2>/dev/null)"
+    [[ "${CURRENT}" != "${WHITELISTED}" ]] && clr_err_quit "the current branch is not whitelisted!"
 }
 
 
