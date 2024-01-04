@@ -1,6 +1,6 @@
-# dotfiles-2.0
+# dotfiles
 
-full rewrite of [autosaver script](https://github.com/daniele821/dotfiles)
+script to save dotfiles around my system and init scripts to run after reinstalling current OS
 
 ## flags (actions)
 
