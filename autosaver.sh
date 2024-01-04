@@ -62,6 +62,7 @@ function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
     GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2>/dev/null | awk '{print $1}')"
     [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
+
     # checks and exit if current branch is not whitelisted
     CURRENT="$(git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD)"
     WHITELISTED="$(cat "${USER_CONFIG_FILES[0]}" 2>/dev/null)"
@@ -70,11 +71,14 @@ function git_checks_quit(){
 
 # check if user name and email are valid, otherwise force user to fix them
 function git_fix_user(){
+    # fix user.name
     while [[ -z "$(git -C "${SCRIPT_DIR}" config user.name)" ]]; do
         clr_warn "git user name is invalid! Insert git name: "
         read -r answer
         git -C "${SCRIPT_DIR}" config user.name "${answer}"
     done
+
+    # fix user.email
     while [[ -z "$(git -C "${SCRIPT_DIR}" config user.email)" ]]; do
         clr_warn "git user email is invalid! Insert git email: "
         read -r answer
