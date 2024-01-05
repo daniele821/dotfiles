@@ -30,7 +30,16 @@ CONFIG_FILES=(
     "${DIRS[1]}/init-scripts.txt"
 )
 
+### FLAGS ###
+FORCE_YES="n" # n/y
+
 ### COLOR FUNCTIONS ###
+# no color
+# 1: message
+function clr_none(){
+    echo -e "${1}\c"
+}
+
 # color file path 
 # 1: file name
 function clr_file(){
@@ -105,6 +114,15 @@ function create_files(){
         file="${DIRS[2]}/${init_file}"
         touch ${file} && chmod +x "${file}"
     done
+}
+
+# ask user confermation
+# 1: question
+function ask_user(){
+   clr_none "${1} " 
+   [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
+   [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
+   [[ "${answer,,}" == y ]]
 }
 
 
