@@ -26,7 +26,7 @@ CONFIG_FILES=(
     # editor for editing files
     "${DIRS[1]}/file_editor.txt"
     # list of init scripts
-    "${DIRS[1]}/init-scripts.txt"
+    "${DIRS[1]}/init_scripts.txt"
 )
 
 ### FLAGS ###
@@ -117,12 +117,8 @@ function read_config(){
 
 # create all dirs and files necessary for this script to run
 function create_files(){
-    for dir in "${DIRS[@]}"; do 
-        mkdir -p "${dir}"
-    done
-    for conf_file in "${CONFIG_FILES[@]}"; do 
-        touch "${conf_file}"
-    done
+    for dir in "${DIRS[@]}"; do mkdir -p "${dir}"; done
+    for conf_file in "${CONFIG_FILES[@]}"; do touch "${conf_file}"; done
     for init_file in $(read_config 3); do 
         file="${DIRS[2]}/${init_file}"
         touch "${file}" && chmod +x "${file}"
@@ -139,4 +135,5 @@ function ask_user(){
    [[ "${answer,,}" == "y" ]]
 }
 
-
+### ACTUAL EXECUTION ###
+git_check_branch

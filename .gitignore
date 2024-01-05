@@ -1,2 +1,5 @@
 # ignore config files for autosaver script 
-config/
+/config/*
+
+# do not ignore config file with files to track
+!/config/files_to_track.txt
