@@ -15,19 +15,23 @@ DIRS=(
     # backup files
     "${SCRIPT_DIR}/backup"
     # config files
+    "${SCRIPT_DIR}/userconfig"
+    # config files
     "${SCRIPT_DIR}/config"
     # init scripts
     "${SCRIPT_DIR}/init"
 )
-CONFIG_FILES=(
-    # list of files to be tracked
-    "${DIRS[1]}/files_to_track.txt"
+USER_CONFIG_FILES=(
     # branch on which all actions are allowed
     "${DIRS[1]}/whitelisted_branch.txt"
     # editor for editing files
     "${DIRS[1]}/file_editor.txt"
+)
+CONFIG_FILES=(
+    # list of files to be tracked
+    "${DIRS[2]}/files_to_track.txt"
     # list of init scripts
-    "${DIRS[1]}/init_scripts.txt"
+    "${DIRS[2]}/init_scripts.txt"
 )
 
 
@@ -118,23 +122,6 @@ function git_fix_user(){
 
 
 ### UTILITY FUNCTIONS ###
-# read from config file
-# args:
-# 1: config file index
-function read_config(){
-    cat "${1}" 2>/dev/null "${CONFIG_FILES["${1}"]}"
-}
-
-# create all dirs and files necessary for this script to run
-function create_files(){
-    for dir in "${DIRS[@]}"; do mkdir -p "${dir}"; done
-    for conf_file in "${CONFIG_FILES[@]}"; do touch "${conf_file}"; done
-    for init_file in $(read_config 3); do 
-        file="${DIRS[2]}/${init_file}"
-        touch "${file}" && chmod +x "${file}"
-    done
-}
-
 # ask user confermation
 # args:
 # 1: question
@@ -177,10 +164,10 @@ function parse_options(){
 function execute_action(){
     case "${ACTION}" in
         e);;
-        h) help_msg; exit 0;;
-        i);;
-        r);;
-        s);;
+        h) help_msg; exit 0 ;;
+        i) git_checks_quit ;;
+        r) git_checks_quit ;;
+        s) git_checks_quit ;;
         "") ;;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
