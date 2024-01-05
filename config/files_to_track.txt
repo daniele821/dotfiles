@@ -1,0 +1,25 @@
+# ------------------------- FILES ------------------------- 
+
+# various
+.bash_aliases
+.gitconfig
+.vimrc
+.ssh/config
+.config/starship.toml
+
+# themes
+.local/share/themes/Dracula.zip
+.local/share/themes/pop-dark-fixed.zip
+.local/share/gedit/styles/dracula.xml
+
+# fonts
+.local/share/fonts/Inconsolata/Inconsolata.zip
+.local/share/fonts/FiraCode/FiraCode.zip
+
+# ---------------------- DIRECTORIES ---------------------- 
+
+# various
+.local/share/backgrounds
+.config/autostart
+.config/kitty
+.personal/data/backups
