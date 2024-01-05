@@ -64,7 +64,7 @@ function clr_message(){
 # args:
 # 1: file name
 function clr_file(){
-    echo -e "\e[1;36m${1}\e[m\c"
+    echo -e "\e[1;36m$(dirbasename "${file}")\e[m\c"
 }
 
 # color warning message
@@ -145,8 +145,7 @@ function touch_file(){
 # args:
 # 1:file full path
 function edit_file(){
-    clr_file="$(clr_file "$(dirbasename "${file}")")"
-    ask_user "Do you really want to edit ${clr_file}" && touch_file "${1}" && editor "${1}"
+    ask_user "Do you really want to edit" "${file}" && touch_file "${1}" && editor "${1}"
     [[ -s "${1}" ]] || rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
@@ -163,9 +162,9 @@ function read_file(){
 # ask user confermation
 # args:
 # 1: question
+# 2: file name
 function ask_user(){
-   clr_message "${1}" 
-   clr_message " ? "
+   clr_message "${1} " && clr_file "${2}" && clr_message " ? "
    [[ "${YEAH_OPT}" == "y" ]] && answer="y" && echo "y"
    [[ "${YEAH_OPT}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
@@ -238,8 +237,7 @@ Action Options (only one is accepted!):
 function run_init(){
     read_file "${CONFIG_FILES[1]}" | while read -r script; do
         file="${DIRS[3]}/${script}"
-        clr_file="$(clr_file "$(dirbasename "${file}")")"
-        [[ -f "${file}" ]] && ask_user "Do you really want to execute ${clr_file}" && chmod +x "${file}" && "${file}"
+        [[ -f "${file}" ]] && ask_user "Do you really want to execute" "${file}" && chmod +x "${file}" && "${file}"
     done
 }
 
