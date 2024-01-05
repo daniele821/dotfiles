@@ -132,8 +132,6 @@ function create_files(){
 # ask user confermation
 # args:
 # 1: question
-# vars used:
-# FORCE_YES 
 function ask_user(){
    clr_none "${1} " 
    [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
