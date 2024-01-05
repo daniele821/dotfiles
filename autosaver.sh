@@ -38,7 +38,8 @@ VERB_OPT="n"    # n/y           (no/yes)
 DIFF_OPT="n"    # n/y           (no/yes)
 COMM_ACT="n"    # n/y           (no/yes)
 PUSH_ACT="n"    # n/y           (no/yes)
-SAVE_ACT=""     # ' '/s/b       (none/save/backup)
+SAVE_ACT="n"    # n/y           (no/yes)
+BACK_ACT="n"    # n/y           (no/yes)
 ACTION=""       # ' '/s/e/i/h/r (none/save/edit/init/help/rmdir)
 
 
@@ -156,8 +157,18 @@ function store_action(){
 function parse_options(){
     while getopts ':bcdehiprsvy' OPTION; do
         case "${OPTION}" in
-            b) echo b ;;
-            *) clr_err_quit "-${OPTION} is an invalid option!" ;;
+            b) store_action "s"; BACK_ACT="y" ;;
+            c) store_action "s"; COMM_ACT="y" ;;
+            d) DIFF_OPT="y" ;;
+            e) store_action "e" ;;
+            h) store_action "h" ;;
+            i) store_action "i" ;;
+            p) store_action "s"; PUSH_ACT="y" ;;
+            r) store_action "r" ;;
+            s) store_action "s"; SAVE_ACT="y" ;;
+            v) VERB_OPT="y" ;;
+            y) YEAH_OPT="y" ;;
+            *) clr_err_quit "-${OPTARG} is an invalid option!" ;;
         esac
     done
 }
@@ -165,4 +176,4 @@ function parse_options(){
 
 ### ACTUAL EXECUTION ###
 git_check_branch
-parse_options
+parse_options "${@}"
