@@ -145,8 +145,9 @@ function touch_file(){
 # args:
 # 1:file full path
 function edit_file(){
-    touch_file "${1}" && editor "${1}"
-    [[ -s "${1}" ]] || rm "${1}"
+    clr_file="$(clr_file "$(dirbasename "${file}")")"
+    ask_user "Do you really want to edit ${clr_file}" && touch_file "${1}" && editor "${1}"
+    [[ -s "${1}" ]] || rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
 
@@ -244,20 +245,10 @@ function run_init(){
 
 # edit config and init files
 function edit_files(){
-    for file in "${USER_CONFIG_FILES[@]}"; do
-        clr_file="$(clr_file "$(dirbasename "${file}")")"
-        ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}" 
-    done
+    for file in "${USER_CONFIG_FILES[@]}"; do edit_file "${file}"; done
     if [[ "${ON_BRANCH}" == "y" ]]; then
-        for file in "${CONFIG_FILES[@]}"; do
-            clr_file="$(clr_file "$(dirbasename "${file}")")"
-            ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}"
-        done
-        read_file "${CONFIG_FILES[1]}" | while read -r filename; do
-            file="${DIRS[3]}/${filename}" 
-            clr_file="$(clr_file "$(dirbasename "${file}")")"
-            ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}"
-        done
+        for file in "${CONFIG_FILES[@]}"; do edit_file "${file}"; done
+        read_file "${CONFIG_FILES[1]}" | while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done
     fi
 }
 
