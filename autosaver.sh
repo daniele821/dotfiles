@@ -31,7 +31,10 @@ CONFIG_FILES=(
 )
 
 ### FLAGS ###
+# answer yes to all questions
 FORCE_YES="n" # n/y
+# is current branch is whitelisted?
+ON_BRANCH="n" # n/y
 
 ### COLOR FUNCTIONS ###
 # no color
@@ -71,6 +74,13 @@ function clr_err_quit(){
 }
 
 ### GIT FUNCTIONS ###
+# check if current branch is whitelisted
+function git_check_branch(){
+    CURRENT="$(git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD)"
+    WHITELISTED="$(cat "${USER_CONFIG_FILES[0]}" 2>/dev/null)"
+    [[ "${CURRENT}" == "${WHITELISTED}" ]] && ON_BRANCH="y"
+}
+
 # make the necessary git check, if any fails exit script
 function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
@@ -78,9 +88,7 @@ function git_checks_quit(){
     [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
 
     # checks and exit if current branch is not whitelisted
-    CURRENT="$(git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD)"
-    WHITELISTED="$(cat "${USER_CONFIG_FILES[0]}" 2>/dev/null)"
-    [[ "${CURRENT}" != "${WHITELISTED}" ]] && clr_err_quit "the current branch is not whitelisted!"
+    [[ "${ON_BRANCH}" != "y" ]] && clr_err_quit "the current branch is not whitelisted!"
 }
 
 # check if user name and email are valid, otherwise force user to fix them
@@ -131,7 +139,7 @@ function ask_user(){
    clr_none "${1} " 
    [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
    [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
-   [[ "${answer,,}" == y ]]
+   [[ "${answer,,}" == "y" ]]
 }
 
 
