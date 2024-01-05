@@ -258,7 +258,7 @@ function list_tracked_files(){
                 find "${backup}" -type f | cut -c "${#DIRS[0]}}"-
             fi
         fi
-    done < "${CONFIG_FILES[0]}"
+    done < "${CONFIG_FILES[0]}" | sort -u
 }
 
 # parse options
