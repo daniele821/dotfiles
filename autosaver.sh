@@ -188,11 +188,10 @@ Flag Options:
 - v     show verbose output
 
 Action Options (only one is accepted!):
-- [bcps] 
-    - b     restores backup files
-    - c     commits changes
-    - p     push commits to remote
-    - s     saves files 
+- b     restores backup files
+- c     commits changes
+- p     push commits to remote
+- s     saves files 
 - e     edits config files
 - h     shows help message
 - i     runs init scripts
