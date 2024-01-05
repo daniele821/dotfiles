@@ -242,11 +242,23 @@ function store_action(){
 
 # list tracked files 
 function list_tracked_files(){
-    [[ -f "${CONFIG_FILES[0]}" ]] || return 0
-    while read -r line || [[ -n "${line}" ]]; do
-        echo ${HOME}/${line}
+    [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
+        if [[ -n "${line}" ]]; then
+            file=${HOME}/${line}
+            backup="${DIRS[0]}"
+            if [[ -f "${file}" || -f "${backup}" ]]; then
+                echo "${file}";
+            fi
+            if [[ -d "${file}"]]; then
+                find "${file}" -type f
+            fi
+            if [[ -d "${backup}"]]; then
+                find "${backup}" -type f | while read -r tmp; do
+                    echo "${tmp:${#DIRS[0]}}"
+                done
+            fi
+        fi
     done < "${CONFIG_FILES[0]}"
-    clr_err_quit "TODO"
 }
 
 # parse options
@@ -329,7 +341,7 @@ function save_action(){
     ## no actions, just show changed files ##
     if [[ -z "${ACTION}" ]]; then
         git_status_show
-        clr_err_quit "TODO: NO_ACTION"
+        # TODO
     fi
 
     ## save/restore action ##
