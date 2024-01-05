@@ -225,11 +225,11 @@ Flag Options:
 Action Options (only one is accepted!):
 - b     restores backup files
 - c     commits changes
-- p     push commits to remote
-- s     saves files 
 - e     edits config files
 - h     shows help message
 - i     runs init scripts
+- p     push commits to remote
+- s     saves files 
         "
 }
 
