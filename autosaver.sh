@@ -64,7 +64,7 @@ function clr_message(){
 # args:
 # 1: file name
 function clr_file(){
-    echo -e "\e[1;36m$(dirbasename "${file}")\e[m\c"
+    echo -e "\e[1;36m$(dirbasename "${1}")\e[m\c"
 }
 
 # color warning message
@@ -109,7 +109,7 @@ function touch_file(){
 # args:
 # 1:file full path
 function edit_file(){
-    ask_user "Do you really want to edit" "${file}" && touch_file "${1}" && editor "${1}"
+    ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}"
     [[ -s "${1}" ]] || rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
