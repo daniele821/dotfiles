@@ -224,9 +224,9 @@ function git_push(){
 # 1: question
 # 2: file name
 function ask_user(){
-   clr_message "${1}" 
-   [[ -n "${2}" ]] && clr_file " ${2}" 
-   clr_message " ? "
+   clr_message "${1} " 
+   [[ -n "${2}" ]] && clr_file "${2}" 
+   clr_message "? "
    [[ "${YEAH_OPT}" == "y" ]] && answer="y" && echo "y"
    [[ "${YEAH_OPT}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
@@ -238,6 +238,15 @@ function ask_user(){
 function store_action(){
     [[ -n "${ACTION}" && "${ACTION}" != "${1}" ]] && clr_err_quit "cannot execute multiple actions!"
     ACTION="${1}"
+}
+
+# list tracked files 
+function list_tracked_files(){
+    [[ -f "${CONFIG_FILES[0]}" ]] || return 0
+    while read -r line || [[ -n "${line}" ]]; do
+        echo ${HOME}/${line}
+    done < "${CONFIG_FILES[0]}"
+    clr_err_quit "TODO"
 }
 
 # parse options
@@ -297,10 +306,10 @@ Action Options (only one is accepted!):
 
 # run init scripts
 function run_init(){
-    read_file "${CONFIG_FILES[1]}" | while read -r script; do
+    [[ -f "${CONFIG_FILES[1]}" ]] && while read -r script; do
         file="${DIRS[3]}/${script}"
         [[ -f "${file}" ]] && ask_user "Do you really want to execute" "${file}" && chmod +x "${file}" && "${file}"
-    done
+    done < "${CONFIG_FILES[1]}"
 }
 
 # edit config and init files
@@ -308,7 +317,7 @@ function edit_files(){
     for file in "${USER_CONFIG_FILES[@]}"; do edit_file "${file}"; done
     if [[ "${ON_BRANCH}" == "y" ]]; then
         for file in "${CONFIG_FILES[@]}"; do edit_file "${file}"; done
-        read_file "${CONFIG_FILES[1]}" | while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done
+        read_file "${CONFIG_FILES[1]}" && while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done < "${CONFIG_FILES[1]}"
     fi
 }
 
@@ -319,7 +328,8 @@ function save_action(){
 
     ## no actions, just show changed files ##
     if [[ -z "${ACTION}" ]]; then
-        clr_err_quit "TODO: NO ACTION"
+        git_status_show
+        clr_err_quit "TODO: NO_ACTION"
     fi
 
     ## save/restore action ##
