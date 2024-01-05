@@ -67,6 +67,13 @@ function clr_file(){
     echo -e "\e[1;36m$(dirbasename "${1}")\e[m\c"
 }
 
+# color successful message
+# args
+# 1: successfull message
+function clr_success(){
+    echo -e "\e[1;32m${1}\e[m\c"
+}
+
 # color warning message
 # args:
 # 1: warning message
@@ -166,6 +173,7 @@ function git_pull(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git pull failed a lot of times! Quitting program..."
     done
+    clr_success "git pull successfull\n"
 }
 
 # push to remote
@@ -177,6 +185,7 @@ function git_push(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git push failed a lot of times! Quitting program..."
     done
+    clr_success "git push successfull\n"
 }
 
 
@@ -275,6 +284,14 @@ function edit_files(){
 # save actions
 function save_action(){
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
+
+    ## save / restore ##
+
+    [[ "${PUSH_ACT}" == "y" || "${COMM_ACT}" == "y" ]] && git_pull
+
+    ## commit ##
+
+    [[ "${PUSH_ACT}" == "y" ]] && git_push
 }
 
 
