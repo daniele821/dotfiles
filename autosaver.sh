@@ -129,9 +129,16 @@ function git_fix_user(){
 
 
 ### UTILITY FUNCTIONS ###
+# full path to dir-name/file-name
+# args:
+# 1: file full path
+function dirbasename(){
+    echo "$(basename "$(dirname "${1}")")/$(basename "${1}")"
+}
+
 # read from file
 # args:
-# file full path
+# 1: file full path
 function read_file(){
     cat "${1}" 2>/dev/null
 }
@@ -177,7 +184,7 @@ function parse_options(){
 # execute stored action
 function execute_action(){
     case "${ACTION}" in
-        e);;
+        e) edit_files;;
         h) help_msg; exit 0 ;;
         i) git_checks_quit; run_init ;;
         r) git_checks_quit; remove_backup ;;
@@ -222,9 +229,14 @@ function remove_backup(){
 function run_init(){
     read_file "${CONFIG_FILES[1]}" | while read -r script; do
         file="${DIRS[3]}/${script}"
-        file_="$(basename ${DIRS[3]})/$(basename ${file})"
-        [[ -f "${file}" ]] && ask_user "Do you really want to execute $(clr_file ${file_})?" && chmod +x "${file}" && "${file}"
+        clr_file="$(clr_file "$(dirbasename "${file}")")"
+        [[ -f "${file}" ]] && ask_user "Do you really want to execute ${clr_file}?" && chmod +x "${file}" && "${file}"
     done
+}
+
+# edit config and init files
+function edit_files(){
+    clr_err_quit "TODO"
 }
 
 
