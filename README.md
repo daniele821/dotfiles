@@ -8,7 +8,6 @@ script to save dotfiles around my system and init scripts to run after reinstall
 - e   : edit config-files/init-scripts
 - i   : run init scripts
 - h   : help
-- r   : remove backup directory
 
 ## flags (options)
 
