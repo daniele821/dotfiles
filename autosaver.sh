@@ -7,6 +7,7 @@
 #
 # WARNING: this file MUST be in the root of the dotfiles directory
 
+
 ### VARIABLES ###
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
@@ -29,11 +30,13 @@ CONFIG_FILES=(
     "${DIRS[1]}/init_scripts.txt"
 )
 
+
 ### FLAGS ###
 # answer yes to all questions
 FORCE_YES="n" # n/y
 # is current branch is whitelisted?
 ON_BRANCH="n" # n/y
+
 
 ### COLOR FUNCTIONS ###
 # no color
@@ -72,6 +75,7 @@ function clr_err_quit(){
     exit 1
 }
 
+
 ### GIT FUNCTIONS ###
 # check if current branch is whitelisted
 function git_check_branch(){
@@ -107,6 +111,7 @@ function git_fix_user(){
     done
 }
 
+
 ### UTILITY FUNCTIONS ###
 # read from config file
 # args:
@@ -134,6 +139,7 @@ function ask_user(){
    [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
 }
+
 
 ### ACTUAL EXECUTION ###
 git_check_branch
