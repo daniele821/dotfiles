@@ -32,15 +32,14 @@ CONFIG_FILES=(
 
 
 ### FLAGS ###
-ON_BRANCH="n" # n/y         (no/yes)
-YEAH_OPT="n" # n/y          (no/yes)
-VERB_OPT="n" # n/y          (no/yes)
-DIFF_OPT="n" # n/y          (no/yes)
-SAVE_ACT="n"  # n/y         (no/yes)
-BACK_ACT="n"  # n/y         (no/yes)
-COMM_ACT="n"  # n/y         (no/yes)
-PUSH_ACT="n"  # n/y         (no/yes)
-ACTION="s"    # s/e/i/h/r   (save/edit/init/help/rmdir)
+ON_BRANCH="n"   # n/y           (no/yes)
+YEAH_OPT="n"    # n/y           (no/yes)
+VERB_OPT="n"    # n/y           (no/yes)
+DIFF_OPT="n"    # n/y           (no/yes)
+COMM_ACT="n"    # n/y           (no/yes)
+PUSH_ACT="n"    # n/y           (no/yes)
+SAVE_ACT=""     # ' '/s/b       (none/save/backup)
+ACTION=""       # ' '/s/e/i/h/r (none/save/edit/init/help/rmdir)
 
 
 ### COLOR FUNCTIONS ###
