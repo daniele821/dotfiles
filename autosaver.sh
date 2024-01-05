@@ -59,7 +59,7 @@ function clr_none(){
 # args:
 # 1: message
 function clr_message(){
-    echo -e "\e[1m${1}\e[m\c"
+    echo -e "\e[1;33m${1}\e[m\c"
 }
 
 # color file path 
@@ -222,8 +222,8 @@ function remove_backup(){
 function run_init(){
     read_file "${CONFIG_FILES[1]}" | while read -r script; do
         file="${DIRS[3]}/${script}"
-        file_="$(basename ${CONFIG_FILES[1]})/$(basename file)"
-        ask_user "Do you really want to execute $(clr_file file_)?" && chmod +x "${file}" && "${file}"
+        file_="$(basename ${DIRS[3]})/$(basename ${file})"
+        [[ -f "${file}" ]] && ask_user "Do you really want to execute $(clr_file ${file_})?" && chmod +x "${file}" && "${file}"
     done
 }
 
