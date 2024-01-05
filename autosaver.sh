@@ -42,7 +42,7 @@ COMM_ACT="n"    # n/y           (no/yes)
 PUSH_ACT="n"    # n/y           (no/yes)
 SAVE_ACT="n"    # n/y           (no/yes)
 BACK_ACT="n"    # n/y           (no/yes)
-ACTION=""       # ' '/s/e/i/h/r (none/save/edit/init/help/rmdir)
+ACTION=""       # ' '/s/e/i/h   (none/save/edit/init/help)
 
 
 ### COLOR FUNCTIONS ###
@@ -180,7 +180,7 @@ function store_action(){
 
 # parse options
 function parse_options(){
-    while getopts ':bcdehiprsvy' OPTION; do
+    while getopts ':bcdehipsvy' OPTION; do
         case "${OPTION}" in
             b) store_action "s"; BACK_ACT="y" ;;
             c) store_action "s"; COMM_ACT="y" ;;
@@ -189,7 +189,6 @@ function parse_options(){
             h) store_action "h" ;;
             i) store_action "i" ;;
             p) store_action "s"; PUSH_ACT="y" ;;
-            r) store_action "r" ;;
             s) store_action "s"; SAVE_ACT="y" ;;
             v) VERB_OPT="y" ;;
             y) YEAH_OPT="y" ;;
@@ -204,7 +203,6 @@ function execute_action(){
         e) edit_files;;
         h) help_msg;;
         i) git_checks_quit; run_init ;;
-        r) git_checks_quit; remove_backup ;;
         s|"") git_checks_quit; clr_err_quit "TODO" ;;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
@@ -232,13 +230,7 @@ Action Options (only one is accepted!):
 - e     edits config files
 - h     shows help message
 - i     runs init scripts
-- r     remove backup directory
         "
-}
-
-# remove backup directory
-function remove_backup(){
-    [[ -e "${DIRS[0]}" ]] && ask_user "Do you really want to remove backup directory" && rm -rf "${DIRS[0]}"
 }
 
 # run init scripts
