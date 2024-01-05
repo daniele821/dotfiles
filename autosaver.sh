@@ -94,7 +94,7 @@ function clr_err_quit(){
 # check if current branch is whitelisted
 function git_check_branch(){
     CURRENT="$(git -C "${SCRIPT_DIR}" rev-parse --abbrev-ref HEAD)"
-    WHITELISTED="$(cat "${USER_CONFIG_FILES[0]}" 2>/dev/null)"
+    WHITELISTED="$(read_file "${USER_CONFIG_FILES[0]}")"
     [[ "${CURRENT}" == "${WHITELISTED}" ]] && ON_BRANCH="y"
 }
 
@@ -193,7 +193,7 @@ function parse_options(){
 function execute_action(){
     case "${ACTION}" in
         e) edit_files;;
-        h) help_msg; exit 0 ;;
+        h) help_msg;;
         i) git_checks_quit; run_init ;;
         r) git_checks_quit; remove_backup ;;
         s|"") git_checks_quit; clr_err_quit "TODO" ;;
@@ -247,6 +247,17 @@ function edit_files(){
         clr_file="$(clr_file "$(dirbasename "${file}")")"
         ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
     done
+    if [[ "${ON_BRANCH}" == "y" ]]; then
+        for file in "${CONFIG_FILES[@]}"; do
+            clr_file="$(clr_file "$(dirbasename "${file}")")"
+            ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+        done
+        read_file "${CONFIG_FILES[1]}" | while read -r filename; do
+            file="${DIRS[3]}/${filename}" 
+            clr_file="$(clr_file "$(dirbasename "${file}")")"
+            ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+        done
+    fi
 }
 
 
