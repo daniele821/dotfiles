@@ -338,11 +338,11 @@ function save_action(){
             clr_file_full "${file}\n";
         done
         if ask_user "Do you really want to commit everything"; then
-            git -C "${SCRIPT_DIR}" add . 
+            git -C "${SCRIPT_DIR}" add . &>/dev/null
             clr_message "Insert commit name: " 
             read -r answer
             [[ -z "${answer}" ]] && clr_err_quit "invalid commit name!"
-            git -C "${SCRIPT_DIR}" commit -m "${answer}"
+            git -C "${SCRIPT_DIR}" commit -m "${answer}" &>/dev/null
         fi
     fi
 
