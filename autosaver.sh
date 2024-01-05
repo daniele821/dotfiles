@@ -109,7 +109,7 @@ function touch_file(){
 # args:
 # 1:file full path
 function edit_file(){
-    ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}"
+    ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
     [[ -s "${1}" ]] || rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
