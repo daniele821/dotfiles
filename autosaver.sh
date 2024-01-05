@@ -173,7 +173,48 @@ function parse_options(){
     done
 }
 
+# execute stored action
+function execute_action(){
+    case "${ACTION}" in
+        e);;
+        h) help_msg; exit 0;;
+        i);;
+        r);;
+        s);;
+        "") ;;
+        *) clr_err_quit "${ACTION} not a valid action!";;
+    esac
+}
+
+# print help message
+function help_msg(){
+    echo "\
+Usage: ./${SCRIPT_NAME} [options] 
+
+script to automagically track dotfiles around the user 
+home directory, and to backup init script files to be 
+execute on a fresh reinstall of the current OS
+
+Flag Options:
+- d     shows diffs
+- y     tries to always answer yes to all interactions
+- v     show verbose output
+
+Action Options (only one is accepted!):
+- [bcps] 
+    - b     restores backup files
+    - c     commits changes
+    - p     push commits to remote
+    - s     saves files 
+- e     edits config files
+- h     shows help message
+- i     runs init scripts
+- r     remove backup directory
+        "
+}
+
 
 ### ACTUAL EXECUTION ###
 git_check_branch
 parse_options "${@}"
+execute_action
