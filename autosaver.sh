@@ -90,6 +90,38 @@ function clr_err_quit(){
 }
 
 
+### FILESYSTEM FUNCTIONS ###
+# full path to dir-name/file-name
+# args:
+# 1: file full path
+function dirbasename(){
+    echo "$(basename "$(dirname "${1}")")/$(basename "${1}")"
+}
+
+# create empty file
+# args:
+# 1: file full path
+function touch_file(){
+    mkdir -p "$(dirname "${1}")" && touch "${1}"
+}
+
+# edit file
+# args:
+# 1:file full path
+function edit_file(){
+    ask_user "Do you really want to edit" "${file}" && touch_file "${1}" && editor "${1}"
+    [[ -s "${1}" ]] || rm "${1}" &>/dev/null
+    rmdir "$(dirname "${1}")" &>/dev/null
+}
+
+# read from file
+# args:
+# 1: file full path
+function read_file(){
+    cat "${1}" 2>/dev/null
+}
+
+
 ### GIT FUNCTIONS ###
 # check if current branch is whitelisted
 function git_check_branch(){
@@ -123,38 +155,6 @@ function git_fix_user(){
         read -r answer
         git -C "${SCRIPT_DIR}" config user.email "${answer}"
     done
-}
-
-
-### FILESYSTEM FUNCTIONS ###
-# full path to dir-name/file-name
-# args:
-# 1: file full path
-function dirbasename(){
-    echo "$(basename "$(dirname "${1}")")/$(basename "${1}")"
-}
-
-# create empty file
-# args:
-# 1: file full path
-function touch_file(){
-    mkdir -p "$(dirname "${1}")" && touch "${1}"
-}
-
-# edit file
-# args:
-# 1:file full path
-function edit_file(){
-    ask_user "Do you really want to edit" "${file}" && touch_file "${1}" && editor "${1}"
-    [[ -s "${1}" ]] || rm "${1}" &>/dev/null
-    rmdir "$(dirname "${1}")" &>/dev/null
-}
-
-# read from file
-# args:
-# 1: file full path
-function read_file(){
-    cat "${1}" 2>/dev/null
 }
 
 
