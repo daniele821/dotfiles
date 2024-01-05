@@ -24,8 +24,6 @@ DIRS=(
 USER_CONFIG_FILES=(
     # branch on which all actions are allowed
     "${DIRS[1]}/whitelisted_branch.txt"
-    # editor for editing files
-    "${DIRS[1]}/file_editor.txt"
 )
 CONFIG_FILES=(
     # list of files to be tracked
@@ -59,7 +57,7 @@ function clr_none(){
 # args:
 # 1: message
 function clr_message(){
-    echo -e "\e[1;33m${1}\e[m\c"
+    echo -e "\e[1m${1}\e[m\c"
 }
 
 # color file path 
@@ -128,12 +126,19 @@ function git_fix_user(){
 }
 
 
-### UTILITY FUNCTIONS ###
+### FILESYSTEM FUNCTIONS ###
 # full path to dir-name/file-name
 # args:
 # 1: file full path
 function dirbasename(){
     echo "$(basename "$(dirname "${1}")")/$(basename "${1}")"
+}
+
+# create empty file
+# args:
+# 1: file full path
+function touch_file(){
+    mkdir -p "$(dirname "${1}")" && touch "${1}"
 }
 
 # read from file
@@ -143,11 +148,14 @@ function read_file(){
     cat "${1}" 2>/dev/null
 }
 
+
+### UTILITY FUNCTIONS ###
 # ask user confermation
 # args:
 # 1: question
 function ask_user(){
-   clr_message "${1} " 
+   clr_message "${1}" 
+   clr_message " ? "
    [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
    [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
@@ -188,8 +196,7 @@ function execute_action(){
         h) help_msg; exit 0 ;;
         i) git_checks_quit; run_init ;;
         r) git_checks_quit; remove_backup ;;
-        s) git_checks_quit ;;
-        "") ;;
+        s|"") git_checks_quit; clr_err_quit "TODO" ;;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
 }
@@ -222,7 +229,7 @@ Action Options (only one is accepted!):
 
 # remove backup directory
 function remove_backup(){
-    [[ -e "${DIRS[0]}" ]] && ask_user "Do you really want to remove backup directory?" && rm -rf "${DIRS[0]}"
+    [[ -e "${DIRS[0]}" ]] && ask_user "Do you really want to remove backup directory" && rm -rf "${DIRS[0]}"
 }
 
 # run init scripts
@@ -230,13 +237,16 @@ function run_init(){
     read_file "${CONFIG_FILES[1]}" | while read -r script; do
         file="${DIRS[3]}/${script}"
         clr_file="$(clr_file "$(dirbasename "${file}")")"
-        [[ -f "${file}" ]] && ask_user "Do you really want to execute ${clr_file}?" && chmod +x "${file}" && "${file}"
+        [[ -f "${file}" ]] && ask_user "Do you really want to execute ${clr_file}" && chmod +x "${file}" && "${file}"
     done
 }
 
 # edit config and init files
 function edit_files(){
-    clr_err_quit "TODO"
+    for file in "${USER_CONFIG_FILES[@]}"; do
+        clr_file="$(clr_file "$(dirbasename "${file}")")"
+        ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+    done
 }
 
 
