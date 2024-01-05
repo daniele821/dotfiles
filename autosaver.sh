@@ -55,6 +55,13 @@ function clr_none(){
     echo -e "${1}\c"
 }
 
+# color question
+# args:
+# 1: message
+function clr_message(){
+    echo -e "\e[1m${1}\e[m\c"
+}
+
 # color file path 
 # args:
 # 1: file name
@@ -133,7 +140,7 @@ function read_file(){
 # args:
 # 1: question
 function ask_user(){
-   clr_none "${1} " 
+   clr_message "${1} " 
    [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
    [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
@@ -225,3 +232,4 @@ function run_init(){
 git_check_branch
 parse_options "${@}"
 execute_action
+exit 0
