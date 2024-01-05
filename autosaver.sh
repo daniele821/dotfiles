@@ -332,7 +332,7 @@ function edit_files(){
     for file in "${USER_CONFIG_FILES[@]}"; do edit_file "${file}"; done
     if [[ "${ON_BRANCH}" == "y" ]]; then
         for file in "${CONFIG_FILES[@]}"; do edit_file "${file}"; done
-        read_file "${CONFIG_FILES[1]}" && while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done < "${CONFIG_FILES[1]}"
+        [[ -f "${CONFIG_FILES[1]}" ]] && while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done < "${CONFIG_FILES[1]}"
     fi
 }
 
