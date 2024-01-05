@@ -342,14 +342,27 @@ function save_action(){
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
 
     ## no actions, just show changed files ##
-    if [[ -z "${ACTION}" ]]; then
-        git_status_show
-        # TODO
-    fi
+    [[ -z "${ACTION}" ]] && git_status_show
 
-    ## save/restore action ##
-    if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" ]]; then
-        clr_err_quit "TODO: SAVE/RESTORE ACTION"
+    ## save/restore/no action ##
+    if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}" ]]; then
+        list_tracked_files | while read -r file; do
+            # temporary flags
+            backup="${DIRS[0]}${file}"
+            BACK="n"; [[ -f "${backup}" ]] && BACK="y"
+            FILE="n"; [[ -f "${file}" ]] && FILE="y"
+            BOTH="n"; [[ "${FILE}" == "y" && "${BACK}" == "y" ]] && BOTH="y"
+            MISS="n"; [[ "${BOTH}" != "y" ]] && [[ "${FILE}" == "y" || "${BACK}" == "y" ]] && MISS="y"
+            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &>/dev/null && DIFF="y"
+            CHNG="n"; [[ "${MISS}" == "y" || "${DIFF}" == "y" ]] && CHNG="y"
+            
+            # actions if files are different
+            if [[ "${CHNG}" == "y" ]]; then
+                clr_file "${file}"
+                # TODO
+                echo
+            fi
+        done
     fi
      
     ## pull ##
