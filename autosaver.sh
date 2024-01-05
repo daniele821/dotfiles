@@ -320,15 +320,10 @@ function save_action(){
     fi
 
     ## save action ##
-    if [[ "${SAVE_ACT}" == "y" ]]; then
-        clr_err_quit "TODO: SAVE ACTION"
+    if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" ]]; then
+        clr_err_quit "TODO: SAVE/RESTORE ACTION"
     fi
      
-    ## restore action ##
-    if [[ "${BACK_ACT}" == "y" ]]; then
-        clr_err_quit "TODO: SAVE ACTION"
-    fi
-
     ## pull ##
     [[ "${PUSH_ACT}" == "y" || "${COMM_ACT}" == "y" ]] && git_pull
 
