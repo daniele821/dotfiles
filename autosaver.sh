@@ -157,6 +157,16 @@ function git_fix_user(){
     done
 }
 
+# pull from remote
+function git_pull(){
+    git -C "${SCRIPT_DIR}" pull &>/dev/null || clr_err_quit "git pull failed!"
+}
+
+# push to remote
+function git_push(){
+    git -C "${SCRIPT_DIR}" push &>/dev/null || clr_err_quit "git push failed!"
+}
+
 
 ### UTILITY FUNCTIONS ###
 # ask user confermation
