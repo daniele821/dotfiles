@@ -122,6 +122,13 @@ function git_fix_user(){
 
 
 ### UTILITY FUNCTIONS ###
+# read from file
+# args:
+# file full path
+function read_file(){
+    cat "${1}" 2>/dev/null
+}
+
 # ask user confermation
 # args:
 # 1: question
@@ -165,7 +172,7 @@ function execute_action(){
     case "${ACTION}" in
         e);;
         h) help_msg; exit 0 ;;
-        i) git_checks_quit ;;
+        i) git_checks_quit; run_init ;;
         r) git_checks_quit; remove_backup ;;
         s) git_checks_quit ;;
         "") ;;
@@ -202,6 +209,15 @@ Action Options (only one is accepted!):
 # remove backup directory
 function remove_backup(){
     [[ -e "${DIRS[0]}" ]] && ask_user "Do you really want to remove backup directory?" && rm -rf "${DIRS[0]}"
+}
+
+# run init scripts
+function run_init(){
+    read_file "${CONFIG_FILES[1]}" | while read -r script; do
+        file="${DIRS[3]}/${script}"
+        file_="$(basename ${CONFIG_FILES[1]})/$(basename file)"
+        ask_user "Do you really want to execute $(clr_file file_)?" && chmod +x "${file}" && "${file}"
+    done
 }
 
 
