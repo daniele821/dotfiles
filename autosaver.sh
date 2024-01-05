@@ -320,7 +320,10 @@ Action Options (only one is accepted!):
 function run_init(){
     [[ -f "${CONFIG_FILES[1]}" ]] && while read -r script; do
         file="${DIRS[3]}/${script}"
-        [[ -f "${file}" ]] && ask_user "Do you really want to execute" "${file}" && chmod +x "${file}" && "${file}"
+        if [[ -f "${file}" ]] && ask_user "Do you really want to execute" "${file}"; then
+            chmod +x "${file}"
+            "${file}" || clr_err_quit "init script failed!"
+        fi
     done < "${CONFIG_FILES[1]}"
 }
 
