@@ -333,7 +333,7 @@ function save_action(){
     [[ "${PUSH_ACT}" == "y" || "${COMM_ACT}" == "y" ]] && git_pull
 
     ## commit ##
-    if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s | wc)" ]] ; then
+    if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
         git_status | while read -r file; do
             clr_file_full "${file}\n";
         done
