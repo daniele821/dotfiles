@@ -166,7 +166,7 @@ function execute_action(){
         e);;
         h) help_msg; exit 0 ;;
         i) git_checks_quit ;;
-        r) git_checks_quit ;;
+        r) git_checks_quit; remove_backup ;;
         s) git_checks_quit ;;
         "") ;;
         *) clr_err_quit "${ACTION} not a valid action!";;
@@ -198,6 +198,11 @@ Action Options (only one is accepted!):
 - i     runs init scripts
 - r     remove backup directory
         "
+}
+
+# remove backup directory
+function remove_backup(){
+    [[ -e "${DIRS[0]}" ]] && ask_user "Do you really want to remove backup directory?" && rm -rf "${DIRS[0]}"
 }
 
 
