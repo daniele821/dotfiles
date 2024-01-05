@@ -159,12 +159,24 @@ function git_fix_user(){
 
 # pull from remote
 function git_pull(){
-    git -C "${SCRIPT_DIR}" pull &>/dev/null || clr_err_quit "git pull failed!"
+    FAIL="0"
+    while ! git -C "${SCRIPT_DIR}" pull &>/dev/null; do
+        clr_warn "git pull failed! Retrying...\n";
+        sleep 1;
+        FAIL=$(( FAIL + 1 )) 
+        [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git pull failed a lot of times! Quitting program..."
+    done
 }
 
 # push to remote
 function git_push(){
-    git -C "${SCRIPT_DIR}" push &>/dev/null || clr_err_quit "git push failed!"
+    FAIL="0"
+    while ! git -C "${SCRIPT_DIR}" push &>/dev/null; do
+        clr_warn "git push failed! Retrying...\n";
+        sleep 1;
+        FAIL=$(( FAIL + 1 )) 
+        [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git push failed a lot of times! Quitting program..."
+    done
 }
 
 
