@@ -35,30 +35,35 @@ FORCE_YES="n" # n/y
 
 ### COLOR FUNCTIONS ###
 # no color
+# args:
 # 1: message
 function clr_none(){
     echo -e "${1}\c"
 }
 
 # color file path 
+# args:
 # 1: file name
 function clr_file(){
     echo -e "\e[1;36m${1}\e[m\c"
 }
 
 # color warning message
+# args:
 # 1: warning message
 function clr_warn(){
     echo -e "\e[1;33mWARNING:\e[m ${1}\c"
 }
 
 # color error message
+# args:
 # 1: error message
 function clr_err(){
     echo -e "\e[1;31mERROR:\e[m ${1}\c"
 }
 
 # color error message and quit
+# args:
 # 1: error message
 function clr_err_quit(){
     clr_err "${1}\n"
@@ -97,6 +102,7 @@ function git_fix_user(){
 
 ### UTILITY FUNCTIONS ###
 # read from file
+# args:
 # 1: config file full path
 function read_file(){
     cat "${1}" 2>/dev/null
@@ -117,7 +123,10 @@ function create_files(){
 }
 
 # ask user confermation
+# args:
 # 1: question
+# vars used:
+# FORCE_YES 
 function ask_user(){
    clr_none "${1} " 
    [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
