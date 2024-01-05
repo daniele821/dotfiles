@@ -10,7 +10,6 @@
 ### VARIABLES ###
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-SCRIPT_NAME="$(basename "${SCRIPT_PWD}")"
 DIRS=(
     # backup files
     "${SCRIPT_DIR}/backup"
@@ -109,11 +108,11 @@ function git_fix_user(){
 }
 
 ### UTILITY FUNCTIONS ###
-# read from file
+# read from config file
 # args:
-# 1: config file full path
-function read_file(){
-    cat "${1}" 2>/dev/null
+# 1: config file index
+function read_config(){
+    cat "${1}" 2>/dev/null "${CONFIG_FILES["${1}"]}"
 }
 
 # create all dirs and files necessary for this script to run
@@ -124,9 +123,9 @@ function create_files(){
     for conf_file in "${CONFIG_FILES[@]}"; do 
         touch "${conf_file}"
     done
-    for init_file in "$(read_file "${CONFIG_FILES[3]}")"; do 
+    for init_file in $(read_config 3); do 
         file="${DIRS[2]}/${init_file}"
-        touch ${file} && chmod +x "${file}"
+        touch "${file}" && chmod +x "${file}"
     done
 }
 
