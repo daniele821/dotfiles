@@ -4,16 +4,14 @@ script to save dotfiles around my system and init scripts to run after reinstall
 
 ## flags (actions)
 
-- s/b : save/backup [xor]
-- c/p : commit/push [or]
-- e   : edit
-- i   : initialize
+- s/b/c/p : save/backup/commit/push
+- e   : edit config-files/init-scripts
+- i   : run init scripts
 - h   : help
-- r   : rmdirs
+- r   : remove backup directory
 
 ## flags (options)
 
 - y   : auto answer yes [DANGEROUS]
 - v   : verbose (show more info)
 - d   : show diffs 
-- u   : show untracked files
