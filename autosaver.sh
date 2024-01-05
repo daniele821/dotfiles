@@ -283,14 +283,33 @@ function edit_files(){
 
 # save actions
 function save_action(){
+    # checks
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
 
-    ## save / restore ##
+    ## no actions, just show changed files ##
+    if [[ -z "${ACTION}" ]]; then
+        clr_err_quit "TODO: NO ACTION"
+    fi
 
+    ## save action ##
+    if [[ "${SAVE_ACT}" == "y" ]]; then
+        clr_err_quit "TODO: SAVE ACTION"
+    fi
+     
+    ## restore action ##
+    if [[ "${BACK_ACT}" == "y" ]]; then
+        clr_err_quit "TODO: SAVE ACTION"
+    fi
+
+    ## pull ##
     [[ "${PUSH_ACT}" == "y" || "${COMM_ACT}" == "y" ]] && git_pull
 
     ## commit ##
+    if [[ "${COMM_ACT}" == "y" ]]; then
+        clr_err_quit "TODO: COMM ACTION"
+    fi
 
+    ## push ##
     [[ "${PUSH_ACT}" == "y" ]] && git_push
 }
 
