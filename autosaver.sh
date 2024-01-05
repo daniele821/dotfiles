@@ -62,6 +62,20 @@ function clr_message(){
 
 # color file path 
 # args:
+# 1: file full path
+function clr_file(){
+    clr_file_full "$(dirbasename "${1}")"
+}
+
+# color file path as is
+# args:
+# 1: file full path
+function clr_file_full(){
+    echo -e "\e[1;36m${1}\e[m\c"
+}
+
+# color file path 
+# args:
 # 1: file name
 function clr_file(){
     echo -e "\e[1;36m$(dirbasename "${1}")\e[m\c"
@@ -164,6 +178,18 @@ function git_fix_user(){
     done
 }
 
+# fix git status output to list full paths instead
+function git_status(){
+    git -C "${SCRIPT_DIR}" status -s | awk '{print $2}'
+}
+
+# convert git status files to full path
+function git_status_path(){
+    git_status | while read -r rel_file; do
+        echo "${SCRIPT_DIR}/${rel_file}"
+    done
+}
+
 # pull from remote
 function git_pull(){
     FAIL="0"
@@ -173,7 +199,7 @@ function git_pull(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git pull failed a lot of times! Quitting program..."
     done
-    clr_success "git pull successfull\n"
+    clr_success "git pull successfull\n\n"
 }
 
 # push to remote
@@ -185,7 +211,7 @@ function git_push(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git push failed a lot of times! Quitting program..."
     done
-    clr_success "git push successfull\n"
+    clr_success "git push successfull\n\n"
 }
 
 
@@ -195,7 +221,9 @@ function git_push(){
 # 1: question
 # 2: file name
 function ask_user(){
-   clr_message "${1} " && clr_file "${2}" && clr_message " ? "
+   clr_message "${1}" 
+   [[ -n "${2}" ]] && clr_file " ${2}" 
+   clr_message " ? "
    [[ "${YEAH_OPT}" == "y" ]] && answer="y" && echo "y"
    [[ "${YEAH_OPT}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
@@ -305,8 +333,17 @@ function save_action(){
     [[ "${PUSH_ACT}" == "y" || "${COMM_ACT}" == "y" ]] && git_pull
 
     ## commit ##
-    if [[ "${COMM_ACT}" == "y" ]]; then
-        clr_err_quit "TODO: COMM ACTION"
+    if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s | wc)" ]] ; then
+        git_status | while read -r file; do
+            clr_file_full "${file}\n";
+        done
+        if ask_user "Do you really want to commit everything"; then
+            git -C "${SCRIPT_DIR}" add . 
+            clr_message "Insert commit name: " 
+            read -r answer
+            [[ -z "${answer}" ]] && clr_err_quit "invalid commit name!"
+            git -C "${SCRIPT_DIR}" commit -m "${answer}"
+        fi
     fi
 
     ## push ##
