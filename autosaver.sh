@@ -57,7 +57,7 @@ function clr_none(){
 # args:
 # 1: message
 function clr_message(){
-    echo -e "\e[1m${1}\e[m\c"
+    echo -e "\e[1;33m${1}\e[m\c"
 }
 
 # color file path 
@@ -336,6 +336,9 @@ function save_action(){
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
         git_status | while read -r file; do
             clr_file_full "${file}\n";
+            if [[ "${DIFF_OPT}" == "y" ]]; then
+                git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
+            fi
         done
         if ask_user "Do you really want to commit everything"; then
             git -C "${SCRIPT_DIR}" add . &>/dev/null
