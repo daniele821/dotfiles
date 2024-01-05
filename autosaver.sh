@@ -131,7 +131,7 @@ function touch_file(){
 # 1:file full path
 function edit_file(){
     ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
-    [[ -s "${1}" ]] || rm "${1}" &>/dev/null
+    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
 
@@ -185,12 +185,14 @@ function git_status(){
 
 # convert git status files to full path
 function git_status_show(){
+    git -C "${SCRIPT_DIR}" add . &>/dev/null
     git_status | while read -r file; do
-        clr_file_full "${file}";
+        clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
         [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
         echo
         [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
     done
+    git -C "${SCRIPT_DIR}" restore --staged . &>/dev/null
 }
 
 # pull from remote
@@ -202,7 +204,7 @@ function git_pull(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git pull failed a lot of times! Quitting program..."
     done
-    clr_success "git pull successfull\n\n"
+    clr_success "git pull successfull\n"
 }
 
 # push to remote
@@ -214,7 +216,7 @@ function git_push(){
         FAIL=$(( FAIL + 1 )) 
         [[ "${FAIL}" -ge "10" ]] && clr_err_quit "git push failed a lot of times! Quitting program..."
     done
-    clr_success "git push successfull\n\n"
+    clr_success "git push successfull\n"
 }
 
 
@@ -225,7 +227,7 @@ function git_push(){
 # 2: file name
 function ask_user(){
    clr_message "${1} " 
-   [[ -n "${2}" ]] && clr_file "${2}" 
+   [[ -n "${2}" ]] && clr_file "${2} " 
    clr_message "? "
    [[ "${YEAH_OPT}" == "y" ]] && answer="y" && echo "y"
    [[ "${YEAH_OPT}" != "y" ]] && read -r answer </dev/tty
