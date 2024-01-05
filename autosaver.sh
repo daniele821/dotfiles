@@ -86,4 +86,25 @@ function git_fix_user(){
     done
 }
 
+### UTILITY FUNCTIONS ###
+# read from file
+# 1: config file full path
+function read_file(){
+    cat "${1}" 2>/dev/null
+}
+
+# create all dirs and files necessary for this script to run
+function create_files(){
+    for dir in "${DIRS[@]}"; do 
+        mkdir -p "${dir}"
+    done
+    for conf_file in "${CONFIG_FILES[@]}"; do 
+        touch "${conf_file}"
+    done
+    for init_file in "$(read_file "${CONFIG_FILES[3]}")"; do 
+        file="${DIRS[2]}/${init_file}"
+        touch ${file} && chmod +x "${file}"
+    done
+}
+
 
