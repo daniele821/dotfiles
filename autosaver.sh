@@ -225,7 +225,7 @@ function execute_action(){
         e) edit_files;;
         h) help_msg;;
         i) git_checks_quit; run_init ;;
-        s|"") git_checks_quit; clr_err_quit "TODO" ;;
+        s|"") git_checks_quit; save_action ;;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
 }
@@ -270,6 +270,11 @@ function edit_files(){
         for file in "${CONFIG_FILES[@]}"; do edit_file "${file}"; done
         read_file "${CONFIG_FILES[1]}" | while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done
     fi
+}
+
+# save actions
+function save_action(){
+    [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
 }
 
 
