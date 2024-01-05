@@ -144,6 +144,25 @@ function ask_user(){
    [[ "${answer,,}" == "y" ]]
 }
 
+# store action to execute
+# args:
+# 1: action to execute
+function store_action(){
+    [[ -n "${ACTION}" && "${ACTION}" != "${1}" ]] && clr_err_quit "cannot execute multiple actions!"
+    ACTION="${1}"
+}
+
+# parse options
+function parse_options(){
+    while getopts ':bcdehiprsvy' OPTION; do
+        case "${OPTION}" in
+            b) echo b ;;
+            *) clr_err_quit "-${OPTION} is an invalid option!" ;;
+        esac
+    done
+}
+
 
 ### ACTUAL EXECUTION ###
 git_check_branch
+parse_options
