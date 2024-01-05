@@ -184,9 +184,12 @@ function git_status(){
 }
 
 # convert git status files to full path
-function git_status_path(){
-    git_status | while read -r rel_file; do
-        echo "${SCRIPT_DIR}/${rel_file}"
+function git_status_show(){
+    git_status | while read -r file; do
+        clr_file_full "${file}";
+        [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
+        echo
+        [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
     done
 }
 
@@ -319,7 +322,7 @@ function save_action(){
         clr_err_quit "TODO: NO ACTION"
     fi
 
-    ## save action ##
+    ## save/restore action ##
     if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" ]]; then
         clr_err_quit "TODO: SAVE/RESTORE ACTION"
     fi
@@ -329,12 +332,7 @@ function save_action(){
 
     ## commit ##
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
-        git_status | while read -r file; do
-            clr_file_full "${file}\n";
-            if [[ "${DIFF_OPT}" == "y" ]]; then
-                git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
-            fi
-        done
+        git_status_show
         if ask_user "Do you really want to commit everything"; then
             git -C "${SCRIPT_DIR}" add . &>/dev/null
             clr_message "Insert commit name: " 
