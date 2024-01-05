@@ -141,6 +141,15 @@ function touch_file(){
     mkdir -p "$(dirname "${1}")" && touch "${1}"
 }
 
+# edit file
+# args:
+# 1:file full path
+function edit_file(){
+    touch_file "${1}" && editor "${1}"
+    [[ -s "${1}" ]] || rm "${1}"
+    rmdir "$(dirname "${1}")" &>/dev/null
+}
+
 # read from file
 # args:
 # 1: file full path
@@ -156,8 +165,8 @@ function read_file(){
 function ask_user(){
    clr_message "${1}" 
    clr_message " ? "
-   [[ "${FORCE_YES}" == "y" ]] && answer="y" && echo "y"
-   [[ "${FORCE_YES}" != "y" ]] && read -r answer </dev/tty
+   [[ "${YEAH_OPT}" == "y" ]] && answer="y" && echo "y"
+   [[ "${YEAH_OPT}" != "y" ]] && read -r answer </dev/tty
    [[ "${answer,,}" == "y" ]]
 }
 
@@ -245,17 +254,17 @@ function run_init(){
 function edit_files(){
     for file in "${USER_CONFIG_FILES[@]}"; do
         clr_file="$(clr_file "$(dirbasename "${file}")")"
-        ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+        ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}" 
     done
     if [[ "${ON_BRANCH}" == "y" ]]; then
         for file in "${CONFIG_FILES[@]}"; do
             clr_file="$(clr_file "$(dirbasename "${file}")")"
-            ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+            ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}"
         done
         read_file "${CONFIG_FILES[1]}" | while read -r filename; do
             file="${DIRS[3]}/${filename}" 
             clr_file="$(clr_file "$(dirbasename "${file}")")"
-            ask_user "Do you really want to edit ${clr_file}" && touch_file "${file}" && editor "${file}"
+            ask_user "Do you really want to edit ${clr_file}" && edit_file "${file}"
         done
     fi
 }
