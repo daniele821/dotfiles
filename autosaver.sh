@@ -202,7 +202,7 @@ function config_branch(){
 function switch_branch(){
     [[ -n "$(git -C "${SCRIPT_DIR}" status -s )" ]] && clr_err_quit "cannot switch branch: current one has unsaved work!"
     git -C "${SCRIPT_DIR}" switch "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
-    clr_success "switched to whitelisted branch!"
+    clr_success "switched to whitelisted branch!\n"
 }
 
 # parse_options wrapper which try parsing shortcuts before
@@ -214,7 +214,7 @@ function parse_all(){
         edit) parse_options "-e";;
         help) parse_options "-h";;
         branch) config_branch "${@}"; exit 0;;
-        switch) switch_branch ;; 
+        switch) switch_branch; exit 0;; 
         *) parse_options "${@}";;
     esac
 }
