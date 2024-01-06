@@ -168,6 +168,7 @@ function store_action(){
 
 # list tracked files 
 function list_tracked_files(){
+    LEN="$(( ${#DIRS[0]} + 1 ))"
     [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
         if [[ -n "${line}" ]] ; then
             file=${HOME}/${line}
@@ -179,9 +180,7 @@ function list_tracked_files(){
                 find "${file}" -type f
             fi
             if [[ -d "${backup}" ]]; then
-                find "${backup}" -type f | while read -r tmp; do
-                    echo "${tmp:${#DIRS[0]}}"
-                done
+                find "${backup}" -type f | cut -c "${LEN}"-
             fi
         fi
     done < "${CONFIG_FILES[0]}" | sort -u
