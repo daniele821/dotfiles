@@ -25,6 +25,7 @@ CONFIG_FILES=(
     "${DIRS[2]}/init_scripts.txt"
 )
 OUTPUT="/dev/null"
+EDITOR="nvim"; nvim --version &>/dev/null || EDITOR="vim"; vim --version &>/dev/null || EDITOR="nano"
 
 
 ### FLAGS ###
@@ -77,8 +78,8 @@ function copy_file(){
     mkdir -p "$(dirname "${2}")" && cp "${1}" "${2}"
 }
 function edit_file(){
-    ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
-    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &> "${OUTPUT}"
+    ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && "${EDITOR}" "${1}" < /dev/tty
+    [[ -z "$(read_file "${1}" | xargs -0 2>"${OUTPUT}")" ]] && rm "${1}" &> "${OUTPUT}"
     rmdir "$(dirname "${1}")" &> "${OUTPUT}"
 }
 function read_file(){
