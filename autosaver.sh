@@ -274,11 +274,13 @@ Action Options (only one is accepted!):
 - b             restores backup files
 - c             commits changes
 - e             edits config files
+- g             goto whitelisted branch
 - h             shows help message
 - i             runs init scripts
 - o             output everything (debug)
 - p             push commits to remote
 - s             saves files 
+- w [branch]    set [branch] as the whitelisted branch
 
 Shortcuts:
 save            saves all files, commits and pushes
