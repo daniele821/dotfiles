@@ -201,7 +201,7 @@ function config_branch(){
 # switch to whitelisted branch
 function switch_branch(){
     [[ -n "$(git -C "${SCRIPT_DIR}" status -s )" ]] && clr_err_quit "cannot switch branch: current one has unsaved work!"
-    git -C "${SCRIPT_DIR}" "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
+    git -C "${SCRIPT_DIR}" switch "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
     clr_success "switched to whitelisted branch!"
 }
 
