@@ -293,7 +293,7 @@ function save_action(){
             FILE="n"; [[ -f "${file}" ]] && FILE="y"
             BOTH="n"; [[ "${FILE}" == "y" && "${BACK}" == "y" ]] && BOTH="y"
             MISS="n"; [[ "${BOTH}" != "y" ]] && [[ "${FILE}" == "y" || "${BACK}" == "y" ]] && MISS="y"
-            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &> "${OUTPUT}" "y"
+            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &> "${OUTPUT}" && DIFF="y"
             CHNG="n"; [[ "${MISS}" == "y" || "${DIFF}" == "y" ]] && CHNG="y"
             
             # actions if files are different
