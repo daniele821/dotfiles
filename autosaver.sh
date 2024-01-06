@@ -319,7 +319,7 @@ function save_action(){
                     [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${file}" "${backup}"
                 elif  [[ "${BACK_ACT}" == "y" ]] ; then
                     [[ "${FILE}" != "y" ]] && ask_user "Do you really want to create original file" && copy_file "${backup}" "${file}"
-                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${backup}" "${file}"
+                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to restore file" && copy_file "${backup}" "${file}"
                 fi
             fi
         done
