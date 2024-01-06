@@ -200,6 +200,17 @@ function list_tracked_files(){
     done < "${CONFIG_FILES[0]}" | sort -u
 }
 
+function parse_all(){
+    case "${@}" in
+        save) parse_options "-svycp";;
+        restore) parse_options "-bvy";;
+        init) parse_options "-iy";;
+        edit) parse_options "-e";;
+        help) parse_options "-h";;
+        *) parse_options "${@}";;
+    esac
+}
+
 # parse options
 function parse_options(){
     while getopts ':bcdehipsvy' OPTION; do
@@ -240,18 +251,25 @@ home directory, and to backup init script files to be
 execute on a fresh reinstall of the current OS
 
 Flag Options:
-- d     shows diffs
-- y     tries to always answer yes to all interactions
-- v     show verbose output
+- d         shows diffs
+- y         tries to always answer yes to all interactions
+- v         show verbose output
 
 Action Options (only one is accepted!):
-- b     restores backup files
-- c     commits changes
-- e     edits config files
-- h     shows help message
-- i     runs init scripts
-- p     push commits to remote
-- s     saves files 
+- b         restores backup files
+- c         commits changes
+- e         edits config files
+- h         shows help message
+- i         runs init scripts
+- p         push commits to remote
+- s         saves files 
+
+Shortcuts:
+save        saves all files, commits and pushes
+restore     restores current backup
+edit        edit config files
+help        show this help message
+init        run all initialization scripts
         "
 }
 
@@ -346,6 +364,6 @@ function save_action(){
 
 ### ACTUAL EXECUTION ###
 git_check_branch
-parse_options "${@}"
+parse_all "${@}"
 execute_action
 exit 0
