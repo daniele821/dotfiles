@@ -358,14 +358,22 @@ function save_action(){
             
             # actions if files are different
             if [[ "${CHNG}" == "y" ]]; then
+                # print file name
                 clr_file "${file}"
-                    if [[ "${FILE}" != "y" ]] ; then
-                        [[ "${VERB_OPT}" == "y" ]] && clr_none " : original file is missing"
-                    elif [[ "${BACK}" != "y" ]] ; then
-                        [[ "${VERB_OPT}" == "y" ]] && clr_none " : backup file is missing"
-                    else
-                        [[ "${VERB_OPT}" == "y" ]] && clr_none " : original and backup do differ"
-                    fi
+
+                # verbose explanation
+                if [[ "${VERB_OPT}" == "y" ]]; then
+                    [[ "${FILE}" != "y" ]] && clr_none " : original file is missing"
+                    [[ "${BACK}" != "y" ]] && clr_none " : backup file is missing"
+                    [[ "${DIFF}" == "y" ]] && clr_none " : original and backup do differ"
+                fi
+                echo
+
+                # show diff
+                if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
+                    [[ "${SAVE_ACT}" == "y" ]] && diff --color "${backup}" "${file}"
+                    [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
+                fi
             fi
         done
     fi
