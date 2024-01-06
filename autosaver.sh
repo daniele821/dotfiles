@@ -171,7 +171,7 @@ function list_tracked_files(){
     [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
         if [[ -n "${line}" ]] ; then
             file=${HOME}/${line}
-            backup="${DIRS[0]}"
+            backup="${DIRS[0]}${file}"
             if [[ -f "${file}" || -f "${backup}" ]]; then
                 echo "${file}";
             fi
