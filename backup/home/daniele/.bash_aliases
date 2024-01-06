@@ -46,7 +46,7 @@ alias clear='printf "\033[2J\033[3J\033[1;1H"'
 alias cd='check_zoxide'
 alias zc='clear_zoxide'
 alias zd='clear_zoxide_interactive'
-# alias autosaver='~/.personal/repos/mine/dotfiles/autosaver.sh'
+alias autosaver='~/.personal/repos/mine/dotfiles/autosaver.sh'
 alias update='sudo apt update ; sudo apt upgrade -y ; rustup update'
 unalias l
 
