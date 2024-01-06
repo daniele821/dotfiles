@@ -24,6 +24,7 @@ CONFIG_FILES=(
     "${DIRS[2]}/files_to_track.txt"
     "${DIRS[2]}/init_scripts.txt"
 )
+OUTPUT="/dev/null"
 
 
 ### FLAGS ###
@@ -77,11 +78,11 @@ function copy_file(){
 }
 function edit_file(){
     ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
-    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &>/dev/null
-    rmdir "$(dirname "${1}")" &>/dev/null
+    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &> "${OUTPUT}"
+    rmdir "$(dirname "${1}")" &> "${OUTPUT}"
 }
 function read_file(){
-    cat "${1}" 2>/dev/null
+    cat "${1}" 2> "${OUTPUT}"
 }
 
 
@@ -96,7 +97,7 @@ function git_check_branch(){
 # make the necessary git check, if any fails exit script
 function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
-    GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2>/dev/null | awk '{print $1}')"
+    GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2> "${OUTPUT}" | awk '{print $1}')"
     [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
 
     # checks and exit if current branch is not whitelisted
@@ -120,27 +121,10 @@ function git_fix_user(){
     done
 }
 
-# fix git status output to list full paths instead
-function git_status(){
-    git -C "${SCRIPT_DIR}" status -s | awk '{print $2}'
-}
-
-# convert git status files to full path
-function git_status_show(){
-    git -C "${SCRIPT_DIR}" add . &>/dev/null
-    git_status | while read -r file; do
-        clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
-        [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
-        echo
-        [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
-    done
-    git -C "${SCRIPT_DIR}" restore --staged . &>/dev/null
-}
-
 # pull from remote
 function git_pull(){
     FAIL="0"
-    while ! git -C "${SCRIPT_DIR}" pull &>/dev/null; do
+    while ! git -C "${SCRIPT_DIR}" pull &> "${OUTPUT}"; do
         clr_warn "git pull failed! Retrying...\n";
         sleep 1;
         FAIL=$(( FAIL + 1 )) 
@@ -152,7 +136,7 @@ function git_pull(){
 # push to remote
 function git_push(){
     FAIL="0"
-    while ! git -C "${SCRIPT_DIR}" push &>/dev/null; do
+    while ! git -C "${SCRIPT_DIR}" push &> "${OUTPUT}"; do
         clr_warn "git push failed! Retrying...\n";
         sleep 1;
         FAIL=$(( FAIL + 1 )) 
@@ -200,9 +184,20 @@ function list_tracked_files(){
     done < "${CONFIG_FILES[0]}" | sort -u
 }
 
+function parse_all(){
+    case "${@}" in
+        save) parse_options "-svycp";;
+        restore) parse_options "-bvy";;
+        init) parse_options "-iy";;
+        edit) parse_options "-e";;
+        help) parse_options "-h";;
+        *) parse_options "${@}";;
+    esac
+}
+
 # parse options
 function parse_options(){
-    while getopts ':bcdehipsvy' OPTION; do
+    while getopts ':bcdehiopsvy' OPTION; do
         case "${OPTION}" in
             b) store_action "s"; BACK_ACT="y" ;;
             c) store_action "s"; COMM_ACT="y" ;;
@@ -210,6 +205,7 @@ function parse_options(){
             e) store_action "e" ;;
             h) store_action "h" ;;
             i) store_action "i" ;;
+            o) OUTPUT="/dev/tty" ;;
             p) store_action "s"; PUSH_ACT="y" ;;
             s) store_action "s"; SAVE_ACT="y" ;;
             v) VERB_OPT="y" ;;
@@ -240,18 +236,26 @@ home directory, and to backup init script files to be
 execute on a fresh reinstall of the current OS
 
 Flag Options:
-- d     shows diffs
-- y     tries to always answer yes to all interactions
-- v     show verbose output
+- d         shows diffs
+- y         tries to always answer yes to all interactions
+- v         show verbose output
 
 Action Options (only one is accepted!):
-- b     restores backup files
-- c     commits changes
-- e     edits config files
-- h     shows help message
-- i     runs init scripts
-- p     push commits to remote
-- s     saves files 
+- b         restores backup files
+- c         commits changes
+- e         edits config files
+- h         shows help message
+- i         runs init scripts
+- o         output everything (debug)
+- p         push commits to remote
+- s         saves files 
+
+Shortcuts:
+save        saves all files, commits and pushes
+restore     restores current backup
+edit        edit config files
+help        show this help message
+init        run all initialization scripts
         "
 }
 
@@ -289,28 +293,25 @@ function save_action(){
             FILE="n"; [[ -f "${file}" ]] && FILE="y"
             BOTH="n"; [[ "${FILE}" == "y" && "${BACK}" == "y" ]] && BOTH="y"
             MISS="n"; [[ "${BOTH}" != "y" ]] && [[ "${FILE}" == "y" || "${BACK}" == "y" ]] && MISS="y"
-            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &>/dev/null && DIFF="y"
+            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &> "${OUTPUT}" "y"
             CHNG="n"; [[ "${MISS}" == "y" || "${DIFF}" == "y" ]] && CHNG="y"
             
             # actions if files are different
             if [[ "${CHNG}" == "y" ]]; then
                 # print file name
                 clr_file_full "${file}"
-
                 # verbose explanation
                 if [[ "${VERB_OPT}" == "y" ]]; then
                     [[ "${FILE}" != "y" ]] && clr_none " : original file is missing"
                     [[ "${BACK}" != "y" ]] && clr_none " : backup file is missing"
                     [[ "${DIFF}" == "y" ]] && clr_none " : original and backup do differ"
                 fi
-                echo
-
+                clr_none "\n"
                 # show diff
                 if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
                     [[ "${SAVE_ACT}" == "y" ]] && diff --color "${backup}" "${file}"
                     [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
                 fi
-
                 # save / restore
                 if [[ "${SAVE_ACT}" == "y" ]] ; then
                     [[ "${FILE}" != "y" ]] && ask_user "Do you really want to delete backup file" && rm "${backup}"
@@ -329,13 +330,23 @@ function save_action(){
 
     ## commit ##
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
-        git_status_show
+        # show status
+        git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
+        git -C "${SCRIPT_DIR}" status -s | awk '{print $2}' | while read -r file; do
+            clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
+            [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
+            echo
+            [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
+        done
+        git -C "${SCRIPT_DIR}" restore --staged . &> "${OUTPUT}"
+
+        # do commit
         if ask_user "Do you really want to commit everything"; then
-            git -C "${SCRIPT_DIR}" add . &>/dev/null
+            git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
             clr_message "Insert commit name: " 
             read -r answer
             [[ -z "${answer}" ]] && clr_err_quit "invalid commit name!"
-            git -C "${SCRIPT_DIR}" commit -m "${answer}" &>/dev/null
+            git -C "${SCRIPT_DIR}" commit -m "${answer}" &> "${OUTPUT}"
         fi
     fi
 
@@ -346,6 +357,6 @@ function save_action(){
 
 ### ACTUAL EXECUTION ###
 git_check_branch
-parse_options "${@}"
+parse_all "${@}"
 execute_action
 exit 0
