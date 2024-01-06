@@ -188,7 +188,7 @@ function list_tracked_files(){
 
 # change user branch
 function config_branch(){
-    if [[ -z "${@:2}" ]] ; then
+    if [[ -z "${*:2}" ]] ; then
         rm "${USER_CONFIG_FILES[0]}" &> "${OUTPUT}"
         clr_success "whitelisted branch set to ''\n"
     else
@@ -202,7 +202,7 @@ function config_branch(){
 function switch_branch(){
     [[ -n "$(git -C "${SCRIPT_DIR}" status -s )" ]] && clr_err_quit "cannot switch branch: current one has unsaved work!"
     git -C "${SCRIPT_DIR}" switch "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
-    clr_success "switched to whitelisted branch!\n"
+    clr_success "switched to ('$(read_file "${USER_CONFIG_FILES[0]}")') \n"
 }
 
 # parse_options wrapper which try parsing shortcuts before
