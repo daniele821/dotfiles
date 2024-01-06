@@ -25,7 +25,7 @@ CONFIG_FILES=(
     "${DIRS[2]}/init_scripts.txt"
 )
 OUTPUT="/dev/null"
-EDITOR="nvim"; nvim --version &>/dev/null || EDITOR="vim"; vim --version &>/dev/null || EDITOR="nano"
+EDITOR="nvim";
 
 
 ### FLAGS ###
