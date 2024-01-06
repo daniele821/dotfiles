@@ -12,23 +12,16 @@
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 DIRS=(
-    # backup files
     "${SCRIPT_DIR}/backup"
-    # config files
     "${SCRIPT_DIR}/userconfig"
-    # config files
     "${SCRIPT_DIR}/config"
-    # init scripts
     "${SCRIPT_DIR}/init"
 )
 USER_CONFIG_FILES=(
-    # branch on which all actions are allowed
     "${DIRS[1]}/whitelisted_branch.txt"
 )
 CONFIG_FILES=(
-    # list of files to be tracked
     "${DIRS[2]}/files_to_track.txt"
-    # list of init scripts
     "${DIRS[2]}/init_scripts.txt"
 )
 
@@ -46,106 +39,47 @@ ACTION=""       # ' '/s/e/i/h   (none/save/edit/init/help)
 
 
 ### COLOR FUNCTIONS ###
-# no color
-# args:
-# 1: message
 function clr_none(){
     echo -e "${1}\c"
 }
-
-# color question
-# args:
-# 1: message
 function clr_message(){
     echo -e "\e[1;33m${1}\e[m\c"
 }
-
-# color file path 
-# args:
-# 1: file full path
 function clr_file(){
     clr_file_full "$(dirbasename "${1}")"
 }
-
-# color file path as is
-# args:
-# 1: file full path
 function clr_file_full(){
     echo -e "\e[1;36m${1}\e[m\c"
 }
-
-# color file path 
-# args:
-# 1: file name
-function clr_file(){
-    echo -e "\e[1;36m$(dirbasename "${1}")\e[m\c"
-}
-
-# color successful message
-# args
-# 1: successfull message
 function clr_success(){
     echo -e "\e[1;32m${1}\e[m\c"
 }
-
-# color warning message
-# args:
-# 1: warning message
 function clr_warn(){
     echo -e "\e[1;33mWARNING:\e[m ${1}\c"
 }
-
-# color error message
-# args:
-# 1: error message
 function clr_err(){
     echo -e "\e[1;31mERROR:\e[m ${1}\c"
 }
-
-# color error message and quit
-# args:
-# 1: error message
 function clr_err_quit(){
     clr_err "${1}\n"
     exit 1
 }
 
-
 ### FILESYSTEM FUNCTIONS ###
-# full path to dir-name/file-name
-# args:
-# 1: file full path
 function dirbasename(){
     echo "$(basename "$(dirname "${1}")")/$(basename "${1}")"
 }
-
-# create empty file
-# args:
-# 1: file full path
 function touch_file(){
     mkdir -p "$(dirname "${1}")" && touch "${1}"
 }
-
-# copy files to target destination
-# args:
-# 1: source file full path
-# 2: target full path
 function copy_file(){
     mkdir -p "$(dirname "${2}")" && cp "${1}" "${2}"
 }
-
-# edit file
-# args:
-# 1:file full path
 function edit_file(){
     ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
     [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &>/dev/null
     rmdir "$(dirname "${1}")" &>/dev/null
 }
-
-# read from file
-# args:
-# 1: file full path
 function read_file(){
     cat "${1}" 2>/dev/null
 }
@@ -230,9 +164,6 @@ function git_push(){
 
 ### UTILITY FUNCTIONS ###
 # ask user confermation
-# args:
-# 1: question
-# 2: file name
 function ask_user(){
    clr_message "${1} " 
    [[ -n "${2}" ]] && clr_file "${2} " 
@@ -243,8 +174,6 @@ function ask_user(){
 }
 
 # store action to execute
-# args:
-# 1: action to execute
 function store_action(){
     [[ -n "${ACTION}" && "${ACTION}" != "${1}" ]] && clr_err_quit "cannot execute multiple actions!"
     ACTION="${1}"
