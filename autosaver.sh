@@ -198,6 +198,13 @@ function config_branch(){
     fi
 }
 
+# switch to whitelisted branch
+function switch_branch(){
+    [[ -n "$(git -C "${SCRIPT_DIR}" status -s )" ]] && clr_err_quit "cannot switch branch: current one has unsaved work!"
+    git -C "${SCRIPT_DIR}" switch "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
+    clr_success "switched to whitelisted branch!\n"
+}
+
 # parse_options wrapper which try parsing shortcuts before
 function parse_all(){
     case "${1}" in
@@ -207,6 +214,7 @@ function parse_all(){
         edit) parse_options "-e";;
         help) parse_options "-h";;
         branch) config_branch "${@}"; exit 0;;
+        switch) switch_branch; exit 0;; 
         *) parse_options "${@}";;
     esac
 }
@@ -252,26 +260,28 @@ home directory, and to backup init script files to be
 execute on a fresh reinstall of the current OS
 
 Flag Options:
-- d         shows diffs
-- y         tries to always answer yes to all interactions
-- v         show verbose output
+- d             shows diffs
+- y             tries to always answer yes to all interactions
+- v             show verbose output
 
 Action Options (only one is accepted!):
-- b         restores backup files
-- c         commits changes
-- e         edits config files
-- h         shows help message
-- i         runs init scripts
-- o         output everything (debug)
-- p         push commits to remote
-- s         saves files 
+- b             restores backup files
+- c             commits changes
+- e             edits config files
+- h             shows help message
+- i             runs init scripts
+- o             output everything (debug)
+- p             push commits to remote
+- s             saves files 
 
 Shortcuts:
-save        saves all files, commits and pushes
-restore     restores current backup
-edit        edit config files
-help        show this help message
-init        run all initialization scripts
+save            saves all files, commits and pushes
+restore         restores current backup
+edit            edit config files
+help            show this help message
+init            run all initialization scripts
+branch [name]   change whitelisted branch to [name]
+switch          switch to whitelisted branch (if possible)
         "
 }
 
