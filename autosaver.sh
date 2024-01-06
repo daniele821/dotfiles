@@ -255,7 +255,9 @@ function list_tracked_files(){
                 find "${file}" -type f
             fi
             if [[ -d "${backup}" ]]; then
-                find "${backup}" -type f | cut -c "${#DIRS[0]}}"-
+                find "${backup}" -type f | while read -r tmp; do
+                    echo "${tmp:${#DIRS[0]}}"
+                done
             fi
         fi
     done < "${CONFIG_FILES[0]}" | sort -u
@@ -359,7 +361,7 @@ function save_action(){
             # actions if files are different
             if [[ "${CHNG}" == "y" ]]; then
                 # print file name
-                clr_file "${file}"
+                clr_file_full "${file}"
 
                 # verbose explanation
                 if [[ "${VERB_OPT}" == "y" ]]; then
