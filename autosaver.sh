@@ -29,15 +29,16 @@ EDITOR="nvim"; nvim --version &>/dev/null || EDITOR="vim"; vim --version &>/dev/
 
 
 ### FLAGS ###
-ON_BRANCH="n"   # n/y           (no/yes)
-YEAH_OPT="n"    # n/y           (no/yes)
-VERB_OPT="n"    # n/y           (no/yes)
-DIFF_OPT="n"    # n/y           (no/yes)
-COMM_ACT="n"    # n/y           (no/yes)
-PUSH_ACT="n"    # n/y           (no/yes)
-SAVE_ACT="n"    # n/y           (no/yes)
-BACK_ACT="n"    # n/y           (no/yes)
-ACTION=""       # ' '/s/e/i/h   (none/save/edit/init/help)
+ON_BRANCH="n"   # n/y               (no/yes)
+YEAH_OPT="n"    # n/y               (no/yes)
+VERB_OPT="n"    # n/y               (no/yes)
+DIFF_OPT="n"    # n/y               (no/yes)
+COMM_ACT="n"    # n/y               (no/yes)
+PUSH_ACT="n"    # n/y               (no/yes)
+SAVE_ACT="n"    # n/y               (no/yes)
+BACK_ACT="n"    # n/y               (no/yes)
+ACTION=""       # ' '/s/e/g/i/h/w   (none/save/edit/gotobranch/init/help/whitelistbranch)
+WHITELIST=""
 
 
 ### COLOR FUNCTIONS ###
@@ -188,12 +189,12 @@ function list_tracked_files(){
 
 # change user branch
 function config_branch(){
-    if [[ -z "${*:2}" ]] ; then
+    if [[ -z "${*}" ]] ; then
         rm "${USER_CONFIG_FILES[0]}" &> "${OUTPUT}"
         clr_success "whitelisted branch set to ''\n"
     else
         touch_file "${USER_CONFIG_FILES[0]}"
-        echo "${@:2}" > "${USER_CONFIG_FILES[0]}"
+        echo "${*}" > "${USER_CONFIG_FILES[0]}"
         clr_success "whitelisted branch set to '$(read_file "${USER_CONFIG_FILES[0]}")'\n"
     fi
 }
@@ -201,8 +202,9 @@ function config_branch(){
 # switch to whitelisted branch
 function switch_branch(){
     [[ -n "$(git -C "${SCRIPT_DIR}" status -s )" ]] && clr_err_quit "cannot switch branch: current one has unsaved work!"
-    git -C "${SCRIPT_DIR}" switch "$(read_file "${USER_CONFIG_FILES[0]}")" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
-    clr_success "switched to '$(read_file "${USER_CONFIG_FILES[0]}")'\n"
+    SWITCH="$(read_file "${USER_CONFIG_FILES[0]}")"
+    git -C "${SCRIPT_DIR}" switch "${SWITCH}" &> "${OUTPUT}" || clr_err_quit "switching branch failed!"
+    clr_success "switched to '${SWITCH}'\n"
 }
 
 # parse_options wrapper which try parsing shortcuts before
@@ -213,26 +215,28 @@ function parse_all(){
         init) parse_options "-iy";;
         edit) parse_options "-e";;
         help) parse_options "-h";;
-        branch) config_branch "${@}"; exit 0;;
-        switch) switch_branch; exit 0;; 
+        branch) parse_options "-w ${*:2}";;
+        switch) parse_options "-g";; 
         *) parse_options "${@}";;
     esac
 }
 
 # parse options
 function parse_options(){
-    while getopts ':bcdehiopsvy' OPTION; do
+    while getopts ':bcdeghiopsvw:y' OPTION; do
         case "${OPTION}" in
             b) store_action "s"; BACK_ACT="y" ;;
             c) store_action "s"; COMM_ACT="y" ;;
             d) DIFF_OPT="y" ;;
             e) store_action "e" ;;
+            g) store_action "g" ;;
             h) store_action "h" ;;
             i) store_action "i" ;;
             o) OUTPUT="/dev/tty" ;;
             p) store_action "s"; PUSH_ACT="y" ;;
             s) store_action "s"; SAVE_ACT="y" ;;
             v) VERB_OPT="y" ;;
+            w) store_action "w"; WHITELIST="${OPTARG}" ;;
             y) YEAH_OPT="y" ;;
             *) clr_err_quit "-${OPTARG} is an invalid option!" ;;
         esac
@@ -243,9 +247,11 @@ function parse_options(){
 function execute_action(){
     case "${ACTION}" in
         e) edit_files;;
+        g) switch_branch;;
         h) help_msg;;
         i) git_checks_quit; run_init ;;
         s|"") git_checks_quit; save_action ;;
+        w) config_branch "${WHITELIST}";;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
 }
