@@ -81,6 +81,7 @@ function edit_file(){
     ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && "${EDITOR}" "${1}" < /dev/tty
     [[ -z "$(read_file "${1}" | xargs -0 2>"${OUTPUT}")" ]] && rm "${1}" &> "${OUTPUT}"
     rmdir "$(dirname "${1}")" &> "${OUTPUT}"
+    [[ "${2}" == "exec" ]] && chmod +x "${1}" &> "${OUTPUT}"
 }
 function read_file(){
     cat "${1}" 2> "${OUTPUT}"
@@ -266,7 +267,7 @@ function run_init(){
         file="${DIRS[3]}/${script}"
         if [[ -f "${file}" ]] && ask_user "Do you really want to execute" "${file}"; then
             chmod +x "${file}"
-            "${file}" || clr_err_quit "init script failed!"
+            "${file}" </dev/tty || clr_err_quit "init script failed!"
         fi
     done < "${CONFIG_FILES[1]}"
 }
@@ -276,7 +277,7 @@ function edit_files(){
     for file in "${USER_CONFIG_FILES[@]}"; do edit_file "${file}"; done
     if [[ "${ON_BRANCH}" == "y" ]]; then
         for file in "${CONFIG_FILES[@]}"; do edit_file "${file}"; done
-        [[ -f "${CONFIG_FILES[1]}" ]] && while read -r filename; do edit_file "${DIRS[3]}/${filename}"; done < "${CONFIG_FILES[1]}"
+        [[ -f "${CONFIG_FILES[1]}" ]] && while read -r filename; do edit_file "${DIRS[3]}/${filename}" "exec"; done < "${CONFIG_FILES[1]}"
     fi
 }
 
