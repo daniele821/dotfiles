@@ -343,7 +343,7 @@ function save_action(){
                 clr_none "\n"
                 # show diff
                 if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
-                    [[ "${SAVE_ACT}" == "y" ]] && diff --color "${backup}" "${file}"
+                    [[ "${SAVE_ACT}" == "y" || -z "${ACTION}" ]] && diff --color "${backup}" "${file}"
                     [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
                 fi
                 # save / restore
