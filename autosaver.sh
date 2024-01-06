@@ -126,6 +126,14 @@ function touch_file(){
     mkdir -p "$(dirname "${1}")" && touch "${1}"
 }
 
+# copy files to target destination
+# args:
+# 1: source file full path
+# 2: target full path
+function copy_file(){
+    mkdir -p "$(dirname "${2}")" && cp "${1}" "${2}"
+}
+
 # edit file
 # args:
 # 1:file full path
@@ -343,9 +351,6 @@ function save_action(){
     # checks
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
 
-    ## no actions, just show changed files ##
-    [[ -z "${ACTION}" ]] && git_status_show
-
     ## save/restore/no action ##
     if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}" ]]; then
         list_tracked_files | while read -r file; do
@@ -375,6 +380,16 @@ function save_action(){
                 if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
                     [[ "${SAVE_ACT}" == "y" ]] && diff --color "${backup}" "${file}"
                     [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
+                fi
+
+                # save / restore
+                if [[ "${SAVE_ACT}" == "y" ]] ; then
+                    [[ "${FILE}" != "y" ]] && ask_user "Do you really want to delete backup file" && rm "${backup}"
+                    [[ "${BACK}" != "y" ]] && ask_user "Do you really want to create backup file" && copy_file "${file}" "${backup}"
+                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${file}" "${backup}"
+                elif  [[ "${BACK_ACT}" == "y" ]] ; then
+                    [[ "${FILE}" != "y" ]] && ask_user "Do you really want to create original file" && copy_file "${backup}" "${file}"
+                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${backup}" "${file}"
                 fi
             fi
         done
