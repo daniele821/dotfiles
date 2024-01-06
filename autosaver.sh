@@ -120,23 +120,6 @@ function git_fix_user(){
     done
 }
 
-# fix git status output to list full paths instead
-function git_status(){
-    git -C "${SCRIPT_DIR}" status -s | awk '{print $2}'
-}
-
-# convert git status files to full path
-function git_status_show(){
-    git -C "${SCRIPT_DIR}" add . &>/dev/null
-    git_status | while read -r file; do
-        clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
-        [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
-        echo
-        [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
-    done
-    git -C "${SCRIPT_DIR}" restore --staged . &>/dev/null
-}
-
 # pull from remote
 function git_pull(){
     FAIL="0"
@@ -314,21 +297,18 @@ function save_action(){
             if [[ "${CHNG}" == "y" ]]; then
                 # print file name
                 clr_file_full "${file}"
-
                 # verbose explanation
                 if [[ "${VERB_OPT}" == "y" ]]; then
                     [[ "${FILE}" != "y" ]] && clr_none " : original file is missing"
                     [[ "${BACK}" != "y" ]] && clr_none " : backup file is missing"
                     [[ "${DIFF}" == "y" ]] && clr_none " : original and backup do differ"
                 fi
-                echo
-
+                clr_none "\n"
                 # show diff
                 if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
                     [[ "${SAVE_ACT}" == "y" ]] && diff --color "${backup}" "${file}"
                     [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
                 fi
-
                 # save / restore
                 if [[ "${SAVE_ACT}" == "y" ]] ; then
                     [[ "${FILE}" != "y" ]] && ask_user "Do you really want to delete backup file" && rm "${backup}"
@@ -347,7 +327,17 @@ function save_action(){
 
     ## commit ##
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
-        git_status_show
+        # show status
+        git -C "${SCRIPT_DIR}" add . &>/dev/null
+        git -C "${SCRIPT_DIR}" status -s | awk '{print $2}' | while read -r file; do
+            clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
+            [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
+            echo
+            [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
+        done
+        git -C "${SCRIPT_DIR}" restore --staged . &>/dev/null
+
+        # do commit
         if ask_user "Do you really want to commit everything"; then
             git -C "${SCRIPT_DIR}" add . &>/dev/null
             clr_message "Insert commit name: " 
