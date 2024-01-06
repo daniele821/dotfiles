@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/unclutter-xfixes --timeout 4 --ignore-scrolling
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Hide Mouse Cursor
+Name=Hide Mouse Cursor
+Comment[en_US]=Hide mouse cursor after a short period of inactivity
+Comment=Hide mouse cursor after a short period of inactivity
+
