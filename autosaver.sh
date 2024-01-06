@@ -24,6 +24,7 @@ CONFIG_FILES=(
     "${DIRS[2]}/files_to_track.txt"
     "${DIRS[2]}/init_scripts.txt"
 )
+OUTPUT="/dev/null"
 
 
 ### FLAGS ###
@@ -77,11 +78,11 @@ function copy_file(){
 }
 function edit_file(){
     ask_user "Do you really want to edit" "${1}" && touch_file "${1}" && editor "${1}" < /dev/tty
-    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &>/dev/null
-    rmdir "$(dirname "${1}")" &>/dev/null
+    [[ -z "$(read_file "${1}" | xargs)" ]] && rm "${1}" &> "${OUTPUT}"
+    rmdir "$(dirname "${1}")" &> "${OUTPUT}"
 }
 function read_file(){
-    cat "${1}" 2>/dev/null
+    cat "${1}" 2> "${OUTPUT}"
 }
 
 
@@ -96,7 +97,7 @@ function git_check_branch(){
 # make the necessary git check, if any fails exit script
 function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
-    GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2>/dev/null | awk '{print $1}')"
+    GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2> "${OUTPUT}" | awk '{print $1}')"
     [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
 
     # checks and exit if current branch is not whitelisted
@@ -123,7 +124,7 @@ function git_fix_user(){
 # pull from remote
 function git_pull(){
     FAIL="0"
-    while ! git -C "${SCRIPT_DIR}" pull &>/dev/null; do
+    while ! git -C "${SCRIPT_DIR}" pull &> "${OUTPUT}"; do
         clr_warn "git pull failed! Retrying...\n";
         sleep 1;
         FAIL=$(( FAIL + 1 )) 
@@ -135,7 +136,7 @@ function git_pull(){
 # push to remote
 function git_push(){
     FAIL="0"
-    while ! git -C "${SCRIPT_DIR}" push &>/dev/null; do
+    while ! git -C "${SCRIPT_DIR}" push &> "${OUTPUT}"; do
         clr_warn "git push failed! Retrying...\n";
         sleep 1;
         FAIL=$(( FAIL + 1 )) 
@@ -196,7 +197,7 @@ function parse_all(){
 
 # parse options
 function parse_options(){
-    while getopts ':bcdehipsvy' OPTION; do
+    while getopts ':bcdehiopsvy' OPTION; do
         case "${OPTION}" in
             b) store_action "s"; BACK_ACT="y" ;;
             c) store_action "s"; COMM_ACT="y" ;;
@@ -204,6 +205,7 @@ function parse_options(){
             e) store_action "e" ;;
             h) store_action "h" ;;
             i) store_action "i" ;;
+            o) OUTPUT="/dev/tty" ;;
             p) store_action "s"; PUSH_ACT="y" ;;
             s) store_action "s"; SAVE_ACT="y" ;;
             v) VERB_OPT="y" ;;
@@ -244,6 +246,7 @@ Action Options (only one is accepted!):
 - e         edits config files
 - h         shows help message
 - i         runs init scripts
+- o         output everything (debug)
 - p         push commits to remote
 - s         saves files 
 
@@ -290,7 +293,7 @@ function save_action(){
             FILE="n"; [[ -f "${file}" ]] && FILE="y"
             BOTH="n"; [[ "${FILE}" == "y" && "${BACK}" == "y" ]] && BOTH="y"
             MISS="n"; [[ "${BOTH}" != "y" ]] && [[ "${FILE}" == "y" || "${BACK}" == "y" ]] && MISS="y"
-            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &>/dev/null && DIFF="y"
+            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &> "${OUTPUT}" "y"
             CHNG="n"; [[ "${MISS}" == "y" || "${DIFF}" == "y" ]] && CHNG="y"
             
             # actions if files are different
@@ -328,22 +331,22 @@ function save_action(){
     ## commit ##
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
         # show status
-        git -C "${SCRIPT_DIR}" add . &>/dev/null
+        git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
         git -C "${SCRIPT_DIR}" status -s | awk '{print $2}' | while read -r file; do
             clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
             [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
             echo
             [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
         done
-        git -C "${SCRIPT_DIR}" restore --staged . &>/dev/null
+        git -C "${SCRIPT_DIR}" restore --staged . &> "${OUTPUT}"
 
         # do commit
         if ask_user "Do you really want to commit everything"; then
-            git -C "${SCRIPT_DIR}" add . &>/dev/null
+            git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
             clr_message "Insert commit name: " 
             read -r answer
             [[ -z "${answer}" ]] && clr_err_quit "invalid commit name!"
-            git -C "${SCRIPT_DIR}" commit -m "${answer}" &>/dev/null
+            git -C "${SCRIPT_DIR}" commit -m "${answer}" &> "${OUTPUT}"
         fi
     fi
 
