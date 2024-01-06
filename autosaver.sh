@@ -103,7 +103,7 @@ function git_checks_quit(){
     [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
 
     # checks and exit if current branch is not whitelisted
-    [[ "${ON_BRANCH}" != "y" ]] && clr_err_quit "the current branch is not whitelisted!"
+    [[ "${ON_BRANCH}" != "y" ]] && clr_err_quit "the current branch '${CURRENT}' is not whitelisted! Try again on '${WHITELISTED}'"
 }
 
 # check if user name and email are valid, otherwise force user to fix them
@@ -186,13 +186,27 @@ function list_tracked_files(){
     done < "${CONFIG_FILES[0]}" | sort -u
 }
 
+# change user branch
+function config_branch(){
+    if [[ -z "${@:2}" ]] ; then
+        rm "${USER_CONFIG_FILES[0]}" &> "${OUTPUT}"
+        clr_success "whitelisted branch set to ''\n"
+    else
+        touch_file "${USER_CONFIG_FILES[0]}"
+        echo "${@:2}" > "${USER_CONFIG_FILES[0]}"
+        clr_success "whitelisted branch set to '$(read_file "${USER_CONFIG_FILES[0]}")'\n"
+    fi
+}
+
+# parse_options wrapper which try parsing shortcuts before
 function parse_all(){
-    case "${@}" in
+    case "${1}" in
         save) parse_options "-svycp";;
         restore) parse_options "-bvy";;
         init) parse_options "-iy";;
         edit) parse_options "-e";;
         help) parse_options "-h";;
+        branch) config_branch "${@}"; exit 0;;
         *) parse_options "${@}";;
     esac
 }
