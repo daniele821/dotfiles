@@ -1,4 +1,4 @@
 apt-packages.sh
-pop-colors.sh
 local-init.sh
+pop-colors.sh
 optional-init.sh
