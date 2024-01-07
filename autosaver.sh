@@ -100,8 +100,7 @@ function git_check_branch(){
 # make the necessary git check, if any fails exit script
 function git_checks_quit(){
     # check and exits if git repo is empty (ie: no commits)
-    GIT_OBJECTS="$(git -C "${SCRIPT_DIR}" count-objects 2> "${OUTPUT}" | awk '{print $1}')"
-    [[ "${GIT_OBJECTS}" -gt "0" ]] || clr_err_quit "this git repo is empty!"
+    git -C "${SCRIPT_DIR}" log -1 --oneline &> "${OUTPUT}" || clr_err_quit "this git repo is empty!"
 
     # checks and exit if current branch is not whitelisted
     [[ "${ON_BRANCH}" != "y" ]] && clr_err_quit "the current branch '${CURRENT}' is not whitelisted! Try again on '${WHITELISTED}'"
