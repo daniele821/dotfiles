@@ -333,6 +333,7 @@ function save_action(){
             # actions if files are different
             if [[ "${CHNG}" == "y" ]]; then
                 # print file name
+                [[ "${DIFF_OPT}" == "y" ]] && clr_none "-----------------------------------------\n"
                 clr_file_full "${file}"
                 # verbose explanation
                 if [[ "${VERB_OPT}" == "y" ]]; then
@@ -374,6 +375,7 @@ function save_action(){
         git -C "${SCRIPT_DIR}" restore --staged . &> "${OUTPUT}"
 
         while read -r file; do
+            [[ "${DIFF_OPT}" == "y" ]] && clr_none "-----------------------------------------\n"
             clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
             [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
             echo
