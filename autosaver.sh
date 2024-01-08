@@ -316,10 +316,12 @@ function edit_files(){
 function save_action(){
     # checks
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
-    [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}"  || "${COMM_ACT}" == "y" ]] && git_checks_quit
 
     ## save/restore/no action ##
     if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}" ]]; then
+        # check
+        git_checks_quit
+
         list_tracked_files | while read -r file; do
             # temporary flags
             backup="${DIRS[0]}${file}"
