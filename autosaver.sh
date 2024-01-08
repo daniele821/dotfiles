@@ -248,7 +248,7 @@ function execute_action(){
         g) switch_branch;;
         h) help_msg;;
         i) git_checks_quit; run_init ;;
-        s|"") git_checks_quit; save_action ;;
+        s|"") git_fix_user; git_checks_quit; save_action ;;
         w) config_branch "${WHITELIST}";;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
