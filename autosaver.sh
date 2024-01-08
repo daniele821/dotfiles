@@ -167,22 +167,23 @@ function store_action(){
 
 # list tracked files 
 function list_tracked_files(){
-    LEN="$(( ${#DIRS[0]} + 1 ))"
-    [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
-        if [[ -n "${line}" ]] ; then
-            file=${HOME}/${line}
-            backup="${DIRS[0]}${file}"
-            if [[ -f "${file}" || -f "${backup}" ]]; then
-                echo "${file}";
-            fi
-            if [[ -d "${file}" ]]; then
-                find "${file}" -type f
-            fi
-            if [[ -d "${backup}" ]]; then
-                find "${backup}" -type f | cut -c "${LEN}"-
-            fi
+    {
+        if [[ -d "${DIRS[0]}" ]]; then
+            LEN="$(( ${#DIRS[0]} + 1 ))"
+            find "${DIRS[0]}" -type f | cut -c "${LEN}"-
         fi
-    done < "${CONFIG_FILES[0]}" | sort -u
+        [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
+            if [[ -n "${line}" ]] ; then
+                file=${HOME}/${line}
+                backup="${DIRS[0]}${file}"
+                if [[ -f "${file}" ]]; then
+                    echo "${file}";
+                elif [[ -d "${file}" ]]; then
+                    find "${file}" -type f
+                fi
+            fi
+        done < "${CONFIG_FILES[0]}"
+    } | sort -u
 }
 
 # change user branch
