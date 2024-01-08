@@ -213,7 +213,7 @@ function parse_all(){
         init) parse_options "-iy";;
         edit) parse_options "-e";;
         help) parse_options "-h";;
-        branch) parse_options "-w ${*:2}";;
+        branch) parse_options "-w" "${*:2}";;
         switch) parse_options "-g";; 
         *) parse_options "${@}";;
     esac
