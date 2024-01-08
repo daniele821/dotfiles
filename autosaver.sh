@@ -248,7 +248,7 @@ function execute_action(){
         g) switch_branch;;
         h) help_msg;;
         i) git_checks_quit; run_init ;;
-        s|"") git_fix_user; git_checks_quit; save_action ;;
+        s|"") save_action ;;
         w) config_branch "${WHITELIST}";;
         *) clr_err_quit "${ACTION} not a valid action!";;
     esac
@@ -315,6 +315,7 @@ function edit_files(){
 function save_action(){
     # checks
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
+    [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}"  || "${COMM_ACT}" == "y" ]] && git_checks_quit
 
     ## save/restore/no action ##
     if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}" ]]; then
@@ -362,6 +363,9 @@ function save_action(){
 
     ## commit ##
     if [[ "${COMM_ACT}" == "y" ]] && [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] ; then
+        # checks
+        git_fix_user
+
         # show status
         git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
         git -C "${SCRIPT_DIR}" status -s | awk '{print $2}' | while read -r file; do
