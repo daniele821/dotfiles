@@ -22,4 +22,3 @@
 .local/share/backgrounds
 .config/autostart
 .config/kitty
-.personal/data/backups

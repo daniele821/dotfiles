@@ -11,6 +11,7 @@ $jobs\
 $character"""
 
 add_newline = false
+command_timeout = 10
 
 [directory]
 truncation_length = 3
