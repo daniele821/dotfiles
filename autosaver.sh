@@ -376,7 +376,7 @@ function save_action(){
         git -C "${SCRIPT_DIR}" status -s | while read -r status file; do
             [[ "${DIFF_OPT}" == "y" ]] && clr_none "\n-----------------------------------------\n"
             clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
-            [[ "${VERB_OPT}" == "y" ]] && clr_none " : not commited yet"
+            [[ "${VERB_OPT}" == "y" ]] && clr_none " : to be commited (${status})"
             echo
             [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
         done 
