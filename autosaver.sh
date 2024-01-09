@@ -25,7 +25,7 @@ CONFIG_FILES=(
     "${DIRS[2]}/init_scripts.txt"
 )
 OUTPUT="/dev/null"
-EDITOR="nvim";
+EDITOR="nvim"
 
 
 ### FLAGS ###
@@ -169,17 +169,17 @@ function store_action(){
 function list_tracked_files(){
     {
         if [[ -d "${DIRS[0]}" ]]; then
-            LEN="$(( ${#DIRS[0]} + 1 ))"
-            find "${DIRS[0]}" -type f | cut -c "${LEN}"-
+            cd "${DIRS[0]}" && find . -type f | cut -c 3-
         fi
+        HOME_LEN="$(( "${#HOME}" + 2 ))"
         [[ -f "${CONFIG_FILES[0]}" ]] && while read -r line || [[ -n "${line}" ]]; do
             if [[ -n "${line}" ]] ; then
                 file=${HOME}/${line}
                 backup="${DIRS[0]}${file}"
                 if [[ -f "${file}" ]]; then
-                    echo "${file}";
+                    echo "${line}";
                 elif [[ -d "${file}" ]]; then
-                    find "${file}" -type f
+                    find "${file}" -type f | cut -c "${HOME_LEN}"-
                 fi
             fi
         done < "${CONFIG_FILES[0]}"
@@ -324,19 +324,20 @@ function save_action(){
 
         list_tracked_files | while read -r file; do
             # temporary flags
-            backup="${DIRS[0]}${file}"
+            backup="${DIRS[0]}/${file}"
+            original="${HOME}/${file}"
             BACK="n"; [[ -f "${backup}" ]] && BACK="y"
-            FILE="n"; [[ -f "${file}" ]] && FILE="y"
+            FILE="n"; [[ -f "${original}" ]] && FILE="y"
             BOTH="n"; [[ "${FILE}" == "y" && "${BACK}" == "y" ]] && BOTH="y"
             MISS="n"; [[ "${BOTH}" != "y" ]] && [[ "${FILE}" == "y" || "${BACK}" == "y" ]] && MISS="y"
-            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${file}" &> "${OUTPUT}" && DIFF="y"
+            DIFF="n"; [[ "${BOTH}" == "y" ]] && ! diff -q "${backup}" "${original}" &> "${OUTPUT}" && DIFF="y"
             CHNG="n"; [[ "${MISS}" == "y" || "${DIFF}" == "y" ]] && CHNG="y"
             
             # actions if files are different
             if [[ "${CHNG}" == "y" ]]; then
                 # print file name
                 [[ "${DIFF_OPT}" == "y" ]] && clr_none "\n-----------------------------------------\n"
-                clr_file_full "${file}"
+                clr_file_full "${original}"
                 # verbose explanation
                 if [[ "${VERB_OPT}" == "y" ]]; then
                     [[ "${FILE}" != "y" ]] && clr_none " : original file is missing"
@@ -346,17 +347,17 @@ function save_action(){
                 clr_none "\n"
                 # show diff
                 if [[ "${DIFF_OPT}" == "y" && "${DIFF}" == "y" ]]; then
-                    [[ "${SAVE_ACT}" == "y" || -z "${ACTION}" ]] && diff --color "${backup}" "${file}"
-                    [[ "${BACK_ACT}" == "y" ]] && diff --color "${file}" "${backup}"
+                    [[ "${SAVE_ACT}" == "y" || -z "${ACTION}" ]] && diff --color "${backup}" "${original}"
+                    [[ "${BACK_ACT}" == "y" ]] && diff --color "${original}" "${backup}"
                 fi
                 # save / restore
                 if [[ "${SAVE_ACT}" == "y" ]] ; then
                     [[ "${FILE}" != "y" ]] && ask_user "Do you really want to delete backup file" && rm "${backup}"
-                    [[ "${BACK}" != "y" ]] && ask_user "Do you really want to create backup file" && copy_file "${file}" "${backup}"
-                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${file}" "${backup}"
+                    [[ "${BACK}" != "y" ]] && ask_user "Do you really want to create backup file" && copy_file "${original}" "${backup}"
+                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to save file" && copy_file "${original}" "${backup}"
                 elif  [[ "${BACK_ACT}" == "y" ]] ; then
-                    [[ "${FILE}" != "y" ]] && ask_user "Do you really want to create original file" && copy_file "${backup}" "${file}"
-                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to restore file" && copy_file "${backup}" "${file}"
+                    [[ "${FILE}" != "y" ]] && ask_user "Do you really want to create original file" && copy_file "${backup}" "${original}"
+                    [[ "${DIFF}" == "y" ]] && ask_user "Do you really want to restore file" && copy_file "${original}" "${original}"
                 fi
             fi
         done
@@ -373,7 +374,7 @@ function save_action(){
         # show status
         tmp="$(mktemp)"
         git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
-        git -C "${SCRIPT_DIR}" status -s | awk '{print $2}' > "${tmp}"
+        git -C "${SCRIPT_DIR}" status -s --porcelain | awk '{print $2}' > "${tmp}"
         git -C "${SCRIPT_DIR}" restore --staged . &> "${OUTPUT}"
 
         while read -r file; do
