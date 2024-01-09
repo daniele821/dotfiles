@@ -377,7 +377,7 @@ function save_action(){
 
         # show status
         git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}" &> "${OUTPUT}"
-        git -C "${SCRIPT_DIR}" status -s | while read -r status file; do
+        git -C "${SCRIPT_DIR}" status -s | while read -r status file other; do
             [[ "${DIFF_OPT}" == "y" ]] && clr_none "\n-----------------------------------------\n"
             clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
             [[ "${VERB_OPT}" == "y" ]] && clr_none " : to be commited (${status})"
