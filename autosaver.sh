@@ -97,13 +97,16 @@ function git_check_branch(){
     [[ "${CURRENT}" == "${WHITELISTED}" ]] && ON_BRANCH="y"
 }
 
-# make the necessary git check, if any fails exit script
-function git_checks_quit(){
-    # check and exits if git repo is empty (ie: no commits)
-    git -C "${SCRIPT_DIR}" log -1 --oneline &> "${OUTPUT}" || clr_err_quit "this git repo is empty!"
-
+# quit if not on whitelisted branch
+function git_branch_quit(){
     # checks and exit if current branch is not whitelisted
     [[ "${ON_BRANCH}" != "y" ]] && clr_err_quit "the current branch '${CURRENT}' is not whitelisted! Try again on '${WHITELISTED}'"
+}
+
+# quit if git has no commits
+function git_empty_quit(){
+    # check and exits if git repo is empty (ie: no commits)
+    git -C "${SCRIPT_DIR}" log -1 --oneline &> "${OUTPUT}" || clr_err_quit "this git repo is empty!"
 }
 
 # check if user name and email are valid, otherwise force user to fix them
@@ -248,7 +251,7 @@ function execute_action(){
         e) edit_files;;
         g) switch_branch;;
         h) help_msg;;
-        i) git_checks_quit; run_init ;;
+        i) git_branch_quit; run_init ;;
         s|"") save_action ;;
         w) config_branch "${WHITELIST}";;
         *) clr_err_quit "${ACTION} not a valid action!";;
@@ -316,11 +319,12 @@ function edit_files(){
 function save_action(){
     # checks
     [[ "${SAVE_ACT}" == "y" && "${BACK_ACT}" == "y" ]] && clr_err_quit "cannot save and restore at once!"
+    [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || "${COMM_ACT}" == "y" || "${PUSH_ACT}" == "y" ]] && git_empty_quit
 
     ## save/restore/no action ##
     if [[ "${SAVE_ACT}" == "y" || "${BACK_ACT}" == "y" || -z "${ACTION}" ]]; then
         # check
-        git_checks_quit
+        git_branch_quit
 
         list_tracked_files | while read -r file; do
             # temporary flags
