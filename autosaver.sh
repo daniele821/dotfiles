@@ -372,7 +372,7 @@ function save_action(){
         git_fix_user
 
         # show status
-        git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
+        git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}" &> "${OUTPUT}"
         git -C "${SCRIPT_DIR}" status -s | while read -r status file; do
             [[ "${DIFF_OPT}" == "y" ]] && clr_none "\n-----------------------------------------\n"
             clr_file_full "$(basename "${SCRIPT_DIR}")/${file}";
@@ -380,11 +380,11 @@ function save_action(){
             echo
             [[ "${DIFF_OPT}" == "y" ]] && git -C "${SCRIPT_DIR}" diff HEAD -- "${file}"
         done 
-        git -C "${SCRIPT_DIR}" restore --staged . &> "${OUTPUT}"
+        git -C "${SCRIPT_DIR}" restore --staged "${SCRIPT_DIR}" &> "${OUTPUT}"
 
         # do commit
         if ask_user "Do you really want to commit everything"; then
-            git -C "${SCRIPT_DIR}" add . &> "${OUTPUT}"
+            git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}" &> "${OUTPUT}"
             clr_message "Insert commit name: " 
             read -r answer
             [[ -z "${answer}" ]] && clr_err_quit "invalid commit name!"
