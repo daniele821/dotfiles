@@ -26,7 +26,6 @@ function zoxide_interactive() {
 alias la='ls -a'
 alias lla='ls -la'
 alias ll='ls -l'
-alias open='xdg-open'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 alias cat='bat'
 alias zd='clear_zoxide_interactive'
