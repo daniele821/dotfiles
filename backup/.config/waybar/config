@@ -1,0 +1,110 @@
+{
+    "layer": "top",
+    "position": "top",
+    "spacing": 0,
+    "height": 0,
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "clock#time",
+        "clock#date",
+    ],
+    "modules-right": [
+        "network",
+        "backlight",
+        "pulseaudio",
+        "battery",
+        "tray",
+    ],
+    "hyprland/workspaces": {
+        "on-click": "activate",
+        "format": "{icon}",
+    },
+    "backlight": {
+        "format": "{percent}% ",
+        "interval": 2,
+        "on-scroll-up": "brightnessctl -q set +5%",
+        "on-scroll-down": "brightnessctl -q set 5%-",
+        "tooltip": false,
+    },
+    "tray": {
+        "spacing": 5,
+        "tooltip": false,
+    },
+    "clock#time": {
+        "interval": 1,
+        "format": "{:%H:%M:%S}  󰥔",
+        "tooltip": false,
+    },
+    "clock#date": {
+        "interval": 10,
+        "format": "{:%e %b %Y}  ",
+        "locale": "en_US.UTF-8",
+        "timezone": "Europe/Warsaw",
+        "tooltip": false,
+    },
+    "network": {
+        "format-wifi" : "{essid} {icon}",
+        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"],
+        "format-ethernet": "Ethernet 󰀂",
+        "format-disconnected" : "Offline 󰖪",
+        "interval": 5,
+        "nospacing": 1,
+        "tooltip": false,
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "󰂰",
+        "nospacing": 1,
+        "format-muted": "Muted 󰝟",
+        "format-icons": {
+            "headphone": "",
+            "default": ["󰖀","󰕾",""]
+        },
+        "on-click": "pamixer -t",
+        "scroll-step": 5,
+        "icon-size":15,
+        "tooltip": false,
+    },
+    "custom/logo": {
+        "format": "  ",
+        "tooltip": false,
+    },
+    "battery": {
+        "format": "{capacity}% {icon}",
+        "format-icons": {
+            "charging": [
+                "󰢜",
+                "󰂆",
+                "󰂇",
+                "󰂈",
+                "󰢝",
+                "󰂉",
+                "󰢞",
+                "󰂊",
+                "󰂋",
+                "󰂅"
+            ],
+            "default": [
+                "󰁺",
+                "󰁻",
+                "󰁼",
+                "󰁽",
+                "󰁾",
+                "󰁿",
+                "󰂀",
+                "󰂁",
+                "󰂂",
+                "󰁹"
+            ]
+        },
+        "format-full": "Charged ",
+        "interval": 5,
+        "states": {
+            "warning": 20,
+            "critical": 10
+        },
+    },
+}

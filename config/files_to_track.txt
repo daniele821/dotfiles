@@ -1,0 +1,17 @@
+// files
+.alias
+.gitconfig
+.vimrc
+.ssh/config
+.local/share/fonts/FiraCode/FiraCode.zip
+.config/gtk-3.0/settings.ini
+.config/starship.toml
+
+// directories
+.config/hypr
+.config/kitty
+.config/rofi
+.config/waybar
+.local/share/backgrounds
+.local/share/rofi/themes
+
