@@ -11,7 +11,6 @@ add_newline = false
 
 [directory]
 truncation_length = 3
-truncate_to_repo = false
 truncation_symbol = "../"
 read_only = ""
 style = "bold cyan"
