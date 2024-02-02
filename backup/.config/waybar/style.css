@@ -47,8 +47,6 @@ window#waybar.hidden {
   background-color: #f38ba8;
 }
 
-#memory,
-#custom-power,
 #battery,
 #backlight,
 #pulseaudio,
@@ -71,18 +69,9 @@ window#waybar.hidden {
   color: #1793d1;
 }
 
-#memory {
-  background-color: #fab387;
-}
-#battery {
-  background-color: #f38ba8;
-}
-@keyframes blink {
-  to {
-    background-color: #f38ba8;
-    color: #181825;
-  }
-}
+/* #battery { */
+/*   background-color: #f38ba8; */
+/* } */
 
 #battery.warning,
 #battery.critical,
@@ -95,7 +84,7 @@ window#waybar.hidden {
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
-#battery.charging {
+#battery{
   background-color: #a6e3a1;
 }
 
@@ -108,13 +97,15 @@ window#waybar.hidden {
 }
 
 #network {
-  background-color: #94e2d5;
-  padding-right: 17px;
+  background-color: #f38ba8;
 }
 
-#clock {
-  font-family: JetBrainsMono Nerd Font;
+#clock.date {
   background-color: #cba6f7;
+}
+
+#clock.time {
+  background-color: #94e2d5;
 }
 
 #custom-power {

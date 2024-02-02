@@ -7,15 +7,13 @@
         "custom/logo",
         "hyprland/workspaces"
     ],
-    "modules-center": [
-        "clock#time",
-        "clock#date",
-    ],
     "modules-right": [
         "network",
         "backlight",
         "pulseaudio",
         "battery",
+        "clock#time",
+        "clock#date",
         "tray",
     ],
     "hyprland/workspaces": {
@@ -35,12 +33,12 @@
     },
     "clock#time": {
         "interval": 1,
-        "format": "{:%H:%M:%S}  󰥔",
+        "format": "{:%H:%M:%S} 󰥔",
         "tooltip": false,
     },
     "clock#date": {
         "interval": 10,
-        "format": "{:%e %b %Y}  ",
+        "format": "{:%d %b %Y} ",
         "locale": "en_US.UTF-8",
         "timezone": "Europe/Warsaw",
         "tooltip": false,
@@ -106,5 +104,6 @@
             "warning": 20,
             "critical": 10
         },
+        "tooltip" : false
     },
 }
