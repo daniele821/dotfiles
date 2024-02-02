@@ -10,8 +10,6 @@
 // directories
 .config/hypr
 .config/kitty
-.config/rofi
 .config/waybar
 .local/share/backgrounds
-.local/share/rofi/themes
 
