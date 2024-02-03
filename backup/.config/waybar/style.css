@@ -53,6 +53,7 @@ window#waybar.hidden {
 #pulseaudio,
 #network,
 #clock,
+#custom-logo,
 #tray {
   border-radius: 4px;
   margin: 6px 3px;
@@ -62,11 +63,7 @@ window#waybar.hidden {
 }
 
 #custom-logo {
-  padding-right: 7px;
-  padding-left: 7px;
-  margin-left: 5px;
-  font-size: 20px;
-  border-radius: 8px 0px 0px 8px;
+  background-color: #1e1e2e;
   color: #1793d1;
 }
 
