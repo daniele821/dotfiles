@@ -20,12 +20,12 @@
         "on-click": "activate",
         "format": "{icon}",
         "format-icons": {
-            "1": "1 term  ",
-            "2": "2 web   ",
-            "3": "3 pdf   ",
-            "4": "4 media ",
-            "5": "5 office",
-            "6": "6 gimp  ",
+            "1": "1 Term  ",
+            "2": "2 Web   ",
+            "3": "3 Pdf   ",
+            "4": "4 Media ",
+            "5": "5 Office",
+            "6": "6 Gimp  ",
         },
     },
     "backlight": {
@@ -62,7 +62,7 @@
     },
     "pulseaudio": {
         "format": "{volume}% {icon}",
-        "format-bluetooth": "󰂰",
+        "format-bluetooth": "{volume}% 󰂰",
         "nospacing": 1,
         "format-muted": "Muted 󰝟",
         "format-icons": {
