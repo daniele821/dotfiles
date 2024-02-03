@@ -24,6 +24,7 @@ OPT_COMM="n"
 OPT_DIFF="n"
 OPT_VERB="n"
 OPT_YES="n"
+OPT_FORCE="n"
 ARG_BRANCH=""
 
 # utility functions
@@ -83,6 +84,7 @@ function save_action(){
         if [[ -f "${file}" && ! -f "${backup}" ]]; then
             echo -en "${CLR_FILE}${file}${CLR_CLEAN}" && [[ "${OPT_VERB}" == "y" ]] && echo -en " : backup file is missing!"; echo
             [[ "${ACTION}" == "s" ]] && ask_user "Do you really want to create backup file"  && copy_file "${file}" "${backup}"
+            [[ "${ACTION}" == "b" && "${OPT_FORCE}" == "y" ]] && ask_user "[DANGER] Do you really want to delete original file" && rm "${file}"
         elif [[ ! -f "${file}" && -f "${backup}" ]]; then
             echo -en "${CLR_FILE}${file}${CLR_CLEAN}" && [[ "${OPT_VERB}" == "y" ]] && echo -en " : original file is missing!"; echo
             [[ "${ACTION}" == "s" ]] && ask_user "Do you really want to delete backup file" && rm "${backup}"
@@ -131,6 +133,7 @@ function help_msg(){
 Flag options:
 - c         commit, pull, push if possible
 - d         show diffs
+- f         forcely allow dangerous operations
 - v         show verbose output
 - y         always answer yes to questions  \n
 Action options:
@@ -162,12 +165,13 @@ function parse(){
     esac
 }
 function parse_options(){
-    while getopts ':bcdeghrsvw:y' OPTION; do
+    while getopts ':bcdefghrsvw:y' OPTION; do
         case "${OPTION}" in 
             b|e|g|h|r|s) ACTION+="${OPTION}";;
             w) ACTION+="${OPTION}"; ARG_BRANCH="${OPTARG}" ;;
             c) OPT_COMM="y" ;;
             d) OPT_DIFF="y" ;;
+            f) OPT_FORCE="y" ;;
             v) OPT_VERB="y" ;;
             y) OPT_YES="y" ;;
             *) echo -e "${CLR_ERROR} flag (-${OPTARG}) is not valid!"; exit 1;;
