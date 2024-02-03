@@ -6,3 +6,4 @@ echo -e "\e[1;33mWARNING:\e[m automatic installation is unstable (thanks package
 
 sudo zypper install --no-confirm hyprland waybar ripgrep kitty neovim vim git lsd starship NetworkManager-applet blueman bat nodejs-common zoxide fzf ShellCheck libnotify
 sudo zypper remove --no-confirm -u gnome-software gnome-shell-classic
+sudo zypper remove --no-confirm sway icewm
