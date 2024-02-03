@@ -68,7 +68,7 @@
         "tooltip": false,
     },
     "custom/logo": {
-        "format": "  ",
+        "format": " 󰂣 ",
         "tooltip": false,
     },
     "battery": {
