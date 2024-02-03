@@ -34,12 +34,12 @@
     },
     "clock#time": {
         "interval": 1,
-        "format": "{:%H:%M:%S} 󰥔",
+        "format": "{:%H:%M:%S}",
         "tooltip": false,
     },
     "clock#date": {
         "interval": 10,
-        "format": "{:%d %b %Y} ",
+        "format": "{:%d %b %Y}",
         "locale": "en_US.UTF-8",
         "timezone": "Europe/Warsaw",
         "tooltip": false,

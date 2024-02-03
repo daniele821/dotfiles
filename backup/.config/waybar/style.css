@@ -3,12 +3,12 @@
   border-radius: 0;
   min-height: 0;
   font-family: FiraCode Nerd Font;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 window#waybar {
   background-color: #181825;
-  /* background-color: transparent; */
+  background-color: transparent;
   transition-property: background-color;
   transition-duration: 0.5s;
 }
@@ -33,19 +33,7 @@ window#waybar.hidden {
 }
 
 #workspaces button.active {
-  color: #1e1e2e;
-  background-color: #cdd6f4;
-}
-
-#workspaces button:hover {
- box-shadow: inherit;
- text-shadow: inherit;
- color: #1e1e2e;
- background-color: #cdd6f4;
-}
-
-#workspaces button.urgent {
-  background-color: #f38ba8;
+  color: #1793d1;
 }
 
 #battery,
@@ -63,7 +51,7 @@ window#waybar.hidden {
 
 #custom-logo {
   background-color: #1e1e2e;
-  color: #1793d1;
+  color: #cdd6f4;
 }
 
 #battery.warning,
@@ -78,27 +66,28 @@ window#waybar.hidden {
   animation-direction: alternate;
 }
 #battery{
-  background-color: #a6e3a1;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #backlight {
-  background-color: #fab387;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #pulseaudio {
-  background-color: #f9e2af;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #clock.date {
-  background-color: #cba6f7;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 #clock.time {
-  background-color: #94e2d5;
-}
-
-#custom-power {
-  background-color: #f2cdcd;
+  background-color: #1e1e2e;
+  color: #cdd6f4;
 }
 
 
