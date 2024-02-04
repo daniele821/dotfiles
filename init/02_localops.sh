@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
