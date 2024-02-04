@@ -6,6 +6,7 @@
 .config/starship.toml
 .local/share/fonts/FiraCode/FiraCode.zip
 .local/share/themes/gtk-master.zip
+.config/gtk-3.0/settings.ini
 
 // directories
 .config/hypr
