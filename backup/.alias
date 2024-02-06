@@ -24,6 +24,9 @@ function zoxide_interactive() {
 function open(){
     nohup xdg-open "${@}" &>/dev/null &
 }
+function run(){
+    nohup "${@}" &>/dev/null &
+}
 
 # aliases
 alias la='ls -a'
