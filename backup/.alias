@@ -38,6 +38,9 @@ alias zd='clear_zoxide_interactive'
 alias cd='zoxide_euristically'
 alias ci='zoxide_interactive'
 
+# fixes
+bind 'set enable-bracketed-paste on'
+
 # operations to do only on terminal emulators (which support nerd fonts)
 if [[ "$(tty)" != /dev/tty* ]]; then
     eval "$(starship init bash)"
