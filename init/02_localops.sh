@@ -3,6 +3,7 @@
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
+"${SCRIPT_DIR}"/../autosaver.sh branch opensuse 
 "${SCRIPT_DIR}"/../autosaver.sh restore
 
 sudo mkdir /personal
