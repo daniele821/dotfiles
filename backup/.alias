@@ -25,9 +25,6 @@ function open(){
     nohup xdg-open "${@}" &>/dev/null &
 }
 function run(){
-    nohup "${@}" &>/dev/null &
-}
-function start(){
     nohup "${@}" &>/dev/null & exit 0
 }
 
