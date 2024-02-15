@@ -27,6 +27,9 @@ function open(){
 function run(){
     nohup "${@}" &>/dev/null &
 }
+function start(){
+    nohup "${@}" &>/dev/null & exit 0
+}
 
 # aliases
 alias la='ls -a'
