@@ -7,5 +7,5 @@ sudo zypper addlock gnome-software gnome-shell-classic sway icewm opensuse-welco
 
 # add packam repo for multimedia codecs and stuff like obs
 sudo zypper addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/' packman
-sudo zypper dist-upgrade --no-confirm --from packman --allow-vendor-change
-sudo zypper install --no-confirm obs-studio
+sudo zypper dist-upgrade --from packman --allow-vendor-change
+sudo zypper install obs-studio
