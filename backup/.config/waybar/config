@@ -5,11 +5,10 @@
     "height": 0,
     "modules-left": [
         "custom/logo",
-        "clock#time",
-        "clock#date",
+        "hyprland/workspaces",
     ],
     "modules-center":[
-        "hyprland/workspaces",
+        "clock#time",
     ],
     "modules-right": [
         "backlight",
@@ -20,14 +19,6 @@
     "hyprland/workspaces": {
         "on-click": "activate",
         "format": "{icon}",
-        //"format-icons": {
-        //    "1": "1 ",
-        //    "2": "2 󰈹",
-        //    "3": "3 ",
-        //    "4": "4 ",
-        //    "5": "5 ",
-        //    "6": "6 ",
-        //},
     },
     "backlight": {
         "format": "{percent}% ",
@@ -42,7 +33,7 @@
     },
     "clock#time": {
         "interval": 1,
-        "format": "{:%H:%M:%S}",
+        "format": "{:%H:%M}",
         "tooltip": false,
     },
     "clock#date": {
