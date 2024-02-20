@@ -44,15 +44,6 @@
         "timezone": "Europe/Warsaw",
         "tooltip": false,
     },
-    "network": {
-        "format-wifi" : "{essid} {icon}",
-        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"],
-        "format-ethernet": "Ethernet 󰀂",
-        "format-disconnected" : "Offline 󰖪",
-        "interval": 5,
-        "nospacing": 1,
-        "tooltip": false,
-    },
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-bluetooth": "{volume}% 󰂰",
@@ -65,7 +56,7 @@
         "on-click": "pamixer -t",
         "scroll-step": 5,
         "icon-size":15,
-        "tooltip": false,
+        "tooltip": true,
     },
     "custom/logo": {
         "format": " 󰂣 ",
@@ -99,12 +90,12 @@
                 "󰁹"
             ]
         },
-        "format-full": "Full ",
+        "format-full": "100% ",
         "interval": 5,
         "states": {
             "warning": 20,
-            "critical": 10
+            "critical": 10,
         },
-        "tooltip" : false
+        "tooltip" : true
     },
 }
