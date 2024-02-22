@@ -21,11 +21,20 @@ function zoxide_interactive() {
     [[ "${CHOISES}" -le "1" ]] && z "$@"
     [[ "${CHOISES}" -gt "1" ]] && zi "$@"
 }
+function __exec_nohupped__(){
+    # nohup last way, if none other works, because it leaves the program running in the background
+    if command -v hyprctl &>/dev/null; then
+        # HACKY ALTERNATIVE 1: using 'hypctl' command from Hyprland wayland compositor
+        hyprctl keyword exec "${@}" &>/dev/null
+    else
+        nohup "${@}" &>/dev/null &
+    fi
+}
 function open(){
-    nohup xdg-open "${@}" &>/dev/null &
+    __exec_nohupped__ "xdg-open" "${@}" 
 }
 function run(){
-    nohup "${@}" &>/dev/null & exit 0
+    __exec_nohupped__ "${@}" 
 }
 
 # aliases
