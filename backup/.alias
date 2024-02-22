@@ -22,13 +22,8 @@ function zoxide_interactive() {
     [[ "${CHOISES}" -gt "1" ]] && zi "$@"
 }
 function __exec_nohupped__(){
-    # nohup last way, if none other works, because it leaves the program running in the background
-    if command -v hyprctl &>/dev/null; then
-        # HACKY ALTERNATIVE 1: using 'hypctl' command from Hyprland wayland compositor
-        hyprctl keyword exec "${@}" &>/dev/null
-    else
-        nohup "${@}" &>/dev/null &
-    fi
+    # TODO: nohup leaves jobs in the bg. find alternatives, and leave nohup as a fallback
+    nohup "${@}" &>/dev/null & 
 }
 function open(){
     __exec_nohupped__ "xdg-open" "${@}" 
