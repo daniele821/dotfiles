@@ -8,7 +8,7 @@
 
 window#waybar {
   background-color: #181825;
-  /* background-color: transparent; */
+  background-color: transparent;
   background-color: #10101f;
   transition-property: background-color;
   transition-duration: 0.5s;
@@ -27,7 +27,7 @@ window#waybar.hidden {
   min-width: 0; /* Fix weird spacing in materia (waybar #450) */
   box-shadow: inset 0 -3px transparent; /* Use box-shadow instead of border so the text isn't offset */
   padding: 2px 12px;
-  margin: 4px 2px;
+  margin: 0px 2px;
   border-radius: 0px;
   background-color: #1e1e2e;
   color: #cdd6f4;
@@ -44,7 +44,7 @@ window#waybar.hidden {
 #custom-logo,
 #tray {
   border-radius: 0px;
-  margin: 4px 2px;
+  margin: 0px 2px;
   padding: 2px 12px;
   background-color: #1e1e2e;
   color: #181825;

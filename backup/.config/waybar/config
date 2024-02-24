@@ -5,11 +5,10 @@
     "height": 0,
     "modules-left": [
         "custom/logo",
-        "clock#time",
-        "clock#date",
+        "hyprland/workspaces",
     ],
     "modules-center":[
-        "hyprland/workspaces",
+        "hyprland/window",
     ],
     "modules-right": [
         "backlight",
