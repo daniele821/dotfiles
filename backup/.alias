@@ -40,6 +40,7 @@ alias cat='bat'
 alias zd='clear_zoxide_interactive'
 alias cd='zoxide_euristically'
 alias ci='zoxide_interactive'
+alias autosaver='/personal/repos/dotfiles/autosaver.sh'
 
 # fixes
 bind 'set enable-bracketed-paste on'
