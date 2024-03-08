@@ -1,0 +1,4 @@
+#!/bin/env bash
+
+echo "INSTALLATION SCRIPTS NOT TESTED. INSTALL MANUALLY"
+exit 1
