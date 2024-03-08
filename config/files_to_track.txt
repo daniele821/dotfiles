@@ -9,3 +9,4 @@
 .config/waybar
 .config/hypr
 .config/kitty
+.local/share/fonts
