@@ -1,0 +1,103 @@
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: FiraCode Nerd Font;
+  font-size: 14px;
+}
+
+window#waybar {
+  background-color: transparent;
+  /* background-color: #10101f; */
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+window#waybar.hidden {
+  opacity: 0.5;
+}
+
+#workspaces {
+  background-color: transparent;
+}
+
+#workspaces button {
+  all: initial; /* Remove GTK theme values (waybar #1351) */
+  min-width: 0; /* Fix weird spacing in materia (waybar #450) */
+  box-shadow: inset 0 -3px transparent; /* Use box-shadow instead of border so the text isn't offset */
+  padding: 2px 12px;
+  margin: 0px 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#workspaces button.active {
+  color: #1793d1;
+}
+
+#battery,
+#backlight,
+#pulseaudio,
+#clock,
+#custom-logo,
+#tray {
+  border-radius: 0px;
+  margin: 0px 0px;
+  padding: 2px 12px;
+  background-color: transparent;
+  color: #181825;
+}
+
+#custom-logo {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#battery.warning,
+#battery.critical,
+#battery.urgent {
+  background-color: transparent;
+  color: #181825;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+#battery{
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#backlight {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#pulseaudio {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#clock.date {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#clock.time {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+
+tooltip {
+border-radius: 8px;
+padding: 15px;
+background-color: #131822;
+}
+
+tooltip label {
+padding: 5px;
+background-color: #131822;
+}

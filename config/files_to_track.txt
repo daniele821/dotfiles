@@ -1,0 +1,11 @@
+// files
+.config/starship.toml
+.gitconfig
+.config/gtk-3.0/settings.ini
+.config/gtk-4.0/settings.ini
+
+// directories
+.bashrc.d
+.config/waybar
+.config/hypr
+.config/kitty
