@@ -12,6 +12,7 @@ curl -sS https://starship.rs/install.sh | sh
 # hyprland stuff
 sudo dnf install waybar hyprland blueman network-manager-applet brightnessctl pamixer polkit-gnome
 sudo dnf remove nwg-panel
+sudo dnf copr enable erikreider/SwayNotificationCenter && sudo dnf install SwayNotificationCenter
 
 sudo dnf update
 sudo dnf autoremove
