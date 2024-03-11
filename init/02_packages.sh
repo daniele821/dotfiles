@@ -14,9 +14,6 @@ sudo dnf install waybar hyprland blueman network-manager-applet brightnessctl pa
 sudo dnf remove nwg-panel
 sudo dnf copr enable erikreider/SwayNotificationCenter && sudo dnf install SwayNotificationCenter
 
-sudo dnf update
-sudo dnf autoremove
-
 # enable rpm-fusion and install multimedia codecs
 sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-39.noarch.rpm 
 sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-39.noarch.rpm  
