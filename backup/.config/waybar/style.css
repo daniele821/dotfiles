@@ -24,8 +24,7 @@ window#waybar.hidden {
 #workspaces button {
   all: initial; /* Remove GTK theme values (waybar #1351) */
   min-width: 0; /* Fix weird spacing in materia (waybar #450) */
-  box-shadow: inset 0 -3px transparent; /* Use box-shadow instead of border so the text isn't offset */
-  padding: 0px 11px;
+  padding: 0px 10px;
   margin: 0px 0px;
   border-radius: 0px;
   background-color: transparent;
@@ -86,6 +85,12 @@ window#waybar.hidden {
 }
 
 #clock.time {
+  background-color: transparent;
+  color: #cdd6f4;
+}
+
+#language {
+  padding: 0px 12px;
   background-color: transparent;
   color: #cdd6f4;
 }

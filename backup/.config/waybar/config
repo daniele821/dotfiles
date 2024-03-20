@@ -4,7 +4,7 @@
     "spacing": 0,
     "height": 0,
     "modules-left": [
-        "custom/logo",
+        "hyprland/language",
         "hyprland/workspaces",
     ],
     "modules-center":[
@@ -30,6 +30,11 @@
     },
     "hyprland/window": {
         "max-length": 100,
+    },
+    "hyprland/language":{
+        "format": "{}",
+        "format-en" : "  US",
+        "format-it" : "  IT",
     },
     "backlight": {
         "format": "{percent}% ",
