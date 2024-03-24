@@ -10,7 +10,7 @@ sudo dnf install zoxide bat ripgrep gnome-tweaks lsd neovim gcc htop
 curl -sS https://starship.rs/install.sh | sh
 
 # hyprland stuff
-sudo dnf install waybar hyprland blueman network-manager-applet brightnessctl pamixer polkit-gnome
+sudo dnf install waybar hyprland blueman network-manager-applet brightnessctl pamixer polkit-gnome swaylock
 sudo dnf remove nwg-panel
 sudo dnf copr enable erikreider/SwayNotificationCenter && sudo dnf install SwayNotificationCenter
 
