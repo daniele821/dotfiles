@@ -20,12 +20,6 @@
     "hyprland/workspaces": {
         "on-click": "activate",
         "format": "{icon}",
-	 	"persistent_workspaces": {
-	 		"1": [],
-	 		"2": [],
-	 		"3": [],
-	 		"4": [],
-		},
     },
     "hyprland/window": {
         "max-length": 100,
