@@ -1,13 +1,14 @@
 #!/bin/env bash
 
-# launch
+### various fixes ###
+unset -f command_not_found_handle
+
+### startup program ###
 eval "$(zoxide init bash)"
 eval "$(starship init bash)"
 
 # config
 export STARSHIP_LOG=error
-
-# functionalities
 function clear_zoxide_interactive(){
     zoxide query -ls | fzf -m | while read -r score path; do
         zoxide remove "${path}";
