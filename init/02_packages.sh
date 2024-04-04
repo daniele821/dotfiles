@@ -7,7 +7,8 @@ sudo dnf --assumeyes upgrade
 # basic stuff
 sudo dnf --assumeyes remove gnome-classic-session gnome-boxes gnome-software cheese gnome-tour gnome-maps yelp rhythmbox simple-scan 
 sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc
-curl -sS https://starship.rs/install.sh | sh
+sudo dnf --assumeyes copr enable atim/starship
+sudo dnf --assumeyes install starship
 
 # enable rpm-fusion and install multimedia codecs
 sudo dnf --assumeyes install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-39.noarch.rpm 
