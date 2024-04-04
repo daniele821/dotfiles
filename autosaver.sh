@@ -128,6 +128,7 @@ Action options:
 - b         restore backup
 - e         edit config, init files
 - h         show help message
+- i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files"
 }
@@ -147,9 +148,9 @@ function parse(){
     esac
 }
 function parse_options(){
-    while getopts ':bcdefhrsvy' OPTION; do
+    while getopts ':bcdefhirsvy' OPTION; do
         case "${OPTION}" in 
-            b|e|h|r|s) ACTION+="${OPTION}";;
+            b|e|h|i|r|s) ACTION+="${OPTION}";;
             c) OPT_COMM="y" ;;
             d) OPT_DIFF="y" ;;
             f) OPT_FORCE="y" ;;
@@ -164,13 +165,13 @@ function execute_action(){
         b|s|"") save_action;;
         e) edit_config;;
         h) help_msg;;
+        i) init_ops;;
         r) run_init;;
         *) echo -e "${CLR_ERROR} multiple actions (-${ACTION}) are not supported!"; exit 1 ;;
     esac
 }
 
 # actual execution
-init_ops
 parse "${@}"
 execute_action
 exit 0
