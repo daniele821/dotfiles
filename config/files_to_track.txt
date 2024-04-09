@@ -7,4 +7,5 @@
 
 // directories
 .bashrc.d
+.config/kitty
 .local/share/fonts
