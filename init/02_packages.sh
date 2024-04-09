@@ -6,7 +6,7 @@ sudo dnf --assumeyes upgrade
 
 # basic stuff
 sudo dnf --assumeyes remove gnome-classic-session gnome-boxes gnome-software cheese gnome-tour gnome-maps yelp rhythmbox simple-scan 
-sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc
+sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc alacritty
 sudo dnf --assumeyes copr enable atim/starship
 sudo dnf --assumeyes install starship
 
