@@ -1,8 +1,11 @@
 [user]
-	useConfigOnly = true
+    useConfigOnly = true
 [init]
-	defaultBranch = main
+    defaultBranch = main
 [core]
-	editor = nvim
+    editor = nvim
 [pager]
-	diff = false
+    diff = false
+[alias]
+    lo = log --oneline --all --graph
+    st = status -s
