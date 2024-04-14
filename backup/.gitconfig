@@ -7,5 +7,5 @@
 [pager]
     diff = false
 [alias]
-    lo = log --oneline --all --graph
+    lo = log --oneline --all --graph -30
     st = status -s
