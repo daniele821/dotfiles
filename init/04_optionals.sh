@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 function ask_user(){
-    echo -n "${@} [Y/n] ? "
+    echo -n "${*} [Y/n] ? "
     read -r answer </dev/tty
     [[ "${answer,,}" == 'y' ]]
 }
