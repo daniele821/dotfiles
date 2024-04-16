@@ -20,7 +20,6 @@ OPT_DIFF="n"
 OPT_VERB="n"
 OPT_YES="n"
 OPT_FORCE="n"
-ARG_BRANCH=""
 
 # utility functions
 function print_line(){
