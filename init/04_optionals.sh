@@ -38,12 +38,13 @@ function db_main() {
 fi
 
 if ! [[ -d '/personal/exe/anaconda' ]] && ask_user 'Do you want to install anaconda [warning: potentially dangerous]'; then
-    TMP_FILE="$(mktemp)"
+    # ANACONDA FOR SOME FUCKING REASON CHECKS THE FUCKING FILE EXTENSION. WHO WROTE THIS SHIT?
+    TMP_FILE="$(mktemp /tmp/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.sh)"
     curl -Z 'https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh' > "${TMP_FILE}" || exit 1
-    chmod +x ./"${TMP_FILE}"
+    chmod +x "${TMP_FILE}"
     echo -e 'WARNING: install anaconda in /personal/exe/anaconda or auto install will break;\nPress enter to continue...'
-    read -r _
-    "${TMP_FILE}" </dev/tty
+    read -r _ </dev/tty
+    bash "${TMP_FILE}" </dev/tty
 # shellcheck disable=SC2016
     echo '
 # anaconda
