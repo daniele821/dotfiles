@@ -32,8 +32,7 @@ function dbm() {
 }
 function db_main() {
 	dbm && "${DB_MAIN_BIN}"/db_main "${@}"
-}
-' >> "$HOME/.bashrc"
+}' >> "$HOME/.bashrc"
     rm "${FILE}"
 fi
 
@@ -44,7 +43,7 @@ if ! [[ -d '/personal/exe/anaconda' ]] && ask_user 'Do you want to install anaco
     chmod +x "${TMP_FILE}"
     echo -e 'WARNING: install anaconda in /personal/exe/anaconda or auto install will break;\nPress enter to continue...'
     read -r _ </dev/tty
-    bash "${TMP_FILE}" </dev/tty
+    "${TMP_FILE}" </dev/tty
 # shellcheck disable=SC2016
     echo '
 # anaconda
@@ -55,7 +54,6 @@ function epe() {
 }
 function jupyter-lab() {
 	epe && "${ANACONDA_BIN}"/jupyter-lab
-}
-' >> "$HOME/.bashrc"
+} ' >> "$HOME/.bashrc"
     rm "${TMP_FILE}" 
 fi
