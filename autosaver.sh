@@ -20,7 +20,6 @@ OPT_DIFF="n"
 OPT_VERB="n"
 OPT_YES="n"
 OPT_FORCE="n"
-ARG_BRANCH=""
 
 # utility functions
 function print_line(){
@@ -89,7 +88,7 @@ function save_action(){
     done
     ### COMMIT ###
     if [[ "${OPT_COMM}" == "y" ]]; then
-        [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" pull -q
+        [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" pull 
         git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}"
         git -C "${SCRIPT_DIR}" status -su | while read -r status file; do
             [[ "${OPT_DIFF}" == "y" ]] && diff="$( [[ -n "$(git -C "${SCRIPT_DIR}" diff HEAD --diff-filter=adcr -- "${file}")" ]] && echo y)"
@@ -103,17 +102,17 @@ function save_action(){
         git -C "${SCRIPT_DIR}" restore --staged "${SCRIPT_DIR}"
         [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] && case "${ACTION}" in
             b)  if ask_user "Do you really want to restore all"; then
-                    git -C "${SCRIPT_DIR}" restore "${SCRIPT_DIR}" -q
+                    git -C "${SCRIPT_DIR}" restore "${SCRIPT_DIR}"
                     git -C "${SCRIPT_DIR}" clean -fq
                 fi ;;
             s)  if ask_user "Do you really want to commit all"; then
                     git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}"
                     echo -en "${CLR_MSG}Write commit message: ${CLR_CLEAN}"
                     read -r msg </dev/tty
-                    git -C "${SCRIPT_DIR}" commit -m "${msg}" -q
+                    git -C "${SCRIPT_DIR}" commit -m "${msg}"
                 fi ;;
         esac
-        [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" push -q
+        [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" push
     fi
 }
 function help_msg(){
