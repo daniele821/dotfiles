@@ -26,7 +26,9 @@ if  ! [[ -d '/personal/exe/dbmain' ]] && ask_user 'Do you want to install dbmain
         mv "${TMP_FILE}" "${FILE}"
         tar -xzf "${FILE}"
         # necessary dependency
-        sudo dnf install gtk2
+        { 
+            sudo dnf --assumeyes install gtk2 
+        } </dev/tty 
         # shellcheck disable=SC2016
         echo '
 # dbmain
