@@ -42,6 +42,7 @@ function db_main() {
     fi
 fi
 
+# install anaconda
 if ! [[ -d '/personal/exe/anaconda' ]] && ask_user 'Do you want to install anaconda [warning: potentially dangerous]'; then
     if ! [[ -d '/personal/exe' ]]; then
         echo 'you need to create /personal/exe directory to install anaconda'
