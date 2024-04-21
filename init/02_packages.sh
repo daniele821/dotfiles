@@ -6,7 +6,7 @@ sudo dnf --assumeyes upgrade
 
 # basic stuff
 sudo dnf --assumeyes remove gnome-classic-session gnome-boxes gnome-software cheese gnome-tour gnome-maps yelp rhythmbox simple-scan gnome-characters gnome-font-viewer gnome-weather gnome-text-editor gnome-logs gnome-contacts gnome-connections gnome-abrt mediawriter gnome-shell-extension*
-sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc libreoffice libreoffice-langpack-it
+sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc libreoffice-langpack-it
 sudo dnf --assumeyes copr enable atim/starship
 sudo dnf --assumeyes install starship
 
