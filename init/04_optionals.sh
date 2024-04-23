@@ -13,6 +13,14 @@ if ask_user 'Do you want to restore all backup files'; then
     "${SCRIPT_DIR}/../autosaver.sh" restore
 fi
 
+# create ssh keys for github
+if ask_user 'Do you really want to create new ssh keys?'; then
+    USERS=(daniele821 danix1234)
+    for user in "${USERS[@]}"; do
+        ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
+    done
+fi
+
 # install dbmain 
 if  ! [[ -d '/personal/exe/dbmain' ]] && ask_user 'Do you want to install dbmain [warning: potentially dangerous]' ; then
     if ! [[ -d '/personal/exe' ]]; then
