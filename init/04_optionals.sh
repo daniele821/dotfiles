@@ -21,6 +21,12 @@ if ask_user 'Do you really want to create new ssh keys?'; then
     done
 fi
 
+# install extension manager with flatpak
+if ask_user 'Do you really want to install extension manager app?'; then
+    sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak install flathub com.mattjakeman.ExtensionManager -y
+fi
+
 # install dbmain 
 if  ! [[ -d '/personal/exe/dbmain' ]] && ask_user 'Do you want to install dbmain [warning: potentially dangerous]' ; then
     if ! [[ -d '/personal/exe' ]]; then
