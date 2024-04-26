@@ -1,13 +1,11 @@
 #!/bin/env bash
 
 ### various fixes ###
-unset -f command_not_found_handle
 function blastoff(){
     git status -s &>/dev/null
 }
 export starship_precmd_user_func="blastoff"
 export STARSHIP_LOG=error
-export HISTCONTROL=ignoredups
 
 ### startup program ###
 eval "$(zoxide init bash)"

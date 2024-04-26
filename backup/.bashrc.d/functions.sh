@@ -9,3 +9,6 @@ function open(){
 function run(){
     __exec_nohupped__ "${@}" 
 }
+
+unset -f command_not_found_handle
+

@@ -76,7 +76,6 @@ if ! [[ -d '/personal/exe/anaconda' ]] && ask_user 'Do you want to install anaco
 function epe() {
 	export ANACONDA_BIN=/personal/exe/anaconda/bin
 	eval "$("${ANACONDA_BIN}"/conda shell.bash hook)"
-	export PYTHONDONTWRITEBYTECODE="true"
 }
 function jupyter-lab() {
 	epe && "${ANACONDA_BIN}"/jupyter-lab
