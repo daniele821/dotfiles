@@ -93,7 +93,10 @@ if ! command -v mysql-workbench &>/dev/null && ask_user 'Do you want to install 
     sudo dnf --assumeyes install mysql-community-server # may fail
 
     # install mysql workbench
-    # mysql workbench needs to be installed separately
+    cd "$(mktemp -d)" || exit 1
+    wget 'https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community-8.0.36-1.fc38.x86_64.rpm'
+    sudo dnf --assumeyes install ./mysql-work*.rpm
+    sudo dnf --assumeyes install mysql-workbench
 
     # configs
     sudo systemctl start mysqld
