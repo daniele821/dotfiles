@@ -83,3 +83,22 @@ function jupyter-lab() {
         rm "${TMP_FILE}" 
     fi
 fi
+
+# install mysql-workbench
+if ! command -v mysql-workbench &>/dev/null && ask_user 'Do you want to install mysql-workbench [warning: EXPERIMENTAL]'; then
+    # install mysql backend
+    cd "$(mktemp -d)" || exit 1
+    wget 'https://dev.mysql.com/get/mysql84-community-release-fc40-1.noarch.rpm' 
+    sudo dnf --assumeyes install ./mysql*.rpm 
+    sudo dnf --assumeyes install mysql-community-server # may fail
+
+    # install mysql workbench
+    # mysql workbench needs to be installed separately
+
+    # configs
+    sudo systemctl start mysqld
+    sudo systemctl enable mysqld
+    echo 'this is the temporary mysql password (copy it to change it)'
+    sudo grep 'temporary password' /var/log/mysqld.log
+    sudo mysql_secure_installation
+fi
