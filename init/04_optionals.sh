@@ -105,3 +105,9 @@ if ! command -v mysql-workbench &>/dev/null && ask_user 'Do you want to install 
     sudo grep 'temporary password' /var/log/mysqld.log
     sudo mysql_secure_installation
 fi
+
+# install wireshark
+if ! command -v wireshark &>/dev/null && ask_user 'Do you want to install wireshark'; then
+    sudo dnf --assumeyes install wireshark
+    sudo usermod -a -G wireshark daniele
+fi
