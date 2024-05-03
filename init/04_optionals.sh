@@ -17,8 +17,8 @@ fi
 if ask_user 'Do you really want to create new ssh keys?'; then
     USERS=(daniele821 danix1234)
     for user in "${USERS[@]}"; do
-        ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
-    done
+        ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" 
+    done </dev/tty
 fi
 
 # install extension manager with flatpak
