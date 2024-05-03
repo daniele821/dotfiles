@@ -11,24 +11,24 @@ if ask_user 'Do you want to restore all backup files'; then
     SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
     SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
     "${SCRIPT_DIR}/../autosaver.sh" restore
-fi
+fi </dev/tty
 
 # create ssh keys for github
 if ask_user 'Do you really want to create new ssh keys?'; then
     USERS=(daniele821 danix1234)
     for user in "${USERS[@]}"; do
         ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" 
-    done </dev/tty
-fi
+    done 
+fi </dev/tty
 
 # install extension manager with flatpak
 if ask_user 'Do you really want to install extension manager app?'; then
     sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     flatpak install flathub com.mattjakeman.ExtensionManager -y
-fi
+fi </dev/tty
 
 # install wireshark
-if ! command -v wireshark &>/dev/null && ask_user 'Do you want to install wireshark'; then
+if ask_user 'Do you want to install wireshark'; then
     sudo dnf --assumeyes install wireshark
     sudo usermod -a -G wireshark daniele
-fi
+fi </dev/tty
