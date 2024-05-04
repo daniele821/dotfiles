@@ -30,5 +30,5 @@ fi </dev/tty
 # install wireshark
 if ask_user 'Do you want to install wireshark'; then
     sudo dnf --assumeyes install wireshark
-    sudo usermod -a -G wireshark daniele
+    sudo usermod -a -G wireshark "${USER}"
 fi </dev/tty
