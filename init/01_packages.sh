@@ -5,7 +5,7 @@
 sudo dnf --assumeyes upgrade
 
 # basic stuff
-sudo dnf --assumeyes remove gnome-classic-session gnome-boxes 
+sudo dnf --assumeyes remove gnome-classic-session gnome-boxes gnome-tour
 sudo dnf --assumeyes install zoxide bat ripgrep gnome-tweaks lsd neovim gcc libreoffice-langpack-it
 sudo dnf --assumeyes copr enable atim/starship
 sudo dnf --assumeyes install starship
