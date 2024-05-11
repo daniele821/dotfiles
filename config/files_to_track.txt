@@ -1,0 +1,8 @@
+//files
+.config/starship.toml
+.gitconfig
+.ssh/config
+
+// directories
+.bashrc.d
+.local/share/fonts
