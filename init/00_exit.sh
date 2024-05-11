@@ -1,10 +1,7 @@
 #!/bin/env bash
 
-echo "Warning: installation scripts not tested. install manually"
-echo "Warning: to avoid problems with dnf, you should upgrade from gnome-software before running these scripts"
+echo "Warning: automatic installation may fail, doing these operations manually is recommended"
 echo -n "Do you still wish to proceed [y/n]? " 
 read -r answer </dev/tty
-echo "${answer}"
-[[ "${answer,,:0:1}" != "y" ]] && exit 1
-exit 0
+[[ "${answer,,:0:1}" == "y" ]]
 

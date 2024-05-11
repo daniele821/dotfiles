@@ -31,5 +31,7 @@ fi </dev/tty
 # copy data from usb
 [ -d "${DATA_DIR}" ] && if ask_user 'Do you really want to copy data from USB drive'; then
     dir="$(zenity --file-selection --directory 2>/dev/null)"
-    cp -r "${dir}" "${DATA_DIR}/"
+    [[ -d "${dir}" ]] && cp -r "${dir}" "${DATA_DIR}/"
 fi </dev/tty
+
+exit 0
