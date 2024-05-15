@@ -28,4 +28,10 @@ if ask_user 'Do you really want to create new ssh keys'; then
     done 
 fi </dev/tty
 
+# install wireeshark and make it work for current user
+if ask_user "Do you really want to install and setup wireshark"; then
+    sudo dnf --assumeyes install wireshark
+    sudo usermod -a -G wireshark "${USER}"
+fi </dev/tty
+
 exit 0
