@@ -6,4 +6,3 @@ read -r answer </dev/tty
 [[ "${answer,,:0:1}" != "y" ]] && exit 0
 echo 'max_parallel_downloads=10
 fastestmirror=True' | sudo tee -a /etc/dnf/dnf.conf
-
