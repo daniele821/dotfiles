@@ -3,6 +3,13 @@
 {
 	### upgrade everything ###
 	sudo dnf --assumeyes upgrade
+    
+    # uninstall kde bloat
+    sudo dnf --assumeyes remove plasma-discover plasma-welcome plasma-vault
+    sudo dnf --assumeyes remove kaddressbook kontact kde-connect kgpg ktnef kmines 
+    sudo dnf --assumeyes remove kmahjongg kmail kmousetool kwalletmanager krdc kmouth 
+    sudo dnf --assumeyes remove akregator gnome-abrt dragon elisa-player neochat krdc 
+    sudo dnf --assumeyes remove korganizer krfb khelpcenter skanpage kpat kfind 
 
 	# install neovim and goodies
 	sudo dnf --assumeyes install neovim gcc fd-find ripgrep
