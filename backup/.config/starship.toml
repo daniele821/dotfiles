@@ -1,4 +1,5 @@
 format = """
+$container\
 $directory\
 $fossil_branch\
 $fossil_metrics\
@@ -15,7 +16,6 @@ $env_var\
 $sudo\
 $jobs\
 $status\
-$container\
 $character"""
 
 add_newline = false
