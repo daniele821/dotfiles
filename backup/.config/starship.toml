@@ -15,6 +15,7 @@ $env_var\
 $sudo\
 $jobs\
 $status\
+$container\
 $character"""
 
 add_newline = false
