@@ -34,4 +34,9 @@ if ask_user "Do you really want to install and setup wireshark"; then
 	sudo usermod -a -G wireshark "${USER}"
 fi </dev/tty
 
+# install distrobox (absolute gem of a program!)
+if ask_user "Do you really want to install distrobox"; then
+	sudo dnf --assumeyes install distrobox
+fi </dev/tty
+
 exit 0
