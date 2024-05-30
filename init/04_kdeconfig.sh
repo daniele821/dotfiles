@@ -17,6 +17,8 @@ kwriteconfig6 --file ~/.config/okularpartrc --group 'General' --key 'ShellOpenFi
 # configure konsole
 kwriteconfig6 --file ~/.config/konsolerc --group 'KonsoleWindow' --key 'RememberWindowSize' --type bool false
 kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllTabs' --type bool true
+kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllEmptyTabs' --type bool true
+# TODO: konsole nerd font profile
 
 # apply all changes
 systemctl --user restart plasma-plasmashell
