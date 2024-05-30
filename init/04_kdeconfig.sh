@@ -14,5 +14,9 @@ kwriteconfig6 --file ~/.config/okularpartrc --group 'Core General' --key 'ObeyDR
 kwriteconfig6 --file ~/.config/okularpartrc --group 'Core Performance' --key 'MemoryLevel' 'Greedy'
 kwriteconfig6 --file ~/.config/okularpartrc --group 'General' --key 'ShellOpenFileInTabs' --type bool true
 
+# configure konsole
+kwriteconfig6 --file ~/.config/konsolerc --group 'KonsoleWindow' --key 'RememberWindowSize' --type bool false
+kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllTabs' --type bool true
+
 # apply all changes
 systemctl --user restart plasma-plasmashell
