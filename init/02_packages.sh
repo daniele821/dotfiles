@@ -11,15 +11,18 @@
 	### upgrade everything ###
 	sudo dnf --assumeyes upgrade
 
-	# install neovim and goodies
+	# install neovim and dependecies
 	sudo dnf --assumeyes install neovim gcc fd-find ripgrep
 
-	# install some nice terminal cli tools
+	# install some nice tools (necessary for full bash personalized experience)
 	sudo dnf --assumeyes install zoxide bat lsd
 	sudo dnf --assumeyes copr enable atim/starship
 	sudo dnf --assumeyes install starship
 
-	# other
+	# install more (not strictly necessary) cli tools
+	sudo dnf --assumeyes install tldr
+
+	# install more (not strictly necessary) not cli tools
 	sudo dnf --assumeyes install libreoffice-langpack-it
 
 	### remove unnecessary packages ###
