@@ -52,3 +52,15 @@ if [[ "${answer,,:0:1}" == "y" ]]; then
 	SCREEN="$(kscreen-doctor -j | jq '.outputs[0].name' 2>/dev/null)"
 	kscreen-doctor output."${SCREEN:1:-1}".scale.1
 fi
+
+### set font to balance shrinkg display scale
+echo "Warning: changing fonts size to 12 to balance shrunk monitor scale"
+echo -n "Do you still wish to proceed [y/n]? "
+read -r answer </dev/tty
+if [[ "${answer,,:0:1}" == "y" ]]; then
+	kwriteconfig6 --file ~/.config/kdeglobals --group 'General' --key 'font' 'Noto Sans,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'
+	kwriteconfig6 --file ~/.config/kdeglobals --group 'General' --key 'menuFont' 'Noto Sans,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'
+	kwriteconfig6 --file ~/.config/kdeglobals --group 'General' --key 'smallestReadableFont' 'Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'
+	kwriteconfig6 --file ~/.config/kdeglobals --group 'General' --key 'toolBarFont' 'Noto Sans,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'
+	kwriteconfig6 --file ~/.config/kdeglobals --group 'WM' --key 'activeFont' 'Noto Sans,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'
+fi
