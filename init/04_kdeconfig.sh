@@ -28,6 +28,11 @@ kwriteconfig6 --file ~/.config/kwinrc --group 'ModifierOnlyShortcuts' --key 'Met
 kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Active' --type bool true
 kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Mode' 'Constant'
 kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'NightTemperature' '3500'
+kwriteconfig6 --file ~/.config/kwinrc --group 'org.kde.kdecoration2' --key 'BorderSizeAuto' --type bool false
+
+# configure battery
+kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'BatteryLowLevel' '30'
+kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'BatteryCriticalLevel' '15'
 
 # apply all changes
 systemctl --user restart plasma-plasmashell
