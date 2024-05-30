@@ -20,5 +20,14 @@ kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key '
 kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllEmptyTabs' --type bool true
 # TODO: konsole nerd font profile
 
+# configure krunner
+kwriteconfig6 --file ~/.config/krunnerrc --group 'Plugins' --key 'krunner_appstreamEnabled' --type bool false
+
+# configure kwin
+kwriteconfig6 --file ~/.config/kwinrc --group 'ModifierOnlyShortcuts' --key 'Meta' ''
+kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Active' --type bool true
+kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Mode' 'Constant'
+kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'NightTemperature' '3500'
+
 # apply all changes
 systemctl --user restart plasma-plasmashell
