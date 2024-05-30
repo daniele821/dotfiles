@@ -8,7 +8,7 @@ alias lla='ls -la'
 alias ll='ls -l'
 
 function __exec_nohupped__() {
-	(: nohup "${@}" &>/dev/null &)
+	(: && nohup "${@}" &>/dev/null &)
 }
 function open() {
 	for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
