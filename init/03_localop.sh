@@ -11,8 +11,11 @@ function ask_user() {
 }
 
 # mandatory init operations
-sudo mkdir -p "${PERSONAL_DIR}" "${DATA_DIR}" "${REPOS_DIR}" || exit 1
-sudo chown daniele:daniele "${DATA_DIR}" "${REPOS_DIR}"
+if ! [[ -d "${PERSONAL_DIR}" ]]; then
+	sudo mkdir -p "${PERSONAL_DIR}" "${DATA_DIR}" "${REPOS_DIR}" || exit 1
+	sudo chown "${USER}":"${USER}" "${DATA_DIR}" "${REPOS_DIR}"
+	echo "created personal directory in ${PERSONAL_DIR}"
+fi
 
 # restore backup files
 if ask_user 'Do you want to restore all backup files'; then
