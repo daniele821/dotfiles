@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 # variables and utility functions
-PERSONAL_DIR="${HOME}/.personal"
+PERSONAL_DIR="/personal"
 DATA_DIR="${PERSONAL_DIR}/data"
 REPOS_DIR="${PERSONAL_DIR}/repos"
 function ask_user() {
@@ -11,7 +11,8 @@ function ask_user() {
 }
 
 # mandatory init operations
-mkdir -p "${PERSONAL_DIR}" "${DATA_DIR}" "${REPOS_DIR}" || exit 1
+sudo mkdir -p "${PERSONAL_DIR}" "${DATA_DIR}" "${REPOS_DIR}" || exit 1
+sudo chown daniele:daniele "${DATA_DIR}" "${REPOS_DIR}"
 
 # restore backup files
 if ask_user 'Do you want to restore all backup files'; then
