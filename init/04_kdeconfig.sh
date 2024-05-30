@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash -e
 
 # warning
 echo "Warning: extreme kde configuration, may delete customizations"
@@ -7,7 +7,7 @@ read -r answer </dev/tty
 [[ "${answer,,:0:1}" == "y" ]] || exit 0
 
 # change global theme
-lookandfeeltool -a org.kde.breezedark.desktop --resetLayout || exit 1
+lookandfeeltool -a org.kde.breezedark.desktop --resetLayout
 
 # configure okular
 kwriteconfig6 --file ~/.config/okularpartrc --group 'Core General' --key 'ObeyDRM' --type bool false
