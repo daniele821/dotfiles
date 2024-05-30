@@ -50,7 +50,5 @@ read -r answer </dev/tty
 if [[ "${answer,,:0:1}" == "y" ]]; then
 	kscreen-doctor -j | jq '.outputs[1].name' &>/dev/null || exit 1
 	SCREEN="$(kscreen-doctor -j | jq '.outputs[0].name' 2>/dev/null)"
-	if [[ -n "${SCREEN}" && "${SCREEN}" != null ]]; then
-		kscreen-doctor output."${SCREEN:1:-1}".scale.1
-	fi
+	kscreen-doctor output."${SCREEN:1:-1}".scale.1
 fi
