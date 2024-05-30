@@ -8,3 +8,11 @@ read -r answer </dev/tty
 
 # change global theme
 lookandfeeltool -a org.kde.breezedark.desktop --resetLayout || exit 1
+
+# configure okular
+kwriteconfig6 --file ~/.config/okularpartrc --group 'Core General' --key 'ObeyDRM' --type bool false
+kwriteconfig6 --file ~/.config/okularpartrc --group 'Core Performance' --key 'MemoryLevel' 'Greedy'
+kwriteconfig6 --file ~/.config/okularpartrc --group 'General' --key 'ShellOpenFileInTabs' --type bool true
+
+# apply all changes
+systemctl --user restart plasma-plasmashell
