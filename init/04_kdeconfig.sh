@@ -37,3 +37,16 @@ kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'B
 
 # configure notifications
 kwriteconfig6 --file ~/.config/plasmanotifyrc --group 'Notifications' --key 'LowPriorityPopups' --type bool false
+
+# configure shortcuts
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'plasmashell' --key 'manage activities' 'none,Meta+Q,Show Activity Switcher'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'plasmashell' --key 'stop current activity' 'none,Meta+S,Stop Current Activity'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch One Desktop Down' 'Meta+Alt+Down,Meta+Ctrl+Down,Switch One Desktop Down'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch One Desktop Up' 'Meta+Alt+Up,Meta+Ctrl+Up,Switch One Desktop Up'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch One Desktop to the Left' 'Meta+Alt+Left,Meta+Ctrl+Left,Switch One Desktop to the Left'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch One Desktop to the Right' 'Meta+Alt+Right,Meta+Ctrl+Right,Switch One Desktop to the Right'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch Window Down' 'none,Meta+Alt+Down,Switch to Window Below'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch Window Left' 'none,Meta+Alt+Left,Switch to Window to the Left'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch Window Right' 'none,Meta+Alt+Right,Switch to Window to the Right'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Switch Window Up' 'none,Meta+Alt+Up,Switch to Window Above'
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group 'kwin' --key 'Window Close' 'Meta+Q\tAlt+F4,Alt+F4,Close Window'
