@@ -1,13 +1,6 @@
 #!/bin/bash -e
 
-# warning
-echo "Warning: extreme kde configuration, may delete customizations"
-echo -n "Do you still wish to proceed [y/n]? "
-read -r answer </dev/tty
-[[ "${answer,,:0:1}" == "y" ]] || exit 0
-
-# change global theme
-lookandfeeltool -a org.kde.breezedark.desktop --resetLayout
+# change cursor theme
 kwriteconfig6 --file ~/.config/kcminputrc --group 'Mouse' --key 'cursorTheme' 'Adwaita'
 
 # configure okular
@@ -41,3 +34,23 @@ kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'B
 
 # configure notifications
 kwriteconfig6 --file ~/.config/plasmanotifyrc --group 'Notifications' --key 'LowPriorityPopups' --type bool false
+
+# change global theme
+echo "Warning: setting global theme, may delete customizations"
+echo -n "Do you still wish to proceed [y/n]? "
+read -r answer </dev/tty
+if [[ "${answer,,:0:1}" == "y" ]]; then
+	lookandfeeltool -a org.kde.breezedark.desktop --resetLayout
+fi
+
+### set display scale to 1
+echo "Warning: changing monitor scale to 1 (may fail)"
+echo -n "Do you still wish to proceed [y/n]? "
+read -r answer </dev/tty
+if [[ "${answer,,:0:1}" == "y" ]]; then
+	kscreen-doctor -j | jq '.outputs[1].name' &>/dev/null || exit 1
+	SCREEN="$(kscreen-doctor -j | jq '.outputs[0].name' 2>/dev/null)"
+	if [[ -n "${SCREEN}" && "${SCREEN}" != null ]]; then
+		kscreen-doctor output."${SCREEN:1:-1}".scale.1
+	fi
+fi
