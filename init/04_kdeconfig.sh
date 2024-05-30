@@ -8,6 +8,7 @@ read -r answer </dev/tty
 
 # change global theme
 lookandfeeltool -a org.kde.breezedark.desktop --resetLayout
+kwriteconfig6 --file ~/.config/kcminputrc --group 'Mouse' --key 'cursorTheme' 'Adwaita'
 
 # configure okular
 kwriteconfig6 --file ~/.config/okularpartrc --group 'Core General' --key 'ObeyDRM' --type bool false
@@ -18,7 +19,7 @@ kwriteconfig6 --file ~/.config/okularpartrc --group 'General' --key 'ShellOpenFi
 kwriteconfig6 --file ~/.config/konsolerc --group 'KonsoleWindow' --key 'RememberWindowSize' --type bool false
 kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllTabs' --type bool true
 kwriteconfig6 --file ~/.config/konsolerc --group 'Notification Messages' --key 'CloseAllEmptyTabs' --type bool true
-# TODO: konsole nerd font profile
+kwriteconfig6 --file ~/.config/konsolerc --group 'Desktop Entry' --key 'DefaultProfile' 'Nerd Font.profile' # requires profile file
 
 # configure krunner
 kwriteconfig6 --file ~/.config/krunnerrc --group 'Plugins' --key 'krunner_appstreamEnabled' --type bool false
