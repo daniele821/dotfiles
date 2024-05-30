@@ -34,5 +34,8 @@ kwriteconfig6 --file ~/.config/kwinrc --group 'org.kde.kdecoration2' --key 'Bord
 kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'BatteryLowLevel' '30'
 kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'BatteryCriticalLevel' '15'
 
+# configure notifications
+kwriteconfig6 --file ~/.config/plasmanotifyrc --group 'Notifications' --key 'LowPriorityPopups' --type bool false
+
 # apply all changes
 systemctl --user restart plasma-plasmashell
