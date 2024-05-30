@@ -36,6 +36,3 @@ kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'B
 
 # configure notifications
 kwriteconfig6 --file ~/.config/plasmanotifyrc --group 'Notifications' --key 'LowPriorityPopups' --type bool false
-
-# apply all changes
-systemctl --user restart plasma-plasmashell
