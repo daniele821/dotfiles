@@ -2,6 +2,9 @@
 .config/starship.toml
 .gitconfig
 .ssh/config
+
+// kde customization files
+.config/plasma-localerc
 .local/share/konsole/Nerd Font.profile
 
 // directories
