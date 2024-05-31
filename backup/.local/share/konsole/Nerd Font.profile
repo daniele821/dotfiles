@@ -1,4 +1,5 @@
 [Appearance]
+BoldIntense=true
 Font=FiraCode Nerd Font,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 UseFontLineChararacters=true
 
@@ -12,6 +13,10 @@ Parent=FALLBACK/
 SemanticHints=0
 TerminalColumns=120
 TerminalRows=35
+
+[Interaction Options]
+ColorFilterEnabled=false
+UnderlineLinksEnabled=true
 
 [Scrolling]
 HighlightScrolledLines=false
