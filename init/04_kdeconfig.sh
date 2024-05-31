@@ -27,6 +27,12 @@ kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Active' --type
 kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'Mode' 'Constant'
 kwriteconfig6 --file ~/.config/kwinrc --group 'NightColor' --key 'NightTemperature' '3500'
 kwriteconfig6 --file ~/.config/kwinrc --group 'org.kde.kdecoration2' --key 'BorderSizeAuto' --type bool false
+kwriteconfig6 --file ~/.config/kwinrc --group 'Desktops' --key 'Number' '4'
+kwriteconfig6 --file ~/.config/kwinrc --group 'Desktops' --key 'rows' '1'
+kwriteconfig6 --file ~/.config/kwinrc --group 'TabBox' --key 'ActivitiesMode' '0'
+kwriteconfig6 --file ~/.config/kwinrc --group 'TabBox' --key 'DesktopMode' '0'
+kwriteconfig6 --file ~/.config/kwinrc --group 'TabBox' --key 'ApplicationsMode' '1'
+kwriteconfig6 --file ~/.config/kwinrc --group 'TabBox' --key 'LayoutName' 'big_icons'
 
 # configure battery
 kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'BatteryLowLevel' '30'
