@@ -41,6 +41,9 @@ kwriteconfig6 --file ~/.config/powerdevilrc --group 'BatteryManagement' --key 'B
 # configure notifications
 kwriteconfig6 --file ~/.config/plasmanotifyrc --group 'Notifications' --key 'LowPriorityPopups' --type bool false
 
+# other configurations
+kwriteconfig6 --file ~/.config/kaccessrc --group 'Bell' --key 'SystemBell' --type bool false
+
 # change global theme
 echo "Warning: setting global theme, may delete customizations"
 echo -n "Do you still wish to proceed [y/n]? "
