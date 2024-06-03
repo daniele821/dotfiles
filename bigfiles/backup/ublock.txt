@@ -1,5 +1,5 @@
 {
-  "timeStamp": 1716844952562,
+  "timeStamp": 1717416227020,
   "version": "1.58.0",
   "userSettings": {
     "advancedUserEnabled": true,
@@ -47,8 +47,8 @@
     "chrome-extension-scheme",
     "moz-extension-scheme"
   ],
-  "dynamicFilteringString": "* googletagmanager.com * block\nvirtuale.unibo.it * 3p block\n* doubleclick.net * block\nwww.animeunity.to fonts.googleapis.com * block\nwww.animeunity.to goomaphy.com * block\nwww.asus.com * 3p block",
+  "dynamicFilteringString": "* googletagmanager.com * block\nvirtuale.unibo.it * 3p block\n* doubleclick.net * block\nwww.animeunity.to fonts.googleapis.com * block\nwww.animeunity.to goomaphy.com * block\nwww.asus.com * 3p block\nwww.geogebra.org * 3p block\nhelpdeskgeek.com * 3p block\nwww.ilmeteo.it * 3p block\nwww.3bmeteo.com * 3p block",
   "urlFilteringString": "",
   "hostnameSwitchesString": "no-large-media: behind-the-scene false\nno-csp-reports: * true",
-  "userFilters": "! May 27, 2024 https://duckduckgo.com\nduckduckgo.com##.text_promo--badge.text_promo--part\nduckduckgo.com##.text_promo--text.text_promo--part"
+  "userFilters": "! May 27, 2024 https://duckduckgo.com\nduckduckgo.com##.text_promo--badge.text_promo--part\nduckduckgo.com##.text_promo--text.text_promo--part\n\n! 2 Jun 2024 https://www.animeunity.to\nwww.animeunity.to##.bar-info\nwww.animeunity.to##.bar-close"
 }
