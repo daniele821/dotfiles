@@ -18,3 +18,8 @@ cd dotfiles || exit 1
 ./autosaver.sh restore
 ./autosaver.sh init
 ```
+
+# TODO
+
+- [ ]: make hyprland configuration modular
+- [ ]: make a checkhealt script to check if all hyprland dependecies used in the config are installed
