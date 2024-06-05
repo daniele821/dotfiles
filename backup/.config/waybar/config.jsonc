@@ -18,18 +18,10 @@
         "backlight",
         "battery",
         "clock",
-        "tray"
+        "tray",
     ],
     // Modules configuration
-     "hyprland/workspaces": {
-     },
-    "sway/scratchpad": {
-        "format": "{icon} {count}",
-        "show-empty": false,
-        "format-icons": ["", ""],
-        "tooltip": true,
-        "tooltip-format": "{app}: {title}"
-    },
+    "hyprland/workspaces": {},
     "tray": {
          "icon-size": 21,
         "spacing": 10
@@ -44,7 +36,7 @@
     },
     "battery": {
         "states": {
-            // "good": 95,
+            "good": 95,
             "warning": 30,
             "critical": 15
         },

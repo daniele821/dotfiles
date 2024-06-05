@@ -122,13 +122,13 @@ label:focus {
     background-color: #eb4d4b;
 }
 
-#language {
-    background: #00b093;
-    color: #740864;
-    padding: 0 5px;
-    margin: 0 5px;
-    min-width: 16px;
-}
+/*#language {*/
+    /*background: #00b093;*/
+    /*color: #740864;*/
+    /*padding: 0 5px;*/
+    /*margin: 0 5px;*/
+    /*min-width: 16px;*/
+/*}*/
 
 #keyboard-state {
     background: #97e1ad;
