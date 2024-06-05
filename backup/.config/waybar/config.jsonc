@@ -13,6 +13,7 @@
         "hyprland/window"
     ],
     "modules-right": [
+        "hyprland/language",
         "power-profiles-daemon",
         "pulseaudio",
         "backlight",
@@ -21,13 +22,21 @@
         "tray",
     ],
     // Modules configuration
-    "hyprland/workspaces": {},
+    "hyprland/workspaces": {
+        "show-special": true,
+    },
+    "hyprland/language": {
+        //"format": "Lang: {}",
+        "format-en": "US",
+        "format-it": "IT",
+        "keyboard-name": "at-translated-set-2-keyboard"
+    },
     "tray": {
          "icon-size": 21,
         "spacing": 10
     },
     "clock": {
-        "tooltip-format": "{:%Y %B}",
+        "tooltip-format": "{:%d %B %Y}",
         //"format-alt": "{:%Y-%m-%d}"
     },
     "backlight": {
