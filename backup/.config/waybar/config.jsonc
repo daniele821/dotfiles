@@ -42,7 +42,8 @@
     "backlight": {
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
-        "on-click": "killall wlsunset || wlsunset -T 4000 -t 3500"
+        "on-click": "killall wlsunset || wlsunset -T 4000 -t 3500",
+        "scroll-step": 0,
     },
     "battery": {
         "states": {
