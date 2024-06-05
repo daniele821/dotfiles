@@ -28,7 +28,7 @@
     },
     "clock": {
         "tooltip-format": "{:%Y %B}",
-        "format-alt": "{:%Y-%m-%d}"
+        //"format-alt": "{:%Y-%m-%d}"
     },
     "backlight": {
         "format": "{percent}% {icon}",
@@ -44,7 +44,7 @@
         "format-full": "{capacity}% {icon}",
         "format-charging": "{capacity}% ",
         "format-plugged": "{capacity}% ",
-        "format-alt": "{time} {icon}",
+        //"format-alt": "{time} {icon}",
         // "format-good": "", // An empty format will hide the module
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]

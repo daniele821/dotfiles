@@ -24,5 +24,5 @@ cd dotfiles || exit 1
 - [ ]: make hyprland configuration modular
 - [ ]: make a checkhealt script to check if all hyprland dependecies used in the config are installed
 - [ ]: add night light (clicking backlight module)
-- [ ]: disable clicking battery module 
+- [x]: disable clicking battery module 
 - [ ]: fix audio module click, scroll events
