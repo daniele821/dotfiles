@@ -8,24 +8,21 @@
 	sudo dnf --assumeyes remove akregator gnome-abrt dragon elisa-player neochat krdc
 	sudo dnf --assumeyes remove korganizer krfb khelpcenter skanpage kpat kfind
 
-	### upgrade everything ###
+	# upgrade everything #
 	sudo dnf --assumeyes upgrade
 
-	# install neovim and dependecies
+	# install utilities
 	sudo dnf --assumeyes install neovim gcc fd-find ripgrep
-
-	# install some nice tools (necessary for full bash personalized experience)
 	sudo dnf --assumeyes install zoxide bat lsd
 	sudo dnf --assumeyes copr enable atim/starship
 	sudo dnf --assumeyes install starship
-
-	# install more (not strictly necessary) cli tools
 	sudo dnf --assumeyes install tldr
-
-	# install more (not strictly necessary) not cli tools
 	sudo dnf --assumeyes install libreoffice-langpack-it
 
-	### remove unnecessary packages ###
+	# install hyprland
+	sudo dnf --assumeyes install hyprland wlsunset waybar network-manager-applet
+
+	# remove unnecessary packages
 	sudo dnf --assumeyes autoremove
 
 } </dev/tty
