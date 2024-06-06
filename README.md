@@ -21,11 +21,6 @@ cd dotfiles || exit 1
 
 # TODO
 
-- [ ]: make hyprland configuration modular
 - [ ]: make a checkhealt script to check if all hyprland dependecies used in the config are installed
-- [x]: add night light (clicking backlight module) 
-    - [ ]: add binding for toggling night light (fn+f5?), and remove clicking on waybar for toggling night light
-- [x]: disable clicking battery module 
-- [x]: fix audio module click, scroll events
 - [ ]: add way to lock screen
 - [ ]: add binding to take a screenshot
