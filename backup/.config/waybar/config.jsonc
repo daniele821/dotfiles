@@ -1,10 +1,10 @@
 // -*- mode: jsonc -*-
 {
     // "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
+     "position": "top", // Waybar position (top|bottom|left|right)
     "height": 20, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
-    "spacing": 4, // Gaps between modules (4px)
+    "spacing": 0, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": [
         "hyprland/workspaces",
@@ -26,10 +26,8 @@
         "show-special": true,
     },
     "hyprland/language": {
-        //"format": "Lang: {}",
         "format-en": "US",
         "format-it": "IT",
-        "keyboard-name": "at-translated-set-2-keyboard"
     },
     "tray": {
          "icon-size": 21,
@@ -37,12 +35,10 @@
     },
     "clock": {
         "tooltip-format": "{:%d %B %Y}",
-        //"format-alt": "{:%Y-%m-%d}"
     },
     "backlight": {
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
-        "on-click": "killall wlsunset || wlsunset -T 4000 -t 3500",
         "scroll-step": 0,
     },
     "battery": {
@@ -55,9 +51,6 @@
         "format-full": "{capacity}% {icon}",
         "format-charging": "{capacity}% ",
         "format-plugged": "{capacity}% ",
-        //"format-alt": "{time} {icon}",
-        // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
         "format-icons": ["", "", "", "", ""]
     },
     "power-profiles-daemon": {
@@ -71,21 +64,12 @@
         "power-saver": ""
       }
     },
-    "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
     "pulseaudio": {
         "format": "{volume}% {icon}",
         "format-muted": "-- ",
         "format-bluetooth": "{volume}% {icon}",
         "format-bluetooth-muted": "-- {icon}",
-        "scroll-step": 0,
+        "scroll-step": 5,
         "format-icons": {
             "headphone": "",
             "hands-free": "",
