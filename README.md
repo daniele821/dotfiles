@@ -21,6 +21,4 @@ cd dotfiles || exit 1
 
 # TODO
 
-- [ ]: make a checkhealt script to check if all hyprland dependecies used in the config are installed
 - [ ]: add way to lock screen
-- [ ]: add binding to take a screenshot
