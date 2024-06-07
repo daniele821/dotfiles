@@ -20,7 +20,7 @@
 	sudo dnf --assumeyes install libreoffice-langpack-it
 
 	# install hyprland
-	sudo dnf --assumeyes install hyprland wlsunset waybar network-manager-applet
+	sudo dnf --assumeyes install hyprland wlsunset waybar
 
 	# remove unnecessary packages
 	sudo dnf --assumeyes autoremove
