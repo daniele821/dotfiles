@@ -19,6 +19,3 @@ cd dotfiles || exit 1
 ./autosaver.sh init
 ```
 
-# TODO
-
-- [ ]: add way to lock screen
