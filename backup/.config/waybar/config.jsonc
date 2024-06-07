@@ -19,7 +19,6 @@
         "backlight",
         "battery",
         "clock",
-        //"tray",
     ],
     // Modules configuration
     "hyprland/workspaces": {
