@@ -1,7 +1,8 @@
 #!/bin/env bash
 
-export HISTCONTROL=ignoredups
+export HISTCONTROL="ignoredups"
 export PYTHONDONTWRITEBYTECODE="true"
+export EDITOR="nvim"
 
 alias la='ls -a'
 alias lla='ls -la'
