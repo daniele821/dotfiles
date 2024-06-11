@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # check if in kde session, otherwise skip this script
-if [[ "${DESKTOP_SESSION,,}" != 'kde' ]]; then
+if [[ "${XDG_CURRENT_DESKTOP,,}" != 'kde' ]]; then
 	exit 0
 fi
 
