@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# check if in kde session, otherwise skip this script
+if [[ "${DESKTOP_SESSION,,}" != 'kde' ]]; then
+	exit 0
+fi
+
 # change cursor theme
 kwriteconfig6 --file ~/.config/kcminputrc --group 'Mouse' --key 'cursorTheme' 'Adwaita'
 
