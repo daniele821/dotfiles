@@ -9,7 +9,7 @@
 
 	# install utilities
 	sudo dnf --assumeyes copr enable atim/starship
-	sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd starship tldr libreoffice-langpack-it hyprland wlsunset waybar
+	sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd starship tldr libreoffice-langpack-it hyprland wlsunset waybar swaylock
 
 	# remove unnecessary packages
 	sudo dnf --assumeyes autoremove
