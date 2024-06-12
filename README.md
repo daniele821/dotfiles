@@ -21,4 +21,15 @@ cd dotfiles || exit 1
 
 # TODO:
 
-- remove starship (i want 100% packages from official fedora repo) -> config PS1?
+- remove starship (i want 100% packages from official fedora repo) 
+    - configure PS1 -> have following in it:
+        - git status?
+        - exit status (color red or green to indicate last command failed or not)
+        - truncate path?
+        - jobs | wc -l ?
+    - remove starship:
+        - remove .config/starship.toml (delete file)
+        - remove starship from being autoinstalled (init/03_local_packages.sh <- delete file)
+        - remove starship from .bashrc.d configs
+            - safe-starter.sh (remove starship entry)
+            - init/starship.sh (delete file)
