@@ -2,6 +2,7 @@
 
 # check if in kde session, otherwise skip this script
 if [[ "${XDG_CURRENT_DESKTOP,,}" != 'kde' ]]; then
+	echo 'You need to be in kde session to execute this file'
 	exit 0
 fi
 
