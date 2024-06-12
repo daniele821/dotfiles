@@ -32,4 +32,9 @@ if ask_user 'Do you really want to create new ssh keys'; then
 	done
 fi </dev/tty
 
+# enable wireshark for current user
+if ask_user 'Do you really want to enable wireshark'; then
+	sudo usermod -a -G wireshark "${USER}"
+fi </dev/tty
+
 exit 0

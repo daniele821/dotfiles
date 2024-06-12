@@ -8,6 +8,6 @@
 	sudo dnf --assumeyes upgrade
 
 	# install utilities
-	sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd tldr libreoffice-langpack-it hyprland wlsunset waybar swaylock
+	sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd tldr libreoffice-langpack-it hyprland wlsunset waybar swaylock wireshark
 
 } </dev/tty
