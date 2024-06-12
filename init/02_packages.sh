@@ -10,7 +10,4 @@
 	# install utilities
 	sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd tldr libreoffice-langpack-it hyprland wlsunset waybar swaylock
 
-	# remove unnecessary packages
-	sudo dnf --assumeyes autoremove
-
 } </dev/tty
