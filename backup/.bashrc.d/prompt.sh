@@ -21,3 +21,4 @@ function precmd() {
 }
 
 PROMPT_COMMAND='precmd'
+PROMPT_DIRTRIM=3

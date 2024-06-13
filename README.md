@@ -18,9 +18,3 @@ cd dotfiles || exit 1
 ./autosaver.sh restore
 ./autosaver.sh init
 ```
-
-# TODO:
-
-- remove starship (i want 100% packages from official fedora repo) 
-    - configure PS1 -> have following in it:
-        - truncate path?
