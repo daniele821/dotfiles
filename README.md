@@ -23,6 +23,4 @@ cd dotfiles || exit 1
 
 - remove starship (i want 100% packages from official fedora repo) 
     - configure PS1 -> have following in it:
-        - git status?
         - truncate path?
-        - jobs | wc -l ?
