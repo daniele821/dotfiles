@@ -3,6 +3,7 @@
 function precmd() {
 	builtin local -r __retval__=$?
 	PS1="\[\033[01;36m\]\w\[\033[00m\] "
+	BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" && PS1+="\[\033[01;35m\](${BRANCH}) "
 	if [[ "${__retval__}" == '0' ]]; then
 		PS1+='\[\033[01;32m\]'
 	else
