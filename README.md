@@ -27,9 +27,3 @@ cd dotfiles || exit 1
         - exit status (color red or green to indicate last command failed or not)
         - truncate path?
         - jobs | wc -l ?
-    - remove starship:
-        - remove .config/starship.toml (delete file)
-        - remove starship from being autoinstalled (init/03_local_packages.sh <- delete file)
-        - remove starship from .bashrc.d configs
-            - safe-starter.sh (remove starship entry)
-            - init/starship.sh (delete file)
