@@ -5,7 +5,7 @@ function precmd() {
 	builtin local -r GITBR="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
 	# directory
-	PS1="\[\033[01;36m\]\w\[\033[00m\] "
+	PS1="\[\033[01;36m\]\w "
 
 	# git branch
 	[[ -n "${GITBR}" ]] && PS1+="\[\033[01;35m\](${GITBR}) "
@@ -16,7 +16,7 @@ function precmd() {
 	else
 		PS1+='\[\033[01;31m\]'
 	fi
-	PS1+='$ \[\033[0m\]'
+	PS1+='$ \[\033[m\]'
 	return "${RETVAL}"
 }
 
