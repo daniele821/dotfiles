@@ -10,3 +10,4 @@
 .local/share/fonts
 .config/hypr
 .config/waybar
+.config/mpv
