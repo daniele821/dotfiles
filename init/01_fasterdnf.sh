@@ -1,14 +1,16 @@
 #!/bin/env bash
 
-# exit early if dnf is already speed up
-ALREADY_PARALLEL="$(grep -c 'max_parallel_downloads=' /etc/dnf/dnf.conf)"
-if [[ "${ALREADY_PARALLEL}" -gt 0 ]]; then
-	msg="$(grep 'max_parallel_downloads=' /etc/dnf/dnf.conf)"
-	echo "dnf was already speed up (${msg})"
-	exit 0
-fi
+function dnf_config() {
+	CONFIG="${1}"
+	PAIR="${1}${2}"
+	if [[ "$(grep -c "${CONFIG}" /etc/dnf/dnf.conf)" -gt 0 ]]; then
+		echo "dnf setting already exists: '$(grep "${CONFIG}" /etc/dnf/dnf.conf)'"
+	else
+		echo -en "Do you want to modify dnf configuration to set ${PAIR} [y/n]? "
+		read -r answer </dev/tty
+		[[ "${answer,,:0:1}" == "y" ]] && echo "${PAIR}" | sudo tee -a /etc/dnf/dnf.conf
+	fi
+}
 
-echo -en "\nDo you want to modify /etc/dnf/dnf.conf to speed up dnf downloads [y/n]? "
-read -r answer </dev/tty
-[[ "${answer,,:0:1}" != "y" ]] && exit 0
-echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
+dnf_config "max_parallel_downloads=" "10"
+dnf_config "fastestmirror=" "True"

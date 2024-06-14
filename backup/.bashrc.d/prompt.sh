@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-function precmd() {
+function __precmd__() {
 	builtin local -r RETVAL=$?
 	builtin local -r GITBR="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
@@ -20,5 +20,5 @@ function precmd() {
 	return "${RETVAL}"
 }
 
-PROMPT_COMMAND='precmd'
+PROMPT_COMMAND='__precmd__'
 PROMPT_DIRTRIM=3
