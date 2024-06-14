@@ -26,7 +26,7 @@ fi </dev/tty
 
 # create ssh keys for github
 if ask_user 'Do you really want to create new ssh keys'; then
-	USERS=(daniele821 danix1234 daniele821_gitlab)
+	USERS=(daniele821 danix1234)
 	for user in "${USERS[@]}"; do
 		ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
 	done
