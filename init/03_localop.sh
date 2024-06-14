@@ -38,7 +38,7 @@ if ask_user 'Do you really want to enable wireshark'; then
 fi </dev/tty
 
 # add line to autostart hyprland in tty1
-if ask_user 'Do you really want to autostart Hyprland'; then
+if ! grep -q 'Hyprland' ~/.bashrc && ask_user 'Do you really want to autostart Hyprland'; then
 	echo '[[ "$(tty)" = "/dev/tty1" ]] && Hyprland' >>~/.bashrc
 fi
 
