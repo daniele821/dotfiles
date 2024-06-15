@@ -13,8 +13,6 @@
         "hyprland/window"
     ],
     "modules-right": [
-        "hyprland/language",
-        "power-profiles-daemon",
         "pulseaudio",
         "backlight",
         "battery",
@@ -29,10 +27,11 @@
         "format-it": "IT",
     },
     "tray": {
-         "icon-size": 21,
+        "icon-size": 21,
         "spacing": 10
     },
     "clock": {
+        "format":"{:%H:%M 󰥔}",
         "tooltip-format": "{:%d %B %Y}",
     },
     "backlight": {
