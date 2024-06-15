@@ -37,9 +37,4 @@ if ask_user 'Do you really want to enable wireshark'; then
 	sudo usermod -a -G wireshark "${USER}"
 fi </dev/tty
 
-# add line to autostart hyprland in tty1
-if ! grep -q 'Hyprland' ~/.bashrc && ask_user 'Do you really want to autostart Hyprland'; then
-	echo '[[ "$(tty)" = "/dev/tty1" ]] && Hyprland' >>~/.bashrc
-fi
-
 exit 0
