@@ -7,6 +7,7 @@
     "spacing": 0, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": [
+        "custom/logo",
         "hyprland/workspaces",
     ],
     "modules-center": [
@@ -18,6 +19,10 @@
         "battery",
         "clock",
     ],
+    "custom/logo": {
+        "format": "  󰂣  ",
+        "tooltip": false,
+    },
     // Modules configuration
     "hyprland/workspaces": {
         "show-special": true,
@@ -31,7 +36,7 @@
         "spacing": 10
     },
     "clock": {
-        "format":"{:%H:%M 󰥔}",
+        "format":"{:%H:%M }",
         "tooltip-format": "{:%d %B %Y}",
     },
     "backlight": {
