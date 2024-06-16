@@ -42,6 +42,8 @@
     "backlight": {
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
+        "on-scroll-up":"brightnessctl set +5%",
+        "on-scroll-down":"brightnessctl set 5%- -n",
         "scroll-step": 0,
     },
     "battery": {
@@ -72,6 +74,9 @@
         "format-muted": "00% ",
         "format-bluetooth": "{volume}% {icon}",
         "format-bluetooth-muted": "00% {icon}",
+        "on-click":"wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up":"wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down":"wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%-",
         "scroll-step": 0,
         "format-icons": {
             "headphone": "",
