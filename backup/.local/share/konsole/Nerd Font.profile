@@ -11,6 +11,7 @@ ErrorBars=0
 Name=Nerd Font
 Parent=FALLBACK/
 SemanticHints=0
+ShowTerminalSizeHint=false
 TerminalColumns=120
 TerminalRows=35
 
