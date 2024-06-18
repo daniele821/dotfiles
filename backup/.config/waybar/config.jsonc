@@ -47,7 +47,7 @@
     },
     "clock": {
         "format":"{:%H:%M }",
-        "tooltip-format": "{:%d %B %Y}",
+        "tooltip-format": "{:%A %d %B %Y}",
     },
     "backlight": {
         "format": "{percent}% {icon}",
