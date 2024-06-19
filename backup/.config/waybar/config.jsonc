@@ -8,11 +8,11 @@
     // Choose the order of the modules
     "modules-left": [
         "custom/logo",
-        "hyprland/workspaces",
         "network",
+        "hyprland/language",
     ],
     "modules-center": [
-        "hyprland/window"
+        "hyprland/workspaces",
     ],
     "modules-right": [
         "pulseaudio",
@@ -22,12 +22,12 @@
     ],
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
+        "format-wifi": "{essid}  ",
+        "format-ethernet": "{ipaddr}/{cidr}  ",
         "tooltip" : false,
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} ",
-        "format-disconnected": "Disconnected ⚠",
+        "tooltip-format": "{ifname} via {gwaddr}  ",
+        "format-linked": "{ifname}  ",
+        "format-disconnected": "Disconnected ⚠ ",
     },
     "custom/logo": {
         "format": "  󰂣  ",
@@ -38,8 +38,8 @@
         "show-special": true,
     },
     "hyprland/language": {
-        "format-en": "US",
-        "format-it": "IT",
+        "format-en": "US  ",
+        "format-it": "IT  ",
     },
     "tray": {
         "icon-size": 21,
