@@ -52,8 +52,13 @@ button:hover {
 }
 
 #workspaces button.active {
-    background-color: #64727D;
-    box-shadow: inset 0 -3px #ffffff;
+    /*high contrast*/
+    /*background-color: #64727D;*/
+    /*box-shadow: inset 0 -3px #ffffff;*/
+
+    /*low contrast*/
+    background-color: #3E4754;
+    box-shadow: inset 0 -3px #3E4754;
 }
 
 /*#workspaces button.urgent {*/
