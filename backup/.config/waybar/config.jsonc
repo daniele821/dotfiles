@@ -48,6 +48,7 @@
     "clock": {
         "format":"{:%H:%M }",
         "tooltip-format": "{:%A %d %B %Y}",
+        "tooltip":false,
     },
     "backlight": {
         "format": "{percent}% {icon}",
@@ -55,6 +56,7 @@
         "on-scroll-up":"brightnessctl set +5%",
         "on-scroll-down":"brightnessctl set 5%- -n",
         "scroll-step": 0,
+        "tooltip":false,
     },
     "battery": {
         "states": {
@@ -66,7 +68,8 @@
         "format-full": "{capacity}% {icon}",
         "format-charging": "{capacity}% ",
         "format-plugged": "{capacity}% ",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": ["", "", "", "", ""],
+        "tooltip":false,
     },
     "power-profiles-daemon": {
       "format": "{icon}",
@@ -97,5 +100,6 @@
             "car": "",
             "default": ["", "", ""]
         },
+        "tooltip":false,
     },
 }
