@@ -8,6 +8,7 @@
     // Choose the order of the modules
     "modules-left": [
         "custom/logo",
+        "power-profiles-daemon",
         "network",
         "hyprland/language",
     ],
@@ -74,7 +75,7 @@
     "power-profiles-daemon": {
       "format": "{icon}",
       "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-      "tooltip": true,
+      "tooltip": false,
       "format-icons": {
         "default": "",
         "performance": "",
