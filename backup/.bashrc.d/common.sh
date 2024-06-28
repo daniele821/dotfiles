@@ -4,8 +4,8 @@ export HISTCONTROL="ignoredups"
 export PYTHONDONTWRITEBYTECODE="true"
 export EDITOR="nvim"
 
-alias la='ls -a'
-alias lla='ls -la'
+alias la='ls -A'
+alias lla='ls -lA'
 alias ll='ls -l'
 
 function __exec_nohupped__() {
