@@ -16,6 +16,7 @@
         "hyprland/workspaces",
     ],
     "modules-right": [
+        "hyprland/submap",
         "pulseaudio",
         "backlight",
         "battery",
@@ -37,6 +38,10 @@
     // Modules configuration
     "hyprland/workspaces": {
         "show-special": true,
+    },
+    "hyprland/submap": {
+        "format":"{} 󰘳 ",
+        "on-click":"hyprctl dispatch submap reset",
     },
     "hyprland/language": {
         "format-en": "US  ",
