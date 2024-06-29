@@ -40,13 +40,13 @@
         "show-special": true,
     },
     "hyprland/submap": {
-        "format": "{} 󰘳 ",
+        "format": "{} 󰘳  ",
         "on-click": "hyprctl dispatch submap reset",
         "tooltip": false,
     },
     "hyprland/language": {
-        "format-en": "US  ",
-        "format-it": "IT  ",
+        "format-en": " US  ",
+        "format-it": " IT  ",
     },
     "tray": {
         "icon-size": 21,
@@ -83,10 +83,10 @@
       "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
       "tooltip": false,
       "format-icons": {
-        "default": "",
-        "performance": "",
-        "balanced": "",
-        "power-saver": ""
+        "default": " ",
+        "performance": " ",
+        "balanced": " ",
+        "power-saver": " "
       }
     },
     "pulseaudio": {
