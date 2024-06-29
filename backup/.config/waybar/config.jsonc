@@ -40,8 +40,9 @@
         "show-special": true,
     },
     "hyprland/submap": {
-        "format":"{} 󰘳 ",
-        "on-click":"hyprctl dispatch submap reset",
+        "format": "{} 󰘳 ",
+        "on-click": "hyprctl dispatch submap reset",
+        "tooltip": false,
     },
     "hyprland/language": {
         "format-en": "US  ",
