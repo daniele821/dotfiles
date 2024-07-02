@@ -16,6 +16,7 @@
         "hyprland/workspaces",
     ],
     "modules-right": [
+        "hyprland/submap",
         "pulseaudio",
         "backlight",
         "battery",
