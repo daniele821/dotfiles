@@ -18,7 +18,3 @@ cd dotfiles || exit 1
 ./autosaver.sh restore
 ./autosaver.sh init
 ```
-
-# TODO
-
-- find way to bind a command launcher (like gnome alt+f2) to super+e
