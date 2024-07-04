@@ -1,5 +1,5 @@
 {
-  "timeStamp": 1717879442374,
+  "timeStamp": 1720085810759,
   "version": "1.58.0",
   "userSettings": {
     "advancedUserEnabled": true,
@@ -47,8 +47,8 @@
     "chrome-extension-scheme",
     "moz-extension-scheme"
   ],
-  "dynamicFilteringString": "* googletagmanager.com * block\nvirtuale.unibo.it * 3p block\n* doubleclick.net * block\nwww.animeunity.to fonts.googleapis.com * block\nwww.animeunity.to goomaphy.com * block\nwww.asus.com * 3p block\nwww.geogebra.org * 3p block\nhelpdeskgeek.com * 3p block\nwww.ilmeteo.it * 3p block\nwww.3bmeteo.com * 3p block",
+  "dynamicFilteringString": "* googletagmanager.com * block\nvirtuale.unibo.it * 3p block\n* doubleclick.net * block\nwww.animeunity.to fonts.googleapis.com * block\nwww.animeunity.to goomaphy.com * block\nwww.asus.com * 3p block\nwww.geogebra.org * 3p block\nhelpdeskgeek.com * 3p block\nwww.ilmeteo.it * 3p block\nwww.3bmeteo.com * 3p block\n* amazon-adsystem.com * block\n* iubenda.com * block\nwww.iubenda.com * * block",
   "urlFilteringString": "",
   "hostnameSwitchesString": "no-large-media: behind-the-scene false\nno-csp-reports: * true",
-  "userFilters": "! May 27, 2024 https://duckduckgo.com\nduckduckgo.com##.text_promo--badge.text_promo--part\nduckduckgo.com##.text_promo--text.text_promo--part\n\n! 2 Jun 2024 https://www.animeunity.to\nwww.animeunity.to##.bar-info\nwww.animeunity.to##.bar-close"
+  "userFilters": "! May 27, 2024 https://duckduckgo.com\nduckduckgo.com##.text_promo--badge.text_promo--part\nduckduckgo.com##.text_promo--text.text_promo--part\n\n! 2 Jun 2024 https://www.animeunity.to\nwww.animeunity.to##.bar-info\nwww.animeunity.to##.bar-close\n\n! 15 Jun 2024 https://www.3bmeteo.com\nwww.3bmeteo.com##.iubenda-tp-btn--warning.iubenda-tp-alert-btn\n\n! 16 Jun 2024 https://fontawesome.com\nfontawesome.com##.margin-bottom-0.with-border.text-left.roomy.header.card\n\n! 19 Jun 2024 https://duckduckgo.com\nduckduckgo.com##.Rb4E5rkUBlkwgIcwjYDJ.NQLfFfpFFnG0Vj44h6qS\n\n! 25 Jun 2024 https://stackoverflow.com\nstackoverflow.com##.py12.pl4.pr2.h\\:fc-black-600.fc-black-500.c-pointer.ai-center.d-flex.js-link\nstackoverflow.com##.is-visible.js-notice-sidebar-popover.p0.bc-orange-400.btw3.bt.baw0.h\\:bs-lg.bs-sm.bar-md.s-card.ws2.sm\\:d-none.s-popover\n\n! 29 Jun 2024 https://duckduckgo.com\nduckduckgo.com##.d26Geqs1C__RaCO7MUs2.wZ4JdaHxSAhGy1HoNVja.VssOcyhy47YNtTsYTdr0.FjSJqhByQmoYMVscUoQe.Pd_jmhkZzftl0UtTaw0u"
 }
