@@ -1,0 +1,35 @@
+format = """
+$container\
+$directory\
+$fossil_branch\
+$fossil_metrics\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$conda\
+$spack\
+$env_var\
+$sudo\
+$jobs\
+$status\
+$character"""
+
+add_newline = false
+
+[directory]
+truncation_length = 3
+truncation_symbol = "../"
+read_only = " 󰌾"
+style = "bold cyan"
+
+[line_break]
+disabled = true
+
+[conda]
+ignore_base = false
+
+[status]
+disabled = false
