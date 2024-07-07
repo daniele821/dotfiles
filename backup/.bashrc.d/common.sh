@@ -9,13 +9,13 @@ alias lla='ls -lA'
 alias ll='ls -l'
 
 function __exec_nohupped__() {
-	(: && nohup "${@}" &>/dev/null &)
+    (: && nohup "${@}" &>/dev/null &)
 }
 function open() {
-	for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
+    for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
 }
 function run() {
-	__exec_nohupped__ "${@}"
+    __exec_nohupped__ "${@}"
 }
 
 # disable fedora autoinstalling missing commands
@@ -23,5 +23,5 @@ unset -f command_not_found_handle
 
 # disable readline arguments
 for i in - {0..9}; do
-	bind -r "\e$i"
+    bind -r "\e$i"
 done
