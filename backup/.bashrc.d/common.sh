@@ -1,8 +1,9 @@
 #!/bin/env bash
 
 export HISTCONTROL="ignoredups"
-export PYTHONDONTWRITEBYTECODE="true"
 export EDITOR="nvim"
+export PYTHONDONTWRITEBYTECODE="true"
+export GOPATH="$HOME/.go"
 
 alias la='ls -A'
 alias lla='ls -lA'
