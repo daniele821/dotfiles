@@ -45,8 +45,8 @@
         "tooltip": false,
     },
     "hyprland/language": {
-        "format-en": " US  ",
-        "format-it": " IT  ",
+        "format-en": "US  ",
+        "format-it": "IT  ",
     },
     "tray": {
         "icon-size": 21,
@@ -83,10 +83,10 @@
       "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
       "tooltip": false,
       "format-icons": {
-        "default": " ",
-        "performance": " ",
-        "balanced": " ",
-        "power-saver": " "
+        "default": "",
+        "performance": "",
+        "balanced": "",
+        "power-saver": ""
       }
     },
     "pulseaudio": {
@@ -105,7 +105,7 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["", "", ""]
+            "default": ["","","","","","","","","","","","","","","","","","","",""]
         },
         "tooltip":false,
     },
