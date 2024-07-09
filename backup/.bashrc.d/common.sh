@@ -3,7 +3,7 @@
 export HISTCONTROL="ignoredups"
 export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
-export GOPATH="$HOME/.go"
+export GOPATH="$HOME/.local/share/go"
 
 alias la='ls -A'
 alias lla='ls -lA'
