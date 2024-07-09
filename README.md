@@ -18,3 +18,7 @@ cd dotfiles || exit 1
 ./autosaver.sh restore
 ./autosaver.sh init
 ```
+
+# TODO
+
+- [ ] replace swaylock with hyprlock
