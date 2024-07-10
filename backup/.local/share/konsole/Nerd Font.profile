@@ -8,10 +8,12 @@ AlternatingBackground=0
 AlternatingBars=0
 ErrorBackground=0
 ErrorBars=0
+LocalTabTitleFormat=%n
 Name=Nerd Font
 Parent=FALLBACK/
 SemanticHints=0
 ShowTerminalSizeHint=false
+SilenceSeconds=10
 TerminalColumns=120
 TerminalRows=35
 
