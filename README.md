@@ -21,4 +21,5 @@ cd dotfiles || exit 1
 
 # TODO
 
-- [ ] replace swaylock with hyprlock
+- [x] replace swaylock with hyprlock
+- [ ] add submap in hyprland for resizing windows
