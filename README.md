@@ -23,3 +23,4 @@ cd dotfiles || exit 1
 
 - [x] replace swaylock with hyprlock
 - [x] add submap in hyprland for resizing windows
+- [ ] find way to always have kde polkit running (while loop?)
