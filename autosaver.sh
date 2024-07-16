@@ -120,7 +120,7 @@ function save_action() {
 	fi
 }
 function help_msg() {
-	echo -e "\
+    echo -e "\
 Flag options:
 - c         commit, pull, push if possible
 - d         show diffs
@@ -133,7 +133,14 @@ Action options:
 - h         show help message
 - i         initialize necessary directories and files
 - r         run init scripts
-- s         save tracked files"
+- s         save tracked files
+Shortcuts:
+save        -s -cvy
+restore     -b -vy
+init        -r -y
+edit        -e -y
+help        -h
+"
 }
 
 # init, parse, execute functions
