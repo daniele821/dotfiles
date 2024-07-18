@@ -1,9 +1,6 @@
 #!/bin/env bash
 
-# variables and utility functions
-PERSONAL_DIR="/personal"
-DATA_DIR="${PERSONAL_DIR}/data"
-REPOS_DIR="${PERSONAL_DIR}/repos"
+# utility functions
 function ask_user() {
 	echo -n "${*} [Y/n] ? "
 	read -r answer </dev/tty
@@ -12,9 +9,9 @@ function ask_user() {
 
 # mandatory init operations
 if ! [[ -d "${PERSONAL_DIR}" ]]; then
-	sudo mkdir -p "${PERSONAL_DIR}" "${DATA_DIR}" "${REPOS_DIR}" || exit 1
-	sudo chown "${USER}":"${USER}" "${DATA_DIR}" "${REPOS_DIR}"
-	echo "created personal directory in ${PERSONAL_DIR}"
+	sudo mkdir -p /personal/{data,repos} || exit 1
+	sudo chown "${USER}":"${USER}" /personal/{data,repos}
+	echo "created personal directory in /personal"
 fi
 
 # restore backup files
