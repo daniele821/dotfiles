@@ -1,6 +1,6 @@
-/personal/repos/daniele821/dotfiles	 --> 	git@daniele821.github.com:daniele821/dotfiles
-/personal/repos/daniele821/nvim-config	 --> 	git@daniele821.github.com:daniele821/nvim-config
-/personal/repos/daniele821/various_python	 --> 	git@daniele821.github.com:daniele821/various_python.git
-/personal/repos/danix1234/appunti-universita	 --> 	git@danix1234.github.com:danix1234/appunti-universita
-/personal/repos/danix1234/elaborato_DB_2024	 --> 	git@danix1234.github.com:danix1234/elaborato_DB_2024
-/personal/repos/others/nbpreview	 --> 	https://github.com/jsvine/nbpreview.git
+/personal/repos/daniele821/dotfiles	 --> 	git@daniele821.github.com:daniele821/dotfiles	 --> 	danixgithub1@gmail.com
+/personal/repos/daniele821/nvim-config	 --> 	git@daniele821.github.com:daniele821/nvim-config	 --> 	danixgithub1@gmail.com
+/personal/repos/daniele821/various_python	 --> 	git@daniele821.github.com:daniele821/various_python.git	 --> 	danixgithub1@gmail.com
+/personal/repos/danix1234/appunti-universita	 --> 	git@danix1234.github.com:danix1234/appunti-universita	 --> 	daniele.muffato@studio.unibo.it 
+/personal/repos/danix1234/elaborato_DB_2024	 --> 	git@danix1234.github.com:danix1234/elaborato_DB_2024	 --> 	daniele.muffato@studio.unibo.it
+/personal/repos/others/nbpreview	 --> 	https://github.com/jsvine/nbpreview.git	 --> 	
