@@ -7,7 +7,7 @@
     sudo dnf -y install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
     # install utilities
-    sudo dnf --assumeyes install ffmpeg --allow-eraising
+    sudo dnf --assumeyes install --allowerasing ffmpeg
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd tldr starship htop libreoffice-langpack-it wireshark mpv libsixel-utils jq hyprland gammastep waybar hyprlock brightnessctl
 
     # upgrade everything #
