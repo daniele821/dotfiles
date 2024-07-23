@@ -1,5 +1,5 @@
 /personal/repos/daniele821/dotfiles	 --> 	git@daniele821.github.com:daniele821/dotfiles	 --> 	fedora-kde-hyprland --> 	danixgithub1@gmail.com
 /personal/repos/daniele821/nvim-config	 --> 	git@daniele821.github.com:daniele821/nvim-config	 --> 	main --> 	danixgithub1@gmail.com
 /personal/repos/daniele821/various_python	 --> 	git@daniele821.github.com:daniele821/various_python.git	 --> 	main --> 	danixgithub1@gmail.com
-/personal/repos/danix1234/appunti-universita	 --> 	git@danix1234.github.com:danix1234/appunti-universita	 --> 	master --> 	daniele.muffato@studio.unibo.it
+/personal/repos/danix1234/appunti-universita	 --> 	git@danix1234.github.com:danix1234/appunti-universita.git	 --> 	main --> 	daniele.muffato@studio.unibo.it
 /personal/repos/others/nbpreview	 --> 	https://github.com/jsvine/nbpreview.git	 --> 	master --> 	
