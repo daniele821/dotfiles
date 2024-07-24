@@ -14,3 +14,5 @@ function dnf_config() {
 
 dnf_config "max_parallel_downloads=" "10"
 dnf_config "fastestmirror=" "True"
+
+exit 0
