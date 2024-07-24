@@ -1,5 +1,8 @@
 #!/bin/env bash
 
+# speed up installations
+powerprofilesctl set performance
+
 {
     # add needed copr
     sudo dnf --assumeyes copr enable atim/starship
@@ -8,14 +11,27 @@
 
     # install utilities
     sudo dnf --assumeyes install --allowerasing ffmpeg
-    sudo dnf --assumeyes install neovim gcc fd-find ripgrep zoxide bat lsd tldr starship htop libreoffice-langpack-it wireshark mpv libsixel-utils jq hyprland gammastep waybar hyprlock brightnessctl
+    sudo dnf --assumeyes install neovim gcc fd-find ripgrep 
+    sudo dnf --assumeyes install zoxide bat lsd tldr starship htop 
+    sudo dnf --assumeyes install libreoffice-langpack-it wireshark mpv libsixel-utils 
+    sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl
 
-    # upgrade everything #
+    # upgrade everything
     sudo dnf --assumeyes upgrade
 
     # safe uninstall bloat
-    sudo dnf --assumeyes remove kaddressbook kontact kde-connect kgpg kitty nwg-panel mediawriter kamoso kcharselect spectacle kmines kmahjongg kmail akregator dragon elisa-player neochat im-chooser kfind khelpcenter kmousetool libreport skanpage gnome-abrt plasma-drkonqi korganizer kpat kolourpaint kmouth plasma-discover plasma-welcome krdc krfb plasma-vault
+    sudo dnf --assumeyes remove kitty nwg-panel
+    sudo dnf --assumeyes remove kaddressbook kontact kde-connect kamoso kcharselect kmines kmahjongg kmail kfind khelpcenter kmousetool korganizer kpat kolourpaint kmouth 
+    sudo dnf --assumeyes remove krdc krfb kgpg
+    sudo dnf --assumeyes remove plasma-drkonqiplasma-discover plasma-welcome plasma-vault
+    sudo dnf --assumeyes remove mediawriter spectacle akregator dragon elisa-player neochat im-chooser libreport skanpage gnome-abrt 
+
+    # cleanup
+    sudo dnf --assumeyes autoremove
 
 } </dev/tty
+
+# disable speed up
+powerprofilesctl set balanced
 
 exit 0
