@@ -17,3 +17,5 @@
     sudo dnf --assumeyes remove kaddressbook kontact kde-connect kgpg kitty nwg-panel mediawriter kamoso kcharselect spectacle kmines kmahjongg kmail akregator dragon elisa-player neochat im-chooser kfind khelpcenter kmousetool libreport skanpage gnome-abrt plasma-drkonqi korganizer kpat kolourpaint kmouth plasma-discover plasma-welcome krdc krfb plasma-vault
 
 } </dev/tty
+
+exit 0
