@@ -1,24 +1,27 @@
 #!/bin/env bash
 
 ### startup program ###
-eval "$(zoxide init bash)"
+eval "$(zoxide init --hook none --no-cmd bash)"
 
 ## startup programs configs ##
-function clear_zoxide_interactive() {
-    zoxide query -ls | fzf -m | while read -r score path; do
-        zoxide remove "${path}"
-        echo -e "\e[1;33m${path} \e[1;31m(${score})\e[m"
+function __zoxide_euristically__() {
+    \cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
+}
+function __zoxide_add_paths__() {
+    if [[ "$#" -eq 0 ]]; then
+        zoxide add "${PWD}"
+        return 0
+    fi
+    for path in "${@}"; do
+        path="$(realpath "${path}")"
+        if [[ -d "${path}" ]]; then
+            zoxide add "${path}"
+        fi
     done
+    return 0
 }
-function zoxide_euristically() {
-    \cd "$@" &>/dev/null || z "$@" &>/dev/null
-}
-function zoxide_interactive() {
-    \cd "$@" &>/dev/null && return 0
-    CHOISES="$(zoxide query -l "$@" | wc -l)"
-    [[ "${CHOISES}" -le "1" ]] && z "$@"
-    [[ "${CHOISES}" -gt "1" ]] && zi "$@"
-}
-alias cd='zoxide_euristically'
-alias ci='zoxide_interactive'
-alias zd='clear_zoxide_interactive'
+alias cd='__zoxide_euristically__'
+alias za='__zoxide_add_paths__'
+alias ze='zoxide edit'
+alias zi='__zoxide_zi'
+alias zl='zoxide query -ls'
