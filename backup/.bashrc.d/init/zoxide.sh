@@ -21,7 +21,7 @@ function __zoxide_add_paths__() {
     return 0
 }
 alias cd='__zoxide_euristically__'
-alias za='__zoxide_add_paths__'
-alias ze='zoxide edit'
-alias zi='__zoxide_zi'
-alias zl='zoxide query -ls'
+alias ca='__zoxide_add_paths__'
+alias ce='zoxide edit'
+alias ci='__zoxide_zi'
+alias cl='zoxide query -ls'
