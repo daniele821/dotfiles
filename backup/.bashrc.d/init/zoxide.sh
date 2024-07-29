@@ -5,7 +5,13 @@ eval "$(zoxide init --hook none --no-cmd bash)"
 
 ## startup programs configs ##
 function __zoxide_euristically__() {
-    \cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
+    local -r oldpwd="${PWD}"
+    if ! cd "$@" &>/dev/null; then
+        if (__zoxide_z "$@" &>/dev/null && zoxide add "${PWD}"); then
+            __zoxide_z "$@" &>/dev/null
+        fi
+        [[ "${oldpwd}" != "${PWD}" ]]
+    fi
 }
 function __zoxide_add_paths__() {
     if [[ "$#" -eq 0 ]]; then
