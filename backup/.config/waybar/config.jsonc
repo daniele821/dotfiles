@@ -41,7 +41,6 @@
     },
     "hyprland/submap": {
         "format": "{} 󰘳  ",
-        "on-click": "hyprctl dispatch submap reset",
         "tooltip": false,
     },
     "hyprland/language": {
