@@ -24,7 +24,7 @@ handle() {
     case "${event}" in
     submap)
         case "${data}" in
-        personal)
+        "")
             if ! ws_in 1 10; then
                 track_hist
                 hyprctl dispatch workspace "$WS_LAST1"
