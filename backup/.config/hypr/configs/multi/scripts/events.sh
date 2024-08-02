@@ -2,6 +2,8 @@
 
 WS_LAST1=1
 WS_LAST2=11
+WS_TRACK=1
+SUBMAP_TRACK=1
 
 function ws_in() {
     actws="$(hyprctl activeworkspace -j | jq .id)"
@@ -25,15 +27,36 @@ handle() {
     submap)
         case "${data}" in
         "")
+            SUBMAP_TRACK=1
             if ! ws_in 1 10; then
                 track_hist
                 hyprctl dispatch workspace "$WS_LAST1"
             fi
             ;;
         work)
+            SUBMAP_TRACK=2
             if ! ws_in 11 20; then
                 track_hist
                 hyprctl dispatch workspace "$WS_LAST2"
+            fi
+            ;;
+        esac
+        ;;
+    workspacev2)
+        id=${data%%,*}
+        case "${SUBMAP_TRACK}" in
+        1)
+            if ws_in 1 10; then
+                WS_TRACK="${id}"
+            else
+                hyprctl dispatch workspace "${WS_TRACK}"
+            fi
+            ;;
+        2)
+            if ws_in 11 20; then
+                WS_TRACK="${id}"
+            else
+                hyprctl dispatch workspace "${WS_TRACK}"
             fi
             ;;
         esac
