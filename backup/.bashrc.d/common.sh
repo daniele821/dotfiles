@@ -13,7 +13,11 @@ function __exec_nohupped__() {
     (: && nohup "${@}" &>/dev/null &)
 }
 function open() {
-    for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
+    if command -v kde-open &>/dev/null; then
+        for file in "${@}"; do __exec_nohupped__ "kde-open" "${file}"; done
+    else
+        for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
+    fi
 }
 function run() {
     __exec_nohupped__ "${@}"
