@@ -9,5 +9,6 @@
 .bashrc.d
 .local/share/fonts
 .config/hypr
+.config/kitty
 .config/waybar
 .config/mpv

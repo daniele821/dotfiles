@@ -6,7 +6,11 @@ function preview-all() {
     ((COLS = COLS * 5))
     for elem in "${@}"; do
         echo "${elem}"
-        img2sixel -w $COLS "${elem}"
+        if [[ "$TERM" =~ kitty ]]; then
+            kitten icat "${elem}"
+        else
+            img2sixel -w $COLS "${elem}"
+        fi
     done | less -r
 }
 
