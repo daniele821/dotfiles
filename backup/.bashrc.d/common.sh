@@ -8,6 +8,7 @@ export GOPATH="$HOME/.local/share/go"
 alias la='ls -A'
 alias lla='ls -lA'
 alias ll='ls -l'
+alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
 function __exec_nohupped__() {
     (: && nohup "${@}" &>/dev/null &)
