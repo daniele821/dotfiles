@@ -20,7 +20,7 @@ powerprofilesctl set performance
     sudo dnf --assumeyes upgrade
 
     # safe uninstall bloat
-    sudo dnf --assumeyes remove kitty nwg-panel
+    sudo dnf --assumeyes remove nwg-panel
     sudo dnf --assumeyes remove kaddressbook kontact kde-connect kamoso kcharselect kmines kmahjongg kmail kfind khelpcenter kmousetool korganizer kpat kolourpaint kmouth
     sudo dnf --assumeyes remove krdc krfb kgpg
     sudo dnf --assumeyes remove plasma-drkonqi plasma-discover plasma-welcome plasma-vault
