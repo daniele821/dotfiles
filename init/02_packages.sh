@@ -12,9 +12,9 @@ powerprofilesctl set performance
     # install utilities
     sudo dnf --assumeyes install --allowerasing ffmpeg
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep
-    sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv
+    sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv fastfetch
     sudo dnf --assumeyes install libreoffice-langpack-it wireshark mpv libsixel-utils
-    sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl
+    sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl kitty
 
     # upgrade everything
     sudo dnf --assumeyes upgrade
