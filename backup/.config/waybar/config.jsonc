@@ -16,6 +16,7 @@
         "hyprland/workspaces",
     ],
     "modules-right": [
+        "tray",
         "hyprland/submap",
         "pulseaudio",
         "backlight",
@@ -48,7 +49,7 @@
         "format-it": "IT  ",
     },
     "tray": {
-        "icon-size": 21,
+        "icon-size": 16,
         "spacing": 10
     },
     "clock": {
