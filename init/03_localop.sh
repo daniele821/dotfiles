@@ -8,10 +8,16 @@ function ask_user() {
 }
 
 # mandatory init operations
-if ! [[ -d "${PERSONAL_DIR}" ]]; then
+if ! [[ -d "/personal" ]]; then
     sudo mkdir -p /personal/{data,repos} || exit 1
     sudo chown "${USER}":"${USER}" /personal/{data,repos}
     echo "created personal directory in /personal"
+fi
+if ! [[ -f "/usr/local/bin/xdg-terminal-exec" ]]; then
+    echo -n "setting default terminal to "
+    echo 'kitty' | sudo tee /usr/local/bin/xdg-terminal-exec
+    sudo chmod +x /usr/local/bin/xdg-terminal-exec
+
 fi
 
 # restore backup files
@@ -37,6 +43,6 @@ fi </dev/tty
 # disable login manager
 if ask_user 'Do you want to disable sddm'; then
     sudo systemctl disable sddm.service
-fi
+fi </dev/tty
 
 exit 0
