@@ -14,8 +14,10 @@ if ! [[ -d "/personal" ]]; then
     echo "created personal directory in /personal"
 fi
 if ! [[ -f "/usr/local/bin/xdg-terminal-exec" ]]; then
-    echo -n "setting default terminal to "
-    echo 'kitty' | sudo tee /usr/local/bin/xdg-terminal-exec
+    echo "setting default terminal to kitty"
+    echo '#!/bin/bash
+# vim:ft=sh
+kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec &>/dev/null
     sudo chmod +x /usr/local/bin/xdg-terminal-exec
 
 fi
