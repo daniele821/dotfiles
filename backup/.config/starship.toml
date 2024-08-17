@@ -9,12 +9,10 @@ $git_state\
 $git_metrics\
 $git_status\
 $hg_branch\
-$conda\
-$python\
-$spack\
-$env_var\
-$sudo\
+$direnv\
 $jobs\
+$python\
+$conda\
 $status\
 $character"""
 
@@ -37,3 +35,7 @@ format = '(via )[(\($virtualenv\) )]($style)'
 
 [status]
 disabled = false
+
+[direnv]
+disabled = false
+format = '[󰑣]($style) '
