@@ -31,3 +31,6 @@ unset -f command_not_found_handle
 for i in - {0..9}; do
     bind -r "\e$i"
 done
+
+# bind to actually clear terminal
+bind -x '"\C-l": clear'
