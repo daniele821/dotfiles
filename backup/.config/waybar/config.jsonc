@@ -11,12 +11,13 @@
         "power-profiles-daemon",
         "network",
         "hyprland/language",
+        "tray",
+
     ],
     "modules-center": [
         "hyprland/workspaces",
     ],
     "modules-right": [
-        "tray",
         "hyprland/submap",
         "pulseaudio",
         "backlight",
@@ -53,7 +54,7 @@
         "spacing": 10
     },
     "clock": {
-        "format":"{:%H:%M }",
+        "format":"{:%H:%M   %d/%m/%Y }",
         "tooltip-format": "{:%A %d %B %Y}",
         "tooltip":false,
     },
