@@ -8,17 +8,21 @@ function ask_user() {
 }
 
 # mandatory init operations
-if ! [[ -d "/personal" ]]; then
+if ! [[ -d "/personal" ]]; then # create personal dirs
     sudo mkdir -p /personal/{data,repos} || exit 1
     sudo chown "${USER}":"${USER}" /personal/{data,repos}
     echo "created personal directory in /personal"
 fi
-if ! [[ -f "/usr/local/bin/xdg-terminal-exec" ]]; then
+if ! [[ -f "/usr/local/bin/xdg-terminal-exec" ]]; then # set kitty as default terminal
     echo '#!/bin/bash
 # vim:ft=sh
 kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec &>/dev/null
     sudo chmod +x /usr/local/bin/xdg-terminal-exec
     echo "setting default terminal to kitty"
+fi
+if ! grep Hyprland "$HOME/.bash_profile" -q; then # autolaunch Hyprland
+    echo '[[ "$(tty)" == "/dev/tty1" ]] && exec Hyprland' >>"$HOME/.bash_profile"
+    echo 'appending line to bash setup to autostart hyprland from tty'
 fi
 
 # restore backup files
