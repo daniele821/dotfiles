@@ -107,7 +107,7 @@ function save_action() {
         [[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]] && case "${ACTION}" in
         b) if ask_user "Do you really want to restore all"; then
             git -C "${SCRIPT_DIR}" restore "${SCRIPT_DIR}"
-            git -C "${SCRIPT_DIR}" clean -fq
+            git -C "${SCRIPT_DIR}" clean -fdq
         fi ;;
         s) if ask_user "Do you really want to commit all"; then
             git -C "${SCRIPT_DIR}" add "${SCRIPT_DIR}"
