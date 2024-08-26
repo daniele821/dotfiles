@@ -118,6 +118,9 @@ function save_action() {
         esac
         [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" push
     fi
+    ### CLEANUP ###
+    find "${DIR_BACKUP}" -empty -type d -delete
+    mkdir -p "${DIR_BACKUP}"
 }
 function help_msg() {
     echo -e "\
