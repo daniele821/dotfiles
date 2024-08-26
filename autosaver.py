@@ -4,6 +4,7 @@ import os
 import getopt
 import sys
 import itertools as itt
+import subprocess as proc
 
 
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -37,7 +38,9 @@ def ask_user(msg, opts):
 
 
 def get_inits():
-    return os.listdir(DIRS["init"]) if os.path.exists(DIRS["init"]) else []
+    if os.path.exists(DIRS["init"]):
+        return [entry.path for entry in os.scandir(DIRS["init"])]
+    return []
 
 
 # ACTION FUNCTIONS
@@ -78,7 +81,12 @@ help        -h
 
 def edit(opts):
     for file in itt.chain([SCRIPT_PATH], FILES.values(), get_inits()):
-        print(file)
+        if os.path.exists(file):
+            msg = color("msg", "Do you really want to edit ", False)
+            msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
+            msg += color("msg", " ? ", False)
+            if ask_user(msg, opts):
+                proc.run(["nvim", file])
 
 
 # EXECUTION FUNCTIONS
