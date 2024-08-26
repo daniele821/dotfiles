@@ -27,7 +27,10 @@ def color(clr, str, output=True):
         return res
 
 
-def ask_user(msg):
+def ask_user(msg, opts):
+    if 'y' in opts:
+        print(msg + "y")
+        return True
     return input(msg).lower() == "y"
 
 
@@ -67,6 +70,10 @@ help        -h
             """)
 
 
+def edit(opts):
+    pass
+
+
 # EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
@@ -96,7 +103,7 @@ def execute(opts):
     action = None if num_act == 0 else actions.pop()
     match action:
         case "b" | "s" | None: pass
-        case "e": pass
+        case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
         case "r": pass
