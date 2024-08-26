@@ -96,7 +96,9 @@ def run(opts):
         msg += color("msg", " ? ", False)
         if ask_user(msg, opts):
             os.chmod(file, os.stat(file).st_mode | 0o111)
-            proc.run(file)
+            if proc.run(file).returncode != 0:
+                color("err", "ERROR: init script failed!\n")
+                exit(1)
 
 
 # EXECUTION FUNCTIONS
