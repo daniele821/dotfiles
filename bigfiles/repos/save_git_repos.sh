@@ -11,6 +11,7 @@ find /personal/repos/ -iname .git | while read -r dir; do
     if git -C "${DIR}" remote get-url origin &>/dev/null; then
         URL="$(git -C "${DIR}" remote get-url origin)"
         echo -e "Saving DIR:\e[33m${DIR}\e[m, URL:\e[32m${URL}\e[m, BRANCH:\e[34m${BRANCH}\e[m, EMAIL:\e[31m${EMAIL}\e[m" >/dev/tty
-        echo -e "${DIR}\t --> \t${URL}\t --> \t${BRANCH} --> \t${EMAIL}"
+        echo -e "${DIR}\n${URL}\n${BRANCH}\n${EMAIL}"
+        echo "---------------------------------------------------------------------"
     fi
 done >"${BACKUP_FILE}"
