@@ -96,6 +96,7 @@ def run(opts):
         msg += color("msg", " ? ", False)
         if ask_user(msg, opts):
             os.chmod(file, os.stat(file).st_mode | 0o111)
+            proc.run(file)
 
 
 # EXECUTION FUNCTIONS
