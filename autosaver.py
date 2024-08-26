@@ -89,6 +89,15 @@ def edit(opts):
                 proc.run(["nvim", file])
 
 
+def run(opts):
+    for file in get_inits():
+        msg = color("msg", "Do you really want to execute ", False)
+        msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
+        msg += color("msg", " ? ", False)
+        if ask_user(msg, opts):
+            os.chmod(file, os.stat(file).st_mode | 0o111)
+
+
 # EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
@@ -121,7 +130,7 @@ def execute(opts):
         case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
-        case "r": pass
+        case "r": run(opts)
         case _: raise ValueError("UNREACHABLE CODE")
 
 
