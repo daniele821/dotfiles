@@ -13,11 +13,17 @@ DIRS = {"backup": SCRIPT_DIR + "/backup",
 FILES = {"track": DIRS["config"] + "/files_to_track.txt"}
 
 
-def parse_options() -> list[str]:
-    """
-    parse parameters passed from command line
-    N.B: only parses short options, without associated values
-    """
+def color(clr, str, print=True):
+    clr_str = "\033["
+    match clr:
+        case "err" | "error": clr_str += "1;31m"
+        case "file": clr_str += "1;34m"
+        case "msg": clr_str += "1;33m"
+    res = clr_str + str + "\033[m"
+    return print(res) if print else res
+
+
+def parse_options():
     args = sys.argv[1:]
     if len(args) == 1:
         match args[0]:
