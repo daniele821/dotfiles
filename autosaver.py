@@ -3,6 +3,8 @@
 import os
 import getopt
 import sys
+import itertools as itt
+
 
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
@@ -34,12 +36,16 @@ def ask_user(msg, opts):
     return input(msg).lower() == "y"
 
 
+def get_inits():
+    return os.listdir(DIRS["init"]) if os.path.exists(DIRS["init"]) else []
+
+
 # ACTION FUNCTIONS
 def init_files():
-    for _, dir in DIRS.items():
+    for dir in DIRS.values():
         if not os.path.exists(dir):
             os.makedirs(dir)
-    for _, file in FILES.items():
+    for file in FILES.values():
         if not os.path.exists(file):
             open(file, 'w').close()
 
@@ -71,7 +77,8 @@ help        -h
 
 
 def edit(opts):
-    pass
+    for file in itt.chain([SCRIPT_PATH], FILES.values(), get_inits()):
+        print(file)
 
 
 # EXECUTION FUNCTIONS
