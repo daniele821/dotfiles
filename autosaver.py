@@ -37,6 +37,34 @@ def init_files():
             open(file, 'w').close()
 
 
+def help_msg():
+    print(
+        """  Flag options:
+- c         commit, pull, push if possible
+- d         show diffs
+- f         forcely allow dangerous operations
+- v         show verbose output
+- y         always answer yes to questions  
+
+  Action options:
+- b         restore backup
+- e         edit config, init files
+- h         show help message
+- i         initialize necessary directories and files
+- r         run init scripts
+- s         save tracked files
+
+  Shortcuts:
+save        -s -cvy
+restore     -b -vy
+init        -r -y
+edit        -e -y
+help        -h
+
+            """
+    )
+
+
 # EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
@@ -67,7 +95,7 @@ def execute(opts):
     match action:
         case "b" | "s" | None: pass
         case "e": pass
-        case "h": pass
+        case "h": help_msg()
         case "i": init_files()
         case "r": pass
         case _: raise ValueError("UNREACHABLE CODE")
