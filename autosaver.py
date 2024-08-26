@@ -37,7 +37,7 @@ def init_files():
             open(file, 'w').close()
 
 
-# ACTUAL EXECUTION
+# EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
     if len(args) == 1:
