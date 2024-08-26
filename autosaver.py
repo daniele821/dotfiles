@@ -27,6 +27,10 @@ def color(clr, str, output=True):
         return res
 
 
+def ask_user(msg):
+    return input(msg).lower() == "y"
+
+
 # ACTION FUNCTIONS
 def init_files():
     for _, dir in DIRS.items():
