@@ -18,6 +18,14 @@ def parse_options() -> list[str]:
     parse parameters passed from command line
     N.B: only parses short options, without associated values
     """
-    args = [s for s in sys.argv[1:] if s.startswith("-")]
+    args = sys.argv[1:]
+    if len(args) == 1:
+        match args[0]:
+            case "save": return ['s', 'c', 'v', 'y']
+            case "restore": return ['b', 'v', 'y']
+            case "init": return ['r', 'y']
+            case "edit": return ['e', 'y']
+            case "help": return ['h']
+    args = [s for s in args if s.startswith("-")]
     opts = [c[1:] for c, _ in getopt.getopt(args, 'abcd')[0]]
     return opts
