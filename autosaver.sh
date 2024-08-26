@@ -119,8 +119,10 @@ function save_action() {
         [[ "${ACTION}" == "s" ]] && git -C "${SCRIPT_DIR}" push
     fi
     ### CLEANUP ###
-    [[ -d "${DIR_BACKUP}" ]] && find "${DIR_BACKUP}" -empty -type d -delete
-    mkdir -p "${DIR_BACKUP}"
+    if [[ -d "${DIR_BACKUP}" ]]; then
+        find "${DIR_BACKUP}" -empty -type d -delete
+        mkdir -p "${DIR_BACKUP}"
+    fi
 }
 function help_msg() {
     echo -e "\
