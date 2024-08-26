@@ -44,6 +44,10 @@ def get_inits():
 
 
 # ACTION FUNCTIONS
+def backup(opts):
+    pass
+
+
 def help_msg():
     print("""  Flag options:
 - c         commit, pull, push if possible
@@ -129,7 +133,7 @@ def execute(opts):
         exit(1)
     action = None if num_act == 0 else actions.pop()
     match action:
-        case "b" | "s" | None: pass
+        case "b" | "s" | None: backup(opts)
         case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
