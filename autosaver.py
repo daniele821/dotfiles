@@ -44,15 +44,6 @@ def get_inits():
 
 
 # ACTION FUNCTIONS
-def init_files():
-    for dir in DIRS.values():
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-    for file in FILES.values():
-        if not os.path.exists(file):
-            open(file, 'w').close()
-
-
 def help_msg():
     print("""  Flag options:
 - c         commit, pull, push if possible
@@ -77,6 +68,15 @@ edit        -e -y
 help        -h
 
             """)
+
+
+def init_files():
+    for dir in DIRS.values():
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+    for file in FILES.values():
+        if not os.path.exists(file):
+            open(file, 'w').close()
 
 
 def edit(opts):
