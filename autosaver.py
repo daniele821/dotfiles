@@ -43,9 +43,39 @@ def get_inits():
     return []
 
 
+def all_files(dir):
+    files = []
+    for root, _, dirfiles in os.walk(dir):
+        for f in dirfiles:
+            fname = os.path.join(root, f)
+            if os.path.isfile(fname):
+                files.append(fname)
+    return files
+
+
+def relpath(paths, reldir):
+    return [os.path.relpath(path, reldir) for path in paths]
+
+
 # ACTION FUNCTIONS
 def backup(opts):
-    pass
+    home = os.path.expanduser("~")
+    backup = DIRS["backup"]
+    track = FILES["track"]
+
+    # accumulate all tracked files
+    files = set()
+    files.update(relpath(all_files(backup), backup))
+    if os.path.isfile(track):
+        with open(track, "r") as buffer:
+            while line := buffer.readline():
+                line = line.removesuffix("\n")
+                if not line.startswith("/") and line.strip():
+                    file = os.path.join(home, line)
+                    if os.path.isfile(file):
+                        files.add(line)
+                    elif os.path.isdir(file):
+                        files.update(relpath(all_files(file), home))
 
 
 def help_msg():
