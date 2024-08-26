@@ -38,13 +38,12 @@ def init_files():
 
 
 def help_msg():
-    print(
-        """  Flag options:
+    print("""  Flag options:
 - c         commit, pull, push if possible
 - d         show diffs
 - f         forcely allow dangerous operations
 - v         show verbose output
-- y         always answer yes to questions  
+- y         always answer yes to questions
 
   Action options:
 - b         restore backup
@@ -61,8 +60,7 @@ init        -r -y
 edit        -e -y
 help        -h
 
-            """
-    )
+            """)
 
 
 # EXECUTION FUNCTIONS
