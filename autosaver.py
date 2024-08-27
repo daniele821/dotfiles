@@ -143,8 +143,8 @@ def parse_options():
             case "init": return ['r', 'y']
             case "edit": return ['e', 'y']
             case "help": return ['h']
-    args = [s for s in args if s.startswith("-")]
     try:
+        args = [s for s in args if s.startswith("-")]
         opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhirsvy')[0]]
         return opts
     except getopt.GetoptError:
