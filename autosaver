@@ -40,7 +40,13 @@ def ask_user(msg, opts, clr=False):
     if 'y' in opts:
         print("y")
         return True
-    return input().lower() == "y"
+    answer = input()
+    if answer == "y":
+        return True
+    if answer == "n" or not answer.strip():
+        return False
+    print("Invalid answer, retry:")
+    return ask_user(msg, opts, clr)
 
 
 def get_inits():
@@ -81,8 +87,6 @@ def backup(opts):
     msg7 = " : original and backup files differ"
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
-    msg10 = "Do you really want to commit all? "
-    msg11 = "Do you really want to restore all? "
 
     # accumulate all tracked files
     files = set()
@@ -132,7 +136,10 @@ def backup(opts):
                     elif "b" in opts and ask_user(msg9, opts, True):
                         copy_file(fback, fhome)
 
-    # commit
+
+def commit(opts):
+    msg1 = "Do you really want to commit all? "
+    msg2 = "Do you really want to restore all? "
     if "c" in opts:
         dir = SCRIPT_DIR
         stdout = proc.run(['git', '-C', dir, 'status', '-s'],
@@ -149,13 +156,13 @@ def backup(opts):
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
             if "s" in opts or "b" in opts:
                 proc.run(["git", "-C", dir, "status", "-su"])
-            if "s" in opts and ask_user(msg10, opts, True):
+            if "s" in opts and ask_user(msg1, opts, True):
                 cmt = input(color("msg", "Write commit message: ", False))
                 if cmt:
                     proc.run(["git", "-C", dir, "add", dir])
                     proc.run(["git", "-C", dir, "commit", "-m", cmt])
                     proc.run(["git", "-C", dir, "push"])
-            elif "b" in opts and ask_user(msg11, opts, True):
+            elif "b" in opts and ask_user(msg2, opts, True):
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
                 proc.run(["git", "-C", dir, "clean", "-fdq"])
@@ -250,7 +257,9 @@ def execute(opts):
         exit(1)
     action = None if num_act == 0 else actions.pop()
     match action:
-        case "b" | "s" | None: backup(opts)
+        case "b" | "s" | None:
+            backup(opts)
+            commit(opts)
         case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
