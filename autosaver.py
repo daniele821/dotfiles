@@ -130,13 +130,21 @@ def backup(opts):
 
     # commit
     if "c" in opts and proc.run(['[[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]]'], shell=True).returncode == 0:
+        dir = SCRIPT_DIR
         if "s" in opts:
-            proc.run(["git", "-C", SCRIPT_DIR, "pull"])
-            proc.run(["git", "-C", SCRIPT_DIR, "status", "-su"])
+            proc.run(["git", "-C", dir, "pull"])
+            proc.run(["git", "-C", dir, "status", "-su"])
             if ask_user(msg10, opts, True):
-                proc.run(["git", "-C", SCRIPT_DIR, "add", SCRIPT_DIR])
+                cmt = input(color("msg", "Write commit message: ", False))
+                if cmt:
+                    proc.run(["git", "-C", dir, "add", dir])
+                    proc.run(["git", "-C", dir, "commit", "-m", cmt])
+                    proc.run(["git", "-C", dir, "push"])
         elif "b" in opts:
-            pass
+            if ask_user(msg11, opts, True):
+                proc.run(["git", "-C", dir, "restore", "--staged", dir])
+                proc.run(["git", "-C", dir, "restore", dir])
+                proc.run(["git", "-C", dir, "push"])
 
 
 def help_msg():
