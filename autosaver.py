@@ -9,11 +9,11 @@ import subprocess as proc
 
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
-DIRS = {"backup": SCRIPT_DIR + "/backup",
-        "config": SCRIPT_DIR + "/config",
-        "init": SCRIPT_DIR + "/init",
-        "bigfiles": SCRIPT_DIR + "/bigfiles"}
-FILES = {"track": DIRS["config"] + "/files_to_track.txt"}
+DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
+        "config": os.path.join(SCRIPT_DIR, "config"),
+        "init": os.path.join(SCRIPT_DIR, "init"),
+        "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
+FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
 
 
 # UTILITY FUNCTIONS
@@ -43,18 +43,17 @@ def get_inits():
     return []
 
 
-def all_files(dir):
+def all_files(dir, relpath=None):
     files = []
     for root, _, dirfiles in os.walk(dir):
         for f in dirfiles:
             fname = os.path.join(root, f)
             if os.path.isfile(fname):
-                files.append(fname)
+                if relpath is None:
+                    files.append(fname)
+                else:
+                    files.append(os.path.relpath(fname, relpath))
     return files
-
-
-def relpath(paths, reldir):
-    return [os.path.relpath(path, reldir) for path in paths]
 
 
 # ACTION FUNCTIONS
@@ -65,17 +64,16 @@ def backup(opts):
 
     # accumulate all tracked files
     files = set()
-    files.update(relpath(all_files(backup), backup))
+    files.update(all_files(backup, backup))
     if os.path.isfile(track):
         with open(track, "r") as buffer:
-            while line := buffer.readline():
-                line = line.removesuffix("\n")
+            for line in buffer.read().splitlines():
                 if not line.startswith("/") and line.strip():
                     file = os.path.join(home, line)
                     if os.path.isfile(file):
                         files.add(line)
                     elif os.path.isdir(file):
-                        files.update(relpath(all_files(file), home))
+                        files.update(all_files(file, home))
 
 
 def help_msg():
