@@ -129,22 +129,25 @@ def backup(opts):
                         copy_file(fback, fhome)
 
     # commit
-    if "c" in opts and proc.run(['[[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]]'], shell=True).returncode == 0:
+    if "c" in opts:
         dir = SCRIPT_DIR
-        if "s" in opts:
-            proc.run(["git", "-C", dir, "pull"])
-            proc.run(["git", "-C", dir, "status", "-su"])
-            if ask_user(msg10, opts, True):
-                cmt = input(color("msg", "Write commit message: ", False))
-                if cmt:
-                    proc.run(["git", "-C", dir, "add", dir])
-                    proc.run(["git", "-C", dir, "commit", "-m", cmt])
-                    proc.run(["git", "-C", dir, "push"])
-        elif "b" in opts:
-            if ask_user(msg11, opts, True):
-                proc.run(["git", "-C", dir, "restore", "--staged", dir])
-                proc.run(["git", "-C", dir, "restore", dir])
-                proc.run(["git", "-C", dir, "clean", "-fdq"])
+        stdout = proc.run(['git', '-C', dir, 'status', '-s'],
+                          capture_output=True, text=True).stdout
+        if stdout.strip():
+            if "s" in opts:
+                proc.run(["git", "-C", dir, "pull"])
+                proc.run(["git", "-C", dir, "status", "-su"])
+                if ask_user(msg10, opts, True):
+                    cmt = input(color("msg", "Write commit message: ", False))
+                    if cmt:
+                        proc.run(["git", "-C", dir, "add", dir])
+                        proc.run(["git", "-C", dir, "commit", "-m", cmt])
+                        proc.run(["git", "-C", dir, "push"])
+            elif "b" in opts:
+                if ask_user(msg11, opts, True):
+                    proc.run(["git", "-C", dir, "restore", "--staged", dir])
+                    proc.run(["git", "-C", dir, "restore", dir])
+                    proc.run(["git", "-C", dir, "clean", "-fdq"])
 
 
 def help_msg():
