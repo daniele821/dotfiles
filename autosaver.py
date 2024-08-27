@@ -5,6 +5,7 @@ import getopt
 import sys
 import itertools as itt
 import subprocess as proc
+import filecmp as cmp
 from shutil import copyfile as cp
 
 
@@ -67,10 +68,15 @@ def backup(opts):
     home = os.path.expanduser("~")
     backup = DIRS["backup"]
     track = FILES["track"]
-    msg1 = "Do you really want to create the backup file? "
-    msg2 = "[DANGER] Do you really want to delete the original file? "
-    msg3 = "Do you really want to delete the backup file? "
-    msg4 = "Do you really want to create the original file? "
+    msg1 = " : backup file is missing"
+    msg2 = "Do you really want to create the backup file? "
+    msg3 = "[DANGER] Do you really want to delete the original file? "
+    msg4 = " : original file is missing"
+    msg5 = "Do you really want to delete the backup file? "
+    msg6 = "Do you really want to create the original file? "
+    msg7 = " : original and backup files differ"
+    msg8 = "Do you really want to update the backup file? "
+    msg9 = "Do you really want to update the original file? "
 
     # accumulate all tracked files
     files = set()
@@ -92,22 +98,29 @@ def backup(opts):
         backup_file = os.path.join(backup, file)
         match os.path.isfile(home_file), os.path.isfile(backup_file):
             case False, False: raise ValueError("UNREACHABLE CODE")
-            case True, False:  # backup file missing
+            case True, False:
                 color("file", home_file)
-                print(" : backup file is missing" if "v" in opts else "")
-                if "s" in opts and ask_user(msg1, opts):
+                print(msg1 if "v" in opts else "")
+                if "s" in opts and ask_user(msg2, opts):
                     copy_file(home_file, backup_file)
-                elif "b" in opts and "f" in opts and ask_user(msg2, opts):
+                elif "b" in opts and "f" in opts and ask_user(msg3, opts):
                     os.remove(home_file)
-            case False, True:  # home file missing
+            case False, True:
                 color("file", home_file)
-                print(" : original file is missing" if "v" in opts else "")
-                if "s" in opts and ask_user(msg3, opts):
+                print(msg4 if "v" in opts else "")
+                if "s" in opts and ask_user(msg5, opts):
                     os.remove(backup_file)
-                elif "b" in opts and "f" in opts and ask_user(msg4, opts):
+                elif "b" in opts and "f" in opts and ask_user(msg6, opts):
                     copy_file(backup_file, home_file)
-            case True, True:  # no file missing -> check if file differ
-                pass
+            case True, True:
+                if not cmp.cmp(home_file, backup_file):
+                    color("file", home_file)
+                    print(msg7 if "v" in opts else "")
+                # TODO: show file diff
+                if "s" in opts and ask_user(msg8, opts):
+                    copy_file(home_file, backup_file)
+                elif "b" in opts and "f" in opts and ask_user(msg9, opts):
+                    copy_file(backup_file, home_file)
 
 
 def help_msg():
