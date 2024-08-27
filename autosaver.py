@@ -144,7 +144,7 @@ def backup(opts):
             if ask_user(msg11, opts, True):
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
-                proc.run(["git", "-C", dir, "push"])
+                proc.run(["git", "-C", dir, "clean", "-fdq"])
 
 
 def help_msg():
