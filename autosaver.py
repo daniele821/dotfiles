@@ -5,6 +5,7 @@ import getopt
 import sys
 import itertools as itt
 import subprocess as proc
+from shutil import copyfile as cp
 
 
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -56,11 +57,20 @@ def all_files(dir, relpath=None):
     return files
 
 
+def copy_file(src, dst):
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    cp(src, dst)
+
+
 # ACTION FUNCTIONS
 def backup(opts):
     home = os.path.expanduser("~")
     backup = DIRS["backup"]
     track = FILES["track"]
+    msg1 = "Do you really want to create the backup file? "
+    msg2 = "[DANGER] Do you really want to delete the original file? "
+    msg3 = "Do you really want to delete the backup file? "
+    msg4 = "Do you really want to create the original file? "
 
     # accumulate all tracked files
     files = set()
@@ -74,6 +84,30 @@ def backup(opts):
                         files.add(line)
                     elif os.path.isdir(file):
                         files.update(all_files(file, home))
+    files = sorted(files)
+
+    # backup action
+    for file in files:
+        home_file = os.path.join(home, file)
+        backup_file = os.path.join(backup, file)
+        match os.path.isfile(home_file), os.path.isfile(backup_file):
+            case False, False: raise ValueError("UNREACHABLE CODE")
+            case True, False:  # backup file missing
+                color("file", home_file)
+                print(" : backup file is missing" if "v" in opts else "")
+                if "s" in opts and ask_user(msg1, opts):
+                    copy_file(home_file, backup_file)
+                elif "b" in opts and "f" in opts and ask_user(msg2, opts):
+                    os.remove(home_file)
+            case False, True:  # home file missing
+                color("file", home_file)
+                print(" : original file is missing" if "v" in opts else "")
+                if "s" in opts and ask_user(msg3, opts):
+                    os.remove(backup_file)
+                elif "b" in opts and "f" in opts and ask_user(msg4, opts):
+                    copy_file(backup_file, home_file)
+            case True, True:  # no file missing -> check if file differ
+                pass
 
 
 def help_msg():
