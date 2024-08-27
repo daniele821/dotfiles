@@ -78,6 +78,8 @@ def backup(opts):
     msg7 = " : original and backup files differ"
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
+    msg10 = "Do you really want to commit all? "
+    msg11 = "Do you really want to restore all? "
 
     # accumulate all tracked files
     files = set()
@@ -125,6 +127,16 @@ def backup(opts):
                         copy_file(fhome, fback)
                     elif "b" in opts and ask_user(msg9, opts, True):
                         copy_file(fback, fhome)
+
+    # commit
+    if "c" in opts and proc.run(['[[ -n "$(git -C "${SCRIPT_DIR}" status -s)" ]]'], shell=True).returncode == 0:
+        if "s" in opts:
+            proc.run(["git", "-C", SCRIPT_DIR, "pull"])
+            proc.run(["git", "-C", SCRIPT_DIR, "status", "-su"])
+            if ask_user(msg10, opts, True):
+                proc.run(["git", "-C", SCRIPT_DIR, "add", SCRIPT_DIR])
+        elif "b" in opts:
+            pass
 
 
 def help_msg():
