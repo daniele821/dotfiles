@@ -116,11 +116,11 @@ def backup(opts):
                 if not cmp.cmp(home_file, backup_file):
                     color("file", home_file)
                     print(msg7 if "v" in opts else "")
-                # TODO: show file diff
-                if "s" in opts and ask_user(msg8, opts):
-                    copy_file(home_file, backup_file)
-                elif "b" in opts and "f" in opts and ask_user(msg9, opts):
-                    copy_file(backup_file, home_file)
+                    # TODO: show file diff
+                    if "s" in opts and ask_user(msg8, opts):
+                        copy_file(home_file, backup_file)
+                    elif "b" in opts and "f" in opts and ask_user(msg9, opts):
+                        copy_file(backup_file, home_file)
 
 
 def help_msg():
