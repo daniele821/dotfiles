@@ -138,13 +138,14 @@ def backup(opts):
 
 
 def commit(opts):
+    dir = SCRIPT_DIR
     msg1 = "Do you really want to commit all? "
     msg2 = "Do you really want to restore all? "
+
+    # commit
     if "c" in opts:
-        dir = SCRIPT_DIR
-        stdout = proc.run(['git', '-C', dir, 'status', '-s'],
-                          capture_output=True, text=True).stdout
-        if stdout.strip():
+        if proc.run(['git', '-C', dir, 'status', '-s'],
+                    capture_output=True, text=True).stdout.strip():
             if "s" in opts:
                 proc.run(["git", "-C", dir, "pull"])
             if "d" in opts:
