@@ -105,8 +105,9 @@ def backup(opts):
                 print(msg1 if "v" in opts else "")
                 if "s" in opts and ask_user(msg2, opts, True):
                     copy_file(fhome, fback)
-                elif "b" in opts and "f" in opts and ask_user(msg3, opts, True):
-                    os.remove(fhome)
+                elif "b" in opts and "f" in opts:
+                    if ask_user(msg3, opts, True):
+                        os.remove(fhome)
             case False, True:
                 color("file", fhome)
                 print(msg4 if "v" in opts else "")
@@ -137,6 +138,8 @@ def backup(opts):
             if "s" in opts:
                 proc.run(["git", "-C", dir, "pull"])
                 proc.run(["git", "-C", dir, "status", "-su"])
+                if "d" in opts:
+                    proc.run(["git", "-C", dir, "--no-pager", "diff", "HEAD"])
                 if ask_user(msg10, opts, True):
                     cmt = input(color("msg", "Write commit message: ", False))
                     if cmt:
