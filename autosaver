@@ -176,6 +176,9 @@ init        -r -y
 edit        -e -y
 help        -h
 
+  Environment
+DEBUG       set to any not empty value, to allow print python stderr
+
             """)
 
 
@@ -247,4 +250,7 @@ def execute(opts):
 
 # ACTUAL EXECUTION
 if __name__ == "__main__":
+    if not os.getenv("DEBUG"):
+        f = open(os.devnull, 'w')
+        sys.stderr = f
     execute(parse_options())
