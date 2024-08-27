@@ -34,6 +34,9 @@ def color(clr, str, output=True):
 
 def ask_user(msg, opts, clr=False):
     color("msg", msg) if clr else print(msg, end="")
+    if 'n' in opts:
+        print('n')
+        return False
     if 'y' in opts:
         print("y")
         return True
@@ -163,6 +166,7 @@ def help_msg():
 - c         commit, pull, push if possible
 - d         show diffs
 - f         forcely allow dangerous operations
+- n         always answer no to questions
 - v         show verbose output
 - y         always answer yes to questions
 
@@ -230,7 +234,7 @@ def parse_options():
             case "help": return ['h']
     try:
         args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhirsvy')[0]]
+        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsvy')[0]]
         return opts
     except getopt.GetoptError:
         color("err", "ERROR: an invalid option was passed!\n")
