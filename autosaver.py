@@ -32,11 +32,12 @@ def color(clr, str, output=True):
         return res
 
 
-def ask_user(msg, opts):
+def ask_user(msg, opts, clr=False):
+    color("msg", msg) if clr else print(msg, end="")
     if 'y' in opts:
-        print(msg + "y")
+        print("y")
         return True
-    return input(msg).lower() == "y"
+    return input().lower() == "y"
 
 
 def get_inits():
@@ -101,25 +102,25 @@ def backup(opts):
             case True, False:
                 color("file", home_file)
                 print(msg1 if "v" in opts else "")
-                if "s" in opts and ask_user(msg2, opts):
+                if "s" in opts and ask_user(msg2, opts, True):
                     copy_file(home_file, backup_file)
-                elif "b" in opts and "f" in opts and ask_user(msg3, opts):
+                elif "b" in opts and "f" in opts and ask_user(msg3, opts, True):
                     os.remove(home_file)
             case False, True:
                 color("file", home_file)
                 print(msg4 if "v" in opts else "")
-                if "s" in opts and ask_user(msg5, opts):
+                if "s" in opts and ask_user(msg5, opts, True):
                     os.remove(backup_file)
-                elif "b" in opts and "f" in opts and ask_user(msg6, opts):
+                elif "b" in opts and ask_user(msg6, opts, True):
                     copy_file(backup_file, home_file)
             case True, True:
                 if not cmp.cmp(home_file, backup_file):
                     color("file", home_file)
                     print(msg7 if "v" in opts else "")
                     # TODO: show file diff
-                    if "s" in opts and ask_user(msg8, opts):
+                    if "s" in opts and ask_user(msg8, opts, True):
                         copy_file(home_file, backup_file)
-                    elif "b" in opts and "f" in opts and ask_user(msg9, opts):
+                    elif "b" in opts and ask_user(msg9, opts, True):
                         copy_file(backup_file, home_file)
 
 
