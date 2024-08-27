@@ -144,7 +144,8 @@ def backup(opts):
                 if "b" in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
-            proc.run(["git", "-C", dir, "status", "-su"])
+            if "s" in opts or "b" in opts:
+                proc.run(["git", "-C", dir, "status", "-su"])
             if "s" in opts and ask_user(msg10, opts, True):
                 cmt = input(color("msg", "Write commit message: ", False))
                 if cmt:
