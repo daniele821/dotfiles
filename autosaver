@@ -137,20 +137,24 @@ def backup(opts):
         if stdout.strip():
             if "s" in opts:
                 proc.run(["git", "-C", dir, "pull"])
-                proc.run(["git", "-C", dir, "status", "-su"])
-                if "d" in opts:
-                    proc.run(["git", "-C", dir, "--no-pager", "diff", "HEAD"])
-                if ask_user(msg10, opts, True):
-                    cmt = input(color("msg", "Write commit message: ", False))
-                    if cmt:
-                        proc.run(["git", "-C", dir, "add", dir])
-                        proc.run(["git", "-C", dir, "commit", "-m", cmt])
-                        proc.run(["git", "-C", dir, "push"])
-            elif "b" in opts:
-                if ask_user(msg11, opts, True):
-                    proc.run(["git", "-C", dir, "restore", "--staged", dir])
-                    proc.run(["git", "-C", dir, "restore", dir])
-                    proc.run(["git", "-C", dir, "clean", "-fdq"])
+            if "d" in opts:
+                if "s" in opts:
+                    proc.run(["git", "-C", dir, "--no-pager",
+                             "diff", "HEAD", "--diff-filter=adcr"])
+                if "b" in opts:
+                    proc.run(["git", "-C", dir, "--no-pager",
+                              "diff", "HEAD", "-R", "--diff-filter=adcr"])
+            proc.run(["git", "-C", dir, "status", "-su"])
+            if "s" in opts and ask_user(msg10, opts, True):
+                cmt = input(color("msg", "Write commit message: ", False))
+                if cmt:
+                    proc.run(["git", "-C", dir, "add", dir])
+                    proc.run(["git", "-C", dir, "commit", "-m", cmt])
+                    proc.run(["git", "-C", dir, "push"])
+            elif "b" in opts and ask_user(msg11, opts, True):
+                proc.run(["git", "-C", dir, "restore", "--staged", dir])
+                proc.run(["git", "-C", dir, "restore", dir])
+                proc.run(["git", "-C", dir, "clean", "-fdq"])
 
 
 def help_msg():
