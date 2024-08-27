@@ -40,7 +40,13 @@ def ask_user(msg, opts, clr=False):
     if 'y' in opts:
         print("y")
         return True
-    return input().lower() == "y"
+    answer = input()
+    if answer == "y":
+        return True
+    if answer == "n" or not answer.strip():
+        return False
+    print("Invalid answer, retry:")
+    return ask_user(msg, opts, clr)
 
 
 def get_inits():
