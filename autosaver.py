@@ -95,33 +95,36 @@ def backup(opts):
 
     # backup action
     for file in files:
-        home_file = os.path.join(home, file)
-        backup_file = os.path.join(backup, file)
-        match os.path.isfile(home_file), os.path.isfile(backup_file):
-            case False, False: raise ValueError("UNREACHABLE CODE")
+        fhome = os.path.join(home, file)
+        fback = os.path.join(backup, file)
+        match os.path.isfile(fhome), os.path.isfile(fback):
             case True, False:
-                color("file", home_file)
+                color("file", fhome)
                 print(msg1 if "v" in opts else "")
                 if "s" in opts and ask_user(msg2, opts, True):
-                    copy_file(home_file, backup_file)
+                    copy_file(fhome, fback)
                 elif "b" in opts and "f" in opts and ask_user(msg3, opts, True):
-                    os.remove(home_file)
+                    os.remove(fhome)
             case False, True:
-                color("file", home_file)
+                color("file", fhome)
                 print(msg4 if "v" in opts else "")
                 if "s" in opts and ask_user(msg5, opts, True):
-                    os.remove(backup_file)
+                    os.remove(fback)
                 elif "b" in opts and ask_user(msg6, opts, True):
-                    copy_file(backup_file, home_file)
+                    copy_file(fback, fhome)
             case True, True:
-                if not cmp.cmp(home_file, backup_file):
-                    color("file", home_file)
+                if not cmp.cmp(fhome, fback):
+                    color("file", fhome)
                     print(msg7 if "v" in opts else "")
-                    # TODO: show file diff
+                    if "d" in opts:
+                        if "b" in opts:
+                            proc.run(["diff", "--color", "-u", fhome, fback])
+                        else:
+                            proc.run(["diff", "--color", "-u", fback, fhome])
                     if "s" in opts and ask_user(msg8, opts, True):
-                        copy_file(home_file, backup_file)
+                        copy_file(fhome, fback)
                     elif "b" in opts and ask_user(msg9, opts, True):
-                        copy_file(backup_file, home_file)
+                        copy_file(fback, fhome)
 
 
 def help_msg():
@@ -214,7 +217,6 @@ def execute(opts):
         case "h": help_msg()
         case "i": init_files()
         case "r": run(opts)
-        case _: raise ValueError("UNREACHABLE CODE")
 
 
 # ACTUAL EXECUTION
