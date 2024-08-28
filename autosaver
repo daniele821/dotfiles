@@ -81,6 +81,8 @@ def backup(opts):
     msg7 = " : original and backup files differ"
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
+    msg10 = " : file is untracked"
+    msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
 
     # accumulate all tracked files
     files = set()
@@ -134,6 +136,17 @@ def backup(opts):
                     elif "b" in opts and ask_user(msg9, opts, True):
                         copy_file(fback, fhome)
 
+    # remove untracked files actions
+    if "u" in opts:
+        untracked = sorted(set(all_files(backup, backup)) - set(files))
+        for file in untracked:
+            fhome = os.path.join(home, file)
+            fback = os.path.join(backup, file)
+            color("file", fhome)
+            print(msg10 if "v" in opts else "")
+            if ("s" in opts or "b" in opts) and ask_user(msg11, opts, True):
+                os.remove(fback)
+
 
 def commit(opts):
     dir = SCRIPT_DIR
@@ -173,6 +186,7 @@ def help_msg():
 - d         show diffs
 - f         forcely allow dangerous operations
 - n         always answer no to questions
+- u         show also untracked files
 - v         show verbose output
 - y         always answer yes to questions
 
@@ -241,7 +255,7 @@ def parse_options():
             case "help": return ['h']
     try:
         args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsvy')[0]]
+        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsuvy')[0]]
         return opts
     except getopt.GetoptError:
         color("err", "ERROR: an invalid option was passed!\n")
