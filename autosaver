@@ -202,10 +202,11 @@ def help_msg():
 - u         show also untracked files
 
   Valid flag for each action:
+-             d     v
 - b         c d f n v y
 - e               n   y
-- h                    
-- i                    
+- h
+- i
 - r               n   y
 - s         c d   n v y
 - u             f n   y
