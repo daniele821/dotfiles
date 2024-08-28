@@ -49,12 +49,6 @@ def ask_user(msg, opts, clr=False):
     return ask_user(msg, opts, clr)
 
 
-def get_inits():
-    if os.path.exists(DIRS["init"]):
-        return [entry.path for entry in os.scandir(DIRS["init"])]
-    return []
-
-
 def all_files(dir, relpath=None):
     files = []
     for root, _, dirfiles in os.walk(dir):
@@ -209,7 +203,8 @@ def init_files():
 
 
 def edit(opts):
-    for file in itt.chain([SCRIPT_PATH], FILES.values(), get_inits()):
+    for file in itt.chain([SCRIPT_PATH], FILES.values(),
+                          all_files(DIRS["init"])):
         if os.path.exists(file):
             msg = color("msg", "Do you really want to edit ", False)
             msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
@@ -219,7 +214,7 @@ def edit(opts):
 
 
 def run(opts):
-    for file in get_inits():
+    for file in all_files(DIRS["init"]):
         msg = color("msg", "Do you really want to execute ", False)
         msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
         msg += color("msg", " ? ", False)
