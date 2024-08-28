@@ -84,16 +84,20 @@ def backup(opts):
 
     # accumulate all tracked files
     files = set()
-    files.update(all_files(backup, backup))
     if os.path.isfile(track):
         with open(track, "r") as buffer:
             for line in buffer.read().splitlines():
-                if not line.startswith("/") and line.strip():
-                    file = os.path.join(home, line)
-                    if os.path.isfile(file):
+                if not line.startswith("/") and line:
+                    ofile = os.path.join(home, line)
+                    bfile = os.path.join(backup, line)
+                    if os.path.isfile(ofile):
                         files.add(line)
-                    elif os.path.isdir(file):
-                        files.update(all_files(file, home))
+                    elif os.path.isdir(ofile):
+                        files.update(all_files(ofile, home))
+                    if os.path.isfile(bfile):
+                        files.add(line)
+                    elif os.path.isdir(bfile):
+                        files.update(all_files(bfile, backup))
     files = sorted(files)
 
     # backup action
