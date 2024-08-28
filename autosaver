@@ -186,7 +186,6 @@ def help_msg():
 - d         show diffs
 - f         forcely allow dangerous operations
 - n         always answer no to questions
-- u         show also untracked files
 - v         show verbose output
 - y         always answer yes to questions
 
@@ -197,6 +196,7 @@ def help_msg():
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
+- u         show also untracked files
 
   Shortcuts:
 save        -s -cvy
@@ -264,7 +264,7 @@ def parse_options():
 
 def execute(opts):
     opts = set(opts)
-    actions = set([opt for opt in opts if opt in 'behirs'])
+    actions = set([opt for opt in opts if opt in 'behirsu'])
     num_act = len(actions)
     if num_act >= 2:
         color("err", "ERROR: too many action flags were passed!\n")
@@ -278,6 +278,7 @@ def execute(opts):
         case "h": help_msg()
         case "i": init_files()
         case "r": run(opts)
+        case "u": untracked(opts)
 
 
 # ACTUAL EXECUTION
