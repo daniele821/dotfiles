@@ -147,7 +147,7 @@ def backup(opts):
             fback = os.path.join(backup, file)
             color("file", fhome)
             print(msg10 if "v" in opts else "")
-            if ("s" in opts or "b" in opts) and ask_user(msg11, opts, True):
+            if "f" in opts and ask_user(msg11, opts, True):
                 os.remove(fback)
 
 
@@ -201,15 +201,24 @@ def help_msg():
 - s         save tracked files
 - u         show also untracked files
 
+  Valid flag for each action:
+- b         c d f n v y
+- e               n   y
+- h                    
+- i                    
+- r               n   y
+- s         c d   n v y
+- u             f n   y
+
   Shortcuts:
-save        -s -cvy
-restore     -b -vy
-init        -r -y
-edit        -e -y
-help        -h
+- save      -s -cvy
+- restore   -b -vy
+- init      -r -y
+- edit      -e -y
+- help      -h
 
   Environment
-DEBUG       set to any not empty value, to allow print python stderr
+- DEBUG     set to any not empty value, to allow print python stderr
 
             """)
 
