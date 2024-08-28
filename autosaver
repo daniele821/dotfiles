@@ -49,12 +49,6 @@ def ask_user(msg, opts, clr=False):
     return ask_user(msg, opts, clr)
 
 
-def get_inits():
-    if os.path.exists(DIRS["init"]):
-        return [entry.path for entry in os.scandir(DIRS["init"])]
-    return []
-
-
 def all_files(dir, relpath=None):
     files = []
     for root, _, dirfiles in os.walk(dir):
@@ -87,54 +81,74 @@ def backup(opts):
     msg7 = " : original and backup files differ"
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
+    msg10 = " : file is untracked"
+    msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
 
     # accumulate all tracked files
     files = set()
-    files.update(all_files(backup, backup))
     if os.path.isfile(track):
         with open(track, "r") as buffer:
             for line in buffer.read().splitlines():
-                if not line.startswith("/") and line.strip():
-                    file = os.path.join(home, line)
-                    if os.path.isfile(file):
+                if not line.startswith("/") and line:
+                    ofile = os.path.join(home, line)
+                    bfile = os.path.join(backup, line)
+                    if os.path.isfile(ofile):
                         files.add(line)
-                    elif os.path.isdir(file):
-                        files.update(all_files(file, home))
+                    elif os.path.isdir(ofile):
+                        files.update(all_files(ofile, home))
+                    if os.path.isfile(bfile):
+                        files.add(line)
+                    elif os.path.isdir(bfile):
+                        files.update(all_files(bfile, backup))
     files = sorted(files)
 
     # backup action
-    for file in files:
-        fhome = os.path.join(home, file)
-        fback = os.path.join(backup, file)
-        match os.path.isfile(fhome), os.path.isfile(fback):
-            case True, False:
-                color("file", fhome)
-                print(msg1 if "v" in opts else "")
-                if "s" in opts and ask_user(msg2, opts, True):
-                    copy_file(fhome, fback)
-                elif "b" in opts and "f" in opts:
-                    if ask_user(msg3, opts, True):
-                        os.remove(fhome)
-            case False, True:
-                color("file", fhome)
-                print(msg4 if "v" in opts else "")
-                if "s" in opts and ask_user(msg5, opts, True):
-                    os.remove(fback)
-                elif "b" in opts and ask_user(msg6, opts, True):
-                    copy_file(fback, fhome)
-            case True, True:
-                if not cmp.cmp(fhome, fback):
+    if "u" not in opts:
+        for file in files:
+            fhome = os.path.join(home, file)
+            fback = os.path.join(backup, file)
+            match os.path.isfile(fhome), os.path.isfile(fback):
+                case True, False:
                     color("file", fhome)
-                    print(msg7 if "v" in opts else "")
-                    if "d" in opts:
-                        if "b" in opts:
-                            proc.run(["diff", "--color", "-u", fhome, fback])
-                        else:
-                            proc.run(["diff", "--color", "-u", fback, fhome])
-                    if "s" in opts and ask_user(msg8, opts, True):
+                    print(msg1 if "v" in opts else "")
+                    if "s" in opts and ask_user(msg2, opts, True):
                         copy_file(fhome, fback)
-                    elif "b" in opts and ask_user(msg9, opts, True):
+                    elif "b" in opts and "f" in opts:
+                        if ask_user(msg3, opts, True):
+                            os.remove(fhome)
+                case False, True:
+                    color("file", fhome)
+                    print(msg4 if "v" in opts else "")
+                    if "s" in opts and ask_user(msg5, opts, True):
+                        os.remove(fback)
+                    elif "b" in opts and ask_user(msg6, opts, True):
                         copy_file(fback, fhome)
+                case True, True:
+                    if not cmp.cmp(fhome, fback):
+                        color("file", fhome)
+                        print(msg7 if "v" in opts else "")
+                        if "d" in opts:
+                            if "b" in opts:
+                                proc.run(
+                                    ["diff", "--color", "-u", fhome, fback])
+                            else:
+                                proc.run(
+                                    ["diff", "--color", "-u", fback, fhome])
+                        if "s" in opts and ask_user(msg8, opts, True):
+                            copy_file(fhome, fback)
+                        elif "b" in opts and ask_user(msg9, opts, True):
+                            copy_file(fback, fhome)
+
+    # remove untracked files actions
+    if "u" in opts:
+        untracked = sorted(set(all_files(backup, backup)) - set(files))
+        for file in untracked:
+            fhome = os.path.join(home, file)
+            fback = os.path.join(backup, file)
+            color("file", fhome)
+            print(msg10 if "v" in opts else "")
+            if "f" in opts and ask_user(msg11, opts, True):
+                os.remove(fback)
 
 
 def commit(opts):
@@ -185,16 +199,27 @@ def help_msg():
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
+- u         show also untracked files
+
+  Valid flag for each action:
+-             d     v
+- b         c d f n v y
+- e               n   y
+- h
+- i
+- r               n   y
+- s         c d   n v y
+- u             f n   y
 
   Shortcuts:
-save        -s -cvy
-restore     -b -vy
-init        -r -y
-edit        -e -y
-help        -h
+- save      -s -cvy
+- restore   -b -vy
+- init      -r -y
+- edit      -e -y
+- help      -h
 
   Environment
-DEBUG       set to any not empty value, to allow print python stderr
+- DEBUG     set to any not empty value, to allow print python stderr
 
             """)
 
@@ -209,7 +234,8 @@ def init_files():
 
 
 def edit(opts):
-    for file in itt.chain([SCRIPT_PATH], FILES.values(), get_inits()):
+    for file in itt.chain([SCRIPT_PATH], FILES.values(),
+                          all_files(DIRS["init"])):
         if os.path.exists(file):
             msg = color("msg", "Do you really want to edit ", False)
             msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
@@ -219,7 +245,7 @@ def edit(opts):
 
 
 def run(opts):
-    for file in get_inits():
+    for file in all_files(DIRS["init"]):
         msg = color("msg", "Do you really want to execute ", False)
         msg += color("file", os.path.relpath(file, SCRIPT_DIR), False)
         msg += color("msg", " ? ", False)
@@ -242,7 +268,7 @@ def parse_options():
             case "help": return ['h']
     try:
         args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsvy')[0]]
+        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsuvy')[0]]
         return opts
     except getopt.GetoptError:
         color("err", "ERROR: an invalid option was passed!\n")
@@ -251,7 +277,7 @@ def parse_options():
 
 def execute(opts):
     opts = set(opts)
-    actions = set([opt for opt in opts if opt in 'behirs'])
+    actions = set([opt for opt in opts if opt in 'behirsu'])
     num_act = len(actions)
     if num_act >= 2:
         color("err", "ERROR: too many action flags were passed!\n")
@@ -265,6 +291,7 @@ def execute(opts):
         case "h": help_msg()
         case "i": init_files()
         case "r": run(opts)
+        case "u": backup(opts)
 
 
 # ACTUAL EXECUTION
