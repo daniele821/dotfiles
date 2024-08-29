@@ -1,2 +1,1 @@
-# used to hide specific config files
-/userconfig/
+.envrc

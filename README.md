@@ -18,8 +18,3 @@ cd dotfiles || exit 1
 ./autosaver restore
 ./autosaver init
 ```
-
-# TODO
-
-- [x] replace swaylock with hyprlock
-- [x] add submap in hyprland for resizing windows
