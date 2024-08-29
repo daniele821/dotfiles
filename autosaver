@@ -8,7 +8,7 @@ import subprocess as proc
 import filecmp as cmp
 from shutil import copyfile as cp
 
-
+HOME = os.path.expanduser("~")
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
@@ -69,7 +69,6 @@ def copy_file(src, dst):
 
 # ACTION FUNCTIONS
 def backup(opts):
-    home = os.path.expanduser("~")
     backup = DIRS["backup"]
     track = FILES["track"]
     msg1 = " : backup file is missing"
@@ -90,12 +89,12 @@ def backup(opts):
         with open(track, "r") as buffer:
             for line in buffer.read().splitlines():
                 if not line.startswith("/") and line:
-                    ofile = os.path.join(home, line)
+                    ofile = os.path.join(HOME, line)
                     bfile = os.path.join(backup, line)
                     if os.path.isfile(ofile):
                         files.add(line)
                     elif os.path.isdir(ofile):
-                        files.update(all_files(ofile, home))
+                        files.update(all_files(ofile, HOME))
                     if os.path.isfile(bfile):
                         files.add(line)
                     elif os.path.isdir(bfile):
@@ -105,7 +104,7 @@ def backup(opts):
     # backup action
     if "u" not in opts:
         for file in files:
-            fhome = os.path.join(home, file)
+            fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             match os.path.isfile(fhome), os.path.isfile(fback):
                 case True, False:
@@ -143,7 +142,7 @@ def backup(opts):
     if "u" in opts:
         untracked = sorted(set(all_files(backup, backup)) - set(files))
         for file in untracked:
-            fhome = os.path.join(home, file)
+            fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             color("file", fhome)
             print(msg10 if "v" in opts else "")
