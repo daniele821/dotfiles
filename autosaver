@@ -236,7 +236,8 @@ def help_msg():
 - help      -h
 
   Environment
-- DEBUG     set to any not empty value, to allow print python stderr
+- __DBG   set to any not empty value, to allow print python stderr
+- __CCK   set to any not empty value, to disable checking if flags are valid
 
             """)
 
@@ -276,39 +277,65 @@ def run(opts):
 # EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
-    if len(args) == 1:
+    opts = set()
+
+    # shortcuts
+    if len(args) >= 1:
         match args[0]:
-            case "save": return ['s', 'c', 'v', 'y']
-            case "restore": return ['b', 'v', 'y']
-            case "init": return ['r', 'y']
-            case "edit": return ['e', 'y']
-            case "help": return ['h']
+            case "save": opts = ['s', 'c', 'v', 'y']
+            case "restore": opts = ['b', 'v', 'y']
+            case "init": opts = ['r', 'y']
+            case "edit": opts = ['e', 'y']
+            case "help": opts = ['h']
+
+    # parse options
     try:
-        args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrstuvy')[0]]
-        return opts
+        if not opts:
+            args = [s for s in args if s.startswith("-")]
+            opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrstuvy')[0]]
+        opts = set(opts)
+
+        # parse action
+        actions = set([opt for opt in opts if opt in 'behirsu'])
+        num_act = len(actions)
+        if num_act >= 2:
+            color("err", "ERROR: too many action flags were passed:\n")
+            for action in actions:
+                print("-" + action, end=" ")
+            print()
+            exit(1)
+        action = None if num_act == 0 else actions.pop()
+        return opts, action
     except getopt.GetoptError as err:
         color("err", "ERROR: an invalid option was passed:\n")
         print(err)
         exit(1)
 
 
-def execute(opts):
-    opts = set(opts)
-    actions = set([opt for opt in opts if opt in 'behirsu'])
-    num_act = len(actions)
-    if num_act >= 2:
-        color("err", "ERROR: too many action flags were passed:\n")
-        for action in actions:
-            print("-" + action, end=" ")
+def check(opts, action):
+    all_valid_opts = {
+        None: "dntvy",
+        "b": "cdfntvy",
+        "e": "ny",
+        "h": "",
+        "i": "",
+        "r": "ny",
+        "s": "cdntvy",
+        "u": "fny",
+    }
+    valid_opts = set(all_valid_opts[action])
+    invalid_opts = opts - valid_opts - set([action])
+    if invalid_opts:
+        color("err", "ERROR: following flags are invalid for this action:\n")
+        for flag in invalid_opts:
+            print("-" + flag, end=" ")
         print()
         exit(1)
-    action = None if num_act == 0 else actions.pop()
+
+
+def execute(opts, action):
     match action:
         case "b" | "s" | None:
-            if "t" in opts and "c" in opts:
-                color("err", "ERROR: cannot use -t and -c flags toghether!\n")
-                exit(1)
             backup(opts)
             commit(opts)
         case "e": edit(opts)
@@ -320,7 +347,10 @@ def execute(opts):
 
 # ACTUAL EXECUTION
 if __name__ == "__main__":
-    if not os.getenv("DEBUG"):
+    if not os.getenv("__DBG"):
         f = open(os.devnull, 'w')
         sys.stderr = f
-    execute(parse_options())
+    opts, action = parse_options()
+    if not os.getenv("__CCK"):
+        check(opts, action)
+    execute(opts, action)
