@@ -8,14 +8,16 @@ import subprocess as proc
 import filecmp as cmp
 from shutil import copyfile as cp
 
-
+HOME = os.path.expanduser("~")
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "config": os.path.join(SCRIPT_DIR, "config"),
         "init": os.path.join(SCRIPT_DIR, "init"),
         "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
-FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
+FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
+         "track2": os.path.join(DIRS["config"], "files_to_track2.txt"),
+         "skip": os.path.join(DIRS["config"], "files_to_skip.txt")}
 
 
 # UTILITY FUNCTIONS
@@ -62,6 +64,25 @@ def all_files(dir, relpath=None):
     return files
 
 
+def load_config(conf):
+    files = set()
+    if os.path.isfile(conf):
+        with open(conf, "r") as buffer:
+            for line in buffer.read().splitlines():
+                if not line.startswith("/") and line:
+                    ofile = os.path.join(HOME, line)
+                    bfile = os.path.join(DIRS["backup"], line)
+                    if os.path.isfile(ofile):
+                        files.add(line)
+                    elif os.path.isdir(ofile):
+                        files.update(all_files(ofile, HOME))
+                    if os.path.isfile(bfile):
+                        files.add(line)
+                    elif os.path.isdir(bfile):
+                        files.update(all_files(bfile, DIRS["backup"]))
+    return files
+
+
 def copy_file(src, dst):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     cp(src, dst)
@@ -69,9 +90,7 @@ def copy_file(src, dst):
 
 # ACTION FUNCTIONS
 def backup(opts):
-    home = os.path.expanduser("~")
     backup = DIRS["backup"]
-    track = FILES["track"]
     msg1 = " : backup file is missing"
     msg2 = "Do you really want to create the backup file? "
     msg3 = "[DANGER] Do you really want to delete the original file? "
@@ -85,27 +104,24 @@ def backup(opts):
     msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
 
     # accumulate all tracked files
-    files = set()
-    if os.path.isfile(track):
-        with open(track, "r") as buffer:
-            for line in buffer.read().splitlines():
-                if not line.startswith("/") and line:
-                    ofile = os.path.join(home, line)
-                    bfile = os.path.join(backup, line)
-                    if os.path.isfile(ofile):
-                        files.add(line)
-                    elif os.path.isdir(ofile):
-                        files.update(all_files(ofile, home))
-                    if os.path.isfile(bfile):
-                        files.add(line)
-                    elif os.path.isdir(bfile):
-                        files.update(all_files(bfile, backup))
-    files = sorted(files)
+    tracked = load_config(FILES["track"])
+    tracked2 = load_config(FILES["track2"])
+    skipped = load_config(FILES["skip"])
+    tracked_unskipped = tracked - skipped
+    tracked_unskipped2 = tracked2 - skipped
+    if intersection := tracked_unskipped & tracked_unskipped2:
+        color("err", "ERROR: following files are in both tracking files:\n")
+        for file in intersection:
+            print(os.path.join(HOME, file))
+        exit(1)
+    files = sorted(tracked_unskipped2 if "t" in opts else tracked_unskipped)
 
     # backup action
     if "u" not in opts:
+        if "t" in opts:
+            color("msg", "WARNING: the secondary tracking list is in use!\n")
         for file in files:
-            fhome = os.path.join(home, file)
+            fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             match os.path.isfile(fhome), os.path.isfile(fback):
                 case True, False:
@@ -141,9 +157,9 @@ def backup(opts):
 
     # remove untracked files actions
     if "u" in opts:
-        untracked = sorted(set(all_files(backup, backup)) - set(files))
-        for file in untracked:
-            fhome = os.path.join(home, file)
+        all_tracked = tracked_unskipped | tracked_unskipped2
+        for file in sorted(set(all_files(backup, backup)) - all_tracked):
+            fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             color("file", fhome)
             print(msg10 if "v" in opts else "")
@@ -186,30 +202,31 @@ def commit(opts):
 def help_msg():
     print("""  Flag options:
 - c         commit, pull, push if possible
-- d         show diffs
+- d         diffs are shown
 - f         forcely allow dangerous operations
-- n         always answer no to questions
-- v         show verbose output
-- y         always answer yes to questions
+- n         no is the default answer to all questions
+- t         toggle secondary config file
+- v         verbose output is shown
+- y         yes is the default answer to all questions
 
   Action options:
-- b         restore backup
+- b         backup is restored
 - e         edit config, init files
-- h         show help message
+- h         help message is printed
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
-- u         show also untracked files
+- u         untracked files are shown
 
   Valid flag for each action:
--             d     v
-- b         c d f n v y
-- e               n   y
+-             d       v
+- b         c d f n t v y
+- e               n     y
 - h
 - i
-- r               n   y
-- s         c d   n v y
-- u             f n   y
+- r               n     y
+- s         c d   n t v y
+- u             f n     y
 
   Shortcuts:
 - save      -s -cvy
@@ -268,10 +285,11 @@ def parse_options():
             case "help": return ['h']
     try:
         args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsuvy')[0]]
+        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrstuvy')[0]]
         return opts
-    except getopt.GetoptError:
-        color("err", "ERROR: an invalid option was passed!\n")
+    except getopt.GetoptError as err:
+        color("err", "ERROR: an invalid option was passed:\n")
+        print(err)
         exit(1)
 
 
@@ -280,7 +298,10 @@ def execute(opts):
     actions = set([opt for opt in opts if opt in 'behirsu'])
     num_act = len(actions)
     if num_act >= 2:
-        color("err", "ERROR: too many action flags were passed!\n")
+        color("err", "ERROR: too many action flags were passed:\n")
+        for action in actions:
+            print("-" + action, end=" ")
+        print()
         exit(1)
     action = None if num_act == 0 else actions.pop()
     match action:
