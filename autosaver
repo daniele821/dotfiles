@@ -236,8 +236,8 @@ def help_msg():
 - help      -h
 
   Environment
-- DEBUG     set to any not empty value, to allow print python stderr
-- CHECK     set to any not empty value, to disable checking if flags are valid
+- __DBG   set to any not empty value, to allow print python stderr
+- __CCK   set to any not empty value, to disable checking if flags are valid
 
             """)
 
@@ -347,10 +347,10 @@ def execute(opts, action):
 
 # ACTUAL EXECUTION
 if __name__ == "__main__":
-    if not os.getenv("DEBUG"):
+    if not os.getenv("__DBG"):
         f = open(os.devnull, 'w')
         sys.stderr = f
     opts, action = parse_options()
-    if not os.getenv("CHECK"):
+    if not os.getenv("__CCK"):
         check(opts, action)
     execute(opts, action)
