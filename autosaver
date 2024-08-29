@@ -62,6 +62,25 @@ def all_files(dir, relpath=None):
     return files
 
 
+def load_config(conf):
+    files = set()
+    if os.path.isfile(conf):
+        with open(conf, "r") as buffer:
+            for line in buffer.read().splitlines():
+                if not line.startswith("/") and line:
+                    ofile = os.path.join(HOME, line)
+                    bfile = os.path.join(backup, line)
+                    if os.path.isfile(ofile):
+                        files.add(line)
+                    elif os.path.isdir(ofile):
+                        files.update(all_files(ofile, HOME))
+                    if os.path.isfile(bfile):
+                        files.add(line)
+                    elif os.path.isdir(bfile):
+                        files.update(all_files(bfile, backup))
+    return files
+
+
 def copy_file(src, dst):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     cp(src, dst)
@@ -70,7 +89,6 @@ def copy_file(src, dst):
 # ACTION FUNCTIONS
 def backup(opts):
     backup = DIRS["backup"]
-    track = FILES["track"]
     msg1 = " : backup file is missing"
     msg2 = "Do you really want to create the backup file? "
     msg3 = "[DANGER] Do you really want to delete the original file? "
@@ -84,22 +102,7 @@ def backup(opts):
     msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
 
     # accumulate all tracked files
-    files = set()
-    if os.path.isfile(track):
-        with open(track, "r") as buffer:
-            for line in buffer.read().splitlines():
-                if not line.startswith("/") and line:
-                    ofile = os.path.join(HOME, line)
-                    bfile = os.path.join(backup, line)
-                    if os.path.isfile(ofile):
-                        files.add(line)
-                    elif os.path.isdir(ofile):
-                        files.update(all_files(ofile, HOME))
-                    if os.path.isfile(bfile):
-                        files.add(line)
-                    elif os.path.isdir(bfile):
-                        files.update(all_files(bfile, backup))
-    files = sorted(files)
+    files = sorted(load_config(FILES["track"]))
 
     # backup action
     if "u" not in opts:
