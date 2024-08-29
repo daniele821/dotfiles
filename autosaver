@@ -279,12 +279,13 @@ def parse_options():
     opts = set()
 
     # shortcuts
-    match args[0]:
-        case "save": opts = ['s', 'c', 'v', 'y']
-        case "restore": opts = ['b', 'v', 'y']
-        case "init": opts = ['r', 'y']
-        case "edit": opts = ['e', 'y']
-        case "help": opts = ['h']
+    if len(args) >= 1:
+        match args[0]:
+            case "save": opts = ['s', 'c', 'v', 'y']
+            case "restore": opts = ['b', 'v', 'y']
+            case "init": opts = ['r', 'y']
+            case "edit": opts = ['e', 'y']
+            case "help": opts = ['h']
 
     # parse options
     try:
@@ -310,6 +311,27 @@ def parse_options():
         exit(1)
 
 
+def check(opts, action):
+    all_valid_opts = {
+        None: "dntvy",
+        "b": "cdfntvy",
+        "e": "ny",
+        "h": "",
+        "i": "",
+        "r": "ny",
+        "s": "cdntvy",
+        "u": "fny",
+    }
+    valid_opts = set(all_valid_opts[action])
+    invalid_opts = opts - valid_opts - set([action])
+    if invalid_opts:
+        color("err", "ERROR: following flags are invalid for this action:\n")
+        for flag in invalid_opts:
+            print("-" + flag, end=" ")
+        print()
+        exit(1)
+
+
 def execute(opts, action):
     match action:
         case "b" | "s" | None:
@@ -328,4 +350,5 @@ if __name__ == "__main__":
         f = open(os.devnull, 'w')
         sys.stderr = f
     opts, action = parse_options()
+    check(opts, action)
     execute(opts, action)
