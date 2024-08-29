@@ -113,6 +113,8 @@ def backup(opts):
 
     # backup action
     if "u" not in opts:
+        if "t" in opts:
+            color("msg", "WARNING: the secondary tracking list is in use!\n")
         for file in files:
             fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
