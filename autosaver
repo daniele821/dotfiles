@@ -15,7 +15,9 @@ DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "config": os.path.join(SCRIPT_DIR, "config"),
         "init": os.path.join(SCRIPT_DIR, "init"),
         "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
-FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
+FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
+         "track2": os.path.join(DIRS["config"], "files_to_track2.txt"),
+         "skip": os.path.join(DIRS["config"], "files_to_skip.txt")}
 
 
 # UTILITY FUNCTIONS
@@ -191,6 +193,7 @@ def help_msg():
 - d         diffs are shown
 - f         forcely allow dangerous operations
 - n         no is the default answer to all questions
+- t         toggle secondary config file
 - v         verbose output is shown
 - y         yes is the default answer to all questions
 
@@ -204,14 +207,14 @@ def help_msg():
 - u         untracked files are shown
 
   Valid flag for each action:
--             d     v
-- b         c d f n v y
-- e               n   y
+-             d       v
+- b         c d f n t v y
+- e               n     y
 - h
 - i
-- r               n   y
-- s         c d   n v y
-- u             f n   y
+- r               n     y
+- s         c d   n t v y
+- u             f n     y
 
   Shortcuts:
 - save      -s -cvy
@@ -270,7 +273,7 @@ def parse_options():
             case "help": return ['h']
     try:
         args = [s for s in args if s.startswith("-")]
-        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrsuvy')[0]]
+        opts = [c[1:] for c, _ in getopt.getopt(args, 'bcdefhinrstuvy')[0]]
         return opts
     except getopt.GetoptError:
         color("err", "ERROR: an invalid option was passed!\n")
