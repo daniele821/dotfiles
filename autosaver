@@ -313,6 +313,7 @@ def parse_options():
 
 
 def check(opts, action):
+    # check flags are valid for the current action
     all_valid_opts = {
         None: "dntvy",
         "b": "cdfntvy",
@@ -331,12 +332,14 @@ def check(opts, action):
             print("-" + flag, end=" ")
         print()
         exit(1)
-    if action is not None and action in "sb" and "c" in opts and "t" in opts:
-        color("err", "ERROR: flag -c and -t cannot be used togheter\n")
-        exit(1)
-    if (action is None or action in "bersu") and "n" in opts and "y" in opts:
-        color("err", "ERROR: flag -n and -y cannot be used togheter\n")
-        exit(1)
+
+    # check there are no conflicting flags
+    conflicting = [("c", "t"), ("n", "y")]
+    for c1, c2 in conflicting:
+        if c1 in opts and c2 in opts:
+            color("err", "ERROR: following flags cannot be used togheter:\n")
+            print("-" + c1 + " -" + c2)
+            exit(1)
 
 
 def execute(opts, action):
