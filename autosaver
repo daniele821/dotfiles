@@ -104,7 +104,12 @@ def backup(opts):
     msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
 
     # accumulate all tracked files
-    files = sorted(load_config(FILES["track"]))
+    tracked = load_config(FILES["track"])
+    tracked2 = load_config(FILES["track2"])
+    skipped = load_config(FILES["skip"])
+    tracked_unskipped = tracked - skipped
+    tracked_unskipped2 = tracked2 - skipped
+    files = sorted(tracked_unskipped2 if "t" in opts else tracked_unskipped)
 
     # backup action
     if "u" not in opts:
@@ -145,8 +150,8 @@ def backup(opts):
 
     # remove untracked files actions
     if "u" in opts:
-        untracked = sorted(set(all_files(backup, backup)) - set(files))
-        for file in untracked:
+        all_tracked = tracked_unskipped | tracked_unskipped2
+        for file in sorted(set(all_files(backup, backup)) - all_tracked):
             fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             color("file", fhome)
