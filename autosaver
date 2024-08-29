@@ -306,9 +306,6 @@ def execute(opts):
     action = None if num_act == 0 else actions.pop()
     match action:
         case "b" | "s" | None:
-            if "t" in opts and "c" in opts:
-                color("err", "ERROR: cannot use -t and -c flags toghether!\n")
-                exit(1)
             backup(opts)
             commit(opts)
         case "e": edit(opts)
