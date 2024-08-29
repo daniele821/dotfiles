@@ -313,6 +313,9 @@ def parse_options():
 
 
 def check(opts, action):
+    if (action == "b" or action == "s") and "c" in opts and "t" in opts:
+        color("err", "ERROR: flag -c and -t cannot be used togheter\n")
+        exit(1)
     all_valid_opts = {
         None: "dntvy",
         "b": "cdfntvy",
