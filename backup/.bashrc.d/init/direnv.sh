@@ -4,4 +4,4 @@
 eval "$(direnv hook bash)"
 
 # fixes
-export DIRENV_LOG_FORMAT=
+# export DIRENV_LOG_FORMAT=
