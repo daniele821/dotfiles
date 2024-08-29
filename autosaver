@@ -71,7 +71,7 @@ def load_config(conf):
             for line in buffer.read().splitlines():
                 if not line.startswith("/") and line:
                     ofile = os.path.join(HOME, line)
-                    bfile = os.path.join(backup, line)
+                    bfile = os.path.join(DIRS["backup"], line)
                     if os.path.isfile(ofile):
                         files.add(line)
                     elif os.path.isdir(ofile):
@@ -79,7 +79,7 @@ def load_config(conf):
                     if os.path.isfile(bfile):
                         files.add(line)
                     elif os.path.isdir(bfile):
-                        files.update(all_files(bfile, backup))
+                        files.update(all_files(bfile, DIRS["backup"]))
     return files
 
 
