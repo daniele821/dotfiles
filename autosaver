@@ -326,7 +326,8 @@ def check(opts, action):
     valid_opts = set(all_valid_opts[action])
     invalid_opts = opts - valid_opts - set([action])
     if invalid_opts:
-        color("err", "ERROR: following flags are invalid for this action:\n")
+        color("err", "ERROR: following flags are invalid for action '-")
+        color("err", (action if action is not None else " ") + "' :\n")
         for flag in invalid_opts:
             print("-" + flag, end=" ")
         print()
