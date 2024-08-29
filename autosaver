@@ -237,6 +237,7 @@ def help_msg():
 
   Environment
 - DEBUG     set to any not empty value, to allow print python stderr
+- CHECK     set to any not empty value, to disable checking if flags are valid
 
             """)
 
@@ -350,5 +351,6 @@ if __name__ == "__main__":
         f = open(os.devnull, 'w')
         sys.stderr = f
     opts, action = parse_options()
-    check(opts, action)
+    if not os.getenv("CHECK"):
+        check(opts, action)
     execute(opts, action)
