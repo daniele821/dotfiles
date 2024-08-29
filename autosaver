@@ -238,7 +238,6 @@ def help_msg():
   Environment
 - __DBG   set to any not empty value, to allow print python stderr
 - __CCK   set to any not empty value, to disable checking if flags are valid
-
             """)
 
 
