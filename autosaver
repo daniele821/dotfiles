@@ -186,20 +186,20 @@ def commit(opts):
 def help_msg():
     print("""  Flag options:
 - c         commit, pull, push if possible
-- d         show diffs
+- d         diffs are shown
 - f         forcely allow dangerous operations
-- n         always answer no to questions
-- v         show verbose output
-- y         always answer yes to questions
+- n         no is the default answer to all questions
+- v         verbose output is shown
+- y         yes is the default answer to all questions
 
   Action options:
-- b         restore backup
+- b         backup is restored
 - e         edit config, init files
-- h         show help message
+- h         help message is printed
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
-- u         show also untracked files
+- u         untracked files are shown
 
   Valid flag for each action:
 -             d     v
