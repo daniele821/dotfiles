@@ -245,7 +245,7 @@ def help_msg():
 - init      -r -y
 - edit      -e -y
 - help      -h
-- save commit
+- save commit | sc
 
   Environment
 - __DBG   set to any not empty value, to allow print python stderr
@@ -303,7 +303,7 @@ def parse_options():
             case ["edit"]: opts = ['e', 'y']
             case ["help"]: opts = ['h']
             # multi action shortcuts
-            case ["save", "commit"]:
+            case ["save", "commit"] | ["sc"]:
                 proc.run(["python", SCRIPT_PATH, "save"])
                 proc.run(["python", SCRIPT_PATH, "commit"])
                 exit(0)
