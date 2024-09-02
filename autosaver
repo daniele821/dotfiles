@@ -181,15 +181,15 @@ def commit(opts):
 
     # commit
     if "c" in opts:
+        if "t" not in opts:
+            proc.run(["git", "-C", dir, "pull"])
         if proc.run(['git', '-C', dir, 'status', '-s'],
                     capture_output=True, text=True).stdout.strip():
-            if "t" not in opts:
-                proc.run(["git", "-C", dir, "pull"])
             if "d" in opts:
                 if "t" not in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                              "diff", "HEAD", "--diff-filter=adcr"])
-                if "t" in opts:
+                else:
                     proc.run(["git", "-C", dir, "--no-pager",
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
             proc.run(["git", "-C", dir, "status", "-su"])
@@ -198,58 +198,60 @@ def commit(opts):
                 if cmt:
                     proc.run(["git", "-C", dir, "add", dir])
                     proc.run(["git", "-C", dir, "commit", "-m", cmt])
-                    proc.run(["git", "-C", dir, "push"])
-            elif "t" in opts and ask_user(msg2, opts, True):
+            if "t" in opts and ask_user(msg2, opts, True):
+                proc.run(["git", "-C", dir, "reset", "HEAD"])
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
                 proc.run(["git", "-C", dir, "clean", "-fdq"])
+        if "t" not in opts:
+            proc.run(["git", "-C", dir, "push"])
 
 
 def help_msg():
     print("""  Flag options:
-- d         diffs are shown
-- f         forcely allow dangerous operations
-- n         no is the default answer to all questions
-- t         toggle secondary mode
-- v         verbose output is shown
-- y         yes is the default answer to all questions
+- d                 diffs are shown
+- f                 forcely allow dangerous operations
+- n                 no is the default answer to all questions
+- t                 toggle secondary mode
+- v                 verbose output is shown
+- y                 yes is the default answer to all questions
 
   Action options:
-- b         backup is restored
-- c         pull,commit,push or restore
-- e         edit config, init files
-- h         help message is printed
-- i         initialize necessary directories and files
-- r         run init scripts
-- s         save tracked files
-- u         untracked files are shown and can be deleted
+- b                 backup is restored
+- c                 pull,commit,push or restore
+- e                 edit config, init files
+- h                 help message is printed
+- i                 initialize necessary directories and files
+- r                 run init scripts
+- s                 save tracked files
+- u                 untracked files are shown and can be deleted
 
   Valid flag for each action:
--           d   n t v y
-- b         d f n t v y
-- c         d   n t   y
-- e             n     y
+-                   d   n t v y
+- b                 d f n t v y
+- c                 d   n t   y
+- e                     n     y
 - h
 - i
-- r             n     y
-- s         d   n t v y
-- u           f n t   y
+- r                     n     y
+- s                 d   n t v y
+- u                   f n t   y
 
   Shortcuts:
-- save      -s -vy
-- save2     -s -tvy
-- restore   -b -vy
-- restore   -b -tvy
-- commit    -c -y
-- uncommit  -c -ty
-- init      -r -y
-- edit      -e -y
-- help      -h
+- save              -s -vy
+- save2             -s -tvy
+- restore           -b -vy
+- restore           -b -tvy
+- commit            -c -y
+- uncommit          -c -ty
+- init              -r -y
+- edit              -e -y
+- help              -h
 - save commit | sc
 
-  Environment
-- __DBG   set to any not empty value, to allow print python stderr
-- __CCK   set to any not empty value, to disable checking if flags are valid
+  Environment:
+- __DBG             print python error messages
+- __CCK             disable checking if flags are valid
             """)
 
 
