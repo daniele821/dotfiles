@@ -9,7 +9,7 @@
     - [x] add -t flag to allow using a secondary config file 
     - [x] implement a checker of the flags passed
     - [x] add an env var (__CHK) to disable checker (created for prev. item)
-- version 1.3.0:
+- version 1.3.*:
     - [x] make -c an action (-t to backup, instead of saving)
     - [x] -f to delete original file with -u action, and -t flag to delete backup file
     - [x] -t -> toggles secondary mode 
