@@ -102,7 +102,8 @@ def backup(opts):
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
     msg10 = " : file is untracked"
-    msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
+    msg11 = "[UNTRACKED] Do you really want to delete backup file? "
+    msg12 = "[DANGER, UNTRACKED] Do you really want to delete original file? "
 
     # accumulate all tracked files
     tracked = load_config(FILES["track"])
@@ -165,8 +166,12 @@ def backup(opts):
             fback = os.path.join(backup, file)
             color("file", fhome)
             print(msg10 if "v" in opts else "")
-            if "f" in opts and ask_user(msg11, opts, True):
-                os.remove(fback)
+            if "t" in opts:
+                if ask_user(msg11, opts, True):
+                    os.remove(fback)
+                if "f" in opts and os.path.isfile(fhome):
+                    if ask_user(msg12, opts, True):
+                        os.remove(fhome)
 
 
 def commit(opts):
@@ -178,24 +183,23 @@ def commit(opts):
     if "c" in opts:
         if proc.run(['git', '-C', dir, 'status', '-s'],
                     capture_output=True, text=True).stdout.strip():
-            if "s" in opts:
+            if "t" not in opts:
                 proc.run(["git", "-C", dir, "pull"])
             if "d" in opts:
-                if "s" in opts:
+                if "t" not in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                              "diff", "HEAD", "--diff-filter=adcr"])
-                if "b" in opts:
+                if "t" in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
-            if "s" in opts or "b" in opts:
-                proc.run(["git", "-C", dir, "status", "-su"])
-            if "s" in opts and ask_user(msg1, opts, True):
+            proc.run(["git", "-C", dir, "status", "-su"])
+            if "t" not in opts and ask_user(msg1, opts, True):
                 cmt = input(color("msg", "Write commit message: ", False))
                 if cmt:
                     proc.run(["git", "-C", dir, "add", dir])
                     proc.run(["git", "-C", dir, "commit", "-m", cmt])
                     proc.run(["git", "-C", dir, "push"])
-            elif "b" in opts and ask_user(msg2, opts, True):
+            elif "t" in opts and ask_user(msg2, opts, True):
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
                 proc.run(["git", "-C", dir, "clean", "-fdq"])
@@ -203,39 +207,45 @@ def commit(opts):
 
 def help_msg():
     print("""  Flag options:
-- c         commit, pull, push if possible
 - d         diffs are shown
 - f         forcely allow dangerous operations
 - n         no is the default answer to all questions
-- t         toggle secondary config file
+- t         toggle secondary mode
 - v         verbose output is shown
 - y         yes is the default answer to all questions
 
   Action options:
 - b         backup is restored
+- c         pull,commit,push or restore
 - e         edit config, init files
 - h         help message is printed
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
-- u         untracked files are shown
+- u         untracked files are shown and can be deleted
 
   Valid flag for each action:
--             d   n t v y
-- b         c d f n t v y
-- e               n     y
+-           d   n t v y
+- b         d f n t v y
+- c         d   n t   y
+- e             n     y
 - h
 - i
-- r               n     y
-- s         c d   n t v y
-- u             f n     y
+- r             n     y
+- s         d   n t v y
+- u           f n t   y
 
   Shortcuts:
-- save      -s -cvy
+- save      -s -vy
+- save2     -s -tvy
 - restore   -b -vy
+- restore   -b -tvy
+- commit    -c -y
+- uncommit  -c -ty
 - init      -r -y
 - edit      -e -y
 - help      -h
+- save commit | sc
 
   Environment
 - __DBG   set to any not empty value, to allow print python stderr
@@ -282,12 +292,21 @@ def parse_options():
 
     # shortcuts
     if len(args) >= 1:
-        match args[0]:
-            case "save": opts = ['s', 'c', 'v', 'y']
-            case "restore": opts = ['b', 'v', 'y']
-            case "init": opts = ['r', 'y']
-            case "edit": opts = ['e', 'y']
-            case "help": opts = ['h']
+        match args:
+            case ["save"]: opts = ['s', 'v', 'y']
+            case ["save2"]: opts = ['s', 't', 'v', 'y']
+            case ["restore"]: opts = ['b', 'v', 'y']
+            case ["restore2"]: opts = ['b', 't', 'v', 'y']
+            case ["commit"]: opts = ['c', 'y']
+            case ["uncommit"]: opts = ['c', 't', 'y']
+            case ["init"]: opts = ['r', 'y']
+            case ["edit"]: opts = ['e', 'y']
+            case ["help"]: opts = ['h']
+            # multi action shortcuts
+            case ["save", "commit"] | ["sc"]:
+                proc.run(["python", SCRIPT_PATH, "save"])
+                proc.run(["python", SCRIPT_PATH, "commit"])
+                exit(0)
 
     # parse options
     try:
@@ -297,7 +316,7 @@ def parse_options():
         opts = set(opts)
 
         # parse action
-        actions = set([opt for opt in opts if opt in 'behirsu'])
+        actions = set([opt for opt in opts if opt in 'bcehirsu'])
         num_act = len(actions)
         if num_act >= 2:
             color("err", "ERROR: too many action flags were passed:\n")
@@ -317,13 +336,14 @@ def check(opts, action):
     # check flags are valid for the current action
     all_valid_opts = {
         None: "dntvy",
-        "b": "cdfntvy",
+        "b": "dfntvy",
+        "c": "dnty",
         "e": "ny",
         "h": "",
         "i": "",
         "r": "ny",
-        "s": "cdntvy",
-        "u": "fny",
+        "s": "dntvy",
+        "u": "fnty",
     }
     valid_opts = set(all_valid_opts[action])
     invalid_opts = opts - valid_opts - set([action])
@@ -336,7 +356,7 @@ def check(opts, action):
         exit(1)
 
     # check there are no conflicting flags
-    conflicting = [("c", "t"), ("n", "y")]
+    conflicting = [("n", "y")]
     for c1, c2 in conflicting:
         if c1 in opts and c2 in opts:
             color("err", "ERROR: following flags cannot be used togheter:\n")
@@ -346,14 +366,12 @@ def check(opts, action):
 
 def execute(opts, action):
     match action:
-        case "b" | "s" | None:
-            backup(opts)
-            commit(opts)
+        case "b" | "s" | None | "u": backup(opts)
+        case "c": commit(opts)
         case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
         case "r": run(opts)
-        case "u": backup(opts)
 
 
 # ACTUAL EXECUTION
