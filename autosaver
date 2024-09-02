@@ -181,15 +181,15 @@ def commit(opts):
 
     # commit
     if "c" in opts:
+        if "t" not in opts:
+            proc.run(["git", "-C", dir, "pull"])
         if proc.run(['git', '-C', dir, 'status', '-s'],
                     capture_output=True, text=True).stdout.strip():
-            if "t" not in opts:
-                proc.run(["git", "-C", dir, "pull"])
             if "d" in opts:
                 if "t" not in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                              "diff", "HEAD", "--diff-filter=adcr"])
-                if "t" in opts:
+                else:
                     proc.run(["git", "-C", dir, "--no-pager",
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
             proc.run(["git", "-C", dir, "status", "-su"])
@@ -198,11 +198,13 @@ def commit(opts):
                 if cmt:
                     proc.run(["git", "-C", dir, "add", dir])
                     proc.run(["git", "-C", dir, "commit", "-m", cmt])
-                    proc.run(["git", "-C", dir, "push"])
-            elif "t" in opts and ask_user(msg2, opts, True):
+            if "t" in opts and ask_user(msg2, opts, True):
+                proc.run(["git", "-C", dir, "reset", "HEAD"])
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
                 proc.run(["git", "-C", dir, "clean", "-fdq"])
+        if "t" not in opts:
+            proc.run(["git", "-C", dir, "push"])
 
 
 def help_msg():
