@@ -102,7 +102,8 @@ def backup(opts):
     msg8 = "Do you really want to update the backup file? "
     msg9 = "Do you really want to update the original file? "
     msg10 = " : file is untracked"
-    msg11 = "[UNTRACKED] Do you really want to delete untracked file? "
+    msg11 = "[UNTRACKED] Do you really want to delete backup file? "
+    msg12 = "[DANGER, UNTRACKED] Do you really want to delete original file? "
 
     # accumulate all tracked files
     tracked = load_config(FILES["track"])
@@ -165,8 +166,11 @@ def backup(opts):
             fback = os.path.join(backup, file)
             color("file", fhome)
             print(msg10 if "v" in opts else "")
-            if "f" in opts and ask_user(msg11, opts, True):
-                os.remove(fback)
+            if "t" in opts:
+                if ask_user(msg11, opts, True):
+                    os.remove(fback)
+                if "f" in opts and ask_user(msg12, opts, True):
+                    os.remove(fback)
 
 
 def commit(opts):
@@ -324,7 +328,7 @@ def check(opts, action):
         "i": "",
         "r": "ny",
         "s": "dntvy",
-        "u": "fny",
+        "u": "fnty",
     }
     valid_opts = set(all_valid_opts[action])
     invalid_opts = opts - valid_opts - set([action])
