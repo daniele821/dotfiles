@@ -1,2 +1,0 @@
-- [ ] make -c an action
-- [ ] -f to delete original file with -u action, and different flag to delete backup file
