@@ -169,8 +169,9 @@ def backup(opts):
             if "t" in opts:
                 if ask_user(msg11, opts, True):
                     os.remove(fback)
-                if "f" in opts and ask_user(msg12, opts, True):
-                    os.remove(fback)
+                if "f" in opts and os.path.isfile(fhome):
+                    if ask_user(msg12, opts, True):
+                        os.remove(fhome)
 
 
 def commit(opts):
