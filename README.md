@@ -18,3 +18,12 @@ cd dotfiles || exit 1
 ./autosaver restore
 ./autosaver init
 ```
+
+# create a new backup
+
+- to create a new backup, it's suggested to use the `init` branch:
+```
+git switch init
+```
+
+- then create a new branch: `git checkout -b <branch_name>`
