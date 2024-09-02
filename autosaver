@@ -235,11 +235,16 @@ def help_msg():
 - u           f n t   y
 
   Shortcuts:
-- save      -s -cvy
+- save      -s -vy
+- save2     -s -tvy
 - restore   -b -vy
+- restore   -b -tvy
+- commit    -c -y
+- uncommit  -c -ty
 - init      -r -y
 - edit      -e -y
 - help      -h
+- save commit
 
   Environment
 - __DBG   set to any not empty value, to allow print python stderr
@@ -288,11 +293,19 @@ def parse_options():
     if len(args) >= 1:
         match args:
             case ["save"]: opts = ['s', 'v', 'y']
+            case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
+            case ["restore2"]: opts = ['b', 't', 'v', 'y']
             case ["commit"]: opts = ['c', 'y']
+            case ["uncommit"]: opts = ['c', 't', 'y']
             case ["init"]: opts = ['r', 'y']
             case ["edit"]: opts = ['e', 'y']
             case ["help"]: opts = ['h']
+            # multi action shortcuts
+            case ["save", "commit"]:
+                proc.run(["python", SCRIPT_PATH, "save"])
+                proc.run(["python", SCRIPT_PATH, "commit"])
+                exit(0)
 
     # parse options
     try:
