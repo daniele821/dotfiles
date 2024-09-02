@@ -1,2 +1,3 @@
-- [ ] make -c an action
-- [ ] -f to delete original file with -u action, and different flag to delete backup file
+- [ ] make -c an action (-t to backup, instead of saving)
+- [ ] -f to delete original file with -u action, and -t flag to delete backup file
+- [ ] -t -> toggles secondary mode 
