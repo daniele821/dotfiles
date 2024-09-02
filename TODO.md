@@ -1,4 +1,15 @@
-version 1.2.6:
-- [x] make -c an action (-t to backup, instead of saving)
-- [x] -f to delete original file with -u action, and -t flag to delete backup file
-- [x] -t -> toggles secondary mode 
+- version 1.0.0:
+    - [x] working python rewrite of autosaver script
+- version 1.1.0:
+    - [x] add -u action to list untracked files
+    - [x] do not get all files from backup folder (necessary for prev. item)
+    - [x] allow -t to flag with -u action to remove untracked files
+- version 1.2.*:
+    - [x] add a config file to ignore files and a secondary config file
+    - [x] add -t flag to allow using a secondary config file 
+    - [x] implement a checker of the flags passed
+    - [x] add an env var (__CHK) to disable checker (created for prev. item)
+- version 1.3.0:
+    - [x] make -c an action (-t to backup, instead of saving)
+    - [x] -f to delete original file with -u action, and -t flag to delete backup file
+    - [x] -t -> toggles secondary mode 
