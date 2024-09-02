@@ -178,24 +178,23 @@ def commit(opts):
     if "c" in opts:
         if proc.run(['git', '-C', dir, 'status', '-s'],
                     capture_output=True, text=True).stdout.strip():
-            if "s" in opts:
+            if "t" not in opts:
                 proc.run(["git", "-C", dir, "pull"])
             if "d" in opts:
-                if "s" in opts:
+                if "t" not in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                              "diff", "HEAD", "--diff-filter=adcr"])
-                if "b" in opts:
+                if "t" in opts:
                     proc.run(["git", "-C", dir, "--no-pager",
                               "diff", "HEAD", "-R", "--diff-filter=adcr"])
-            if "s" in opts or "b" in opts:
-                proc.run(["git", "-C", dir, "status", "-su"])
-            if "s" in opts and ask_user(msg1, opts, True):
+            proc.run(["git", "-C", dir, "status", "-su"])
+            if "t" not in opts and ask_user(msg1, opts, True):
                 cmt = input(color("msg", "Write commit message: ", False))
                 if cmt:
                     proc.run(["git", "-C", dir, "add", dir])
                     proc.run(["git", "-C", dir, "commit", "-m", cmt])
                     proc.run(["git", "-C", dir, "push"])
-            elif "b" in opts and ask_user(msg2, opts, True):
+            elif "t" in opts and ask_user(msg2, opts, True):
                 proc.run(["git", "-C", dir, "restore", "--staged", dir])
                 proc.run(["git", "-C", dir, "restore", dir])
                 proc.run(["git", "-C", dir, "clean", "-fdq"])
@@ -284,7 +283,7 @@ def parse_options():
     # shortcuts
     if len(args) >= 1:
         match args[0]:
-            case "save": opts = ['s', 'c', 'v', 'y']
+            case "save": opts = ['s', 'v', 'y']
             case "restore": opts = ['b', 'v', 'y']
             case "init": opts = ['r', 'y']
             case "edit": opts = ['e', 'y']
@@ -298,7 +297,7 @@ def parse_options():
         opts = set(opts)
 
         # parse action
-        actions = set([opt for opt in opts if opt in 'behirsu'])
+        actions = set([opt for opt in opts if opt in 'bcehirsu'])
         num_act = len(actions)
         if num_act >= 2:
             color("err", "ERROR: too many action flags were passed:\n")
@@ -318,12 +317,13 @@ def check(opts, action):
     # check flags are valid for the current action
     all_valid_opts = {
         None: "dntvy",
-        "b": "cdfntvy",
+        "b": "dfntvy",
+        "c": "dnty",
         "e": "ny",
         "h": "",
         "i": "",
         "r": "ny",
-        "s": "cdntvy",
+        "s": "dntvy",
         "u": "fny",
     }
     valid_opts = set(all_valid_opts[action])
@@ -337,7 +337,7 @@ def check(opts, action):
         exit(1)
 
     # check there are no conflicting flags
-    conflicting = [("c", "t"), ("n", "y")]
+    conflicting = [("n", "y")]
     for c1, c2 in conflicting:
         if c1 in opts and c2 in opts:
             color("err", "ERROR: following flags cannot be used togheter:\n")
@@ -347,14 +347,12 @@ def check(opts, action):
 
 def execute(opts, action):
     match action:
-        case "b" | "s" | None:
-            backup(opts)
-            commit(opts)
+        case "b" | "s" | None | "u": backup(opts)
+        case "c": commit(opts)
         case "e": edit(opts)
         case "h": help_msg()
         case "i": init_files()
         case "r": run(opts)
-        case "u": backup(opts)
 
 
 # ACTUAL EXECUTION
