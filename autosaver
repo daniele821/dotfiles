@@ -286,13 +286,13 @@ def parse_options():
 
     # shortcuts
     if len(args) >= 1:
-        match args[0]:
-            case "save": opts = ['s', 'v', 'y']
-            case "restore": opts = ['b', 'v', 'y']
-            case "commit": opts = ['c', 'y']
-            case "init": opts = ['r', 'y']
-            case "edit": opts = ['e', 'y']
-            case "help": opts = ['h']
+        match args:
+            case ["save"]: opts = ['s', 'v', 'y']
+            case ["restore"]: opts = ['b', 'v', 'y']
+            case ["commit"]: opts = ['c', 'y']
+            case ["init"]: opts = ['r', 'y']
+            case ["edit"]: opts = ['e', 'y']
+            case ["help"]: opts = ['h']
 
     # parse options
     try:
