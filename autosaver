@@ -203,16 +203,16 @@ def commit(opts):
 
 def help_msg():
     print("""  Flag options:
-- c         commit, pull, push if possible
 - d         diffs are shown
 - f         forcely allow dangerous operations
 - n         no is the default answer to all questions
-- t         toggle secondary config file
+- t         toggle secondary mode
 - v         verbose output is shown
 - y         yes is the default answer to all questions
 
   Action options:
 - b         backup is restored
+- c         pull and push or restore if possible
 - e         edit config, init files
 - h         help message is printed
 - i         initialize necessary directories and files
@@ -221,14 +221,15 @@ def help_msg():
 - u         untracked files are shown
 
   Valid flag for each action:
--             d   n t v y
-- b         c d f n t v y
-- e               n     y
+-           d   n t v y
+- b         d f n t v y
+- c         d   n t   y
+- e             n     y
 - h
 - i
-- r               n     y
-- s         c d   n t v y
-- u             f n     y
+- r             n     y
+- s         d   n t v y
+- u           f n t   y
 
   Shortcuts:
 - save      -s -cvy
