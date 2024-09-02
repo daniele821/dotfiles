@@ -17,7 +17,8 @@ DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
 FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
          "track2": os.path.join(DIRS["config"], "files_to_track2.txt"),
-         "skip": os.path.join(DIRS["config"], "files_to_skip.txt")}
+         "skip": os.path.join(DIRS["config"], "files_to_skip.txt"),
+         "skip2": os.path.join(DIRS["config"], "files_to_skip2.txt")}
 
 
 # UTILITY FUNCTIONS
@@ -107,8 +108,9 @@ def backup(opts):
     tracked = load_config(FILES["track"])
     tracked2 = load_config(FILES["track2"])
     skipped = load_config(FILES["skip"])
+    skipped2 = load_config(FILES["skip2"])
     tracked_unskipped = tracked - skipped
-    tracked_unskipped2 = tracked2 - skipped
+    tracked_unskipped2 = tracked2 - skipped2
     if intersection := tracked_unskipped & tracked_unskipped2:
         color("err", "ERROR: following files are in both tracking files:\n")
         for file in intersection:
