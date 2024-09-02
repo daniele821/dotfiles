@@ -215,13 +215,13 @@ def help_msg():
 
   Action options:
 - b         backup is restored
-- c         pull and push or restore if possible
+- c         pull,commit,push or restore
 - e         edit config, init files
 - h         help message is printed
 - i         initialize necessary directories and files
 - r         run init scripts
 - s         save tracked files
-- u         untracked files are shown
+- u         untracked files are shown and can be deleted
 
   Valid flag for each action:
 -           d   n t v y
@@ -289,6 +289,7 @@ def parse_options():
         match args[0]:
             case "save": opts = ['s', 'v', 'y']
             case "restore": opts = ['b', 'v', 'y']
+            case "commit": opts = ['c', 'y']
             case "init": opts = ['r', 'y']
             case "edit": opts = ['e', 'y']
             case "help": opts = ['h']
