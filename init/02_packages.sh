@@ -32,6 +32,6 @@ powerprofilesctl set performance
 } </dev/tty
 
 # disable speed up
-powerprofilesctl set balanced
+powerprofilesctl set power-saver
 
 exit 0
