@@ -33,14 +33,15 @@
     - 1.3.2:
         - [x] add shortcut: status all | sa
         - [x] add message which specify which files script is working on
+    - 1.3.3:
+        - [x] create shortcuts: status, status2, statusu (make status all use those)
+        - [x] create shortcuts: diff, diff2, diff all | da
+        - [x] create shortcuts: save all | sa (status... shortcuts -> list...)
+        - [x] create shortcuts: restore all | ra 
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
-    - [x] create shortcuts: status, status2, statusu (make status all use those)
-    - [x] create shortcuts: diff, diff2, diff all | da
-    - [x] create shortcuts: save all | sa (status... shortcuts -> list...)
-    - [x] create shortcuts: restore all | ra 
 
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
