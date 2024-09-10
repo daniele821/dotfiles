@@ -248,6 +248,7 @@ def help_msg():
 - edit              -e -y
 - help              -h
 - save commit | sc
+- status all  | sa
 
   Environment:
 - __DBG             print python error messages
@@ -308,6 +309,11 @@ def parse_options():
             case ["save", "commit"] | ["sc"]:
                 proc.run(["python", SCRIPT_PATH, "save"])
                 proc.run(["python", SCRIPT_PATH, "commit"])
+                exit(0)
+            case ["status", "all"] | ["sa"]:
+                proc.run(["python", SCRIPT_PATH, ""])
+                proc.run(["python", SCRIPT_PATH, "-t"])
+                proc.run(["python", SCRIPT_PATH, "-u"])
                 exit(0)
 
     # parse options

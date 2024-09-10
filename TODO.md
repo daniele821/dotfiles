@@ -15,5 +15,5 @@
     - [x] -t -> toggles secondary mode 
     - [x] add shortcut: commit, uncommit, save2, restore2
     - [ ] separate primary and secondary backup files in two directories
-    - [ ] add shortcut: status all | sa
+    - [x] add shortcut: status all | sa
     - [ ] add message which specify which files script is working on (primary, secondary, untracked)
