@@ -1,4 +1,4 @@
-## VERSIONS
+## VERSIONS (with important changes)
 - 1.0:
     - 1.0.0:
         - [x] working python rewrite of autosaver script
@@ -11,25 +11,15 @@
     - 1.2.0:
         - [x] add -t flag to allow using a secondary config file 
         - [x] add a config file to ignore files and a secondary config file
-    - 1.2.1:
-        - bug fixes
-    - 1.2.2:
-        - bug fixes
     - 1.2.3:
         - [x] implement a checker of the flags passed
         - [x] add an env var (__CHK) to disable checker (created for prev. item)
-    - 1.2.4:
-        - bug fixes
-    - 1.2.5:
-        - bug fixes
 - 1.3:
     - 1.3.0: 
         - [x] make -c an action (-t to backup, instead of saving)
         - [x] -f to delete original file with -u action, and -t flag to delete backup
         - [x] -t -> toggles secondary mode 
         - [x] add shortcut: commit, uncommit, save2, restore2
-    - 1.3.1:
-        - bug fixes
     - 1.3.2:
         - [x] add shortcut: status all | sa
         - [x] add message which specify which files script is working on
@@ -46,5 +36,5 @@
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
     - [ ] add check to disable passing useless word args to script
-    - [ ] add -v for -h action to show entire help message
+    - [ ] add -v, -t to -h action to show different parts (or all) of help msg
     - [ ] function which writes what the script is doing (listing, saving,..)
