@@ -46,3 +46,4 @@
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
     - [ ] add check to disable passing useless word args to script
+    - [ ] add -v for -h action to show entire help message
