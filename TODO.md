@@ -31,3 +31,5 @@
    
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
+    - [ ] create shortcuts: status, status2, statusu (make status all use those)
+    - [ ] create shortcuts: diff, diff2, diff all | da
