@@ -1,11 +1,8 @@
-//files
 .config/starship.toml
 .gitconfig
 .ssh/config
 .config/plasma-localerc
 .local/share/konsole/Nerd Font.profile
-
-// directories
 .bashrc.d
 .local/share/fonts
 .config/hypr

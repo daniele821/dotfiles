@@ -1,1 +1,3 @@
 .config/htop/htoprc
+.config/hypr/configs/experimental
+.config/hypr/configs/experimental.conf
