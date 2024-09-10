@@ -244,10 +244,13 @@ def help_msg():
 - u                   f n t   y
 
   Shortcuts:
+- status            -
+- status2           -  -t
+- statusu           -  -u
 - save              -s -vy
 - save2             -s -tvy
 - restore           -b -vy
-- restore           -b -tvy
+- restore2          -b -tvy
 - commit            -c -y
 - uncommit          -c -ty
 - init              -r -y
@@ -302,6 +305,9 @@ def parse_options():
     # shortcuts
     if len(args) >= 1:
         match args:
+            case ["status"]: opts = []
+            case ["status2"]: opts = ['t']
+            case ["statusu"]: opts = ['u']
             case ["save"]: opts = ['s', 'v', 'y']
             case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
@@ -317,9 +323,9 @@ def parse_options():
                 proc.run(["python", SCRIPT_PATH, "commit"])
                 exit(0)
             case ["status", "all"] | ["sa"]:
-                proc.run(["python", SCRIPT_PATH, ""])
-                proc.run(["python", SCRIPT_PATH, "-t"])
-                proc.run(["python", SCRIPT_PATH, "-u"])
+                proc.run(["python", SCRIPT_PATH, "status"])
+                proc.run(["python", SCRIPT_PATH, "status2"])
+                proc.run(["python", SCRIPT_PATH, "statusu"])
                 exit(0)
 
     # parse options
