@@ -37,4 +37,8 @@
     - [ ] separate primary and secondary backup files in two directories
     - [ ] add check to disable passing useless word args to script
     - [ ] add -v, -t to -h action to show different parts (or all) of help msg
+        - -h -> shows flags and actions, valid flags
+        - -h -t -> shows shortcuts, envvars
+        - -h -v -> shows flags, actions, shortcuts
+        - -h -vt -> entire help msg (remap help shortcut to this!)
     - [ ] function which writes what the script is doing (listing, saving,..)
