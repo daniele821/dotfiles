@@ -16,4 +16,4 @@
     - [x] add shortcut: commit, uncommit, save2, restore2
     - [ ] separate primary and secondary backup files in two directories
     - [x] add shortcut: status all | sa
-    - [ ] add message which specify which files script is working on (primary, secondary, untracked)
+    - [x] add message which specify which files script is working on (primary, secondary, untracked)
