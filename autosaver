@@ -246,7 +246,6 @@ def help_msg():
   Shortcuts:
 - list              -
 - list2             -  -t
-- listu             -  -u
 - diff              -  -dv
 - diff2             -  -tdv
 - save              -s -vy
@@ -312,7 +311,6 @@ def parse_options():
         match args:
             case ["list"]: opts = []
             case ["list2"]: opts = ['t']
-            case ["listu"]: opts = ['u']
             case ["save"]: opts = ['s', 'v', 'y']
             case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
@@ -328,7 +326,6 @@ def parse_options():
             case ["list", "all"] | ["la"]:
                 proc.run(["python", SCRIPT_PATH, "list"])
                 proc.run(["python", SCRIPT_PATH, "list2"])
-                proc.run(["python", SCRIPT_PATH, "listu"])
                 exit(0)
             case ["diff", "all"] | ["da"]:
                 proc.run(["python", SCRIPT_PATH, "diff"])
