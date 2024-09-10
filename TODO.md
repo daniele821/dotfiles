@@ -38,9 +38,9 @@
 
 - COMPLETED [move to versions, once version tag is created!]:
     - [x] create shortcuts: status, status2, statusu (make status all use those)
+    - [x] create shortcuts: diff, diff2, diff all | da
 
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
-    - [ ] create shortcuts: diff, diff2, diff all | da
-    - [ ] create shortcuts: save all | ra
+    - [ ] create shortcuts: save all | sa
     - [ ] add check to disable passing useless word args to script

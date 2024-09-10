@@ -251,6 +251,8 @@ def help_msg():
 - save2             -s -tvy
 - restore           -b -vy
 - restore2          -b -tvy
+- diff              -  -dv
+- diff2             -  -tdv
 - commit            -c -y
 - uncommit          -c -ty
 - init              -r -y
@@ -258,6 +260,7 @@ def help_msg():
 - help              -h
 - save commit | sc
 - status all  | sa
+- diff all    | da
 
   Environment:
 - __DBG             print python error messages
@@ -312,6 +315,8 @@ def parse_options():
             case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
             case ["restore2"]: opts = ['b', 't', 'v', 'y']
+            case ["diff"]: opts = ['d', 'v']
+            case ["diff2"]: opts = ['d', 'v', 't']
             case ["commit"]: opts = ['c', 'y']
             case ["uncommit"]: opts = ['c', 't', 'y']
             case ["init"]: opts = ['r', 'y']
@@ -326,6 +331,10 @@ def parse_options():
                 proc.run(["python", SCRIPT_PATH, "status"])
                 proc.run(["python", SCRIPT_PATH, "status2"])
                 proc.run(["python", SCRIPT_PATH, "statusu"])
+                exit(0)
+            case ["diff", "all"] | ["da"]:
+                proc.run(["python", SCRIPT_PATH, "diff"])
+                proc.run(["python", SCRIPT_PATH, "diff2"])
                 exit(0)
 
     # parse options
