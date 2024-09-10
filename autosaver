@@ -244,23 +244,25 @@ def help_msg():
 - u                   f n t   y
 
   Shortcuts:
-- status            -
-- status2           -  -t
-- statusu           -  -u
+- list              -
+- list2             -  -t
+- listu             -  -u
+- diff              -  -dv
+- diff2             -  -tdv
 - save              -s -vy
 - save2             -s -tvy
 - restore           -b -vy
 - restore2          -b -tvy
-- diff              -  -dv
-- diff2             -  -tdv
 - commit            -c -y
 - uncommit          -c -ty
 - init              -r -y
 - edit              -e -y
 - help              -h
-- save commit | sc
-- status all  | sa
+- list all    | la
 - diff all    | da
+- save all    | sa
+- restore all | ra
+- save commit | sc
 
   Environment:
 - __DBG             print python error messages
@@ -308,9 +310,9 @@ def parse_options():
     # shortcuts
     if len(args) >= 1:
         match args:
-            case ["status"]: opts = []
-            case ["status2"]: opts = ['t']
-            case ["statusu"]: opts = ['u']
+            case ["list"]: opts = []
+            case ["list2"]: opts = ['t']
+            case ["listu"]: opts = ['u']
             case ["save"]: opts = ['s', 'v', 'y']
             case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
@@ -323,18 +325,26 @@ def parse_options():
             case ["edit"]: opts = ['e', 'y']
             case ["help"]: opts = ['h']
             # multi action shortcuts
-            case ["save", "commit"] | ["sc"]:
-                proc.run(["python", SCRIPT_PATH, "save"])
-                proc.run(["python", SCRIPT_PATH, "commit"])
-                exit(0)
-            case ["status", "all"] | ["sa"]:
-                proc.run(["python", SCRIPT_PATH, "status"])
-                proc.run(["python", SCRIPT_PATH, "status2"])
-                proc.run(["python", SCRIPT_PATH, "statusu"])
+            case ["list", "all"] | ["la"]:
+                proc.run(["python", SCRIPT_PATH, "list"])
+                proc.run(["python", SCRIPT_PATH, "list2"])
+                proc.run(["python", SCRIPT_PATH, "listu"])
                 exit(0)
             case ["diff", "all"] | ["da"]:
                 proc.run(["python", SCRIPT_PATH, "diff"])
                 proc.run(["python", SCRIPT_PATH, "diff2"])
+                exit(0)
+            case ["save", "all"] | ["sa"]:
+                proc.run(["python", SCRIPT_PATH, "save"])
+                proc.run(["python", SCRIPT_PATH, "save2"])
+                exit(0)
+            case ["restore", "all"] | ["ra"]:
+                proc.run(["python", SCRIPT_PATH, "restore"])
+                proc.run(["python", SCRIPT_PATH, "restore2"])
+                exit(0)
+            case ["save", "commit"] | ["sc"]:
+                proc.run(["python", SCRIPT_PATH, "save"])
+                proc.run(["python", SCRIPT_PATH, "commit"])
                 exit(0)
 
     # parse options
