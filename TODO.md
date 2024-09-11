@@ -39,4 +39,4 @@
 
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
-    - [ ] function which writes what the script is doing (listing, saving,..)
+    - think about keeping the 'primary/secondary/untracked file list' msg
