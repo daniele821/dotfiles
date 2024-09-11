@@ -44,3 +44,4 @@
         - -h -v -> shows flags, actions, shortcuts
         - -h -vt -> entire help msg (remap help shortcut to this!)
     - [ ] function which writes what the script is doing (listing, saving,..)
+    - [ ] remove conf file to skip files (track2 have priority over track1)
