@@ -28,15 +28,14 @@
         - [x] create shortcuts: diff, diff2, diff all | da
         - [x] create shortcuts: save all | sa (status... shortcuts -> list...)
         - [x] create shortcuts: restore all | ra 
+    - 1.3.4:
+        - [x] add shortcut: untracked (remove listu)
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
-    - 1.3:
-        - [ ] add shortcut: clean (to delete all untracked files)
-        - [ ] add shortcut: untracked (to list all untracked files)
     - 1.4:
         - [ ] separate primary and secondary backup files in two directories
         - [ ] add check to disable passing useless word args to script

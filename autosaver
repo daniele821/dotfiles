@@ -248,6 +248,7 @@ def help_msg():
 - list2             -  -t
 - diff              -  -dv
 - diff2             -  -tdv
+- untracked         -u
 - save              -s -vy
 - save2             -s -tvy
 - restore           -b -vy
@@ -319,6 +320,7 @@ def parse_options():
             case ["diff2"]: opts = ['d', 'v', 't']
             case ["commit"]: opts = ['c', 'y']
             case ["uncommit"]: opts = ['c', 't', 'y']
+            case ["untracked"]: opts = ['u']
             case ["init"]: opts = ['r', 'y']
             case ["edit"]: opts = ['e', 'y']
             case ["help"]: opts = ['h']
