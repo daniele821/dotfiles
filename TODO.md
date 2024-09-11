@@ -40,5 +40,5 @@
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
-    - [ ] separate primary and secondary backup files in two directories
+    - [ ] add -l action flag, to list all file, specifying what list it comes from
     - think about keeping the 'primary/secondary/untracked file list' msg
