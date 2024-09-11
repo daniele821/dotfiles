@@ -45,3 +45,4 @@
         - -h -vt -> entire help msg (remap help shortcut to this!)
     - [ ] function which writes what the script is doing (listing, saving,..)
     - [ ] remove conf file to skip files (track2 have priority over track1)
+        - either remove both, or just leave a single skip file, and track2 > track1
