@@ -35,9 +35,8 @@
 
 - COMPLETED [move to versions, once version tag is created!]:
     - [x] add check to disable passing useless word args to script
+    - [x] remove conf file to skip files (track2 have priority over track1)
 
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
     - [ ] function which writes what the script is doing (listing, saving,..)
-    - [ ] remove conf file to skip files (track2 have priority over track1)
-        - either remove both, or just leave a single skip file, and track2 > track1
