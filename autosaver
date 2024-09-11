@@ -266,7 +266,6 @@ def help_msg():
 
   Environment:
 - __DBG             print python error messages
-- __CCK             disable checking if flags are valid
             """)
 
 
@@ -305,7 +304,7 @@ def run(opts):
 # EXECUTION FUNCTIONS
 def parse_options():
     args = sys.argv[1:]
-    opts = set()
+    opts = 69
 
     # shortcuts
     if len(args) >= 1:
@@ -345,6 +344,16 @@ def parse_options():
                 proc.run(["python", SCRIPT_PATH, "save"])
                 proc.run(["python", SCRIPT_PATH, "commit"])
                 exit(0)
+
+    # check no useless word parameters are passed
+    if opts == 69:
+        invalid_words = [s for s in args if not s.startswith("-")]
+        if invalid_words:
+            msg1 = "ERROR: invalid shortcut or "
+            msg2 = "words args were passed alonside options!\n"
+            color(
+                "err", msg1 + msg2)
+            exit(1)
 
     # parse options
     try:
@@ -418,6 +427,5 @@ if __name__ == "__main__":
         f = open(os.devnull, 'w')
         sys.stderr = f
     opts, action = parse_options()
-    if not os.getenv("__CCK"):
-        check(opts, action)
+    check(opts, action)
     execute(opts, action)
