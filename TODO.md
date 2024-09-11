@@ -30,12 +30,14 @@
         - [x] create shortcuts: restore all | ra 
     - 1.3.4:
         - [x] add shortcut: untracked (remove listu)
+- 1.4:
+    - 1.4.0:
+        - [x] add check to disable passing useless word args to script
+        - [x] remove conf file to skip files (track2 have priority over track1)
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
-    - [x] add check to disable passing useless word args to script
-    - [x] remove conf file to skip files (track2 have priority over track1)
 
 - TODO:
     - [ ] separate primary and secondary backup files in two directories
