@@ -21,11 +21,6 @@ kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec &>/dev/null
     echo "setting default terminal to kitty"
 fi
 
-# autolaunch hyprland
-if ! grep Hyprland "$HOME/.bash_profile" -q && ask_user 'Do you really want to autolaunch hyprland'; then
-    echo '[[ "$(tty)" == "/dev/tty1" ]] && exec Hyprland' >>"$HOME/.bash_profile"
-fi </dev/tty
-
 # restore backup files
 if ask_user 'Do you want to restore all backup files'; then
     SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
@@ -39,11 +34,6 @@ if ask_user 'Do you really want to create new ssh keys'; then
     for user in "${USERS[@]}"; do
         ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
     done
-fi </dev/tty
-
-# enable wireshark for current user
-if ask_user 'Do you really want to enable wireshark'; then
-    sudo usermod -a -G wireshark "${USER}"
 fi </dev/tty
 
 # disable login manager
