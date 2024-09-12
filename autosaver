@@ -109,14 +109,6 @@ def backup(opts):
     tracked = tracked - tracked2
     files = sorted(tracked2 if "t" in opts else tracked)
 
-    if "u" not in opts:
-        if "t" not in opts:
-            color('msg', 'primary file list is currently in use\n')
-        else:
-            color('msg', 'secondary file list is currently in use\n')
-    else:
-        color('msg', 'untracked files list is currently in use\n')
-
     # backup action
     if "u" not in opts:
         for file in files:

@@ -41,4 +41,3 @@
 
 - TODO:
     - [ ] add -l action flag, to list all file, specifying what list it comes from
-    - think about keeping the 'primary/secondary/untracked file list' msg
