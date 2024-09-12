@@ -40,4 +40,5 @@
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
-    - [ ] add -l action flag, to list all file, specifying what list it comes from
+    - optimizations: 
+        - [ ] multiple action shortcuts should be executed in the same process
