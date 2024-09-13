@@ -34,11 +34,11 @@
     - 1.4.0:
         - [x] add check to disable passing useless word args to script
         - [x] remove conf file to skip files (track2 have priority over track1)
+    - 1.4.1:
+        - [x] [OPTIMIZATION] multiple action shortcuts execute in the same process
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
-    - optimizations: 
-        - [ ] multiple action shortcuts should be executed in the same process
