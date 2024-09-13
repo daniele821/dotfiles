@@ -34,7 +34,7 @@
     - 1.4.0:
         - [x] add check to disable passing useless word args to script
         - [x] remove conf file to skip files (track2 have priority over track1)
-    - 1.4.1:
+    - 1.4.2:
         - [x] [OPTIMIZATION] multiple action shortcuts execute in the same process
 
 ## TODO AND COMPLETED LIST
