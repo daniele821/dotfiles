@@ -307,24 +307,24 @@ def parse_options():
             case ["help"]: opts = ['h']
             # multi action shortcuts
             case ["list", "all"] | ["la"]:
-                proc.run(["python", SCRIPT_PATH, "list"])
-                proc.run(["python", SCRIPT_PATH, "list2"])
+                execute({}, None)
+                execute({"t"}, None)
                 exit(0)
             case ["diff", "all"] | ["da"]:
-                proc.run(["python", SCRIPT_PATH, "diff"])
-                proc.run(["python", SCRIPT_PATH, "diff2"])
+                execute({"d", "v"}, None)
+                execute({"d", "v", "t"}, None)
                 exit(0)
             case ["save", "all"] | ["sa"]:
-                proc.run(["python", SCRIPT_PATH, "save"])
-                proc.run(["python", SCRIPT_PATH, "save2"])
+                execute({"s", "v", "y"}, "s")
+                execute({"s", "v", "y", "t"}, "s")
                 exit(0)
             case ["restore", "all"] | ["ra"]:
-                proc.run(["python", SCRIPT_PATH, "restore"])
-                proc.run(["python", SCRIPT_PATH, "restore2"])
+                execute({"b", "v", "y"}, "b")
+                execute({"b", "v", "y", "t"}, "b")
                 exit(0)
             case ["save", "commit"] | ["sc"]:
-                proc.run(["python", SCRIPT_PATH, "save"])
-                proc.run(["python", SCRIPT_PATH, "commit"])
+                execute({"s", "v", "y"}, "s")
+                execute({"c", "y"}, "c")
                 exit(0)
 
     # check no useless word parameters are passed
