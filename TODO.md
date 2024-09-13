@@ -42,3 +42,5 @@
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
+    - optimizations:
+        - [ ] make comparison for big files faster using file size, file hash, bytexbyte comparison
