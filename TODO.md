@@ -43,4 +43,8 @@
 
 - TODO:
     - optimizations:
-        - [ ] make comparison for big files faster using file size, file hash, bytexbyte comparison
+        - [ ] remove secondary file track list
+        - [ ] add options to file tracked (/!, /+, ...):
+            - /+ -> only check if file miss in backup or in home
+            - /! -> only check if file miss only in backup
+            - -t -> ignore /_ options, and apply all checks
