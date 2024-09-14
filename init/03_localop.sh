@@ -46,4 +46,9 @@ if ask_user 'Do you want to disable sddm'; then
     sudo systemctl disable sddm.service
 fi </dev/tty
 
+# disable bluetooth
+if ask_user 'Do you want to disable sddm'; then
+    sudo systemctl disable bluetooth
+fi </dev/tty
+
 exit 0
