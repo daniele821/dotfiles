@@ -64,21 +64,33 @@ def all_files(dir, relpath=None):
 
 def load_config(conf):
     files = set()
+    opts = {}
     if os.path.isfile(conf):
         with open(conf, "r") as buffer:
             for line in buffer.read().splitlines():
+                if line.startswith("/") and not line.startswith("//"):
+                    opt = line[:2]
+                    line = line[2:]
                 if not line.startswith("/") and line:
                     ofile = os.path.join(HOME, line)
                     bfile = os.path.join(DIRS["backup"], line)
                     if os.path.isfile(ofile):
                         files.add(line)
+                        opts[line] = opt
                     elif os.path.isdir(ofile):
-                        files.update(all_files(ofile, HOME))
+                        _files_ = all_files(ofile, HOME)
+                        files.update(_files_)
+                        for file in _files_:
+                            opts[file] = opt
                     if os.path.isfile(bfile):
                         files.add(line)
+                        opts[line] = opt
                     elif os.path.isdir(bfile):
-                        files.update(all_files(bfile, DIRS["backup"]))
-    return files
+                        _files_ = all_files(bfile, DIRS["backup"])
+                        files.update(_files_)
+                        for file in _files_:
+                            opts[file] = opt
+    return files, opts
 
 
 def copy_file(src, dst):
@@ -103,7 +115,7 @@ def backup(opts):
     msg12 = "[DANGER, UNTRACKED] Do you really want to delete original file? "
 
     # accumulate all tracked files
-    files = load_config(FILES["track"])
+    files, opts = load_config(FILES["track"])
 
     # backup action
     if "u" not in opts:
