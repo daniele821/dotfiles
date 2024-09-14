@@ -222,23 +222,15 @@ def help_msg():
 
   Shortcuts:
 - list              -
-- list2             -  -t
 - diff              -  -dv
-- diff2             -  -tdv
-- untracked         -u
 - save              -s -vy
-- save2             -s -tvy
 - restore           -b -vy
-- restore2          -b -tvy
 - commit            -c -y
 - uncommit          -c -ty
+- untracked         -u
 - init              -r -y
 - edit              -e -y
 - help              -h
-- list all    | la
-- diff all    | da
-- save all    | sa
-- restore all | ra
 - save commit | sc
 
   Environment:
@@ -287,13 +279,9 @@ def parse_options():
     if len(args) >= 1:
         match args:
             case ["list"]: opts = []
-            case ["list2"]: opts = ['t']
             case ["save"]: opts = ['s', 'v', 'y']
-            case ["save2"]: opts = ['s', 't', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
-            case ["restore2"]: opts = ['b', 't', 'v', 'y']
             case ["diff"]: opts = ['d', 'v']
-            case ["diff2"]: opts = ['d', 'v', 't']
             case ["commit"]: opts = ['c', 'y']
             case ["uncommit"]: opts = ['c', 't', 'y']
             case ["untracked"]: opts = ['u']
@@ -301,22 +289,6 @@ def parse_options():
             case ["edit"]: opts = ['e', 'y']
             case ["help"]: opts = ['h']
             # multi action shortcuts
-            case ["list", "all"] | ["la"]:
-                execute({}, None)
-                execute({"t"}, None)
-                exit(0)
-            case ["diff", "all"] | ["da"]:
-                execute({"d", "v"}, None)
-                execute({"d", "v", "t"}, None)
-                exit(0)
-            case ["save", "all"] | ["sa"]:
-                execute({"s", "v", "y"}, "s")
-                execute({"s", "v", "y", "t"}, "s")
-                exit(0)
-            case ["restore", "all"] | ["ra"]:
-                execute({"b", "v", "y"}, "b")
-                execute({"b", "v", "y", "t"}, "b")
-                exit(0)
             case ["save", "commit"] | ["sc"]:
                 execute({"s", "v", "y"}, "s")
                 execute({"c", "y"}, "c")

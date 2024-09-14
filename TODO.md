@@ -49,3 +49,4 @@
             - /! -> only check if file miss only in backup
             - -t -> ignore /_ options, and apply all checks
         - [ ] check files are always in correct order 
+    - [ ] fix help message to better explain what flags do with each action
