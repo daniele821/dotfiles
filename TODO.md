@@ -50,3 +50,4 @@
             - -t -> ignore /_ options, and apply all checks
         - [ ] check files are always in correct order 
     - [ ] fix help message to better explain what flags do with each action
+    - [ ] restructure script in modules, to be easier to mantain
