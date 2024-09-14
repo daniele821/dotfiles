@@ -5,7 +5,7 @@ danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/daniele821/nvim-config
 git@daniele821.github.com:daniele821/nvim-config
-main
+terminal
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/daniele821/python
