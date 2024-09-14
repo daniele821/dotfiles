@@ -51,4 +51,9 @@ if ask_user 'Do you want to disable sddm'; then
     sudo systemctl disable bluetooth
 fi </dev/tty
 
+# add user to docker group to enable distrobox
+if ask_user 'Do you want to enable distrobox for current user'; then
+    sudo usermod -aG docker "$USER"
+fi </dev/tty
+
 exit 0
