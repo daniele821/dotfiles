@@ -30,3 +30,8 @@ def ask_user(msg, auto_answer=None):
                 case _:
                     print("Invalid answer, retry:")
                     return ask_user(msg, auto_answer)
+
+
+def error(msg):
+    print(color("err", "ERROR: " + msg))
+    exit(1)
