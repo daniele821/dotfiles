@@ -1,6 +1,7 @@
 #!/bin/python3
 
 import os
+from enum import Enum
 
 HOME = os.path.expanduser("~")
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -12,22 +13,10 @@ DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
 FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
 
 
-FLAGS = "dfntvy"
-ACTIONS = {
-    " ": "dntvy",
-    "b": "dfntvy",
-    "c": "dnty",
-    "e": "ny",
-    "h": "",
-    "i": "",
-    "r": "ny",
-    "s": "dntvy",
-    "u": "fnty",
-}
-
-
-def opts_to_auto_answer(opts):
-    if "n" in opts:
-        return "n"
-    if "y" in opts:
-        return "y"
+ACTIONS = Enum("ACTIONS", [
+    "LIST", "UNTRACKED", "SAVE", "RESTORE", "COMMIT", "EDIT", "HELP", "INIT",
+    "RUN"
+])
+FLAGS = Enum("FLAGS", [
+    "DIFFS", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
+])
