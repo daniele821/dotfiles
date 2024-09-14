@@ -48,3 +48,4 @@
             - /+ -> only check if file miss in backup or in home
             - /! -> only check if file miss only in backup
             - -t -> ignore /_ options, and apply all checks
+        - [ ] check files are always in correct order 
