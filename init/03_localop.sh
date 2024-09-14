@@ -21,6 +21,11 @@ kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec &>/dev/null
     echo "setting default terminal to kitty"
 fi
 
+# autolaunch hyprland
+if ! grep Hyprland "$HOME/.bash_profile" -q && ask_user 'Do you really want to autolaunch hyprland'; then
+    echo '[[ "$(tty)" == "/dev/tty1" ]] && exec Hyprland' >>"$HOME/.bash_profile"
+fi </dev/tty
+
 # restore backup files
 if ask_user 'Do you want to restore all backup files'; then
     SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
