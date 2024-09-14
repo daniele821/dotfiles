@@ -15,8 +15,7 @@ DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "config": os.path.join(SCRIPT_DIR, "config"),
         "init": os.path.join(SCRIPT_DIR, "init"),
         "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
-FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
-         "track2": os.path.join(DIRS["config"], "files_to_track2.txt")}
+FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
 
 
 # UTILITY FUNCTIONS
@@ -104,10 +103,7 @@ def backup(opts):
     msg12 = "[DANGER, UNTRACKED] Do you really want to delete original file? "
 
     # accumulate all tracked files
-    tracked = load_config(FILES["track"])
-    tracked2 = load_config(FILES["track2"])
-    tracked = tracked - tracked2
-    files = sorted(tracked2 if "t" in opts else tracked)
+    files = load_config(FILES["track"])
 
     # backup action
     if "u" not in opts:
@@ -148,8 +144,7 @@ def backup(opts):
 
     # remove untracked files actions
     if "u" in opts:
-        all_tracked = tracked | tracked2
-        for file in sorted(set(all_files(backup, backup)) - all_tracked):
+        for file in sorted(set(all_files(backup, backup)) - files):
             fhome = os.path.join(HOME, file)
             fback = os.path.join(backup, file)
             color("file", fhome)
