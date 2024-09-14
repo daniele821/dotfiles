@@ -221,8 +221,6 @@ def help_msg():
 - u                   f n t   y
 
   Shortcuts:
-- list              -
-- diff              -  -dv
 - save              -s -vy
 - restore           -b -vy
 - commit            -c -y
@@ -278,10 +276,8 @@ def parse_options():
     # shortcuts
     if len(args) >= 1:
         match args:
-            case ["list"]: opts = []
             case ["save"]: opts = ['s', 'v', 'y']
             case ["restore"]: opts = ['b', 'v', 'y']
-            case ["diff"]: opts = ['d', 'v']
             case ["commit"]: opts = ['c', 'y']
             case ["uncommit"]: opts = ['c', 't', 'y']
             case ["untracked"]: opts = ['u']
