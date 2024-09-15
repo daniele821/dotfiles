@@ -5,7 +5,7 @@ from shutil import copyfile
 
 
 def copy_file(src, dst):
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    create_dir(os.path.dirname(dst))
     copyfile(src, dst)
 
 
@@ -17,6 +17,10 @@ def read_file(file):
 def create_file(file):
     with open(file, "w"):
         pass
+
+
+def create_dir(dir):
+    os.makedirs(dir, exist_ok=True)
 
 
 def all_files(dir, relpath=None):

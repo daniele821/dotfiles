@@ -3,6 +3,7 @@
 import os
 from enum import Enum
 from pathlib import Path
+from lib.file import read_file, all_files, create_file, create_dir
 
 HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -21,3 +22,30 @@ ACTIONS = Enum("ACTIONS", [
 FLAGS = Enum("FLAGS", [
     "DIFFS", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
 ])
+
+
+def load_config(conf):
+    files = []
+    if os.path.isfile(conf):
+        for line in read_file(conf).splitlines():
+            if not line.startswith("/") and line:
+                orig_file = os.path.join(HOME, line)
+                back_file = os.path.join(DIRS["backup"], line)
+                for file in (orig_file, back_file):
+                    if os.path.isfile(file):
+                        files.append(file)
+                    elif os.path.isdir(file):
+                        files.extend(all_files(file))
+    return files
+
+
+def init_files():
+    for dir in DIRS.values():
+        if not os.path.exists(dir):
+            create_dir(dir)
+    for file in FILES.values():
+        if not os.path.exists(file):
+            create_file(file)
+
+
+init_files()
