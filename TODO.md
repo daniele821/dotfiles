@@ -43,10 +43,7 @@
     - [x] [OPTIMIZATION] remove secondary file track list
 
 - TODO:
-    - [ ] add options to file tracked (/!, /+, ...):
-        - /+ -> only check if file miss in backup or in home
-        - /! -> only check if file miss only in backup
-        - -t -> ignore /_ options, and apply all checks
     - [ ] check files are always in correct order 
     - [ ] fix help message to better explain what flags do with each action
     - [ ] restructure script in modules, to be easier to mantain
+    - [ ] replace help msg with a HELP.md text file

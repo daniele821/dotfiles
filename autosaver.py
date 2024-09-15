@@ -16,8 +16,7 @@ FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
 
 
 ACTIONS = Enum("ACTIONS", [
-    "LIST", "UNTRACKED", "SAVE", "RESTORE", "COMMIT", "EDIT", "HELP", "INIT",
-    "RUN"
+    "LIST", "UNTRACKED", "SAVE", "RESTORE", "COMMIT", "EDIT", "INIT", "RUN"
 ])
 FLAGS = Enum("FLAGS", [
     "DIFFS", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
