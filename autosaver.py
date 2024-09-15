@@ -4,6 +4,7 @@ import os
 from enum import Enum
 from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir
+from lib.msg import error
 
 HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -41,6 +42,15 @@ OPTION_FLAGS = {
 }
 ALL_FLAGS = ACTION_FLAGS | OPTION_FLAGS
 DEFAULT_ACTION = ACTIONS.LIST
+SHORTCUTS = {
+    "save": ["-svy"],
+    "restore": ["-bvy"],
+    "commit": ["-cy"],
+    "uncommit": ["-cty"],
+    "untracked": ["-u"],
+    "init": ["-ry"],
+    "sc": ["-svy", "-cy"],
+}
 
 
 def load_config(conf):
@@ -67,8 +77,23 @@ def init_files():
             create_file(file)
 
 
+def parse_shortcuts(args):
+    if len(args) == 1:
+        pass
+
+
 def parse_options(args):
     flag_opts = [arg for arg in args if arg.startswith("-")]
     input_flags = set()
     for flag_opt in flag_opts:
         input_flags.update(flag_opt[1:])
+    flags = input_flags & ALL_FLAGS.keys()
+    options = flags & OPTION_FLAGS.keys()
+    action = flags & ACTION_FLAGS.keys()
+    if input_flags - flags:
+        error("some invalid flags were passed")
+    if len(action) > 1:
+        error("this script doesn't accept multiple action flags")
+    action = ACTION_FLAGS[action.pop()] if len(action) == 1 else DEFAULT_ACTION
+    options = [ALL_FLAGS[i] for i in options]
+    return (action, options)
