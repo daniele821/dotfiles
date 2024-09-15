@@ -2,8 +2,9 @@
 
 import os
 from enum import Enum
+from pathlib import Path
 
-HOME = os.path.expanduser("~")
+HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
