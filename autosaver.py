@@ -102,8 +102,16 @@ def parse_options(args):
 
 
 def execute(flags):
-    actions, options = flags
-    print('todo')
+    action, options = flags
+    match action:
+        case ACTIONS.LIST: pass
+        case ACTIONS.UNTRACKED: pass
+        case ACTIONS.SAVE: pass
+        case ACTIONS.BACKUP: pass
+        case ACTIONS.COMMIT: pass
+        case ACTIONS.EDIT: pass
+        case ACTIONS.INIT: init_files()
+        case ACTIONS.RUN: pass
 
 
 if __name__ == "__main__":
