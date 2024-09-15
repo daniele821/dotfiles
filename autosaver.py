@@ -46,6 +46,3 @@ def init_files():
     for file in FILES.values():
         if not os.path.exists(file):
             create_file(file)
-
-
-init_files()
