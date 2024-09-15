@@ -11,7 +11,8 @@ DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "config": os.path.join(SCRIPT_DIR, "config"),
         "init": os.path.join(SCRIPT_DIR, "init"),
         "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
-FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt")}
+FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
+         "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt")}
 
 
 ACTIONS = Enum("ACTIONS", [

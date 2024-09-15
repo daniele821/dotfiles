@@ -17,3 +17,5 @@ def read_file(file):
 def create_file(file):
     with open(file, "w"):
         pass
+
+# all files in a directory
