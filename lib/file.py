@@ -1,12 +1,12 @@
 #!/bin/python3
 
 import os
-import shutil
+from shutil import copyfile
 
 
 def copy_file(src, dst):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
-    shutil.copyfile(src, dst)
+    copyfile(src, dst)
 
 
 def read_file(file):
