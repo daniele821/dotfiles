@@ -1,6 +1,7 @@
 #!/bin/python3
 
 import os
+from sys import argv
 from enum import Enum
 from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir
@@ -43,13 +44,13 @@ OPTION_FLAGS = {
 ALL_FLAGS = ACTION_FLAGS | OPTION_FLAGS
 DEFAULT_ACTION = ACTIONS.LIST
 SHORTCUTS = {
-    "save": ["-svy"],
-    "restore": ["-bvy"],
-    "commit": ["-cy"],
-    "uncommit": ["-cty"],
-    "untracked": ["-u"],
-    "init": ["-ry"],
-    "sc": ["-svy", "-cy"],
+    "save": [["-svy"]],
+    "restore": [["-bvy"]],
+    "commit": [["-cy"]],
+    "uncommit": [["-cty"]],
+    "untracked": [["-u"]],
+    "init": [["-ry"]],
+    "sc": [["-svy"], ["-cy"]],
 }
 
 
@@ -78,8 +79,9 @@ def init_files():
 
 
 def parse_shortcuts(args):
-    if len(args) == 1:
-        pass
+    args = "".join(args)
+    if args in SHORTCUTS:
+        return [parse_options(x) for x in SHORTCUTS[args]]
 
 
 def parse_options(args):
@@ -97,3 +99,17 @@ def parse_options(args):
     action = ACTION_FLAGS[action.pop()] if len(action) == 1 else DEFAULT_ACTION
     options = [ALL_FLAGS[i] for i in options]
     return (action, options)
+
+
+def execute(flags):
+    actions, options = flags
+    print('todo')
+
+
+if __name__ == "__main__":
+    args = argv[1:]
+    flags = parse_shortcuts(args)
+    if flags is None:
+        flags = [parse_options(args)]
+    for flag in flags:
+        execute(flag)
