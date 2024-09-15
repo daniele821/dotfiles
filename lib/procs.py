@@ -12,7 +12,7 @@ def edit(file):
 
 
 def run_and_get_status(file):
-    return run(["nvim", file]).returncode != 0
+    return run([file]).returncode == 0
 
 
 def git_pull(gitdir):
