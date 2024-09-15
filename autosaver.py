@@ -17,11 +17,30 @@ FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
 
 
 ACTIONS = Enum("ACTIONS", [
-    "LIST", "UNTRACKED", "SAVE", "RESTORE", "COMMIT", "EDIT", "INIT", "RUN"
+    "LIST", "UNTRACKED", "SAVE", "BACKUP", "COMMIT", "EDIT", "INIT", "RUN"
 ])
 FLAGS = Enum("FLAGS", [
-    "DIFFS", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
+    "DIFF", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
 ])
+ACTION_FLAGS = {
+    "b": ACTIONS.BACKUP,
+    "c": ACTIONS.COMMIT,
+    "e": ACTIONS.EDIT,
+    "i": ACTIONS.INIT,
+    "r": ACTIONS.RUN,
+    "s": ACTIONS.SAVE,
+    "u": ACTIONS.UNTRACKED,
+}
+OPTION_FLAGS = {
+    "d": FLAGS.DIFF,
+    "f": FLAGS.FORCE,
+    "n": FLAGS.NO,
+    "t": FLAGS.TOGGLE,
+    "v": FLAGS.VERBOSE,
+    "y": FLAGS.YES,
+}
+ALL_FLAGS = ACTION_FLAGS | OPTION_FLAGS
+DEFAULT_ACTION = ACTIONS.LIST
 
 
 def load_config(conf):
@@ -46,3 +65,10 @@ def init_files():
     for file in FILES.values():
         if not os.path.exists(file):
             create_file(file)
+
+
+def parse_options(args):
+    flag_opts = [arg for arg in args if arg.startswith("-")]
+    input_flags = set()
+    for flag_opt in flag_opts:
+        input_flags.update(flag_opt[1:])
