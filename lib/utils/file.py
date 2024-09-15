@@ -18,4 +18,13 @@ def create_file(file):
     with open(file, "w"):
         pass
 
-# all files in a directory
+
+def all_files(dir, relpath=None):
+    files = []
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if relpath is not None:
+                fname = os.path.relpath(fname, relpath)
+            files.append(fname)
+    return files
