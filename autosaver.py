@@ -94,18 +94,19 @@ def backup_files(act, opts, ans):
         res = prefix + "Do you really want to " + act + " " + on + " file? "
         return color("msg", res)
 
-    def fmsg(file, on=None, stat=None):
+    def fout(file, on=None, stat=None):
         msg_file = color("file", file)
         if opt_verbose and on and stat:
-            return msg_file + " : " + on + " " + stat
-        return msg_file
+            print(msg_file + " : " + on + " " + stat)
+        else:
+            print(msg_file)
 
     for file in all:
         ofile = os.path.join(odir, file)
         bfile = os.path.join(bdir, file)
         match os.path.isfile(ofile), os.path.isfile(bfile):
             case True, False:
-                fmsg(ofile, "backup file", "is missing")
+                fout(ofile, "backup file", "is missing")
                 if act_save:
                     if ask_user(qmsg("create", "backup"), ans):
                         copy_file(ofile, bfile)
@@ -113,7 +114,7 @@ def backup_files(act, opts, ans):
                     if ask_user(qmsg("delete", "original", "[DANGER] "), ans):
                         delete_file(ofile)
             case False, True:
-                fmsg(ofile, "original file", "is missing")
+                fout(ofile, "original file", "is missing")
                 if act_save:
                     if ask_user(qmsg("delete", "backup"), ans):
                         delete_file(bfile, True)
@@ -123,7 +124,7 @@ def backup_files(act, opts, ans):
             case True, True:
                 if opt_toggle or file not in notdiff:
                     if not cmp(ofile, bfile):
-                        fmsg(ofile, "original and backup files", "differ")
+                        fout(ofile, "original and backup files", "differ")
                         if opt_diff:
                             old = bfile if act_save else ofile
                             new = ofile if act_save else bfile
