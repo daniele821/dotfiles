@@ -24,7 +24,7 @@ def git_push(gitdir):
 
 
 def git_status(gitdir):
-    run(["git", "-C", dir, "status", "-su"])
+    run(["git", "-C", gitdir, "status", "-su"])
 
 
 def git_diff(gitdir, reverse=False):
@@ -44,6 +44,6 @@ def git_commit_all(gitdir, commit_msg):
     run(["git", "-C", gitdir, "commit", "-m", commit_msg])
 
 
-def has_git_changed(gitidir):
-    cmd = ['git', '-C', dir, 'status', '-s']
+def has_git_changed(gitdir):
+    cmd = ['git', '-C', gitdir, 'status', '-s']
     return run(cmd, capture_output=True, text=True).stdout.strip()

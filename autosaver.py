@@ -6,7 +6,8 @@ from enum import Enum
 from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir
 from lib.msg import error, color, ask_user
-from lib.procs import run_and_get_status, edit
+from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
+    git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
 
 HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -78,6 +79,28 @@ def load_config(conf):
     return files
 
 
+def commit_files(opts, auto_answer):
+    opt_toggle = FLAGS.TOGGLE in opts
+    opt_diff = FLAGS.DIFF in opts
+    msg_commit = color("msg", "Do you really want to commit all? ")
+    msg_restore = color("msg", "Do you really want to restore all? ")
+    if not opt_toggle:
+        git_pull(SCRIPT_DIR)
+    if has_git_changed(SCRIPT_DIR):
+        if opt_diff:
+            git_diff(SCRIPT_DIR, reverse=opt_toggle)
+        git_status(SCRIPT_DIR)
+        if opt_toggle:
+            if ask_user(msg_commit, auto_answer):
+                git_restore_all(SCRIPT_DIR)
+        else:
+            if ask_user(msg_restore, auto_answer):
+                if commit_msg := input(color("msg", "Write commit message: ")):
+                    git_commit_all(SCRIPT_DIR, commit_msg)
+    if not opt_toggle:
+        git_push(SCRIPT_DIR)
+
+
 def init_files():
     for dir in DIRS.values():
         if not os.path.exists(dir):
@@ -141,7 +164,7 @@ def execute(flags):
         case ACTIONS.UNTRACKED: pass
         case ACTIONS.SAVE: pass
         case ACTIONS.BACKUP: pass
-        case ACTIONS.COMMIT: pass
+        case ACTIONS.COMMIT: commit_files(options, auto_answer(options))
         case ACTIONS.EDIT: edit_files(auto_answer(options))
         case ACTIONS.INIT: init_files()
         case ACTIONS.RUN: run_files(auto_answer(options))
