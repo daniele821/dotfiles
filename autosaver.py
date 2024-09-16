@@ -14,8 +14,8 @@ SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
         "config": os.path.join(SCRIPT_DIR, "config"),
-        "init": os.path.join(SCRIPT_DIR, "init"),
-        "bigfiles": os.path.join(SCRIPT_DIR, "bigfiles")}
+        "run": os.path.join(SCRIPT_DIR, "run"),
+        "others": os.path.join(SCRIPT_DIR, "others")}
 FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
          "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt")}
 
@@ -58,13 +58,6 @@ SHORTCUTS = {
 }
 
 
-def auto_answer(opts):
-    if FLAGS.NO in opts:
-        return "n"
-    if FLAGS.YES in opts:
-        return "y"
-
-
 def load_config(conf):
     files = []
     if os.path.isfile(conf):
@@ -78,6 +71,10 @@ def load_config(conf):
                     elif os.path.isdir(file):
                         files.extend(all_files(file))
     return files
+
+
+def backup_files(opts, auto_answer):
+    pass
 
 
 def commit_files(opts, auto_answer):
@@ -114,7 +111,7 @@ def init_files():
 def run_files(auto_answer):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
-    for file in sorted(all_files(DIRS["init"])):
+    for file in sorted(all_files(DIRS["run"])):
         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
         if ask_user(msg1+msg2+msg3, auto_answer):
             if not os.access(file, os.X_OK):
@@ -127,7 +124,7 @@ def edit_files(auto_answer):
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
     files = [SCRIPT_PATH] + list(FILES.values()) + \
-        sorted(all_files(DIRS["init"]))
+        sorted(all_files(DIRS["run"]))
     for file in files:
         if os.path.isfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
@@ -159,16 +156,20 @@ def parse_options(args):
 
 
 def execute(flags):
-    action, options = flags
-    match action:
-        case ACTIONS.LIST: pass
+    act, opts = flags
+    auto_answer = None
+    if FLAGS.NO in opts:
+        auto_answer = "n"
+    elif FLAGS.YES in opts:
+        auto_answer = "y"
+    match act:
+        case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
+            backup_files(opts, auto_answer)
         case ACTIONS.UNTRACKED: pass
-        case ACTIONS.SAVE: pass
-        case ACTIONS.BACKUP: pass
-        case ACTIONS.COMMIT: commit_files(options, auto_answer(options))
-        case ACTIONS.EDIT: edit_files(auto_answer(options))
+        case ACTIONS.COMMIT: commit_files(opts, auto_answer)
+        case ACTIONS.EDIT: edit_files(auto_answer)
         case ACTIONS.INIT: init_files()
-        case ACTIONS.RUN: run_files(auto_answer(options))
+        case ACTIONS.RUN: run_files(auto_answer)
 
 
 if __name__ == "__main__":

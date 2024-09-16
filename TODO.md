@@ -49,3 +49,4 @@
     - [ ] replace help msg with a HELP.md text file
     - IMPORTANT:
         - [ ] change all places which use 'init' shortcut, to now use 'run' instead!
+        - [ ] rename 'init' directories to 'run', and 'bigfiles' directories to 'others'
