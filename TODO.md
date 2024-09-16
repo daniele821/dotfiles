@@ -50,3 +50,4 @@
     - IMPORTANT:
         - [ ] change all places which use 'init' shortcut, to now use 'run' instead!
         - [ ] rename 'init' directories to 'run', and 'bigfiles' directories to 'others'
+    - [ ] '--' splits args to allow multiple consecutive actions
