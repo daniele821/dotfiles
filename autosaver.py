@@ -89,13 +89,25 @@ def init_files():
 def run_files(auto_answer):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
-    for file in all_files(DIRS["init"]):
+    for file in sorted(all_files(DIRS["init"])):
         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
         if ask_user(msg1+msg2+msg3, auto_answer):
             if not os.access(file, os.X_OK):
                 error("file is not executable!")
             if not run_and_get_status(file):
                 error("init script failed!")
+
+
+def edit_files(auto_answer):
+    msg1 = color("msg", "Do you really want to edit ")
+    msg3 = color("msg", " ? ")
+    files = [SCRIPT_PATH] + list(FILES.values()) + \
+        sorted(all_files(DIRS["init"]))
+    for file in files:
+        if os.path.isfile(file):
+            msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+            if ask_user(msg1+msg2+msg3, auto_answer):
+                edit(file)
 
 
 def parse_shortcuts(args):
@@ -129,7 +141,7 @@ def execute(flags):
         case ACTIONS.SAVE: pass
         case ACTIONS.BACKUP: pass
         case ACTIONS.COMMIT: pass
-        case ACTIONS.EDIT: pass
+        case ACTIONS.EDIT: edit_files(auto_answer(options))
         case ACTIONS.INIT: init_files()
         case ACTIONS.RUN: run_files(auto_answer(options))
 
