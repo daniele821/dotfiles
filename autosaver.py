@@ -57,8 +57,8 @@ SHORTCUTS = {
     "init": [["-iy"]],
     "run": [["-ry"]],
     "edit": [["-e"]],
-    "sc": [["-svy"], ["-cy"]],
 }
+SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
 
 
 def load_config(conf):
