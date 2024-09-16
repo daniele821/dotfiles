@@ -140,8 +140,22 @@ def backup_files(act, opts, ans):
 def untracked_files(opts, auto_answer):
     tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
     backup = set(all_files(DIRS["backup"], DIRS["backup"]))
+    opt_toggle = FLAGS.TOGGLE in opts
+    opt_force = FLAGS.FORCE in opts
+    bmsg = "Do you really want to delete backup file ? "
+    bmsg = color("msg", bmsg)
+    omsg = "[DANGER] Do you really want to delete original file ? "
+    omsg = color("msg", omsg)
     for file in sorted(backup - tracked):
-        print(file)
+        ofile = os.path.join(HOME, file)
+        bfile = os.path.join(DIRS["backup"], file)
+        print(color("file", ofile))
+        if opt_toggle:
+            if ask_user(bmsg, auto_answer):
+                delete_file(bfile, True)
+            if opt_force and os.path.isfile(ofile):
+                if ask_user(omsg, auto_answer):
+                    delete_file(ofile)
 
 
 def commit_files(opts, auto_answer):
