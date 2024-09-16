@@ -91,10 +91,10 @@ def commit_files(opts, auto_answer):
             git_diff(SCRIPT_DIR, reverse=opt_toggle)
         git_status(SCRIPT_DIR)
         if opt_toggle:
-            if ask_user(msg_commit, auto_answer):
+            if ask_user(msg_restore, auto_answer):
                 git_restore_all(SCRIPT_DIR)
         else:
-            if ask_user(msg_restore, auto_answer):
+            if ask_user(msg_commit, auto_answer):
                 if commit_msg := input(color("msg", "Write commit message: ")):
                     git_commit_all(SCRIPT_DIR, commit_msg)
     if not opt_toggle:
