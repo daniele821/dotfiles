@@ -36,16 +36,18 @@
         - [x] remove conf file to skip files (track2 have priority over track1)
     - 1.4.2:
         - [x] [OPTIMIZATION] multiple action shortcuts execute in the same process
+- 2.0:
+    - 2.0.0:
+        - [x] [OPTIMIZATION] remove secondary file track list
+        - [x] restructure script in modules, to be easier to mantain
+        - [x] check files are always in correct order 
+        - [x] add a global variable to store autoanswer
+        - [x] fix help message to better explain what flags do with each action
+        - [x] replace help msg with a HELP.md text file
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
-    - [x] [OPTIMIZATION] remove secondary file track list
-    - [x] restructure script in modules, to be easier to mantain
-    - [x] check files are always in correct order 
-    - [x] add a global variable to store autoanswer, to avoid always passing it around 
-    - [x] fix help message to better explain what flags do with each action
-    - [x] replace help msg with a HELP.md text file
 
 - TODO:
     - [ ] '--' splits args to allow multiple consecutive actions
