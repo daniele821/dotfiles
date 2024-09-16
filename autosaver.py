@@ -53,6 +53,7 @@ SHORTCUTS = {
     "untracked": [["-u"]],
     "init": [["-iy"]],
     "run": [["-ry"]],
+    "edit": [["-e"]],
     "sc": [["-svy"], ["-cy"]],
 }
 
