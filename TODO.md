@@ -49,6 +49,6 @@
 
 - COMPLETED [move to versions, once version tag is created!]:
     - [x]  disable python stderr output
+    - [x] '--' splits args to allow multiple consecutive actions
 
 - TODO:
-    - [ ] '--' splits args to allow multiple consecutive actions

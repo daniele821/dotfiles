@@ -257,10 +257,24 @@ if __name__ == "__main__":
     # disable python stderr output
     sys.stderr = open(os.devnull, "w")
 
-    # actual execution
+    # split args in multiple actions
     args = sys.argv[1:]
-    flags = parse_shortcuts(args)
-    if flags is None:
-        flags = [parse_options(args)]
-    for flag in flags:
-        execute(flag)
+    splitted_args = []
+    tmp = []
+    for arg in args:
+        if arg != "--":
+            tmp.append(arg)
+        else:
+            if tmp:
+                splitted_args.append(tmp.copy())
+                tmp.clear()
+    if tmp:
+        splitted_args.append(tmp)
+
+    # actual execution
+    for splitted_arg in splitted_args:
+        flags = parse_shortcuts(splitted_arg)
+        if flags is None:
+            flags = [parse_options(splitted_arg)]
+        for flag in flags:
+            execute(flag)
