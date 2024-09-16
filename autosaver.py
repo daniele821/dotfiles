@@ -4,7 +4,6 @@ import os
 from filecmp import cmp
 import sys
 from enum import Enum
-from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir, \
     copy_file, delete_file
 from lib.msg import error, color, ask_user
@@ -12,7 +11,7 @@ from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
     git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
 import lib
 
-HOME = Path.home()
+HOME = os.getenv("HOME")
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
