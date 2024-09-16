@@ -50,7 +50,8 @@ SHORTCUTS = {
     "commit": [["-cy"]],
     "uncommit": [["-cty"]],
     "untracked": [["-u"]],
-    "init": [["-ry"]],
+    "init": [["-iy"]],
+    "run": [["-ry"]],
     "sc": [["-svy"], ["-cy"]],
 }
 
