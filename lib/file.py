@@ -19,6 +19,18 @@ def create_file(file):
         pass
 
 
+def delete_file(file, del_empty_dir=False):
+    os.remove(file)
+    if del_empty_dir:
+        dir = file
+        while True:
+            dir = os.path.dirname(dir)
+            try:
+                os.rmdir(dir)
+            except Exception:
+                break
+
+
 def create_dir(dir):
     os.makedirs(dir, exist_ok=True)
 

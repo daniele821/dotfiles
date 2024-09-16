@@ -1,10 +1,12 @@
 #!/bin/python3
 
 import os
+from filecmp import cmp
 from sys import argv
 from enum import Enum
 from pathlib import Path
-from lib.file import read_file, all_files, create_file, create_dir
+from lib.file import read_file, all_files, create_file, create_dir, \
+    copy_file, delete_file
 from lib.msg import error, color, ask_user
 from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
     git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
@@ -75,8 +77,63 @@ def load_config(conf):
     return files
 
 
-def backup_files(opts, auto_answer):
-    pass
+def backup_files(act, opts, ans):
+    odir = HOME
+    bdir = DIRS["backup"]
+    act_save = act == ACTIONS.SAVE
+    act_backup = act == ACTIONS.BACKUP
+    opt_toggle = FLAGS.TOGGLE in opts
+    opt_diff = FLAGS.DIFF in opts
+    opt_force = FLAGS.FORCE in opts
+    opt_verbose = FLAGS.VERBOSE in opts
+    tracked = load_config(FILES["track"])
+    notdiff = load_config(FILES["notdiff"])
+    all = sorted(tracked | notdiff)
+
+    def qmsg(act, on,  prefix=""):
+        res = prefix + "Do you really want to " + act + " " + on + " file? "
+        return color("msg", res)
+
+    def fmsg(file, on=None, stat=None):
+        msg_file = color("file", file)
+        if opt_verbose and on and stat:
+            return msg_file + " : " + on + " " + stat
+        return msg_file
+
+    for file in all:
+        ofile = os.path.join(odir, file)
+        bfile = os.path.join(bdir, file)
+        match os.path.isfile(ofile), os.path.isfile(bfile):
+            case True, False:
+                fmsg(ofile, "backup file", "is missing")
+                if act_save:
+                    if ask_user(qmsg("create", "backup"), ans):
+                        copy_file(ofile, bfile)
+                if act_backup and opt_force:
+                    if ask_user(qmsg("delete", "original", "[DANGER] "), ans):
+                        delete_file(ofile)
+            case False, True:
+                fmsg(ofile, "original file", "is missing")
+                if act_save:
+                    if ask_user(qmsg("delete", "backup"), ans):
+                        delete_file(bfile, True)
+                if act_backup and opt_force:
+                    if ask_user(qmsg("create", "original"), ans):
+                        copy_file(bfile, ofile)
+            case True, True:
+                if opt_toggle or file not in notdiff:
+                    if not cmp(ofile, bfile):
+                        fmsg(ofile, "original and backup files", "differ")
+                        if opt_diff:
+                            old = bfile if act_save else ofile
+                            new = ofile if act_save else bfile
+                            diff(old, new)
+                    if act_save:
+                        if ask_user(qmsg("update", "backup"), ans):
+                            copy_file(ofile, bfile)
+                    if act_backup and opt_force:
+                        if ask_user(qmsg("update", "original"), ans):
+                            copy_file(bfile, ofile)
 
 
 def commit_files(opts, auto_answer):
@@ -166,7 +223,7 @@ def execute(flags):
         auto_answer = "y"
     match act:
         case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
-            backup_files(opts, auto_answer)
+            backup_files(act, opts, auto_answer)
         case ACTIONS.UNTRACKED: pass
         case ACTIONS.COMMIT: commit_files(opts, auto_answer)
         case ACTIONS.EDIT: edit_files(auto_answer)
