@@ -1,10 +1,10 @@
 # documentation for autosaver.py
 
-the script accept flags, which can either be `option` or `action` flags:
+- the script accept flags, which can either be `option` or `action` flags:
     - action flag specify what to do
     - option flag can modify the behaviour of the action executed
 
-action flags:
+- action flags:
     - <none> -> list all tracked files, which are to be copied backup
     - b -> list all tracked files, and for each one allows to restore from backup
     - s -> list all tracked files, and for each one allows to save to backup
@@ -14,7 +14,7 @@ action flags:
     - i -> creates necessary directories and files
     - r -> runs init scripts
 
-options flags:
+- options flags:
     - d -> show diffs
     - f -> allow dangerous operations
     - y -> auto answer yes to all questions
@@ -22,7 +22,7 @@ options flags:
     - t -> toggle secondary mode of the action
     - v -> show verbose output
 
-note for options flags with specific action:
+- note for options flags with specific action:
     - <none>|s|b:
         - t -> show also files from the list of the `notdiff` config file
     - c:
@@ -31,7 +31,7 @@ note for options flags with specific action:
         - t -> asks for each file if you want to delete the backup version
         - f -> (requires -t), also asks to delete the original version
 
-shortcuts:
+- shortcuts:
     - save
     - restore
     - commit
@@ -41,5 +41,5 @@ shortcuts:
     - edit
     - run
         
-notes:
+- notes:
     - multiple actions can be executed, by separating each with `--`
