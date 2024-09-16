@@ -2,7 +2,7 @@
 
 import os
 from filecmp import cmp
-from sys import argv
+import sys
 from enum import Enum
 from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir, \
@@ -254,7 +254,11 @@ def execute(flags):
 
 
 if __name__ == "__main__":
-    args = argv[1:]
+    # disable python stderr output
+    sys.stderr = open(os.devnull, "w")
+
+    # actual execution
+    args = sys.argv[1:]
     flags = parse_shortcuts(args)
     if flags is None:
         flags = [parse_options(args)]

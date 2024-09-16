@@ -48,7 +48,7 @@
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
+    - [x]  disable python stderr output
 
 - TODO:
     - [ ] '--' splits args to allow multiple consecutive actions
-    - [ ]  disable python stderr output
