@@ -51,3 +51,4 @@
 
 - TODO:
     - [ ] '--' splits args to allow multiple consecutive actions
+    - [ ]  disable python stderr output
