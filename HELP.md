@@ -22,7 +22,9 @@ options flags:
     - t -> toggle secondary mode of the action
     - v -> show verbose output
 
-notes for options flags with specific action:
+note for options flags with specific action:
+    - <none>|s|b:
+        - t -> show also files from the list of the `notdiff` config file
     - c:
         - t -> instead of commiting all changes, it restores everything
     - u:
