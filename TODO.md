@@ -44,11 +44,13 @@
         - [x] add a global variable to store autoanswer
         - [x] fix help message to better explain what flags do with each action
         - [x] replace help msg with a HELP.md text file
+- 2.1:
+    - 2.1.0:
+        - [x]  disable python stderr output
+        - [x] '--' splits args to allow multiple consecutive actions
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
-    - [x]  disable python stderr output
-    - [x] '--' splits args to allow multiple consecutive actions
 
 - TODO:
