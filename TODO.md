@@ -51,3 +51,4 @@
         - [ ] change all places which use 'init' shortcut, to now use 'run' instead!
         - [ ] rename 'init' directories to 'run', and 'bigfiles' directories to 'others'
     - [ ] '--' splits args to allow multiple consecutive actions
+    - [ ] add a global variable to store autoanswer, to avoid always passing it around 

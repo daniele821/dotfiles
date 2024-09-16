@@ -118,7 +118,7 @@ def backup_files(act, opts, ans):
                 if act_save:
                     if ask_user(qmsg("delete", "backup"), ans):
                         delete_file(bfile, True)
-                if act_backup and opt_force:
+                if act_backup:
                     if ask_user(qmsg("create", "original"), ans):
                         copy_file(bfile, ofile)
             case True, True:
@@ -129,12 +129,19 @@ def backup_files(act, opts, ans):
                             old = bfile if act_save else ofile
                             new = ofile if act_save else bfile
                             diff(old, new)
-                    if act_save:
-                        if ask_user(qmsg("update", "backup"), ans):
-                            copy_file(ofile, bfile)
-                    if act_backup and opt_force:
-                        if ask_user(qmsg("update", "original"), ans):
-                            copy_file(bfile, ofile)
+                        if act_save:
+                            if ask_user(qmsg("update", "backup"), ans):
+                                copy_file(ofile, bfile)
+                        if act_backup:
+                            if ask_user(qmsg("update", "original"), ans):
+                                copy_file(bfile, ofile)
+
+
+def untracked_files(opts, auto_answer):
+    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
+    backup = set(all_files(DIRS["backup"], DIRS["backup"]))
+    for file in sorted(backup - tracked):
+        print(file)
 
 
 def commit_files(opts, auto_answer):
@@ -225,7 +232,7 @@ def execute(flags):
     match act:
         case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
             backup_files(act, opts, auto_answer)
-        case ACTIONS.UNTRACKED: pass
+        case ACTIONS.UNTRACKED: untracked_files(opts, auto_answer)
         case ACTIONS.COMMIT: commit_files(opts, auto_answer)
         case ACTIONS.EDIT: edit_files(auto_answer)
         case ACTIONS.INIT: init_files()
