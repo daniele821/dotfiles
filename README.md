@@ -16,7 +16,7 @@ cd dotfiles || exit 1
 
 ```
 ./autosaver restore
-./autosaver init
+./autosaver run
 ```
 
 # create a new backup
