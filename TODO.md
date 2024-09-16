@@ -44,8 +44,8 @@
     - [x] restructure script in modules, to be easier to mantain
     - [x] check files are always in correct order 
     - [x] add a global variable to store autoanswer, to avoid always passing it around 
+    - [x] fix help message to better explain what flags do with each action
+    - [x] replace help msg with a HELP.md text file
 
 - TODO:
-    - [ ] fix help message to better explain what flags do with each action
-    - [ ] replace help msg with a HELP.md text file
     - [ ] '--' splits args to allow multiple consecutive actions
