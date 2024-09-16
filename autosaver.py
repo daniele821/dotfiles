@@ -59,18 +59,20 @@ SHORTCUTS = {
 
 
 def load_config(conf):
+    odir = HOME
+    bdir = DIRS["backup"]
     files = []
     if os.path.isfile(conf):
         for line in read_file(conf).splitlines():
             if not line.startswith("/") and line:
-                orig_file = os.path.join(HOME, line)
-                back_file = os.path.join(DIRS["backup"], line)
-                for file in (orig_file, back_file):
+                ofile = os.path.join(odir, line)
+                bfile = os.path.join(bdir, line)
+                for file, dir in ((ofile, odir), (bfile, bdir)):
                     if os.path.isfile(file):
-                        files.append(file)
+                        files.append(line)
                     elif os.path.isdir(file):
-                        files.extend(all_files(file))
-    return files
+                        files.extend(all_files(file, dir))
+    return set(files)
 
 
 def backup_files(opts, auto_answer):
