@@ -10,6 +10,7 @@ from lib.file import read_file, all_files, create_file, create_dir, \
 from lib.msg import error, color, ask_user
 from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
     git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
+import lib
 
 HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -77,7 +78,7 @@ def load_config(conf):
     return files
 
 
-def backup_files(act, opts, ans):
+def backup_files(act, opts):
     odir = HOME
     bdir = DIRS["backup"]
     act_save = act == ACTIONS.SAVE
@@ -108,18 +109,18 @@ def backup_files(act, opts, ans):
             case True, False:
                 fout(ofile, "backup file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("create", "backup"), ans):
+                    if ask_user(qmsg("create", "backup")):
                         copy_file(ofile, bfile)
                 if act_backup and opt_force:
-                    if ask_user(qmsg("delete", "original", "[DANGER] "), ans):
+                    if ask_user(qmsg("delete", "original", "[DANGER] ")):
                         delete_file(ofile)
             case False, True:
                 fout(ofile, "original file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("delete", "backup"), ans):
+                    if ask_user(qmsg("delete", "backup")):
                         delete_file(bfile, True)
                 if act_backup:
-                    if ask_user(qmsg("create", "original"), ans):
+                    if ask_user(qmsg("create", "original")):
                         copy_file(bfile, ofile)
             case True, True:
                 if opt_toggle or file not in notdiff:
@@ -130,14 +131,14 @@ def backup_files(act, opts, ans):
                             new = ofile if act_save else bfile
                             diff(old, new)
                         if act_save:
-                            if ask_user(qmsg("update", "backup"), ans):
+                            if ask_user(qmsg("update", "backup")):
                                 copy_file(ofile, bfile)
                         if act_backup:
-                            if ask_user(qmsg("update", "original"), ans):
+                            if ask_user(qmsg("update", "original")):
                                 copy_file(bfile, ofile)
 
 
-def untracked_files(opts, auto_answer):
+def untracked_files(opts):
     tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
     backup = set(all_files(DIRS["backup"], DIRS["backup"]))
     opt_toggle = FLAGS.TOGGLE in opts
@@ -151,14 +152,14 @@ def untracked_files(opts, auto_answer):
         bfile = os.path.join(DIRS["backup"], file)
         print(color("file", ofile))
         if opt_toggle:
-            if ask_user(bmsg, auto_answer):
+            if ask_user(bmsg):
                 delete_file(bfile, True)
             if opt_force and os.path.isfile(ofile):
-                if ask_user(omsg, auto_answer):
+                if ask_user(omsg):
                     delete_file(ofile)
 
 
-def commit_files(opts, auto_answer):
+def commit_files(opts):
     opt_toggle = FLAGS.TOGGLE in opts
     opt_diff = FLAGS.DIFF in opts
     msg_commit = color("msg", "Do you really want to commit all? ")
@@ -170,10 +171,10 @@ def commit_files(opts, auto_answer):
             git_diff(SCRIPT_DIR, reverse=opt_toggle)
         git_status(SCRIPT_DIR)
         if opt_toggle:
-            if ask_user(msg_restore, auto_answer):
+            if ask_user(msg_restore):
                 git_restore_all(SCRIPT_DIR)
         else:
-            if ask_user(msg_commit, auto_answer):
+            if ask_user(msg_commit):
                 if commit_msg := input(color("msg", "Write commit message: ")):
                     git_commit_all(SCRIPT_DIR, commit_msg)
     if not opt_toggle:
@@ -189,19 +190,19 @@ def init_files():
             create_file(file)
 
 
-def run_files(auto_answer):
+def run_files():
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(all_files(DIRS["run"])):
         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-        if ask_user(msg1+msg2+msg3, auto_answer):
+        if ask_user(msg1+msg2+msg3):
             if not os.access(file, os.X_OK):
                 error("file is not executable!")
             if not run_and_get_status(file):
                 error("init script failed!")
 
 
-def edit_files(auto_answer):
+def edit_files():
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
     files = [SCRIPT_PATH] + list(FILES.values()) + \
@@ -209,7 +210,7 @@ def edit_files(auto_answer):
     for file in files:
         if os.path.isfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-            if ask_user(msg1+msg2+msg3, auto_answer):
+            if ask_user(msg1+msg2+msg3):
                 edit(file)
 
 
@@ -238,19 +239,18 @@ def parse_options(args):
 
 def execute(flags):
     act, opts = flags
-    auto_answer = None
     if FLAGS.NO in opts:
-        auto_answer = "n"
+        lib.msg.AUTO_ANSWER = "n"
     elif FLAGS.YES in opts:
-        auto_answer = "y"
+        lib.msg.AUTO_ANSWER = "y"
     match act:
         case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
-            backup_files(act, opts, auto_answer)
-        case ACTIONS.UNTRACKED: untracked_files(opts, auto_answer)
-        case ACTIONS.COMMIT: commit_files(opts, auto_answer)
-        case ACTIONS.EDIT: edit_files(auto_answer)
+            backup_files(act, opts)
+        case ACTIONS.UNTRACKED: untracked_files(opts)
+        case ACTIONS.COMMIT: commit_files(opts)
+        case ACTIONS.EDIT: edit_files()
         case ACTIONS.INIT: init_files()
-        case ACTIONS.RUN: run_files(auto_answer)
+        case ACTIONS.RUN: run_files()
 
 
 if __name__ == "__main__":

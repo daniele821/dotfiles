@@ -1,5 +1,8 @@
 #!/bin/python3
 
+AUTO_ANSWER = None
+
+
 def color(clr, str):
     match clr:
         case "err": return "\033[1;31m" + str + "\033[m"
@@ -18,7 +21,9 @@ def color_all(*args):
 
 
 def ask_user(msg, auto_answer=None):
-    print(msg, end=" ")
+    print(msg, end="")
+    if auto_answer is None:
+        auto_answer = AUTO_ANSWER
     match auto_answer:
         case "y" | "n":
             print(auto_answer)

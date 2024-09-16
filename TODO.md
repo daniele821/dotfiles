@@ -41,14 +41,11 @@
 
 - COMPLETED [move to versions, once version tag is created!]:
     - [x] [OPTIMIZATION] remove secondary file track list
+    - [x] restructure script in modules, to be easier to mantain
+    - [x] check files are always in correct order 
+    - [x] add a global variable to store autoanswer, to avoid always passing it around 
 
 - TODO:
-    - [ ] check files are always in correct order 
     - [ ] fix help message to better explain what flags do with each action
-    - [ ] restructure script in modules, to be easier to mantain
     - [ ] replace help msg with a HELP.md text file
-    - IMPORTANT:
-        - [ ] change all places which use 'init' shortcut, to now use 'run' instead!
-        - [ ] rename 'init' directories to 'run', and 'bigfiles' directories to 'others'
     - [ ] '--' splits args to allow multiple consecutive actions
-    - [ ] add a global variable to store autoanswer, to avoid always passing it around 
