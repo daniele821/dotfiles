@@ -41,3 +41,5 @@ shortcuts:
     - edit
     - run
         
+notes:
+    - multiple actions can be executed, by separating each with `--`
