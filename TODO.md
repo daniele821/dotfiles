@@ -47,3 +47,5 @@
     - [ ] fix help message to better explain what flags do with each action
     - [ ] restructure script in modules, to be easier to mantain
     - [ ] replace help msg with a HELP.md text file
+    - IMPORTANT:
+        - [ ] change all places which use 'init' shortcut, to now use 'run' instead!
