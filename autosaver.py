@@ -1,18 +1,16 @@
 #!/bin/python3
 
 import os
-from filecmp import cmp
 import sys
 from enum import Enum
-from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir, \
-    copy_file, delete_file
+    copy_file, delete_file, are_files_different
 from lib.msg import error, color, ask_user
 from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
     git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
 import lib
 
-HOME = Path.home()
+HOME = os.getenv("HOME")
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
@@ -57,8 +55,8 @@ SHORTCUTS = {
     "init": [["-iy"]],
     "run": [["-ry"]],
     "edit": [["-e"]],
-    "sc": [["-svy"], ["-cy"]],
 }
+SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
 
 
 def load_config(conf):
@@ -124,7 +122,7 @@ def backup_files(act, opts):
                         copy_file(bfile, ofile)
             case True, True:
                 if opt_toggle or file not in notdiff:
-                    if not cmp(ofile, bfile):
+                    if are_files_different(ofile, bfile):
                         fout(ofile, "original and backup files", "differ")
                         if opt_diff:
                             old = bfile if act_save else ofile
@@ -270,6 +268,8 @@ if __name__ == "__main__":
                 tmp.clear()
     if tmp:
         splitted_args.append(tmp)
+    if splitted_args == []:
+        splitted_args = [[]]
 
     # actual execution
     for splitted_arg in splitted_args:

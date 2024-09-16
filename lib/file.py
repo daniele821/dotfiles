@@ -2,6 +2,11 @@
 
 import os
 from shutil import copyfile
+from filecmp import cmp
+
+
+def are_files_different(file1, file2):
+    return not cmp(file1, file2)
 
 
 def copy_file(src, dst):
