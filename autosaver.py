@@ -268,6 +268,8 @@ if __name__ == "__main__":
                 tmp.clear()
     if tmp:
         splitted_args.append(tmp)
+    if splitted_args == []:
+        splitted_args = [[]]
 
     # actual execution
     for splitted_arg in splitted_args:
