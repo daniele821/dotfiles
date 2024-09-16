@@ -5,7 +5,8 @@ from sys import argv
 from enum import Enum
 from pathlib import Path
 from lib.file import read_file, all_files, create_file, create_dir
-from lib.msg import error
+from lib.msg import error, color, ask_user
+from lib.procs import run_and_get_status, edit
 
 HOME = Path.home()
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -54,6 +55,13 @@ SHORTCUTS = {
 }
 
 
+def auto_answer(opts):
+    if FLAGS.NO in opts:
+        return "n"
+    if FLAGS.YES in opts:
+        return "y"
+
+
 def load_config(conf):
     files = []
     if os.path.isfile(conf):
@@ -76,6 +84,18 @@ def init_files():
     for file in FILES.values():
         if not os.path.exists(file):
             create_file(file)
+
+
+def run_files(auto_answer):
+    msg1 = color("msg", "Do you really want to execute ")
+    msg3 = color("msg", " ? ")
+    for file in all_files(DIRS["init"]):
+        msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+        if ask_user(msg1+msg2+msg3, auto_answer):
+            if not os.access(file, os.X_OK):
+                error("file is not executable!")
+            if not run_and_get_status(file):
+                error("init script failed!")
 
 
 def parse_shortcuts(args):
@@ -111,7 +131,7 @@ def execute(flags):
         case ACTIONS.COMMIT: pass
         case ACTIONS.EDIT: pass
         case ACTIONS.INIT: init_files()
-        case ACTIONS.RUN: pass
+        case ACTIONS.RUN: run_files(auto_answer(options))
 
 
 if __name__ == "__main__":
