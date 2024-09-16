@@ -5,7 +5,7 @@
     - option flag can modify the behaviour of the action executed
 
 - action flags:
-    - <none> -> list all tracked files, which are to be copied backup
+    - \<none\> -> list all tracked files, which are to be copied backup
     - b -> list all tracked files, and for each one allows to restore from backup
     - s -> list all tracked files, and for each one allows to save to backup
     - u -> list all untracked files, and can allows to delete them
@@ -23,7 +23,7 @@
     - v -> show verbose output
 
 - note for options flags with specific action:
-    - <none>|s|b:
+    - \<none\>|s|b:
         - t -> show also files from the list of the `notdiff` config file
     - c:
         - t -> instead of commiting all changes, it restores everything
