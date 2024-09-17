@@ -1,4 +1,4 @@
-# documentation for autosaver.py
+# documentation for autosaver script
 
 - the script accept flags, which can either be `option` or `action` flags:
     - action flag specify what to do
