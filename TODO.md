@@ -48,10 +48,11 @@
     - 2.1.0:
         - [x]  disable python stderr output
         - [x] '--' splits args to allow multiple consecutive actions
+    - 2.1.2:
+        - [x] [OPTIMIZATION] move all library modules inside autosaver itself
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
-    - [x] [OPTIMIZATION] move all library modules inside autosaver itself
 
 - TODO:
