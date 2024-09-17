@@ -3,12 +3,147 @@
 import os
 import sys
 from enum import Enum
-from lib.file import read_file, all_files, create_file, create_dir, \
-    copy_file, delete_file, are_files_different
-from lib.msg import error, color, ask_user
-from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
-    git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
-import lib
+from shutil import copyfile
+from filecmp import cmp
+from subprocess import run
+
+
+# MESSAGE UTILITIES
+def color(clr, str):
+    match clr:
+        case "err": return "\033[1;31m" + str + "\033[m"
+        case "file": return "\033[1;34m" + str + "\033[m"
+        case "msg": return "\033[1;33m" + str + "\033[m"
+        case _: return str
+
+
+def color_all(*args):
+    buffer = []
+    for i in range(0, len(args), 2):
+        clr = args[i]
+        str = args[i + 1]
+        buffer.append(color(clr, str))
+    return "".join(buffer)
+
+
+def ask_user(msg, opts):
+    print(msg, end="")
+    auto_answer = None
+    if FLAGS.YES in opts:
+        auto_answer = "y"
+    if FLAGS.NO in opts:
+        auto_answer = "n"
+    match auto_answer:
+        case "y" | "n":
+            print(auto_answer)
+            return auto_answer == "y"
+        case _:
+            match input():
+                case "y": return True
+                case "n" | "": return False
+                case _:
+                    print("Invalid answer, retry:")
+                    return ask_user(msg, opts)
+
+
+def error(msg):
+    print(color("err", "ERROR: " + msg))
+    exit(1)
+
+
+# FILE UTILITIES
+def are_files_different(file1, file2):
+    return not cmp(file1, file2)
+
+
+def copy_file(src, dst):
+    create_dir(os.path.dirname(dst))
+    copyfile(src, dst)
+
+
+def read_file(file):
+    with open(file, "r") as buffer:
+        return buffer.read()
+
+
+def create_file(file):
+    with open(file, "w"):
+        pass
+
+
+def delete_file(file, del_empty_dir=False):
+    os.remove(file)
+    if del_empty_dir:
+        dir = file
+        while True:
+            dir = os.path.dirname(dir)
+            try:
+                os.rmdir(dir)
+            except Exception:
+                break
+
+
+def create_dir(dir):
+    os.makedirs(dir, exist_ok=True)
+
+
+def all_files(dir, relpath=None):
+    files = []
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if relpath is not None:
+                fname = os.path.relpath(fname, relpath)
+            files.append(fname)
+    return files
+
+
+# PROCESS UTILITIES
+def diff(old, new):
+    run(["diff", "--color", "-u", old, new])
+
+
+def edit(file):
+    run(["nvim", file])
+
+
+def run_and_get_status(file):
+    return run([file]).returncode == 0
+
+
+def git_pull(gitdir):
+    run(["git", "-C", gitdir, "pull"])
+
+
+def git_push(gitdir):
+    run(["git", "-C", gitdir, "push"])
+
+
+def git_status(gitdir):
+    run(["git", "-C", gitdir, "status", "-su"])
+
+
+def git_diff(gitdir, reverse=False):
+    cmd = ["git", "-C", gitdir, "diff", "HEAD", "--diff-filter=adcr"]
+    run(cmd + ["-R"] if reverse else cmd)
+
+
+def git_restore_all(gitdir):
+    run(["git", "-C", gitdir, "reset", "HEAD"])
+    run(["git", "-C", gitdir, "restore", "--staged", gitdir])
+    run(["git", "-C", gitdir, "restore", gitdir])
+    run(["git", "-C", gitdir, "clean", "-fdq"])
+
+
+def git_commit_all(gitdir, commit_msg):
+    run(["git", "-C", gitdir, "add", gitdir])
+    run(["git", "-C", gitdir, "commit", "-m", commit_msg])
+
+
+def has_git_changed(gitdir):
+    cmd = ['git', '-C', gitdir, 'status', '-s']
+    return run(cmd, capture_output=True, text=True).stdout.strip()
+
 
 HOME = os.getenv("HOME")
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -107,18 +242,18 @@ def backup_files(act, opts):
             case True, False:
                 fout(ofile, "backup file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("create", "backup")):
+                    if ask_user(qmsg("create", "backup"), opts):
                         copy_file(ofile, bfile)
                 if act_backup and opt_force:
-                    if ask_user(qmsg("delete", "original", "[DANGER] ")):
+                    if ask_user(qmsg("delete", "original", "[DANGER] "), opts):
                         delete_file(ofile)
             case False, True:
                 fout(ofile, "original file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("delete", "backup")):
+                    if ask_user(qmsg("delete", "backup"), opts):
                         delete_file(bfile, True)
                 if act_backup:
-                    if ask_user(qmsg("create", "original")):
+                    if ask_user(qmsg("create", "original"), opts):
                         copy_file(bfile, ofile)
             case True, True:
                 if opt_toggle or file not in notdiff:
@@ -129,10 +264,10 @@ def backup_files(act, opts):
                             new = ofile if act_save else bfile
                             diff(old, new)
                         if act_save:
-                            if ask_user(qmsg("update", "backup")):
+                            if ask_user(qmsg("update", "backup"), opts):
                                 copy_file(ofile, bfile)
                         if act_backup:
-                            if ask_user(qmsg("update", "original")):
+                            if ask_user(qmsg("update", "original"), opts):
                                 copy_file(bfile, ofile)
 
 
@@ -150,10 +285,10 @@ def untracked_files(opts):
         bfile = os.path.join(DIRS["backup"], file)
         print(color("file", ofile))
         if opt_toggle:
-            if ask_user(bmsg):
+            if ask_user(bmsg, opts):
                 delete_file(bfile, True)
             if opt_force and os.path.isfile(ofile):
-                if ask_user(omsg):
+                if ask_user(omsg, opts):
                     delete_file(ofile)
 
 
@@ -169,10 +304,10 @@ def commit_files(opts):
             git_diff(SCRIPT_DIR, reverse=opt_toggle)
         git_status(SCRIPT_DIR)
         if opt_toggle:
-            if ask_user(msg_restore):
+            if ask_user(msg_restore, opts):
                 git_restore_all(SCRIPT_DIR)
         else:
-            if ask_user(msg_commit):
+            if ask_user(msg_commit, opts):
                 if commit_msg := input(color("msg", "Write commit message: ")):
                     git_commit_all(SCRIPT_DIR, commit_msg)
     if not opt_toggle:
@@ -188,19 +323,19 @@ def init_files():
             create_file(file)
 
 
-def run_files():
+def run_files(opts):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(all_files(DIRS["run"])):
         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-        if ask_user(msg1+msg2+msg3):
+        if ask_user(msg1+msg2+msg3, opts):
             if not os.access(file, os.X_OK):
                 error("file is not executable!")
             if not run_and_get_status(file):
                 error("init script failed!")
 
 
-def edit_files():
+def edit_files(opts):
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
     files = [SCRIPT_PATH] + list(FILES.values()) + \
@@ -208,7 +343,7 @@ def edit_files():
     for file in files:
         if os.path.isfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-            if ask_user(msg1+msg2+msg3):
+            if ask_user(msg1+msg2+msg3, opts):
                 edit(file)
 
 
@@ -237,18 +372,14 @@ def parse_options(args):
 
 def execute(flags):
     act, opts = flags
-    if FLAGS.NO in opts:
-        lib.msg.AUTO_ANSWER = "n"
-    elif FLAGS.YES in opts:
-        lib.msg.AUTO_ANSWER = "y"
     match act:
         case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
             backup_files(act, opts)
         case ACTIONS.UNTRACKED: untracked_files(opts)
         case ACTIONS.COMMIT: commit_files(opts)
-        case ACTIONS.EDIT: edit_files()
+        case ACTIONS.EDIT: edit_files(opts)
         case ACTIONS.INIT: init_files()
-        case ACTIONS.RUN: run_files()
+        case ACTIONS.RUN: run_files(opts)
 
 
 if __name__ == "__main__":
