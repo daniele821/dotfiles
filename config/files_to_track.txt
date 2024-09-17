@@ -2,7 +2,6 @@
 .gitconfig
 .ssh/config
 .config/plasma-localerc
-.local/share/konsole/Nerd Font.profile
 .bashrc.d
 .config/hypr
 .config/kitty
