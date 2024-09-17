@@ -52,5 +52,6 @@
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
+    - [x] [OPTIMIZATION] move all library modules inside autosaver itself
 
 - TODO:
