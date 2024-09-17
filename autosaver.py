@@ -3,12 +3,147 @@
 import os
 import sys
 from enum import Enum
-from lib.file import read_file, all_files, create_file, create_dir, \
-    copy_file, delete_file, are_files_different
-from lib.msg import error, color, ask_user
-from lib.procs import run_and_get_status, edit, diff, git_pull, git_push, \
-    git_status, git_restore_all, git_diff, git_commit_all, has_git_changed
-import lib
+from shutil import copyfile
+from filecmp import cmp
+from subprocess import run
+
+
+# MESSAGE UTILITIES
+def color(clr, str):
+    match clr:
+        case "err": return "\033[1;31m" + str + "\033[m"
+        case "file": return "\033[1;34m" + str + "\033[m"
+        case "msg": return "\033[1;33m" + str + "\033[m"
+        case _: return str
+
+
+def color_all(*args):
+    buffer = []
+    for i in range(0, len(args), 2):
+        clr = args[i]
+        str = args[i + 1]
+        buffer.append(color(clr, str))
+    return "".join(buffer)
+
+
+def ask_user(msg, opts={}):
+    print(msg, end="")
+    auto_answer = None
+    if FLAGS.YES in opts:
+        auto_answer = "y"
+    if FLAGS.NO in opts:
+        auto_answer = "n"
+    match auto_answer:
+        case "y" | "n":
+            print(auto_answer)
+            return auto_answer == "y"
+        case _:
+            match input():
+                case "y": return True
+                case "n" | "": return False
+                case _:
+                    print("Invalid answer, retry:")
+                    return ask_user(msg, auto_answer)
+
+
+def error(msg):
+    print(color("err", "ERROR: " + msg))
+    exit(1)
+
+
+# FILE UTILITIES
+def are_files_different(file1, file2):
+    return not cmp(file1, file2)
+
+
+def copy_file(src, dst):
+    create_dir(os.path.dirname(dst))
+    copyfile(src, dst)
+
+
+def read_file(file):
+    with open(file, "r") as buffer:
+        return buffer.read()
+
+
+def create_file(file):
+    with open(file, "w"):
+        pass
+
+
+def delete_file(file, del_empty_dir=False):
+    os.remove(file)
+    if del_empty_dir:
+        dir = file
+        while True:
+            dir = os.path.dirname(dir)
+            try:
+                os.rmdir(dir)
+            except Exception:
+                break
+
+
+def create_dir(dir):
+    os.makedirs(dir, exist_ok=True)
+
+
+def all_files(dir, relpath=None):
+    files = []
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if relpath is not None:
+                fname = os.path.relpath(fname, relpath)
+            files.append(fname)
+    return files
+
+
+# PROCESS UTILITIES
+def diff(old, new):
+    run(["diff", "--color", "-u", old, new])
+
+
+def edit(file):
+    run(["nvim", file])
+
+
+def run_and_get_status(file):
+    return run([file]).returncode == 0
+
+
+def git_pull(gitdir):
+    run(["git", "-C", gitdir, "pull"])
+
+
+def git_push(gitdir):
+    run(["git", "-C", gitdir, "push"])
+
+
+def git_status(gitdir):
+    run(["git", "-C", gitdir, "status", "-su"])
+
+
+def git_diff(gitdir, reverse=False):
+    cmd = ["git", "-C", gitdir, "diff", "HEAD", "--diff-filter=adcr"]
+    run(cmd + ["-R"] if reverse else cmd)
+
+
+def git_restore_all(gitdir):
+    run(["git", "-C", gitdir, "reset", "HEAD"])
+    run(["git", "-C", gitdir, "restore", "--staged", gitdir])
+    run(["git", "-C", gitdir, "restore", gitdir])
+    run(["git", "-C", gitdir, "clean", "-fdq"])
+
+
+def git_commit_all(gitdir, commit_msg):
+    run(["git", "-C", gitdir, "add", gitdir])
+    run(["git", "-C", gitdir, "commit", "-m", commit_msg])
+
+
+def has_git_changed(gitdir):
+    cmd = ['git', '-C', gitdir, 'status', '-s']
+    return run(cmd, capture_output=True, text=True).stdout.strip()
+
 
 HOME = os.getenv("HOME")
 SCRIPT_PATH = os.path.realpath(__file__)
@@ -237,10 +372,6 @@ def parse_options(args):
 
 def execute(flags):
     act, opts = flags
-    if FLAGS.NO in opts:
-        lib.msg.AUTO_ANSWER = "n"
-    elif FLAGS.YES in opts:
-        lib.msg.AUTO_ANSWER = "y"
     match act:
         case ACTIONS.LIST | ACTIONS.SAVE | ACTIONS.BACKUP:
             backup_files(act, opts)
