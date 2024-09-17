@@ -23,8 +23,3 @@ git@danix1234.github.com:danix1234/unibo-2a
 main
 daniele.muffato@studio.unibo.it
 ---------------------------------------------------------------------
-/personal/repos/others/nbpreview
-https://github.com/jsvine/nbpreview
-master
-
----------------------------------------------------------------------
