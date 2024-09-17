@@ -26,7 +26,7 @@ def color_all(*args):
     return "".join(buffer)
 
 
-def ask_user(msg, opts={}):
+def ask_user(msg, opts):
     print(msg, end="")
     auto_answer = None
     if FLAGS.YES in opts:
@@ -43,7 +43,7 @@ def ask_user(msg, opts={}):
                 case "n" | "": return False
                 case _:
                     print("Invalid answer, retry:")
-                    return ask_user(msg, auto_answer)
+                    return ask_user(msg, opts)
 
 
 def error(msg):
@@ -242,18 +242,18 @@ def backup_files(act, opts):
             case True, False:
                 fout(ofile, "backup file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("create", "backup")):
+                    if ask_user(qmsg("create", "backup"), opts):
                         copy_file(ofile, bfile)
                 if act_backup and opt_force:
-                    if ask_user(qmsg("delete", "original", "[DANGER] ")):
+                    if ask_user(qmsg("delete", "original", "[DANGER] "), opts):
                         delete_file(ofile)
             case False, True:
                 fout(ofile, "original file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("delete", "backup")):
+                    if ask_user(qmsg("delete", "backup"), opts):
                         delete_file(bfile, True)
                 if act_backup:
-                    if ask_user(qmsg("create", "original")):
+                    if ask_user(qmsg("create", "original"), opts):
                         copy_file(bfile, ofile)
             case True, True:
                 if opt_toggle or file not in notdiff:
@@ -264,10 +264,10 @@ def backup_files(act, opts):
                             new = ofile if act_save else bfile
                             diff(old, new)
                         if act_save:
-                            if ask_user(qmsg("update", "backup")):
+                            if ask_user(qmsg("update", "backup"), opts):
                                 copy_file(ofile, bfile)
                         if act_backup:
-                            if ask_user(qmsg("update", "original")):
+                            if ask_user(qmsg("update", "original"), opts):
                                 copy_file(bfile, ofile)
 
 
@@ -285,10 +285,10 @@ def untracked_files(opts):
         bfile = os.path.join(DIRS["backup"], file)
         print(color("file", ofile))
         if opt_toggle:
-            if ask_user(bmsg):
+            if ask_user(bmsg, opts):
                 delete_file(bfile, True)
             if opt_force and os.path.isfile(ofile):
-                if ask_user(omsg):
+                if ask_user(omsg, opts):
                     delete_file(ofile)
 
 
@@ -304,10 +304,10 @@ def commit_files(opts):
             git_diff(SCRIPT_DIR, reverse=opt_toggle)
         git_status(SCRIPT_DIR)
         if opt_toggle:
-            if ask_user(msg_restore):
+            if ask_user(msg_restore, opts):
                 git_restore_all(SCRIPT_DIR)
         else:
-            if ask_user(msg_commit):
+            if ask_user(msg_commit, opts):
                 if commit_msg := input(color("msg", "Write commit message: ")):
                     git_commit_all(SCRIPT_DIR, commit_msg)
     if not opt_toggle:
@@ -323,19 +323,19 @@ def init_files():
             create_file(file)
 
 
-def run_files():
+def run_files(opts):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(all_files(DIRS["run"])):
         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-        if ask_user(msg1+msg2+msg3):
+        if ask_user(msg1+msg2+msg3, opts):
             if not os.access(file, os.X_OK):
                 error("file is not executable!")
             if not run_and_get_status(file):
                 error("init script failed!")
 
 
-def edit_files():
+def edit_files(opts):
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
     files = [SCRIPT_PATH] + list(FILES.values()) + \
@@ -343,7 +343,7 @@ def edit_files():
     for file in files:
         if os.path.isfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-            if ask_user(msg1+msg2+msg3):
+            if ask_user(msg1+msg2+msg3, opts):
                 edit(file)
 
 
@@ -377,9 +377,9 @@ def execute(flags):
             backup_files(act, opts)
         case ACTIONS.UNTRACKED: untracked_files(opts)
         case ACTIONS.COMMIT: commit_files(opts)
-        case ACTIONS.EDIT: edit_files()
+        case ACTIONS.EDIT: edit_files(opts)
         case ACTIONS.INIT: init_files()
-        case ACTIONS.RUN: run_files()
+        case ACTIONS.RUN: run_files(opts)
 
 
 if __name__ == "__main__":
