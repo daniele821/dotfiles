@@ -23,3 +23,8 @@ git@danix1234.github.com:danix1234/unibo-2a
 main
 daniele.muffato@studio.unibo.it
 ---------------------------------------------------------------------
+/personal/repos/danix1234/unibo-3a
+git@danix1234.github.com:danix1234/unibo-3a.git
+master
+daniele.muffato@studio.unibo.it
+---------------------------------------------------------------------
