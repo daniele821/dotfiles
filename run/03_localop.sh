@@ -13,13 +13,6 @@ if ! [[ -d "/personal" ]]; then # create personal dirs
     sudo chown "${USER}":"${USER}" /personal/{data,repos}
     echo "created personal directory in /personal"
 fi
-if ! [[ -f "/usr/local/bin/xdg-terminal-exec" ]]; then # set kitty as default terminal
-    echo '#!/bin/bash
-# vim:ft=sh
-kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec &>/dev/null
-    sudo chmod +x /usr/local/bin/xdg-terminal-exec
-    echo "setting default terminal to kitty"
-fi
 
 # autolaunch hyprland
 if ! grep Hyprland "$HOME/.bash_profile" -q && ask_user 'Do you really want to autolaunch hyprland'; then
