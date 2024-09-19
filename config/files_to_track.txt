@@ -4,5 +4,4 @@
 .config/plasma-localerc
 .bashrc.d
 .config/hypr
-.config/kitty
 .config/waybar
