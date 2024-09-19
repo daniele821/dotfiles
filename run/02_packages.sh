@@ -14,13 +14,13 @@ powerprofilesctl set performance
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep
     sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv fastfetch
     sudo dnf --assumeyes install libreoffice-langpack-it haruna distrobox
-    sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl kitty
+    sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl
 
     # upgrade everything
     sudo dnf --assumeyes upgrade
 
     # safe uninstall bloat
-    sudo dnf --assumeyes remove nwg-panel
+    sudo dnf --assumeyes remove nwg-panel kitty
     sudo dnf --assumeyes remove kaddressbook kontact kde-connect kamoso kcharselect kmines kmahjongg kmail kfind khelpcenter kmousetool korganizer kpat kolourpaint kmouth
     sudo dnf --assumeyes remove krdc krfb kgpg kwalletmanager5
     sudo dnf --assumeyes remove plasma-drkonqi plasma-discover plasma-welcome plasma-vault plasma-systemmonitor

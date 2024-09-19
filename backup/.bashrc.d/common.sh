@@ -32,14 +32,5 @@ for i in - {0..9}; do
     bind -r "\e$i"
 done
 
-# simplify adding distrobox vm
-function create-distrobox-image() {
-    if [[ "${#@}" != "2" ]]; then
-        echo "args must be 2 (image, home_dir)"
-        return 1
-    fi
-    distrobox create -i "$1" -H "$HOME/.local/share/distrobox_homes/$2"
-}
-
 # bind to actually clear terminal
 bind -x '"\C-l": clear'
