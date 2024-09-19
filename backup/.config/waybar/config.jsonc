@@ -12,13 +12,12 @@
         "network",
         "hyprland/language",
         "tray",
-
+        "hyprland/submap",
     ],
     "modules-center": [
         "hyprland/workspaces",
     ],
     "modules-right": [
-        "hyprland/submap",
         "pulseaudio",
         "backlight",
         "battery",
@@ -42,8 +41,9 @@
         "show-special": true,
     },
     "hyprland/submap": {
-        "format": "{} 󰘳  ",
+        "format": " {} 󰘳  ",
         "tooltip": false,
+        "on-click": "hyprctl dispatch submap reset"
     },
     "hyprland/language": {
         "format-en": "US  ",
