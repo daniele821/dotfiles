@@ -50,6 +50,8 @@
         - [x] '--' splits args to allow multiple consecutive actions
     - 2.1.2:
         - [x] [OPTIMIZATION] move all library modules inside autosaver itself
+    - 2.1.4:
+        - [x] added shortcuts: restoreall saveall
 
 ## TODO AND COMPLETED LIST
 
