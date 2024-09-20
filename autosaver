@@ -184,6 +184,8 @@ DEFAULT_ACTION = ACTIONS.LIST
 SHORTCUTS = {
     "save": [["-svy"]],
     "restore": [["-bvy"]],
+    "saveall": [["-svyt"]],
+    "restoreall": [["-bvyt"]],
     "commit": [["-cy"]],
     "uncommit": [["-cty"]],
     "untracked": [["-u"]],
@@ -260,8 +262,8 @@ def backup_files(act, opts):
                     if are_files_different(ofile, bfile):
                         fout(ofile, "original and backup files", "differ")
                         if opt_diff:
-                            old = bfile if act_save else ofile
-                            new = ofile if act_save else bfile
+                            old = ofile if act_backup else bfile
+                            new = bfile if act_backup else ofile
                             diff(old, new)
                         if act_save:
                             if ask_user(qmsg("update", "backup"), opts):
