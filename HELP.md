@@ -34,12 +34,15 @@
 - shortcuts:
     - save
     - restore
+    - saveall
+    - restoreall
     - commit
     - uncommit
     - untracked
     - init
     - edit
     - run
+    - sc
         
 - notes:
     - multiple actions can be executed, by separating each with `--`
