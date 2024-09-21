@@ -44,7 +44,7 @@ if ask_user 'Do you want to disable bluetooth'; then
 fi </dev/tty
 
 # add user to wireshark group to enable wireshark
-command -v wireshark &>/dev/null && if ask_user 'Do you want to enable wireshark for current user'; then
+getent group wireshark &>/dev/null && if ask_user 'Do you want to enable wireshark for current user'; then
     sudo usermod -aG wireshark "$USER"
 fi </dev/tty
 

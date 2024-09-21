@@ -21,8 +21,8 @@ powerprofilesctl set performance
 
     # safe uninstall bloat
     sudo dnf --assumeyes remove nwg-panel kitty
-    sudo dnf --assumeyes remove kaddressbook kontact kde-connect kamoso kcharselect kmines kmahjongg kmail kfind khelpcenter kmousetool korganizer kpat kolourpaint kmouth
-    sudo dnf --assumeyes remove krdc krfb kgpg
+    sudo dnf --assumeyes remove kaddressbook kontact kde-connect kamoso kcharselect kmines kmahjongg kmail kfind
+    sudo dnf --assumeyes remove krdc krfb kgpg khelpcenter kmousetool korganizer kpat kolourpaint kmouth
     sudo dnf --assumeyes remove plasma-drkonqi plasma-discover plasma-welcome plasma-vault plasma-systemmonitor
     sudo dnf --assumeyes remove mediawriter spectacle akregator dragon elisa-player neochat im-chooser libreport skanpage gnome-abrt
 
