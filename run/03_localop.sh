@@ -28,8 +28,7 @@ fi </dev/tty
 
 # create ssh keys for github
 if ask_user 'Do you really want to create new ssh keys'; then
-    USERS=(daniele821 danix1234)
-    for user in "${USERS[@]}"; do
+    for user in daniele821 danix1234; do
         ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
     done
 fi </dev/tty
@@ -47,6 +46,11 @@ fi </dev/tty
 # add user to docker group to enable distrobox
 command -v distrobox &>/dev/null && if ask_user 'Do you want to enable distrobox for current user'; then
     sudo usermod -aG docker "$USER"
+fi </dev/tty
+
+# add user to docker group to enable distrobox
+command -v wireshark &>/dev/null && if ask_user 'Do you want to enable wireshark for current user'; then
+    sudo usermod -aG wireshark "$USER"
 fi </dev/tty
 
 exit 0
