@@ -4,6 +4,9 @@
 powerprofilesctl set performance
 
 {
+    # upgrade everything
+    sudo dnf --assumeyes upgrade
+
     # add needed copr
     sudo dnf --assumeyes copr enable atim/starship
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
@@ -13,11 +16,8 @@ powerprofilesctl set performance
     sudo dnf --assumeyes install --allowerasing ffmpeg
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep
     sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv fastfetch
-    sudo dnf --assumeyes install libreoffice-langpack-it haruna wireshark flatpak
+    sudo dnf --assumeyes install libreoffice-langpack-it haruna wireshark
     sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl
-
-    # upgrade everything
-    sudo dnf --assumeyes upgrade
 
     # safe uninstall bloat
     sudo dnf --assumeyes remove nwg-panel kitty
