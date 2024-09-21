@@ -14,7 +14,9 @@ Parent=FALLBACK/
 SemanticHints=0
 ShowTerminalSizeHint=false
 SilenceSeconds=10
+TerminalCenter=false
 TerminalColumns=120
+TerminalMargin=5
 TerminalRows=35
 
 [Interaction Options]
