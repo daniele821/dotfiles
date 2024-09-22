@@ -34,6 +34,8 @@
 - shortcuts:
     - save
     - restore
+    - saveall
+    - restoreall
     - commit
     - uncommit
     - untracked

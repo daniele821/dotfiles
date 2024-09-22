@@ -184,6 +184,8 @@ DEFAULT_ACTION = ACTIONS.LIST
 SHORTCUTS = {
     "save": [["-svy"]],
     "restore": [["-bvy"]],
+    "saveall": [["-svyt"]],
+    "restoreall": [["-bvyt"]],
     "commit": [["-cy"]],
     "uncommit": [["-cty"]],
     "untracked": [["-u"]],
