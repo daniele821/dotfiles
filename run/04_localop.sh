@@ -23,7 +23,7 @@ fi </dev/tty
 if ask_user 'Do you want to restore all backup files'; then
     SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
     SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-    "${SCRIPT_DIR}/../autosaver" restore
+    "${SCRIPT_DIR}/../autosaver" restoreall
 fi </dev/tty
 
 # create ssh keys for github

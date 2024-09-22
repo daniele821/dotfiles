@@ -24,6 +24,11 @@ function run() {
     __exec_nohupped__ "${@}"
 }
 
+# make starting up kde desktop session easy
+function kde() {
+    eval "$(grep "^Exec=" /usr/share/wayland-sessions/plasma.desktop | cut -b 6-)"
+}
+
 # disable fedora autoinstalling missing commands
 unset -f command_not_found_handle
 
