@@ -32,17 +32,18 @@
         - f -> (requires -t), also asks to delete the original version
 
 - shortcuts:
-    - save
-    - restore
-    - saveall
-    - restoreall
-    - commit
-    - uncommit
-    - untracked
-    - init
-    - edit
-    - run
-    - sc
+    - save          : save all files to backup
+    - saveall       : save all files to backup (even the `notdiff` ones)
+    - restore       : restore all files from backup
+    - restoreall    : restore all files from backup (even the `notdiff` ones)
+    - commit        : commit and push all changes in git repo
+    - uncommit      : delete all changes in git repo
+    - untracked     : list untracked files
+    - init          : initialize needed directories and config files
+    - edit          : allow to edit all files
+    - run           : run all init scripts 
+    - sc            : "save commit"
+    - ru            : "run uncommit"
         
 - notes:
     - multiple actions can be executed, by separating each with `--`

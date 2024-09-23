@@ -52,6 +52,8 @@
         - [x] [OPTIMIZATION] move all library modules inside autosaver itself
     - 2.1.4:
         - [x] added shortcuts: restoreall saveall
+    - 2.1.5:
+        - [x] added shortcuts: ru
 
 ## TODO AND COMPLETED LIST
 

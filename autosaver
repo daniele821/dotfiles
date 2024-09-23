@@ -194,6 +194,7 @@ SHORTCUTS = {
     "edit": [["-e"]],
 }
 SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
+SHORTCUTS |= {"ru": [SHORTCUTS["restore"][0], SHORTCUTS["uncommit"][0]]}
 
 
 def load_config(conf):
