@@ -25,9 +25,22 @@ function __preview__() {
         hterm=$((hcells * hcellpx))
     fi
     # will trasform the image to fit perfectly!
-    i="$(/home/daniele/.bashrc.d/python-scripts/image-math.py "$wimg" "$himg" "$wcells" "$hcells" "$wterm" "$hterm" "$wcellpx" "$hcellpx" "$resize")" || return 1
-    width="$(echo "$i" | head -1)"
-    height="$(echo "$i" | tail -1)"
+    width=$((wcells * wcellpx))
+    height=$(((hcells - 2) * hcellpx))
+    # calculations to avoid streching image [*** magic ***]
+    if [[ "${resize}" -ne 0 ]]; then
+        width_factor="$(echo "$width / $wimg" | bc -lq)"
+        height_factor="$(echo "$height / $himg" | bc -lq)"
+        width_factor_rel="$(echo "$width_factor / $height_factor" | bc -lq)"
+        height_factor_rel="$(echo "$height_factor / $width_factor" | bc -lq)"
+        if [[ "$(echo "$width_factor_rel > 1" | bc -lq)" -eq 1 ]]; then
+            width="$(echo "$width / $width_factor_rel" | bc -lq)"
+            width=${width%%.*}
+        elif [[ "$(echo "$height_factor_rel > 1" | bc -lq)" -eq 1 ]]; then
+            height="$(echo "$height / $height_factor_rel" | bc -lq)"
+            height=${height%%.*}
+        fi
+    fi
     img2sixel -h "$height" -w "$width" "$image" | less -r
 }
 
@@ -36,10 +49,4 @@ function preview() {
 }
 function fpreview() {
     __preview__ "0" "${@}"
-}
-
-function fastpreview() {
-    wcells=$(tput cols)
-    width=$((wcells * 8))
-    img2sixel -w "$width" "$*" | less -r
 }
