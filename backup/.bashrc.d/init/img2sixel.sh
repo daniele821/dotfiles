@@ -37,6 +37,6 @@ function __preview__() {
 function preview() {
     __preview__ "1" "${@}"
 }
-function full-preview() {
+function fpreview() {
     __preview__ "0" "${@}"
 }
