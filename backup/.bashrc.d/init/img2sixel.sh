@@ -47,6 +47,13 @@ function __preview__() {
 function preview() {
     __preview__ "1" "${@}"
 }
+
 function fpreview() {
     __preview__ "0" "${@}"
+}
+
+function fastpreview() {
+    width=$(tput cols)
+    width="$((width * 5))"
+    img2sixel -w "$width" "$*" | less -r
 }
