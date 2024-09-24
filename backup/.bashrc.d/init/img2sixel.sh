@@ -12,15 +12,14 @@ function __preview__() {
         himg=$(identify -format "%h" "$image" 2>/dev/null)
         wcells=$(tput cols)
         hcells=$(tput lines)
-        if [[ "$XDG_CURRENT_DESKTOP" == "Hyprland" ]] && command -v jq &>/dev/null; then
+        if hyprctl activewindow -j | jq '.size[0]' &>/dev/null; then
             # hyprland is able to retrieve the size of the current window!
             wterm=$(hyprctl activewindow -j | jq '.size[0]')
             hterm=$(hyprctl activewindow -j | jq '.size[1]')
             wcellpx=$((wterm / wcells))
             hcellpx=$((hterm / hcells))
         else
-            # otherwise we estimate a cell width and height (zoom in, if image doesn't fit!)
-            echo "Warning: on the current dekstop, it's not possible to get window size! Image may have weird dimensions!" >&2
+            # otherwise we estimate a cell width and height!
             wcellpx=10
             hcellpx=20
             wterm=$((wcells * wcellpx))
