@@ -38,11 +38,6 @@ if ask_user 'Do you want to disable sddm'; then
     sudo systemctl disable sddm.service
 fi </dev/tty
 
-# disable bluetooth
-if ask_user 'Do you want to disable bluetooth'; then
-    sudo systemctl disable bluetooth
-fi </dev/tty
-
 # add user to wireshark group to enable wireshark
 if ask_user 'Do you want to enable wireshark for current user'; then
     sudo usermod -aG wireshark "$USER"

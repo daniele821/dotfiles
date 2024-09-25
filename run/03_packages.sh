@@ -12,8 +12,13 @@ powerprofilesctl set performance
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
+    # codecs and licenses programs fedora doesn't install out of the box
+    sudo dnf --assumeyes install --allowerasing ffmpeg pipewire-codec-aptx
+    # sudo dnf --assumeyes install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel
+    # sudo dnf --assumeyes install lame\* --exclude=lame-devel
+    # sudo dnf --assumeyes group upgrade --with-optional Multimedia
+
     # install utilities
-    sudo dnf --assumeyes install --allowerasing ffmpeg
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep
     sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv
     sudo dnf --assumeyes install libreoffice-langpack-it haruna wireshark libsixel-utils
