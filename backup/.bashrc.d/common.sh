@@ -14,11 +14,23 @@ function __exec_nohupped__() {
     (: && nohup "${@}" &>/dev/null &)
 }
 function open() {
-    if command -v kde-open &>/dev/null; then
-        for file in "${@}"; do __exec_nohupped__ "kde-open" "${file}"; done
-    else
-        for file in "${@}"; do __exec_nohupped__ "xdg-open" "${file}"; done
-    fi
+    PDFS=()
+    OTHERS=()
+    for file in "${@}"; do
+        if [[ $(head -c 4 "$file") = "%PDF" ]] &>/dev/null; then
+            PDFS+=("$file")
+        else
+            OTHERS+=("$file")
+        fi
+    done
+    [[ "${#PDFS[@]}" -gt 0 ]] && run okular --unique "${PDFS[@]}"
+    for file in "${OTHERS[@]}"; do
+        if command -v kde-open &>/dev/null; then
+            __exec_nohupped__ "kde-open" "${file}"
+        else
+            __exec_nohupped__ "xdg-open" "${file}"
+        fi
+    done
 }
 function run() {
     __exec_nohupped__ "${@}"
