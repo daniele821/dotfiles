@@ -1,4 +1,3 @@
 .config/htop/htoprc
 .local/share/konsole/Nerd Font.profile
-.config/hypr/configs/experimental.conf
 .local/share/fonts
