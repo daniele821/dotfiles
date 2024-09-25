@@ -34,14 +34,15 @@ function __preview__() {
         width_factor_rel="$(echo "$width_factor / $height_factor" | bc -lq)"
         height_factor_rel="$(echo "$height_factor / $width_factor" | bc -lq)"
         if [[ "$(echo "$width_factor_rel > 1" | bc -lq)" -eq 1 ]]; then
-            width="$(echo "$width / $width_factor_rel" | bc -lq)"
-            width=${width%%.*}
+            img2sixel -h "$height" "$image" | less -r
         elif [[ "$(echo "$height_factor_rel > 1" | bc -lq)" -eq 1 ]]; then
-            height="$(echo "$height / $height_factor_rel" | bc -lq)"
-            height=${height%%.*}
+            img2sixel -w "$width" "$image" | less -r
+        else
+            img2sixel -h "$height" -w "$width" "$image" | less -r
         fi
+    else
+        img2sixel -h "$height" -w "$width" "$image" | less -r
     fi
-    img2sixel -h "$height" -w "$width" "$image" | less -r
 }
 
 function preview() {
