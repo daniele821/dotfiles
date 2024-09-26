@@ -11,24 +11,13 @@ function __preview__() {
     himg=$(identify -format "%h" "$image" 2>/dev/null)
     wcells=$(tput cols)
     hcells=$(tput lines)
-    if hyprctl activewindow -j | jq '.size[0]' &>/dev/null; then
-        # hyprland is able to retrieve the size of the current window!
-        wterm=$(hyprctl activewindow -j | jq '.size[0]')
-        hterm=$(hyprctl activewindow -j | jq '.size[1]')
-        ((wterm -= 10))
-        ((hterm -= 10))
-        wcellpx=$((wterm / wcells))
-        hcellpx=$((hterm / hcells))
-    else
-        # otherwise we estimate a cell width and height!
-        wcellpx=10
-        hcellpx=20
-        wterm=$((wcells * wcellpx))
-        hterm=$((hcells * hcellpx))
-    fi
+    wcellpx=10
+    hcellpx=20
+    wterm=$((wcells * wcellpx))
+    hterm=$((hcells * hcellpx))
     # will trasform the image to fit perfectly!
     width=$((wcells * wcellpx))
-    height=$(((hcells - 3) * hcellpx))
+    height=$(((hcells - 2) * hcellpx))
     # calculations to avoid streching image [*** magic ***]
     if [[ "${resize}" -ne 0 ]]; then
         width_factor="$(echo "$width / $wimg" | bc -lq)"
@@ -43,6 +32,8 @@ function __preview__() {
             height=${height%%.*}
         fi
     fi
+    ((width = width / wcellpx * wcellpx - 5))
+    ((height = height / hcellpx * hcellpx - 5))
     img2sixel -h "$height" -w "$width" "$image" | less -r
 }
 
