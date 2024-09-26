@@ -21,7 +21,7 @@ powerprofilesctl set performance
     # install utilities
     sudo dnf --assumeyes install neovim gcc fd-find ripgrep
     sudo dnf --assumeyes install zoxide bat lsd tldr starship htop direnv
-    sudo dnf --assumeyes install libreoffice-langpack-it haruna wireshark libsixel-utils
+    sudo dnf --assumeyes install libreoffice-langpack-it haruna wireshark
     sudo dnf --assumeyes install jq hyprland gammastep waybar hyprlock brightnessctl
 
     # safe uninstall bloat
