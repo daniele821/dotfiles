@@ -23,7 +23,7 @@ function open() {
             OTHERS+=("$file")
         fi
     done
-    [[ "${#PDFS[@]}" -gt 0 ]] && run okular --unique "${PDFS[@]}"
+    [[ "${#PDFS[@]}" -gt 0 ]] && run okular "${PDFS[@]}"
     for file in "${OTHERS[@]}"; do
         if command -v kde-open &>/dev/null; then
             __exec_nohupped__ "kde-open" "${file}"
