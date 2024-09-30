@@ -1,0 +1,2 @@
+.config/htop/htoprc
+.local/share/fonts
