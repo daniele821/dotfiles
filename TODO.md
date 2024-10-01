@@ -57,6 +57,8 @@
 - 2.2:
     - 2.2.0:
         - [x] added place for additional scripts (git repos,..)
+    - 2.2.1:
+        - [x] added basic script to initialize script
 
 ## TODO AND COMPLETED LIST
 
