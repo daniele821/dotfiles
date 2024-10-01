@@ -5,6 +5,9 @@ SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
 TMP_FILE="$(mktemp /tmp/XXXXXXXXXXXXXXXXXX)"
 
+# early exit if no backup file is present
+! [[ -f "${BACKUP_FILE}" ]] && echo 'there is no backup file' && exit 1
+
 touch "${TMP_FILE}"
 
 # ask what repos to clone
