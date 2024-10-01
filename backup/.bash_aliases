@@ -9,6 +9,15 @@ function blastoff() {
 function __zoxide_euristically__() {
     cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
 }
+function __exec_nohupped__() {
+    (: && nohup "$@" &>/dev/null &)
+}
+function run() {
+    __exec_nohupped__ "$@"
+}
+function open() {
+    for file in "${@}"; do __exec_nohupped__ /usr/bin/open $file; done
+}
 
 export PATH="$HOME/.local/bin:$PATH"
 export HISTCONTROL="ignoredups"
