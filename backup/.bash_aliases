@@ -10,13 +10,13 @@ function __zoxide_euristically__() {
     cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
 }
 function __exec_nohupped__() {
-    (: ; nohup "$@" &>/dev/null &)
+    (: && nohup "$@" &>/dev/null &)
 }
 function run() {
     __exec_nohupped__ "$@"
 }
 function open() {
-    for file in "${@}"; do __exec_nohupped__ xdg-open $file; done
+    for file in "${@}"; do __exec_nohupped__ xdg-open "$file"; done
 }
 
 export PATH="$HOME/.local/bin:$PATH"
