@@ -46,7 +46,7 @@
         - [x] replace help msg with a HELP.md text file
 - 2.1:
     - 2.1.0:
-        - [x]  disable python stderr output
+        - [x] disable python stderr output
         - [x] '--' splits args to allow multiple consecutive actions
     - 2.1.2:
         - [x] [OPTIMIZATION] move all library modules inside autosaver itself
@@ -54,6 +54,9 @@
         - [x] added shortcuts: restoreall saveall
     - 2.1.5:
         - [x] added shortcuts: ru
+- 2.2:
+    - 2.2.0:
+        - [x] added place for additional scripts (git repos,..)
 
 ## TODO AND COMPLETED LIST
 
