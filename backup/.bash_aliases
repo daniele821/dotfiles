@@ -23,6 +23,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export HISTCONTROL="ignoredups"
 export starship_precmd_user_func="blastoff"
 export STARSHIP_LOG=error
+export EDITOR="nvim"
 
 alias ls='lsd --group-dirs first'
 alias la='ls -A'
