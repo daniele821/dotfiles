@@ -10,11 +10,12 @@
 
     # neovim and dependecies
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
-    sudo apt install neovim wl-clipboard ripgrep -y
-    # TODO: nodejs, npm for neovim
+    sudo apt install neovim wl-clipboard ripgrep nodejs npm python3.12-venv -y
 
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
+
+    sudo apt autopurge -y
 } </dev/tty
 
 exit 0
