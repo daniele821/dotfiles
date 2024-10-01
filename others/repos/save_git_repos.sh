@@ -6,7 +6,7 @@ BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
 
 TMP_FILE="$(mktemp /tmp/gitreposXXXXXXXXXXXXXXXXXXXXX.tmp)"
 
-find /personal/repos/ -iname .git | while read -r dir; do
+find /personal/repos/ -iname .git | sort | while read -r dir; do
     DIR="$(dirname "${dir}")"
     EMAIL="$(git -C "${DIR}" config user.email)"
     BRANCH="$(git -C "${DIR}" rev-parse --abbrev-ref HEAD)"
