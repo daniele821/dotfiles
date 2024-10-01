@@ -6,7 +6,7 @@
     sudo apt upgrade -y
 
     # cli essentials
-    sudo apt install bat zoxide fzf htop -y
+    sudo apt install lsd bat zoxide fzf htop -y
 
     # neovim and dependecies
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
