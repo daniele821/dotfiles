@@ -2,12 +2,19 @@
 
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-COSMIC_DIR="${HOME}/.config/cosmic"
-COSMIC_ZIP="cosmic.tar.gz"
 
-! [[ -d "${COSMIC_DIR}" ]] && echo 'there is no cosmic settings to backup' && exit 1
+# checks
+! [[ -d "${HOME}/.config/cosmic" ]] && echo 'there is no cosmic settings to backup' && exit 1
 
-cd "$(mktemp -d)" || exit 1
-cp -r "${COSMIC_DIR}" ./
-tar czf "${COSMIC_ZIP}" ./*
-mv "${COSMIC_ZIP}" "${SCRIPT_DIR}"
+# create temporary directory
+TMP_DIR="/tmp/cosmic-backup-script"
+mkdir -p "${TMP_DIR}"
+TMP_DIR="$(mktemp -d "${TMP_DIR}/XXXXXXXXXXXXXXXXXXXXXXXXXXXX")"
+
+# backup settings
+cp -r "${HOME}/.config/cosmic" "${TMP_DIR}/cosmic"
+[[ -d "${SCRIPT_DIR}/.cosmic" ]] && mv "${SCRIPT_DIR}/.cosmic" "${TMP_DIR}/.cosmic"
+mv "${TMP_DIR}/cosmic" "${SCRIPT_DIR}/.cosmic"
+
+# cleanup
+rm -rf /tmp/cosmic-backup-script/
