@@ -3,5 +3,17 @@
         modifiers: [
             Super,
         ],
+        key: "f",
+    ): Maximize,
+    (
+        modifiers: [
+            Super,
+        ],
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "m",
     ): Disable,
 }
