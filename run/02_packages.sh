@@ -5,12 +5,15 @@
     sudo apt update -y
     sudo apt upgrade -y
 
-    # cli essentials
-    sudo apt install lsd bat zoxide fzf htop -y
-
     # neovim and dependecies
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
     sudo apt install neovim wl-clipboard ripgrep nodejs npm python3.12-venv -y
+
+    # apps
+    sudo apt install kitty
+
+    # cli essentials
+    sudo apt install lsd bat zoxide fzf htop -y
 
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
