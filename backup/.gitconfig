@@ -1,0 +1,13 @@
+[user]
+    useConfigOnly = true
+	name = Daniele Muffato
+[init]
+    defaultBranch = main
+[core]
+    editor = nvim
+[pager]
+    diff = false
+[alias]
+    lo = log --oneline --graph -30
+    st = status -s
+    mi = merge --no-commit --no-ff
