@@ -35,3 +35,9 @@ alias cd='__zoxide_euristically__'
 alias ce='zoxide edit'
 alias ci='__zoxide_zi'
 alias cl='zoxide query -ls'
+
+if [[ "${TERM}" =~ "kitty" ]]; then
+    function preview() {
+        kitten icat --align=left --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
+    }
+fi
