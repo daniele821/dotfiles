@@ -4,6 +4,4 @@
     layout: "us,it",
     variant: ",",
     options: None,
-    repeat_delay: 600,
-    repeat_rate: 25,
 )

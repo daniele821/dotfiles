@@ -3,17 +3,24 @@
         modifiers: [
             Super,
         ],
-        key: "f",
-    ): Maximize,
-    (
-        modifiers: [
-            Super,
-        ],
-    ): Disable,
+        key: "t",
+        description: Some("Kitty launcher"),
+    ): Spawn("kitty"),
     (
         modifiers: [
             Super,
         ],
         key: "m",
     ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "f",
+    ): Maximize,
 }
