@@ -35,6 +35,12 @@ alias cd='__zoxide_euristically__'
 alias ce='zoxide edit'
 alias ci='__zoxide_zi'
 alias cl='zoxide query -ls'
+alias clear='printf "\033[2J\033[3J\033[1;1H"'
+
+for i in - {0..9}; do
+    bind -r "\e$i"
+done
+bind -x '"\C-l": clear'
 
 if [[ "${TERM}" =~ "kitty" ]]; then
     function preview() {
