@@ -29,4 +29,10 @@ if ask_user 'Do you really want to create new ssh keys'; then
     done
 fi </dev/tty
 
+# install wireshark
+if ask_user 'Do you really want to install wireshark'; then
+    sudo apt install wireshark -y
+    sudo usermod -aG wireshark "${USER}"
+fi
+
 exit 0
