@@ -3,6 +3,11 @@
         modifiers: [
             Super,
         ],
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
         key: "t",
         description: Some("Kitty launcher"),
     ): Spawn("kitty"),
@@ -11,11 +16,6 @@
             Super,
         ],
         key: "m",
-    ): Disable,
-    (
-        modifiers: [
-            Super,
-        ],
     ): Disable,
     (
         modifiers: [
