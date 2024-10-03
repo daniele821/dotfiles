@@ -10,7 +10,7 @@
     sudo apt install neovim wl-clipboard ripgrep nodejs npm python3.12-venv -y
 
     # apps
-    sudo apt install kitty
+    sudo apt install kitty libreoffice
 
     # cli essentials
     sudo apt install lsd bat zoxide fzf htop -y

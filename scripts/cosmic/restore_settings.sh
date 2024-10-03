@@ -13,8 +13,7 @@ mkdir -p "${TMP_DIR}"
 TMP_DIR="$(mktemp -d "${TMP_DIR}/XXXXXXXXXXXXXXXXXXXXXXXXXXXX")"
 
 # restore settings
-[[ -d "${HOME}/.config/cosmic.bak" ]] && mv "${HOME}/.config/cosmic.bak" "${TMP_DIR}/"
-[[ -d "${HOME}/.config/cosmic" ]] && mv "${HOME}/.config/cosmic" "${HOME}/.config/cosmic.bak"
+[[ -d "${HOME}/.config/cosmic" ]] && mv "${HOME}/.config/cosmic" "${TMP_DIR}/"
 cp -r "${SCRIPT_DIR}/.cosmic" "${HOME}/.config/cosmic"
 
 # cleanup

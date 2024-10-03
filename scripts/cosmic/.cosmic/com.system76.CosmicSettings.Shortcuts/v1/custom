@@ -15,6 +15,13 @@
         modifiers: [
             Super,
         ],
+        key: "i",
+        description: Some("Settings launcher"),
+    ): Spawn("cosmic-settings"),
+    (
+        modifiers: [
+            Super,
+        ],
         key: "m",
     ): Disable,
     (

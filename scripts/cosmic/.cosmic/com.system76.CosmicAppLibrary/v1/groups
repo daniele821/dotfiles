@@ -12,13 +12,25 @@
         ]),
     ),
     (
+        name: "Libreoffice",
+        icon: "folder-symbolic",
+        filter: AppIds([
+            "libreoffice-impress",
+            "libreoffice-math",
+            "libreoffice-writer",
+            "libreoffice-base",
+            "libreoffice-startcenter",
+            "libreoffice-calc",
+            "libreoffice-draw",
+        ]),
+    ),
+    (
         name: "System",
         icon: "folder-symbolic",
         filter: AppIds([
             "gnome-language-selector",
             "org.gnome.FileRoller",
             "org.gnome.baobab",
-            "org.gnome.DiskUtility",
             "gucharmap",
             "nm-connection-editor",
             "org.freedesktop.IBus.Setup",
@@ -30,6 +42,9 @@
             "htop",
             "nvim",
             "vim",
+            "org.gnome.DiskUtility",
+            "org.gnome.seahorse.Application",
+            "com.system76.Popsicle",
         ]),
     ),
 ]
