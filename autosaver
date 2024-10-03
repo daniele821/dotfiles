@@ -313,6 +313,9 @@ def commit_files(opts):
             if ask_user(msg_commit, opts):
                 if commit_msg := input(color("msg", "Write commit message: ")):
                     git_commit_all(SCRIPT_DIR, commit_msg)
+    else:
+        if opt_toggle:
+            git_restore_all(SCRIPT_DIR)
     if not opt_toggle:
         git_push(SCRIPT_DIR)
 
