@@ -17,7 +17,7 @@
 
     # replace bad gnome apps
     sudo apt remove totem eog -y
-    sudo apt install mpv loupe -y
+    sudo apt install mpv mpv-mpris loupe -y
 
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
