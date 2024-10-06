@@ -1,13 +1,20 @@
 #!/bin/bash
 
 eval "$(starship init bash)"
-eval "$(zoxide init --no-cmd bash)"
+eval "$(zoxide init bash)"
 
 function blastoff() {
     git status -s &>/dev/null
 }
 function __zoxide_euristically__() {
-    cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
+    if ! cd "$@" &>/dev/null; then
+        results="$(zoxide query -l "$@" | wc -l)"
+        if ((results <= 1)); then
+            __zoxide_z "$@"
+        else
+            __zoxide_zi "$@"
+        fi
+    fi
 }
 function __exec_nohupped__() {
     (: && nohup "$@" &>/dev/null &)
