@@ -5,7 +5,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
 # checks
 ! [[ -d "${SCRIPT_DIR}/.cosmic" ]] && echo 'there is no backup file, to restore settings from' && exit 1
-[[ "$(tty)" != "/dev/tty"* ]] && [[ -z "${XDG_CURRENT_DESKTOP}" ]] && echo 'you need to be in a tty, to safely run this script' && exit 1
+[[ -n "${XDG_CURRENT_DESKTOP}" ]] && echo 'you need to be in a tty, to safely run this script' && exit 1
 
 # create temporary directory
 TMP_DIR="/tmp/cosmic-backup-script"
