@@ -13,7 +13,7 @@
     sudo apt install kitty libreoffice gnome-calculator
 
     # cli essentials
-    sudo apt install lsd bat zoxide fzf htop -y
+    sudo apt install lsd bat zoxide fzf htop direnv -y
 
     # replace bad gnome apps
     sudo apt remove totem eog -y

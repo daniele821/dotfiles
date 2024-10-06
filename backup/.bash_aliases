@@ -2,6 +2,7 @@
 
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
+eval "$(direnv hook bash)"
 
 function blastoff() {
     git status -s &>/dev/null
