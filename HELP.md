@@ -43,7 +43,7 @@
     - edit          : allow to edit all files
     - run           : run all init scripts 
     - sc            : "save commit"
-    - ru            : "run uncommit"
+    - un            : "uncommit"
         
 - notes:
     - multiple actions can be executed, by separating each with `--`

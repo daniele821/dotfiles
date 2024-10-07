@@ -59,6 +59,8 @@
         - [x] added place for additional scripts (git repos,..)
     - 2.2.1:
         - [x] added basic script to initialize script
+    - 2.2.4:
+        - [x] renamed shortcut "ru" to "un" (and changed what it does)
 
 ## TODO AND COMPLETED LIST
 
