@@ -61,6 +61,8 @@
         - [x] added basic script to initialize script
     - 2.2.4:
         - [x] renamed shortcut "ru" to "un" (and changed what it does)
+    - 2.2.5:
+        - [x] renamed shortcut "co"
 
 ## TODO AND COMPLETED LIST
 
