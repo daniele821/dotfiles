@@ -42,8 +42,9 @@
     - init          : initialize needed directories and config files
     - edit          : allow to edit all files
     - run           : run all init scripts 
-    - sc            : "save commit"
+    - co            : "commit"
     - un            : "uncommit"
+    - sc            : "save commit"
         
 - notes:
     - multiple actions can be executed, by separating each with `--`

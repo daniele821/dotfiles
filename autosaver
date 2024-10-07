@@ -193,8 +193,9 @@ SHORTCUTS = {
     "run": [["-ry"]],
     "edit": [["-e"]],
 }
-SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
+SHORTCUTS |= {"co": [SHORTCUTS["commit"][0]]}
 SHORTCUTS |= {"un": [SHORTCUTS["uncommit"][0]]}
+SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
 
 
 def load_config(conf):
