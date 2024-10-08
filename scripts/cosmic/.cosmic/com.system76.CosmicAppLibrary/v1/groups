@@ -45,6 +45,8 @@
             "org.gnome.DiskUtility",
             "org.gnome.seahorse.Application",
             "com.system76.Popsicle",
+            "vinagre",
+            "x11vnc",
         ]),
     ),
 ]
