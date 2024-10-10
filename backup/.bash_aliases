@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export STARSHIP_LOG=error
+export starship_precmd_user_func="blastoff"
+
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
 eval "$(direnv hook bash)"
@@ -27,11 +30,9 @@ function open() {
     for file in "${@}"; do __exec_nohupped__ xdg-open "$file"; done
 }
 
-export PATH="$HOME/.local/bin:$PATH"
 export HISTCONTROL="ignoredups"
-export starship_precmd_user_func="blastoff"
-export STARSHIP_LOG=error
 export EDITOR="nvim"
+export PYTHONDONTWRITEBYTECODE="true"
 
 alias ls='lsd --group-dirs first'
 alias la='ls -A'
