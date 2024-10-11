@@ -33,6 +33,7 @@ function open() {
 export HISTCONTROL="ignoredups"
 export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
+export GOPATH="$HOME/.local/share/go"
 
 alias ls='lsd --group-dirs first'
 alias la='ls -A'
