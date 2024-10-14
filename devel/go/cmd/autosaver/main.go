@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	// "autosaver/internal/utils"
+	"fmt"
+)
 
 func main() {
-	fmt.Println("AUTOSAVER SCRIPT")
+	fmt.Println("main entry!")
 }
