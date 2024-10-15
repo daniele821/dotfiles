@@ -12,8 +12,8 @@
     # cli essentials
     sudo apt install lsd bat zoxide fzf htop direnv tldr -y
 
-    # install apps
-    sudo apt install kitty
+    # install apps & tools
+    sudo apt install kitty power-profiles-daemon -y
 
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
