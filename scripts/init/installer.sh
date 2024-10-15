@@ -2,7 +2,7 @@
 
 # modify the script, in all places where 'TODO' is written
 
-BRANCH="cosmic"
+BRANCH="mint"
 
 function ask_user() {
     echo -ne "$@"

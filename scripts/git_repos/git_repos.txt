@@ -1,6 +1,6 @@
 /personal/repos/daniele821/dotfiles
 git@daniele821.github.com:daniele821/dotfiles.git
-cosmic
+mint
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/daniele821/github-website
