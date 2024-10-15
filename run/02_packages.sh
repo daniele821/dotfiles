@@ -12,6 +12,9 @@
     # cli essentials
     sudo apt install lsd bat zoxide fzf htop direnv tldr -y
 
+    # install apps
+    sudo apt install kitty
+
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
 

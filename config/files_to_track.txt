@@ -2,3 +2,4 @@
 .bash_aliases
 .ssh/config
 .gitconfig
+.config/kitty
