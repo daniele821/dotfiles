@@ -13,7 +13,7 @@
     sudo apt install lsd bat zoxide fzf htop direnv tldr -y
 
     # install apps & tools
-    sudo apt install kitty power-profiles-daemon -y
+    sudo apt install kitty power-profiles-daemon ffmpeg -y
 
     # manually install starship
     curl -sS https://starship.rs/install.sh | sh
