@@ -29,10 +29,10 @@ if ask_user 'Do you really want to create new ssh keys'; then
     done
 fi </dev/tty
 
-# install wireshark
-if ask_user 'Do you really want to install wireshark'; then
-    sudo apt install wireshark -y
-    sudo usermod -aG wireshark "${USER}"
+# set kitty as default terminal
+if command -v kitty &>/dev/null && ask_user "Do you reall want to set kitty as then default terminal"; then
+    echo 'kitty "$@"' | sudo tee /usr/local/bin/xdg-terminal-exec
+    sudo chmod +x /usr/local/bin/xdg-terminal-exec
 fi
 
 exit 0
