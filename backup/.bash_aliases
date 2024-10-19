@@ -11,14 +11,7 @@ function blastoff() {
     git status -s &>/dev/null
 }
 function __zoxide_euristically__() {
-    if ! cd "$@" &>/dev/null; then
-        results="$(zoxide query -l "$@" | wc -l)"
-        if ((results <= 1)); then
-            __zoxide_z "$@"
-        else
-            __zoxide_zi "$@"
-        fi
-    fi
+    cd "$@" &>/dev/null || __zoxide_z "$@" &>/dev/null
 }
 function __exec_nohupped__() {
     (: && nohup "$@" &>/dev/null &)
@@ -42,9 +35,6 @@ alias lla='ls -lA'
 alias tree='lsd --group-dirs first --tree'
 alias cat='batcat'
 alias cd='__zoxide_euristically__'
-alias ce='zoxide edit'
-alias ci='__zoxide_zi'
-alias cl='zoxide query -ls'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
 for i in - {0..9}; do
