@@ -1,5 +1,4 @@
 #!/bin/env bash
-# vim:ft=bash
 
 # apply all changes
 echo "Warning: to apply changes, reboot is required"

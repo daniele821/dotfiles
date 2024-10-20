@@ -1,5 +1,4 @@
 #!/bin/env bash
-# vim:ft=bash
 
 # utility functions
 function ask_user() {
