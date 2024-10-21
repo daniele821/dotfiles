@@ -14,9 +14,6 @@
     # install apps & tools
     sudo apt install kitty ffmpeg -y
 
-    # manually install starship
-    curl -sS https://starship.rs/install.sh | sh
-
 } </dev/tty
 
 exit 0
