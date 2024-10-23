@@ -12,7 +12,7 @@
     sudo apt install lsd bat zoxide fzf htop direnv tldr -y
 
     # install apps & tools
-    sudo apt install kitty ffmpeg -y
+    sudo apt install kitty ffmpeg power-profiles-daemon -y
 
 } </dev/tty
 
