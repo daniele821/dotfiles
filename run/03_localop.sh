@@ -51,4 +51,9 @@ function ask_user() {
 
 } </dev/tty
 
+PP="$(powerprofilesctl get 2>/dev/null)" &&
+    [[ "${PP}" != "power-saver" ]] &&
+    powerprofilesctl set power-saver &&
+    echo 'setting power profile to power-saver'
+
 exit 0

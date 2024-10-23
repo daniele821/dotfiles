@@ -45,3 +45,6 @@ bind -x '"\C-l": clear'
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
 }
+function performance() {
+    powerprofilesctl launch --profile performance "$@"
+}
