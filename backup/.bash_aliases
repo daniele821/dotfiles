@@ -2,6 +2,10 @@
 
 export STARSHIP_LOG=error
 export starship_precmd_user_func="blastoff"
+export HISTCONTROL="ignoredups"
+export EDITOR="nvim"
+export PYTHONDONTWRITEBYTECODE="true"
+export GOPATH="$HOME/.local/share/go"
 
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
@@ -22,11 +26,13 @@ function run() {
 function open() {
     for file in "${@}"; do __exec_nohupped__ xdg-open "$file"; done
 }
+function preview() {
+    kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
+}
 
-export HISTCONTROL="ignoredups"
-export EDITOR="nvim"
-export PYTHONDONTWRITEBYTECODE="true"
-export GOPATH="$HOME/.local/share/go"
+complete -f preview
+complete -f open
+complete -c run
 
 alias ls='lsd --group-dirs first'
 alias la='ls -A'
@@ -37,14 +43,5 @@ alias cat='batcat'
 alias cd='__zoxide_euristically__'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
-for i in - {0..9}; do
-    bind -r "\e$i"
-done
+for i in - {0..9}; do bind -r "\e$i"; done
 bind -x '"\C-l": clear'
-
-function preview() {
-    kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
-}
-function performance() {
-    powerprofilesctl launch --profile performance "$@"
-}
