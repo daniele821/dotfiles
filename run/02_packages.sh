@@ -11,8 +11,9 @@
     # cli essentials
     sudo apt install lsd bat zoxide fzf htop direnv tldr -y
 
-    # install apps & tools
-    sudo apt install kitty ffmpeg power-profiles-daemon -y
+    # install apps & tools and uninstall bad apps
+    sudo apt purge celluloid -y
+    sudo apt install kitty ffmpeg power-profiles-daemon mpv mpv-mpris -y
 
 } </dev/tty
 

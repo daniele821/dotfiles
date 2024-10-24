@@ -3,3 +3,4 @@
 .ssh/config
 .gitconfig
 .config/kitty
+.config/mpv
