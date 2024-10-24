@@ -3,7 +3,6 @@ package utils
 import (
 	"os"
 	"path/filepath"
-	"slices"
 )
 
 type Action int
@@ -80,38 +79,6 @@ func scriptPath() string {
 		errExit("could not solve symlink path of current executable")
 	}
 	return path
-}
-
-type Flag struct {
-	actionFlags []Action
-	optionFlags []Option
-}
-
-func NewFlags(actions []Action, options []Option) *Flag {
-	return &Flag{actions, options}
-}
-
-func (f *Flag) AppendFlags(actions []Action, options []Option) {
-	f.actionFlags = append(f.actionFlags, actions...)
-	f.optionFlags = append(f.optionFlags, options...)
-}
-
-func (f *Flag) HasFlag(flag any) bool {
-	switch flag.(type) {
-	case Action:
-		action, ok := flag.(Action)
-		if !ok {
-			panic("failed to convert action flag from any")
-		}
-		return slices.Contains(f.actionFlags, action)
-	case Option:
-		option, ok := flag.(Option)
-		if !ok {
-			panic("failed to convert option flag from any")
-		}
-		return slices.Contains(f.optionFlags, option)
-	}
-	return false
 }
 
 // TODO: shortcuts
