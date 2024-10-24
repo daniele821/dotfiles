@@ -1,20 +1,17 @@
 package utils
 
-// find way to have readonly config vars
-type Config struct {
-	home       string
-	scriptPath string
-	scriptDir  string
-	dirs       []string
-	files      []string
-}
+import (
+	"os"
+	"path/filepath"
+)
 
 type Action int
 type Flag int
+type TypeDir int
+type TypeFile int
 
 const (
-	ActNone Action = iota
-	ActList
+	ActList Action = iota + 1
 	ActUntracked
 	ActSave
 	ActBackup
@@ -22,10 +19,11 @@ const (
 	ActEdit
 	ActInit
 	ActRun
+	ActDefault Action = ActList
 )
+
 const (
-	FlagNone Flag = iota
-	FlagDiff
+	FlagDiff Flag = iota + 1
 	FlagForce
 	FlagNo
 	FlagYes
@@ -33,42 +31,57 @@ const (
 	FlagVerbose
 )
 
-// HOME = os.getenv("HOME")
-// SCRIPT_PATH = os.path.realpath(__file__)
-// SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
-// DIRS = {"backup": os.path.join(SCRIPT_DIR, "backup"),
-//         "config": os.path.join(SCRIPT_DIR, "config"),
-//         "run": os.path.join(SCRIPT_DIR, "run"),
-//         "others": os.path.join(SCRIPT_DIR, "others")}
-// FILES = {"track": os.path.join(DIRS["config"], "files_to_track.txt"),
-//          "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt")}
-//
-//
-// ACTIONS = Enum("ACTIONS", [
-//     "LIST", "UNTRACKED", "SAVE", "BACKUP", "COMMIT", "EDIT", "INIT", "RUN"
-// ])
-// FLAGS = Enum("FLAGS", [
-//     "DIFF", "FORCE", "NO", "YES", "TOGGLE", "VERBOSE"
-// ])
-// ACTION_FLAGS = {
-//     "b": ACTIONS.BACKUP,
-//     "c": ACTIONS.COMMIT,
-//     "e": ACTIONS.EDIT,
-//     "i": ACTIONS.INIT,
-//     "r": ACTIONS.RUN,
-//     "s": ACTIONS.SAVE,
-//     "u": ACTIONS.UNTRACKED,
-// }
-// OPTION_FLAGS = {
-//     "d": FLAGS.DIFF,
-//     "f": FLAGS.FORCE,
-//     "n": FLAGS.NO,
-//     "t": FLAGS.TOGGLE,
-//     "v": FLAGS.VERBOSE,
-//     "y": FLAGS.YES,
-// }
-// ALL_FLAGS = ACTION_FLAGS | OPTION_FLAGS
-// DEFAULT_ACTION = ACTIONS.LIST
+const (
+	DirBackup TypeDir = iota + 1
+	DirRun
+	DirOther
+	DirConfig
+)
+
+const (
+	FileTrack TypeFile = iota + 1
+	FileNotDiff
+)
+
+var (
+	Home       string = home()
+	ScriptPath string = scriptPath()
+	ScriptDir  string = filepath.Dir(ScriptPath)
+)
+var (
+	AllDirs = map[TypeDir]string{
+		DirBackup: filepath.Join(ScriptDir, "backup"),
+		DirRun:    filepath.Join(ScriptDir, "run"),
+		DirOther:  filepath.Join(ScriptDir, "others"),
+		DirConfig: filepath.Join(ScriptDir, "config"),
+	}
+	AllFiles = map[TypeFile]string{
+		FileTrack:   filepath.Join(AllDirs[DirConfig], "files_to_track.txt"),
+		FileNotDiff: filepath.Join(AllDirs[DirConfig], "files_to_notdiff.txt"),
+	}
+)
+
+func home() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		errExit("could not get user home directory")
+	}
+	return home
+}
+
+func scriptPath() string {
+	path, err := os.Executable()
+	if err != nil {
+		errExit("could not get path of current executable")
+	}
+	path, err = filepath.EvalSymlinks(path)
+	if err != nil {
+		errExit("could not solve symlink path of current executable")
+	}
+	return path
+}
+
+// TODO: shortcuts
 // SHORTCUTS = {
 //     "save": [["-svy"]],
 //     "restore": [["-bvy"]],
