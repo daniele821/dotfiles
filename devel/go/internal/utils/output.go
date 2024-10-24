@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -56,4 +57,11 @@ func AskUser(msg string, autoAnswer Answer) bool {
 		}
 	}
 	return false
+}
+
+func errExit(msg string) {
+	os.Stderr.WriteString(ColorMsg("ERROR: ", MsgErr))
+	os.Stderr.WriteString(ColorMsg(msg, MsgErr))
+	os.Stderr.WriteString("\n")
+	os.Exit(1)
 }
