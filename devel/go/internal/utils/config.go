@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 )
 
-type Action int
-type Option int
-type TypeDir int
-type TypeFile int
+type action int
+type option int
+type typeDir int
+type typeFile int
 
 const (
-	ActList Action = iota + 1
+	ActList action = iota + 1
 	ActUntracked
 	ActSave
 	ActBackup
@@ -19,11 +19,11 @@ const (
 	ActEdit
 	ActInit
 	ActRun
-	ActDefault Action = ActList
+	ActDefault action = ActList
 )
 
 const (
-	OptDiff Option = iota + 1
+	OptDiff option = iota + 1
 	OptForce
 	OptNo
 	OptYes
@@ -32,14 +32,14 @@ const (
 )
 
 const (
-	DirBackup TypeDir = iota + 1
+	DirBackup typeDir = iota + 1
 	DirRun
 	DirOther
 	DirConfig
 )
 
 const (
-	FileTrack TypeFile = iota + 1
+	FileTrack typeFile = iota + 1
 	FileNotDiff
 )
 
@@ -49,13 +49,13 @@ var (
 	ScriptDir  string = filepath.Dir(ScriptPath)
 )
 var (
-	AllDirs = map[TypeDir]string{
+	AllDirs = map[typeDir]string{
 		DirBackup: filepath.Join(ScriptDir, "backup"),
 		DirRun:    filepath.Join(ScriptDir, "run"),
 		DirOther:  filepath.Join(ScriptDir, "others"),
 		DirConfig: filepath.Join(ScriptDir, "config"),
 	}
-	AllFiles = map[TypeFile]string{
+	AllFiles = map[typeFile]string{
 		FileTrack:   filepath.Join(AllDirs[DirConfig], "files_to_track.txt"),
 		FileNotDiff: filepath.Join(AllDirs[DirConfig], "files_to_notdiff.txt"),
 	}
@@ -81,29 +81,29 @@ func scriptPath() string {
 	return path
 }
 
-func ShortcutToFlag(shortcut string) *Flag {
-	var flag *Flag = NewFlags(nil, nil)
+func ShortcutToFlag(shortcut string) *flag {
+	var flag *flag = NewFlags(nil, nil)
 	switch shortcut {
 	case "save":
-		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose})
+		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose})
 	case "saveall":
-		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle})
+		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose, OptToggle})
 	case "restore":
-		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose})
+		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose})
 	case "restoreall":
-		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle})
+		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose, OptToggle})
 	case "commit", "co":
-		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes})
+		flag.AppendFlags([]action{ActCommit}, []option{OptYes})
 	case "uncommit", "un":
-		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes, OptToggle})
+		flag.AppendFlags([]action{ActCommit}, []option{OptYes, OptToggle})
 	case "untracked":
-		flag.AppendFlags([]Action{ActUntracked}, []Option{})
+		flag.AppendFlags([]action{ActUntracked}, []option{})
 	case "init":
-		flag.AppendFlags([]Action{ActInit}, []Option{OptYes})
+		flag.AppendFlags([]action{ActInit}, []option{OptYes})
 	case "run":
-		flag.AppendFlags([]Action{ActRun}, []Option{OptYes})
+		flag.AppendFlags([]action{ActRun}, []option{OptYes})
 	case "edit":
-		flag.AppendFlags([]Action{ActEdit}, []Option{})
+		flag.AppendFlags([]action{ActEdit}, []option{})
 	case "sc":
 		flag.AppendAllFlags(ShortcutToFlag("save"))
 		flag.AppendAllFlags(ShortcutToFlag("commit"))

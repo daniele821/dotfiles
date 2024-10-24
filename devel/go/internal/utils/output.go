@@ -6,22 +6,22 @@ import (
 	"strings"
 )
 
-type MsgType int8
-type Answer string
+type msgType int8
+type answer string
 
 const (
-	MsgNone MsgType = iota
+	MsgNone msgType = iota
 	MsgErr
 	MsgFile
 	MsgInfo
 )
 const (
-	AnsNone Answer = ""
-	AnsYes  Answer = "y"
-	AnsNo   Answer = "n"
+	AnsNone answer = ""
+	AnsYes  answer = "y"
+	AnsNo   answer = "n"
 )
 
-func ColorMsg(str string, col MsgType) string {
+func ColorMsg(str string, col msgType) string {
 	res := strings.Builder{}
 	switch col {
 	case MsgErr:
@@ -36,7 +36,7 @@ func ColorMsg(str string, col MsgType) string {
 	return res.String()
 }
 
-func AskUser(msg string, autoAnswer Answer) bool {
+func AskUser(msg string, autoAnswer answer) bool {
 	fmt.Print(msg)
 	switch autoAnswer {
 	case AnsYes, AnsNo:
@@ -46,7 +46,7 @@ func AskUser(msg string, autoAnswer Answer) bool {
 		var input string
 		fmt.Scanln(&input)
 		{
-			input := Answer(input)
+			input := answer(input)
 			switch input {
 			case AnsYes, AnsNo, AnsNone:
 				return input == AnsYes
