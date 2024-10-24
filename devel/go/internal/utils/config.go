@@ -1,5 +1,6 @@
 package utils
 
+// find way to have readonly config vars
 type Config struct {
 	home       string
 	scriptPath string
