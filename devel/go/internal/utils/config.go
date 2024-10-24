@@ -81,19 +81,32 @@ func scriptPath() string {
 	return path
 }
 
-// TODO: shortcuts
-// SHORTCUTS = {
-//     "save": [["-svy"]],
-//     "restore": [["-bvy"]],
-//     "saveall": [["-svyt"]],
-//     "restoreall": [["-bvyt"]],
-//     "commit": [["-cy"]],
-//     "uncommit": [["-cty"]],
-//     "untracked": [["-u"]],
-//     "init": [["-iy"]],
-//     "run": [["-ry"]],
-//     "edit": [["-e"]],
-// }
-// SHORTCUTS |= {"co": [SHORTCUTS["commit"][0]]}
-// SHORTCUTS |= {"un": [SHORTCUTS["uncommit"][0]]}
-// SHORTCUTS |= {"sc": [SHORTCUTS["save"][0], SHORTCUTS["commit"][0]]}
+func ShortcutToFlag(shortcut string) *Flag {
+	var flag *Flag = NewFlags(nil, nil)
+	switch shortcut {
+	case "save":
+		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose})
+	case "saveall":
+		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle})
+	case "restore":
+		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose})
+	case "restoreall":
+		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle})
+	case "commit", "co":
+		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes})
+	case "uncommit", "un":
+		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes, OptToggle})
+	case "untracked":
+		flag.AppendFlags([]Action{ActUntracked}, []Option{})
+	case "init":
+		flag.AppendFlags([]Action{ActInit}, []Option{OptYes})
+	case "run":
+		flag.AppendFlags([]Action{ActRun}, []Option{OptYes})
+	case "edit":
+		flag.AppendFlags([]Action{ActEdit}, []Option{})
+	case "sc":
+		flag.AppendAllFlags(ShortcutToFlag("save"))
+		flag.AppendAllFlags(ShortcutToFlag("commit"))
+	}
+	return flag
+}

@@ -20,6 +20,10 @@ func (f *Flag) AppendFlags(actions []Action, options []Option) {
 	f.optionFlags = append(f.optionFlags, options...)
 }
 
+func (f *Flag) AppendAllFlags(flags *Flag) {
+	f.AppendFlags(f.actionFlags, f.optionFlags)
+}
+
 func (f *Flag) HasFlag(flag any) bool {
 	switch flag.(type) {
 	case Action:
