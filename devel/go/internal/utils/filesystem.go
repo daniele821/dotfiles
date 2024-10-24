@@ -6,24 +6,24 @@ import (
 	"path/filepath"
 )
 
-func CreateDir(dir_path string) {
-	if os.MkdirAll(dir_path, 0777) != nil {
-		errExit(fmt.Sprintf("could not create directory: \"%s\"", dir_path))
+func CreateDir(dirPath string) {
+	if os.MkdirAll(dirPath, 0777) != nil {
+		errExit(fmt.Sprintf("could not create directory: \"%s\"", dirPath))
 	}
 }
 
-func CreateFile(file_path string) {
-	CreateDir(filepath.Dir(file_path))
-	_, err := os.Create(file_path)
+func CreateFile(filePath string) {
+	CreateDir(filepath.Dir(filePath))
+	_, err := os.Create(filePath)
 	if err != nil {
-		errExit(fmt.Sprintf("could not create file: \"%s\"", file_path))
+		errExit(fmt.Sprintf("could not create file: \"%s\"", filePath))
 	}
 }
 
-func DeleteFile(file_path string, delete_dirs bool) {
-	os.Remove(file_path)
-	dir := file_path
-	if delete_dirs {
+func DeleteFile(filePath string, deleteDirs bool) {
+	os.Remove(filePath)
+	dir := filePath
+	if deleteDirs {
 		for {
 			dir = filepath.Dir(dir)
 			if os.Remove(dir) != nil {
@@ -33,10 +33,10 @@ func DeleteFile(file_path string, delete_dirs bool) {
 	}
 }
 
-func readFile(file_path string) []byte {
-	bytes, err := os.ReadFile(file_path)
+func readFile(filePath string) []byte {
+	bytes, err := os.ReadFile(filePath)
 	if err != nil {
-		errExit(fmt.Sprintf("could not read file: \"%s\"", file_path))
+		errExit(fmt.Sprintf("could not read file: \"%s\"", filePath))
 	}
 	return bytes
 }
