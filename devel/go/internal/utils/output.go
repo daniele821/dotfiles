@@ -9,15 +9,15 @@ type MsgType int8
 type Answer string
 
 const (
-	MsgErr MsgType = iota
+	MsgNone MsgType = iota
+	MsgErr
 	MsgFile
 	MsgInfo
-	MsgNone
 )
 const (
-	Yes  Answer = "y"
-	No   Answer = "n"
-	None        = ""
+	AnsNone Answer = ""
+	AnsYes  Answer = "y"
+	AnsNo   Answer = "n"
 )
 
 func ColorMsg(str string, col MsgType) string {
@@ -38,18 +38,21 @@ func ColorMsg(str string, col MsgType) string {
 func AskUser(msg string, autoAnswer Answer) bool {
 	fmt.Print(msg)
 	switch autoAnswer {
-	case Yes, No:
+	case AnsYes, AnsNo:
 		fmt.Println(autoAnswer)
-		return autoAnswer == Yes
-	case None:
+		return autoAnswer == AnsYes
+	case AnsNone:
 		var input string
 		fmt.Scanln(&input)
-		switch input {
-		case string(Yes), string(No), string(None):
-			return msg == string(Yes)
-		default:
-			fmt.Println("Invalid answer, retry:")
-			return AskUser(msg, autoAnswer)
+		{
+			input := Answer(input)
+			switch input {
+			case AnsYes, AnsNo, AnsNone:
+				return input == AnsYes
+			default:
+				fmt.Println("Invalid answer, retry:")
+				return AskUser(msg, autoAnswer)
+			}
 		}
 	}
 	return false
