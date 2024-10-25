@@ -21,7 +21,7 @@ func (f *Flag) AppendFlags(actions []action, options []option) {
 }
 
 func (f *Flag) AppendAllFlags(flags *Flag) {
-	f.AppendFlags(f.actionFlags, f.optionFlags)
+	f.AppendFlags(flags.actionFlags, flags.optionFlags)
 }
 
 func (f *Flag) HasOptionFlag(option option) bool {

@@ -93,7 +93,7 @@ func scriptPath() string {
 }
 
 func ShortcutToFlag(shortcut shortcut) *Flag {
-	flag := NewFlags(nil, nil)
+	var flag *Flag
 	switch shortcut {
 	case ShortcutSave:
 		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose})
