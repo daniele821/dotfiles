@@ -6,25 +6,25 @@ import (
 	"strings"
 )
 
-type flag struct {
+type Flag struct {
 	actionFlags []action
 	optionFlags []option
 }
 
-func NewFlags(actions []action, options []option) *flag {
-	return &flag{actions, options}
+func NewFlags(actions []action, options []option) *Flag {
+	return &Flag{actions, options}
 }
 
-func (f *flag) AppendFlags(actions []action, options []option) {
+func (f *Flag) AppendFlags(actions []action, options []option) {
 	f.actionFlags = append(f.actionFlags, actions...)
 	f.optionFlags = append(f.optionFlags, options...)
 }
 
-func (f *flag) AppendAllFlags(flags *flag) {
+func (f *Flag) AppendAllFlags(flags *Flag) {
 	f.AppendFlags(f.actionFlags, f.optionFlags)
 }
 
-func (f *flag) HasFlag(flag any) bool {
+func (f *Flag) HasFlag(flag any) bool {
 	switch flag.(type) {
 	case action:
 		action, _ := flag.(action)
@@ -36,7 +36,7 @@ func (f *flag) HasFlag(flag any) bool {
 	return false
 }
 
-func (f *flag) String() string {
+func (f *Flag) String() string {
 	builder := strings.Builder{}
 	builder.WriteString("Actions:")
 	for act := range f.actionFlags {
