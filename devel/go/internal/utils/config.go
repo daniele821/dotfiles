@@ -7,6 +7,7 @@ import (
 
 type action int
 type option int
+type shortcut int
 type typeDir int
 type typeFile int
 
@@ -29,6 +30,19 @@ const (
 	OptYes
 	OptToggle
 	OptVerbose
+)
+
+const (
+	ShortcutSave shortcut = iota + 1
+	ShortcutSaveAll
+	ShortcutRestore
+	ShortcutRestoreAll
+	ShortcutCommit
+	ShortcutUncommit
+	ShortcutUntracked
+	ShortcutInit
+	ShortcutRun
+	ShortcutEdit
 )
 
 const (
@@ -81,32 +95,29 @@ func scriptPath() string {
 	return path
 }
 
-func ShortcutToFlag(shortcut string) *flag {
+func ShortcutToFlag(shortcut shortcut) *flag {
 	var flag *flag = NewFlags(nil, nil)
 	switch shortcut {
-	case "save":
+	case ShortcutSave:
 		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose})
-	case "saveall":
+	case ShortcutSaveAll:
 		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose, OptToggle})
-	case "restore":
+	case ShortcutRestore:
 		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose})
-	case "restoreall":
+	case ShortcutRestoreAll:
 		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose, OptToggle})
-	case "commit", "co":
+	case ShortcutCommit:
 		flag.AppendFlags([]action{ActCommit}, []option{OptYes})
-	case "uncommit", "un":
+	case ShortcutUncommit:
 		flag.AppendFlags([]action{ActCommit}, []option{OptYes, OptToggle})
-	case "untracked":
+	case ShortcutUntracked:
 		flag.AppendFlags([]action{ActUntracked}, []option{})
-	case "init":
+	case ShortcutInit:
 		flag.AppendFlags([]action{ActInit}, []option{OptYes})
-	case "run":
+	case ShortcutRun:
 		flag.AppendFlags([]action{ActRun}, []option{OptYes})
-	case "edit":
+	case ShortcutEdit:
 		flag.AppendFlags([]action{ActEdit}, []option{})
-	case "sc":
-		flag.AppendAllFlags(ShortcutToFlag("save"))
-		flag.AppendAllFlags(ShortcutToFlag("commit"))
 	}
 	return flag
 }
