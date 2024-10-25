@@ -7,6 +7,22 @@ import (
 	"path/filepath"
 )
 
+func IsRegularFile(path string) bool {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return false
+	}
+	return info.Mode().IsRegular()
+}
+
+func IsDirectory(path string) bool {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return false
+	}
+	return info.IsDir()
+}
+
 func CreateDir(dirPath string) {
 	if os.MkdirAll(dirPath, 0777) != nil {
 		errExit(fmt.Sprintf("could not create directory: \"%s\"", dirPath))
