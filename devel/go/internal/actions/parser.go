@@ -33,8 +33,7 @@ func loadConf(configFile string) []string {
 		}
 	}
 	slices.Sort(fileList)
-	fileList = slices.Compact(fileList)
-	return fileList
+	return slices.Compact(fileList)
 }
 
 func ParseArgs(args []string) *utils.Flag {
