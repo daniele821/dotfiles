@@ -27,6 +27,10 @@ func ProcessDiff(file1, file2 string) {
 	run("diff", "--color", "-u", file1, file2)
 }
 
+func ProcessFilesDiffer(file1, file2 string) bool {
+	return exec.Command("diff", "-q", file1, file2).Run() != nil
+}
+
 func ProcessEdit(file string) {
 	switch {
 	case checkIfExecInPath("nvim"):
