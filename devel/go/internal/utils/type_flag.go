@@ -24,16 +24,19 @@ func (f *Flag) AppendAllFlags(flags *Flag) {
 	f.AppendFlags(f.actionFlags, f.optionFlags)
 }
 
-func (f *Flag) HasFlag(flag any) bool {
-	switch flag.(type) {
-	case action:
-		action, _ := flag.(action)
-		return slices.Contains(f.actionFlags, action)
-	case option:
-		option, _ := flag.(option)
-		return slices.Contains(f.optionFlags, option)
+func (f *Flag) HasOptionFlag(option option) bool {
+	return slices.Contains(f.optionFlags, option)
+}
+
+func (f *Flag) GetActionFlag() action {
+	f.actionFlags = slices.Compact(f.actionFlags)
+	if len(f.actionFlags) >= 2 {
+		ErrExit("multiple actions are not supported")
 	}
-	return false
+	if len(f.actionFlags) == 1 {
+		return f.actionFlags[0]
+	}
+	return ActNone
 }
 
 func (f *Flag) String() string {
