@@ -77,6 +77,12 @@ func AllFilesInDir(dir, relPath string) []string {
 			return err
 		}
 		if dirEntry.Type().IsRegular() {
+			if relPath != "" {
+				path, err = filepath.Rel(relPath, path)
+				if err != nil {
+					return err
+				}
+			}
 			files = append(files, path)
 		}
 		return nil
