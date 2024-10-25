@@ -2,11 +2,17 @@ package actions
 
 import (
 	"autosaver/internal/utils"
+	"os"
 )
 
 func loadConf(configFile string) []string {
-	files := []string{}
+	fileList := []string{}
 	if utils.IsRegularFile(configFile) {
+		file, err := os.Open(configFile)
+		if err != nil {
+			utils.ErrExit("could not open file")
+		}
+		defer file.Close()
 	}
 	// odir = HOME
 	// bdir = DIRS["backup"]
@@ -23,7 +29,7 @@ func loadConf(configFile string) []string {
 	//                     files.update(all_files(file, dir))
 	// return files
 
-	return files
+	return fileList
 }
 
 func ParseArgs(args []string) *utils.Flag {

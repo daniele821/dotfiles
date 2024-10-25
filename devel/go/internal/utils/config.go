@@ -74,7 +74,7 @@ var (
 func home() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		errExit("could not get user home directory")
+		ErrExit("could not get user home directory")
 	}
 	return home
 }
@@ -82,11 +82,11 @@ func home() string {
 func scriptPath() string {
 	path, err := os.Executable()
 	if err != nil {
-		errExit("could not get path of current executable")
+		ErrExit("could not get path of current executable")
 	}
 	path, err = filepath.EvalSymlinks(path)
 	if err != nil {
-		errExit("could not solve symlink path of current executable")
+		ErrExit("could not solve symlink path of current executable")
 	}
 	return path
 }

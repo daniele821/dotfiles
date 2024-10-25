@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -25,7 +24,7 @@ func IsDirectory(path string) bool {
 
 func CreateDir(dirPath string) {
 	if os.MkdirAll(dirPath, 0777) != nil {
-		errExit(fmt.Sprintf("could not create directory: \"%s\"", dirPath))
+		ErrExit("could not create directory: \"%s\"", dirPath)
 	}
 }
 
@@ -33,7 +32,7 @@ func CreateFile(filePath string) {
 	CreateDir(filepath.Dir(filePath))
 	_, err := os.Create(filePath)
 	if err != nil {
-		errExit(fmt.Sprintf("could not create file: \"%s\"", filePath))
+		ErrExit("could not create file: \"%s\"", filePath)
 	}
 }
 
@@ -53,7 +52,7 @@ func DeleteFile(filePath string, deleteDirs bool) {
 func readFile(filePath string) []byte {
 	bytes, err := os.ReadFile(filePath)
 	if err != nil {
-		errExit(fmt.Sprintf("could not read file: \"%s\"", filePath))
+		ErrExit("could not read file: \"%s\"", filePath)
 	}
 	return bytes
 }
@@ -66,7 +65,7 @@ func CopyFile(src, dst string) {
 	CreateFile(dst)
 	if os.WriteFile(dst, readFile(src), 0644) != nil {
 		DeleteFile(dst, false)
-		errExit(fmt.Sprintf("could not write to file: \"%s\"", dst))
+		ErrExit("could not write to file: \"%s\"", dst)
 	}
 }
 
@@ -89,7 +88,7 @@ func AllFilesInDir(dir, relPath string) []string {
 	}
 	err := filepath.WalkDir(dir, visit)
 	if err != nil {
-		errExit(fmt.Sprintf("could not accumulate all files in directory: \"%s\"", dir))
+		ErrExit("could not accumulate all files in directory: \"%s\"", dir)
 	}
 	return files
 }
