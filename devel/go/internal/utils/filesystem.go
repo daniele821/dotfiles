@@ -2,8 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 )
 
 func CreateDir(dirPath string) {
@@ -51,4 +53,23 @@ func CopyFile(src, dst string) {
 		DeleteFile(dst, false)
 		errExit(fmt.Sprintf("could not write to file: \"%s\"", dst))
 	}
+}
+
+func AllFilesInDir(dir, relPath string) []string {
+	var files []string
+	visit := func(path string, dirEntry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if dirEntry.Type().IsRegular() {
+			files = append(files, path)
+		}
+		return nil
+	}
+	err := filepath.WalkDir(dir, visit)
+	if err != nil {
+		errExit(fmt.Sprintf("could not accumulate all files in directory: \"%s\"", dir))
+	}
+	slices.Sort(files)
+	return files
 }
