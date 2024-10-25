@@ -12,7 +12,7 @@ type typeDir int
 type typeFile int
 
 const (
-	ActNone action = iota + 1
+	ActNone action = iota
 	ActList
 	ActUntracked
 	ActSave
