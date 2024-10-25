@@ -2,33 +2,38 @@ package actions
 
 import (
 	"autosaver/internal/utils"
+	"bufio"
 	"os"
+	"path/filepath"
+	"slices"
+	"strings"
 )
 
 func loadConf(configFile string) []string {
+	home := utils.Home
+	backup := utils.AllDirs[utils.DirBackup]
 	fileList := []string{}
 	if utils.IsRegularFile(configFile) {
+
 		file, err := os.Open(configFile)
 		if err != nil {
-			utils.ErrExit("could not open file")
+			utils.ErrExit("could not open file \"%s\"", configFile)
 		}
 		defer file.Close()
-	}
-	// odir = HOME
-	// bdir = DIRS["backup"]
-	// files = set()
-	// if os.path.isfile(conf):
-	//     for line in read_file(conf).splitlines():
-	//         if not line.startswith("/") and line:
-	//             ofile = os.path.join(odir, line)
-	//             bfile = os.path.join(bdir, line)
-	//             for file, dir in ((ofile, odir), (bfile, bdir)):
-	//                 if os.path.isfile(file):
-	//                     files.add(line)
-	//                 elif os.path.isdir(file):
-	//                     files.update(all_files(file, dir))
-	// return files
 
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			line := scanner.Text()
+			if !strings.HasPrefix(line, "/") && line != "" {
+				homeFile := filepath.Join(home, line)
+				backupFile := filepath.Join(backup, line)
+				fileList = append(fileList, utils.AllFilesInDir(homeFile, home)...)
+				fileList = append(fileList, utils.AllFilesInDir(backupFile, backup)...)
+			}
+		}
+	}
+	slices.Sort(fileList)
+	fileList = slices.Compact(fileList)
 	return fileList
 }
 

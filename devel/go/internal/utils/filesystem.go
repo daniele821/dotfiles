@@ -88,7 +88,7 @@ func AllFilesInDir(dir, relPath string) []string {
 	}
 	err := filepath.WalkDir(dir, visit)
 	if err != nil {
-		ErrExit("could not accumulate all files in directory: \"%s\"", dir)
+		return []string{}
 	}
 	return files
 }
