@@ -22,7 +22,6 @@ const (
 	ActRun
 	ActDefault action = ActList
 )
-
 const (
 	OptDiff option = iota + 1
 	OptForce
@@ -31,7 +30,6 @@ const (
 	OptToggle
 	OptVerbose
 )
-
 const (
 	ShortcutSave shortcut = iota + 1
 	ShortcutSaveAll
@@ -44,14 +42,12 @@ const (
 	ShortcutRun
 	ShortcutEdit
 )
-
 const (
 	DirBackup typeDir = iota + 1
 	DirRun
 	DirOther
 	DirConfig
 )
-
 const (
 	FileTrack typeFile = iota + 1
 	FileNotDiff
