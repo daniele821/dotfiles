@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"slices"
 )
 
 func CreateDir(dirPath string) {
@@ -70,6 +69,5 @@ func AllFilesInDir(dir, relPath string) []string {
 	if err != nil {
 		errExit(fmt.Sprintf("could not accumulate all files in directory: \"%s\"", dir))
 	}
-	slices.Sort(files)
 	return files
 }
