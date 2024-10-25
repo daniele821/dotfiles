@@ -5,14 +5,14 @@ import (
 	"path/filepath"
 )
 
-type action int
-type option int
-type shortcut int
+type Action int
+type Option int
+type Shortcut int
 type typeDir int
 type typeFile int
 
 const (
-	ActNone action = iota
+	ActNone Action = iota
 	ActList
 	ActUntracked
 	ActSave
@@ -24,7 +24,7 @@ const (
 	ActDefault
 )
 const (
-	OptDiff option = iota + 1
+	OptDiff Option = iota + 1
 	OptForce
 	OptNo
 	OptYes
@@ -32,7 +32,7 @@ const (
 	OptVerbose
 )
 const (
-	ShortcutSave shortcut = iota + 1
+	ShortcutSave Shortcut = iota + 1
 	ShortcutSaveAll
 	ShortcutRestore
 	ShortcutRestoreAll
@@ -92,29 +92,29 @@ func scriptPath() string {
 	return path
 }
 
-func ShortcutToFlag(shortcut shortcut) *Flag {
+func ShortcutToFlag(shortcut Shortcut) *Flag {
 	var flag *Flag
 	switch shortcut {
 	case ShortcutSave:
-		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose})
+		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose})
 	case ShortcutSaveAll:
-		flag.AppendFlags([]action{ActSave}, []option{OptYes, OptVerbose, OptToggle})
+		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle})
 	case ShortcutRestore:
-		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose})
+		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose})
 	case ShortcutRestoreAll:
-		flag.AppendFlags([]action{ActBackup}, []option{OptYes, OptVerbose, OptToggle})
+		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle})
 	case ShortcutCommit:
-		flag.AppendFlags([]action{ActCommit}, []option{OptYes})
+		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes})
 	case ShortcutUncommit:
-		flag.AppendFlags([]action{ActCommit}, []option{OptYes, OptToggle})
+		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes, OptToggle})
 	case ShortcutUntracked:
-		flag.AppendFlags([]action{ActUntracked}, []option{})
+		flag.AppendFlags([]Action{ActUntracked}, []Option{})
 	case ShortcutInit:
-		flag.AppendFlags([]action{ActInit}, []option{OptYes})
+		flag.AppendFlags([]Action{ActInit}, []Option{OptYes})
 	case ShortcutRun:
-		flag.AppendFlags([]action{ActRun}, []option{OptYes})
+		flag.AppendFlags([]Action{ActRun}, []Option{OptYes})
 	case ShortcutEdit:
-		flag.AppendFlags([]action{ActEdit}, []option{})
+		flag.AppendFlags([]Action{ActEdit}, []Option{})
 	}
 	return flag
 }

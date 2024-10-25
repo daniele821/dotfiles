@@ -3,6 +3,7 @@ package actions
 import (
 	"autosaver/internal/utils"
 	"bufio"
+	"errors"
 	"os"
 	"path/filepath"
 	"slices"
@@ -34,6 +35,32 @@ func loadConf(configFile string) []string {
 	}
 	slices.Sort(fileList)
 	return slices.Compact(fileList)
+}
+
+func parseShortcut(shortcut string) (utils.Shortcut, error) {
+	switch shortcut {
+	case "save":
+		return utils.ShortcutSave, nil
+	case "saveall":
+		return utils.ShortcutSaveAll, nil
+	case "restore":
+		return utils.ShortcutRestore, nil
+	case "restoreall":
+		return utils.ShortcutRestoreAll, nil
+	case "commit", "co":
+		return utils.ShortcutCommit, nil
+	case "uncommit", "un":
+		return utils.ShortcutUncommit, nil
+	case "untracked":
+		return utils.ShortcutUntracked, nil
+	case "init":
+		return utils.ShortcutInit, nil
+	case "run":
+		return utils.ShortcutRun, nil
+	case "edit":
+		return utils.ShortcutEdit, nil
+	}
+	return utils.Shortcut(0), errors.New("not a valid shortcut")
 }
 
 func ParseArgs(args []string) *utils.Flag {
