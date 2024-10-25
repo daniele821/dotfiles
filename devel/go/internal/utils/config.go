@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 )
@@ -117,4 +118,68 @@ func ShortcutToFlag(shortcut Shortcut) *Flag {
 		flag.AppendFlags([]Action{ActEdit}, []Option{})
 	}
 	return flag
+}
+
+func ParseShortcut(shortcut string) (Shortcut, error) {
+	switch shortcut {
+	case "save":
+		return ShortcutSave, nil
+	case "saveall":
+		return ShortcutSaveAll, nil
+	case "restore":
+		return ShortcutRestore, nil
+	case "restoreall":
+		return ShortcutRestoreAll, nil
+	case "commit", "co":
+		return ShortcutCommit, nil
+	case "uncommit", "un":
+		return ShortcutUncommit, nil
+	case "untracked":
+		return ShortcutUntracked, nil
+	case "init":
+		return ShortcutInit, nil
+	case "run":
+		return ShortcutRun, nil
+	case "edit":
+		return ShortcutEdit, nil
+	}
+	return Shortcut(0), errors.New("not a valid shortcut")
+}
+
+func ParseAction(flag string) (Action, error) {
+	switch flag {
+	case "b":
+		return ActBackup, nil
+	case "c":
+		return ActCommit, nil
+	case "e":
+		return ActEdit, nil
+	case "i":
+		return ActInit, nil
+	case "r":
+		return ActRun, nil
+	case "s":
+		return ActSave, nil
+	case "u":
+		return ActUntracked, nil
+	}
+	return Action(0), errors.New("not a valid action flag")
+}
+
+func ParseOption(flag string) (Option, error) {
+	switch flag {
+	case "d":
+		return OptDiff, nil
+	case "f":
+		return OptForce, nil
+	case "n":
+		return OptNo, nil
+	case "t":
+		return OptToggle, nil
+	case "v":
+		return OptVerbose, nil
+	case "y":
+		return OptYes, nil
+	}
+	return Option(0), errors.New("not a valid option flag")
 }
