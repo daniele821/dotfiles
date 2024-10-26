@@ -39,9 +39,12 @@ func ColorMsg(str string, col msgType) string {
 func AskUser(msg string, autoAnswer Answer) bool {
 	fmt.Print(msg)
 	switch autoAnswer {
-	case AnsYes, AnsNo:
-		fmt.Println(autoAnswer)
-		return autoAnswer == AnsYes
+	case AnsYes:
+		fmt.Println("y")
+		return true
+	case AnsNo:
+		fmt.Println("n")
+		return false
 	case AnsNone:
 		var input string
 		fmt.Scanln(&input)

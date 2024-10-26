@@ -11,7 +11,9 @@ func initAction() {
 		utils.CreateDir(dir)
 	}
 	for _, file := range utils.AllFiles {
-		utils.CreateFile(file)
+		if !utils.IsRegularFile(file) {
+			utils.CreateFile(file)
+		}
 	}
 }
 
