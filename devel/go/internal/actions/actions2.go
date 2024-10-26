@@ -2,6 +2,7 @@ package actions
 
 import (
 	"autosaver/internal/utils"
+	"path/filepath"
 	"slices"
 )
 
@@ -16,12 +17,13 @@ func initAction() {
 
 func runAction(flag *utils.Flag) {
 	autoAnswer := autoAnswer(flag)
-	files := utils.AllFilesInDir(runDir, scriptDir)
+	files := utils.AllFilesInDir(runDir, "")
 	slices.Sort(files)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
 	for _, file := range files {
-		msg2 := utils.ColorMsg(file, utils.MsgFile)
+		relfile, _ := filepath.Rel(scriptDir, file)
+		msg2 := utils.ColorMsg(relfile, utils.MsgFile)
 		if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
 			if !utils.ProcessExecute(file) {
 				utils.ErrExit("init script failed!")
@@ -42,13 +44,14 @@ func editAction(flag *utils.Flag) {
 	autoAnswer := autoAnswer(flag)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
-	files := utils.AllFilesInDir(runDir, scriptDir)
+	files := utils.AllFilesInDir(runDir, "")
 	files = append(files, values(utils.AllFiles)...)
 	files = append(files, utils.ScriptPath)
 	slices.Sort(files)
 	for _, file := range files {
 		if utils.IsRegularFile(file) {
-			msg2 := utils.ColorMsg(file, utils.MsgFile)
+			relfile, _ := filepath.Rel(scriptDir, file)
+			msg2 := utils.ColorMsg(relfile, utils.MsgFile)
 			if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
 				utils.ProcessEdit(file)
 			}
