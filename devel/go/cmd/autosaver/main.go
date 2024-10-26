@@ -8,7 +8,7 @@ import (
 
 func version(args string) {
 	if args == "--version" || args == "--v" || args == "-V" || args == "--V" || args == "version" || args == "v" {
-		fmt.Println("the current version is 3.0.3 (2024-10-27 01:15)")
+		fmt.Println("compiled at Sun Oct 27 01:35:37 AM CEST 2024")
 		os.Exit(0)
 	}
 }
