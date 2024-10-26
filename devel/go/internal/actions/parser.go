@@ -37,6 +37,37 @@ func loadConf(configFile string) []string {
 }
 
 func ParseArgs(args []string) *utils.Flag {
-	var flag *utils.Flag
+	var defAct utils.Action
+	var defOpt utils.Option
+	flag := &utils.Flag{}
+	for _, word := range args {
+		if strings.HasPrefix(word, "-") {
+			for _, letter := range word[1:] {
+				char := string(letter)
+				act := utils.ParseAction[char]
+				opt := utils.ParseOption[char]
+				if act != defAct || opt != defOpt {
+					acts := []utils.Action{}
+					opts := []utils.Option{}
+					if act != defAct {
+						acts = append(acts, act)
+					}
+					if opt != defOpt {
+						opts = append(opts, opt)
+					}
+					flag.AppendFlags(acts, opts)
+				} else {
+					utils.ErrExit("invalid flag: \"%s\"", char)
+				}
+			}
+		} else {
+			shortcut := utils.ParseShortcut[word]
+			if shortcut != nil {
+				flag.AppendAllFlags(shortcut)
+			} else {
+				utils.ErrExit("invalid shortcut value: \"%s\"", word)
+			}
+		}
+	}
 	return flag
 }
