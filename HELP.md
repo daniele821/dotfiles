@@ -44,7 +44,6 @@
     - run           : run all init scripts 
     - co            : "commit"
     - un            : "uncommit"
-    - sc            : "save commit"
         
 - notes:
     - multiple actions can be executed, by separating each with `--`
