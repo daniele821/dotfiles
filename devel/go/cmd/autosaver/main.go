@@ -8,7 +8,7 @@ import (
 
 func version(args string) {
 	if args == "--version" {
-		fmt.Println("the current version is 3.0.0 (2024-10-26 12:00)")
+		fmt.Println("the current version is 3.0.0 (2024-10-26 12:15)")
 		os.Exit(0)
 	}
 }
@@ -16,7 +16,9 @@ func version(args string) {
 func main() {
 	args := os.Args[1:]
 
-	version(args[0])
+	if len(args) >= 1 {
+		version(args[0])
+	}
 
 	params := []string{}
 	for _, arg := range args {
