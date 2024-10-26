@@ -4,32 +4,32 @@ import (
 	"autosaver/internal/configs"
 	"autosaver/internal/utils"
 	"fmt"
+	"path/filepath"
 )
 
 func backupAction(flag *configs.Flag) {}
 
 func untrackedAction(flag *configs.Flag) {
-
-	// def untracked_files(opts):
-	//
-	//	tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
-	//	backup = set(all_files(DIRS["backup"], DIRS["backup"]))
-	//	opt_toggle = FLAGS.TOGGLE in opts
-	//	opt_force = FLAGS.FORCE in opts
-	//	bmsg = "Do you really want to delete backup file ? "
-	//	bmsg = color("msg", bmsg)
-	//	omsg = "[DANGER] Do you really want to delete original file ? "
-	//	omsg = color("msg", omsg)
-	//	for file in sorted(backup - tracked):
-	//	    ofile = os.path.join(HOME, file)
-	//	    bfile = os.path.join(DIRS["backup"], file)
-	//	    print(color("file", ofile))
-	//	    if opt_toggle:
-	//	        if ask_user(bmsg, opts):
-	//	            delete_file(bfile, True)
-	//	        if opt_force and os.path.isfile(ofile):
-	//	            if ask_user(omsg, opts):
-	//	                delete_file(ofile)
+	autoAnswer := autoAnswer(flag)
+	optToggle := flag.HasOptionFlag(configs.OptToggle)
+	optForce := flag.HasOptionFlag(configs.OptForce)
+	trackedFiles := append(loadConf(fileTrack), loadConf(fileNotdiff)...)
+	backupFiles := utils.AllFilesInDir(dirBackup, dirBackup)
+	for _, file := range sub(backupFiles, trackedFiles) {
+		homeFile := filepath.Join(configs.Home, file)
+		backupFile := filepath.Join(dirBackup, file)
+		fmt.Println(utils.ColorMsg(homeFile, utils.MsgFile))
+		if optToggle {
+			if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer) {
+				utils.DeleteFile(backupFile, true)
+			}
+			if optForce && utils.IsRegularFile(homeFile) {
+				if utils.AskUser(utils.ColorMsg("Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
+					utils.DeleteFile(homeFile, true)
+				}
+			}
+		}
+	}
 }
 
 func commitAction(flag *configs.Flag) {
@@ -38,34 +38,34 @@ func commitAction(flag *configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 
 	if !optToggle {
-		utils.ProcessGitPull(scriptDir)
+		utils.ProcessGitPull(dirScript)
 	}
 
-	if utils.ProcessHasGitChanges(scriptDir) {
+	if utils.ProcessHasGitChanges(dirScript) {
 		if optDiff {
-			utils.ProcessGitDiff(scriptDir, optToggle)
+			utils.ProcessGitDiff(dirScript, optToggle)
 		}
-		utils.ProcessGitStatus(scriptDir)
+		utils.ProcessGitStatus(dirScript)
 		if !optToggle {
 			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
 				var input string
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				fmt.Scanln(&input)
 				if input != "" {
-					utils.ProcessGitCommitAll(scriptDir, input)
+					utils.ProcessGitCommitAll(dirScript, input)
 				}
 			}
 		} else {
 			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer) {
-				utils.ProcessGitRestoreAll(scriptDir)
+				utils.ProcessGitRestoreAll(dirScript)
 			}
 		}
 	} else if optToggle {
-		utils.ProcessGitRestoreAll(scriptDir)
+		utils.ProcessGitRestoreAll(dirScript)
 	}
 
 	if !optToggle {
-		utils.ProcessGitPush(scriptDir)
+		utils.ProcessGitPush(dirScript)
 	}
 }
 
