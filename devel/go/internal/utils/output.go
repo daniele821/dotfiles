@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -36,6 +37,14 @@ func ColorMsg(str string, col msgType) string {
 	return res.String()
 }
 
+func ReadInput() string {
+	reader := bufio.NewScanner(os.Stdin)
+	if reader.Scan() {
+		return reader.Text()
+	}
+	return ""
+}
+
 func AskUser(msg string, autoAnswer Answer) bool {
 	fmt.Print(msg)
 	switch autoAnswer {
@@ -46,8 +55,7 @@ func AskUser(msg string, autoAnswer Answer) bool {
 		fmt.Println("n")
 		return false
 	case AnsNone:
-		var input string
-		fmt.Scanln(&input)
+		input := ReadInput()
 		{
 			switch input {
 			case "y", "n", "":

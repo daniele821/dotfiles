@@ -125,9 +125,8 @@ func commitAction(flag *configs.Flag) {
 		utils.ProcessGitStatus(dirScript)
 		if !optToggle {
 			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
-				var input string
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
-				fmt.Scanln(&input)
+				input := utils.ReadInput()
 				if input != "" {
 					utils.ProcessGitCommitAll(dirScript, input)
 				}
