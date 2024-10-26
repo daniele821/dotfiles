@@ -24,7 +24,7 @@ func untrackedAction(flag *configs.Flag) {
 				utils.DeleteFile(backupFile, true)
 			}
 			if optForce && utils.IsRegularFile(homeFile) {
-				if utils.AskUser(utils.ColorMsg("Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
 					utils.DeleteFile(homeFile, true)
 				}
 			}
