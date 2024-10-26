@@ -1,0 +1,74 @@
+## VERSIONS (with important changes)
+- 1.0:
+    - 1.0.0:
+        - [x] working python rewrite of autosaver script
+- 1.1:
+    - 1.1.0:
+        - [x] add -u action to list untracked files
+        - [x] do not get all files from backup folder (necessary for prev. item)
+        - [x] allow -t to flag with -u action to remove untracked files
+- 1.2:
+    - 1.2.0:
+        - [x] add -t flag to allow using a secondary config file 
+        - [x] add a config file to ignore files and a secondary config file
+    - 1.2.3:
+        - [x] implement a checker of the flags passed
+        - [x] add an env var (__CHK) to disable checker (created for prev. item)
+- 1.3:
+    - 1.3.0: 
+        - [x] make -c an action (-t to backup, instead of saving)
+        - [x] -f to delete original file with -u action, and -t flag to delete backup
+        - [x] -t -> toggles secondary mode 
+        - [x] add shortcut: commit, uncommit, save2, restore2
+    - 1.3.2:
+        - [x] add shortcut: status all | sa
+        - [x] add message which specify which files script is working on
+    - 1.3.3:
+        - [x] create shortcuts: status, status2, statusu (make status all use those)
+        - [x] create shortcuts: diff, diff2, diff all | da
+        - [x] create shortcuts: save all | sa (status... shortcuts -> list...)
+        - [x] create shortcuts: restore all | ra 
+    - 1.3.4:
+        - [x] add shortcut: untracked (remove listu)
+- 1.4:
+    - 1.4.0:
+        - [x] add check to disable passing useless word args to script
+        - [x] remove conf file to skip files (track2 have priority over track1)
+    - 1.4.2:
+        - [x] [OPTIMIZATION] multiple action shortcuts execute in the same process
+- 2.0:
+    - 2.0.0:
+        - [x] [OPTIMIZATION] remove secondary file track list
+        - [x] restructure script in modules, to be easier to mantain
+        - [x] check files are always in correct order 
+        - [x] add a global variable to store autoanswer
+        - [x] fix help message to better explain what flags do with each action
+        - [x] replace help msg with a HELP.md text file
+- 2.1:
+    - 2.1.0:
+        - [x] disable python stderr output
+        - [x] '--' splits args to allow multiple consecutive actions
+    - 2.1.2:
+        - [x] [OPTIMIZATION] move all library modules inside autosaver itself
+    - 2.1.4:
+        - [x] added shortcuts: restoreall saveall
+    - 2.1.5:
+        - [x] added shortcuts: ru
+- 2.2:
+    - 2.2.0:
+        - [x] added place for additional scripts (git repos,..)
+    - 2.2.1:
+        - [x] added basic script to initialize script
+    - 2.2.4:
+        - [x] renamed shortcut "ru" to "un" (and changed what it does)
+    - 2.2.5:
+        - [x] renamed shortcut "co"
+- 3.0:
+    - 3.0.0:
+        - [x] go rewrite
+
+## TODO AND COMPLETED LIST
+
+- COMPLETED [move to versions, once version tag is created!]:
+
+- TODO:
