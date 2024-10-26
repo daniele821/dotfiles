@@ -13,7 +13,7 @@ func Execute(flags *utils.Flag) {
 	case utils.ActEdit:
 		editAction(flags)
 	case utils.ActInit:
-		initAction(flags)
+		initAction()
 	case utils.ActRun:
 		runAction(flags)
 	}
