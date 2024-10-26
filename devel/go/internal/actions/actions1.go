@@ -24,7 +24,7 @@ func commitAction(flag *utils.Flag) {
 		}
 		utils.ProcessGitStatus()
 		if !optToggle {
-			if utils.AskUser(utils.ColorMsg("Do you really want to commit all?", utils.MsgInfo), autoAnswer) {
+			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
 				var input string
 				fmt.Print("Write commit message: ")
 				fmt.Scanln(&input)
@@ -33,7 +33,7 @@ func commitAction(flag *utils.Flag) {
 				}
 			}
 		} else {
-			if utils.AskUser(utils.ColorMsg("Do you really want to restore all?", utils.MsgInfo), autoAnswer) {
+			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer) {
 				utils.ProcessGitRestoreAll()
 			}
 		}
