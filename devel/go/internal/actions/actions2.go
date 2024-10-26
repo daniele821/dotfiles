@@ -48,7 +48,6 @@ func editAction(flag *utils.Flag) {
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
 	files := utils.AllFilesInDir(runDir, "")
 	files = append(files, values(utils.AllFiles)...)
-	files = append(files, utils.ScriptPath)
 	slices.Sort(files)
 	for _, file := range files {
 		if utils.IsRegularFile(file) {
