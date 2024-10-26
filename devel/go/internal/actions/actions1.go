@@ -8,7 +8,29 @@ import (
 
 func backupAction(flag *configs.Flag) {}
 
-func untrackedAction(flag *configs.Flag) {}
+func untrackedAction(flag *configs.Flag) {
+
+	// def untracked_files(opts):
+	//
+	//	tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
+	//	backup = set(all_files(DIRS["backup"], DIRS["backup"]))
+	//	opt_toggle = FLAGS.TOGGLE in opts
+	//	opt_force = FLAGS.FORCE in opts
+	//	bmsg = "Do you really want to delete backup file ? "
+	//	bmsg = color("msg", bmsg)
+	//	omsg = "[DANGER] Do you really want to delete original file ? "
+	//	omsg = color("msg", omsg)
+	//	for file in sorted(backup - tracked):
+	//	    ofile = os.path.join(HOME, file)
+	//	    bfile = os.path.join(DIRS["backup"], file)
+	//	    print(color("file", ofile))
+	//	    if opt_toggle:
+	//	        if ask_user(bmsg, opts):
+	//	            delete_file(bfile, True)
+	//	        if opt_force and os.path.isfile(ofile):
+	//	            if ask_user(omsg, opts):
+	//	                delete_file(ofile)
+}
 
 func commitAction(flag *configs.Flag) {
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
@@ -106,23 +128,3 @@ func commitAction(flag *configs.Flag) {
 //                             if ask_user(qmsg("update", "original"), opts):
 //                                 copy_file(bfile, ofile)
 //
-//
-// def untracked_files(opts):
-//     tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
-//     backup = set(all_files(DIRS["backup"], DIRS["backup"]))
-//     opt_toggle = FLAGS.TOGGLE in opts
-//     opt_force = FLAGS.FORCE in opts
-//     bmsg = "Do you really want to delete backup file ? "
-//     bmsg = color("msg", bmsg)
-//     omsg = "[DANGER] Do you really want to delete original file ? "
-//     omsg = color("msg", omsg)
-//     for file in sorted(backup - tracked):
-//         ofile = os.path.join(HOME, file)
-//         bfile = os.path.join(DIRS["backup"], file)
-//         print(color("file", ofile))
-//         if opt_toggle:
-//             if ask_user(bmsg, opts):
-//                 delete_file(bfile, True)
-//             if opt_force and os.path.isfile(ofile):
-//                 if ask_user(omsg, opts):
-//                     delete_file(ofile)
