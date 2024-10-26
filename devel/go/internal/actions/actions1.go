@@ -1,48 +1,49 @@
 package actions
 
 import (
+	"autosaver/internal/configs"
 	"autosaver/internal/utils"
 	"fmt"
 )
 
-func backupAction(flag *utils.Flag) {}
+func backupAction(flag *configs.Flag) {}
 
-func untrackedAction(flag *utils.Flag) {}
+func untrackedAction(flag *configs.Flag) {}
 
-func commitAction(flag *utils.Flag) {
-	optToggle := flag.HasOptionFlag(utils.OptToggle)
-	optDiff := flag.HasOptionFlag(utils.OptDiff)
+func commitAction(flag *configs.Flag) {
+	optToggle := flag.HasOptionFlag(configs.OptToggle)
+	optDiff := flag.HasOptionFlag(configs.OptDiff)
 	autoAnswer := autoAnswer(flag)
 
 	if !optToggle {
-		utils.ProcessGitPull()
+		utils.ProcessGitPull(scriptDir)
 	}
 
-	if utils.ProcessHasGitChanges() {
+	if utils.ProcessHasGitChanges(scriptDir) {
 		if optDiff {
-			utils.ProcessGitDiff(optToggle)
+			utils.ProcessGitDiff(scriptDir, optToggle)
 		}
-		utils.ProcessGitStatus()
+		utils.ProcessGitStatus(scriptDir)
 		if !optToggle {
 			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
 				var input string
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				fmt.Scanln(&input)
 				if input != "" {
-					utils.ProcessGitCommitAll("")
+					utils.ProcessGitCommitAll(scriptDir, input)
 				}
 			}
 		} else {
 			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer) {
-				utils.ProcessGitRestoreAll()
+				utils.ProcessGitRestoreAll(scriptDir)
 			}
 		}
 	} else if optToggle {
-		utils.ProcessGitRestoreAll()
+		utils.ProcessGitRestoreAll(scriptDir)
 	}
 
 	if !optToggle {
-		utils.ProcessGitPush()
+		utils.ProcessGitPush(scriptDir)
 	}
 }
 

@@ -1,37 +1,38 @@
 package actions
 
 import (
+	"autosaver/internal/configs"
 	"autosaver/internal/utils"
 )
 
-var scriptDir string = utils.ScriptDir
-var backupDir string = utils.AllDirs[utils.DirBackup]
-var runDir string = utils.AllDirs[utils.DirRun]
-var configDir string = utils.AllDirs[utils.DirConfig]
+var scriptDir string = configs.ScriptDir
+var backupDir string = configs.AllDirs[configs.DirBackup]
+var runDir string = configs.AllDirs[configs.DirRun]
+var configDir string = configs.AllDirs[configs.DirConfig]
 
-func Execute(flags *utils.Flag) {
+func Execute(flags *configs.Flag) {
 	switch flags.GetActionFlag() {
-	case utils.ActList, utils.ActSave, utils.ActBackup:
+	case configs.ActList, configs.ActSave, configs.ActBackup:
 		backupAction(flags)
-	case utils.ActUntracked:
+	case configs.ActUntracked:
 		untrackedAction(flags)
-	case utils.ActCommit:
+	case configs.ActCommit:
 		commitAction(flags)
-	case utils.ActEdit:
+	case configs.ActEdit:
 		editAction(flags)
-	case utils.ActInit:
+	case configs.ActInit:
 		initAction()
-	case utils.ActRun:
+	case configs.ActRun:
 		runAction(flags)
 	}
 }
 
-func autoAnswer(f *utils.Flag) utils.Answer {
+func autoAnswer(f *configs.Flag) utils.Answer {
 	autoAnswer := utils.AnsNone
-	if f.HasOptionFlag(utils.OptYes) {
+	if f.HasOptionFlag(configs.OptYes) {
 		autoAnswer = utils.AnsYes
 	}
-	if f.HasOptionFlag(utils.OptNo) {
+	if f.HasOptionFlag(configs.OptNo) {
 		autoAnswer = utils.AnsNo
 	}
 	return autoAnswer

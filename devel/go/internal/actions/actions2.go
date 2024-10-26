@@ -1,23 +1,24 @@
 package actions
 
 import (
+	"autosaver/internal/configs"
 	"autosaver/internal/utils"
 	"path/filepath"
 	"slices"
 )
 
 func initAction() {
-	for _, dir := range utils.AllDirs {
+	for _, dir := range configs.AllDirs {
 		utils.CreateDir(dir)
 	}
-	for _, file := range utils.AllFiles {
+	for _, file := range configs.AllFiles {
 		if !utils.IsRegularFile(file) {
 			utils.CreateFile(file)
 		}
 	}
 }
 
-func runAction(flag *utils.Flag) {
+func runAction(flag *configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	files := utils.AllFilesInDir(runDir, "")
 	slices.Sort(files)
@@ -42,12 +43,12 @@ func values[M ~map[K]V, K comparable, V any](m M) []V {
 	return r
 }
 
-func editAction(flag *utils.Flag) {
+func editAction(flag *configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
 	files := utils.AllFilesInDir(runDir, "")
-	files = append(files, values(utils.AllFiles)...)
+	files = append(files, values(configs.AllFiles)...)
 	slices.Sort(files)
 	for _, file := range files {
 		if utils.IsRegularFile(file) {

@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"autosaver/internal/configs"
 	"autosaver/internal/utils"
 	"bufio"
 	"os"
@@ -10,8 +11,8 @@ import (
 )
 
 func loadConf(configFile string) []string {
-	home := utils.Home
-	backup := utils.AllDirs[utils.DirBackup]
+	home := configs.Home
+	backup := configs.AllDirs[configs.DirBackup]
 	fileList := []string{}
 	if utils.IsRegularFile(configFile) {
 
@@ -36,19 +37,19 @@ func loadConf(configFile string) []string {
 	return slices.Compact(fileList)
 }
 
-func ParseArgs(args []string) *utils.Flag {
-	var defAct utils.Action
-	var defOpt utils.Option
-	flag := &utils.Flag{}
+func ParseArgs(args []string) *configs.Flag {
+	var defAct configs.Action
+	var defOpt configs.Option
+	flag := &configs.Flag{}
 	for _, word := range args {
 		if strings.HasPrefix(word, "-") {
 			for _, letter := range word[1:] {
 				char := string(letter)
-				act := utils.ParseAction[char]
-				opt := utils.ParseOption[char]
+				act := configs.ParseAction[char]
+				opt := configs.ParseOption[char]
 				if act != defAct || opt != defOpt {
-					acts := []utils.Action{}
-					opts := []utils.Option{}
+					acts := []configs.Action{}
+					opts := []configs.Option{}
 					if act != defAct {
 						acts = append(acts, act)
 					}
@@ -61,7 +62,7 @@ func ParseArgs(args []string) *utils.Flag {
 				}
 			}
 		} else {
-			shortcut := utils.ParseShortcut[word]
+			shortcut := configs.ParseShortcut[word]
 			if shortcut != nil {
 				flag.AppendAllFlags(shortcut)
 			} else {

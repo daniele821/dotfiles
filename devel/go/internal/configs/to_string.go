@@ -1,4 +1,4 @@
-package utils
+package configs
 
 import (
 	"fmt"
@@ -59,32 +59,6 @@ func (flag *Flag) String() string {
 	actsStr := strings.TrimSpace(acts.String())
 	optsStr := strings.TrimSpace(opts.String())
 	return fmt.Sprintf("Flag -> Actions: [%s], Options: [%s]", actsStr, optsStr)
-}
-
-func (msgType msgType) String() string {
-	switch msgType {
-	case MsgNone:
-		return "MsgNone"
-	case MsgErr:
-		return "MsgErr"
-	case MsgFile:
-		return "MsgFile"
-	case MsgInfo:
-		return "MsgInfo"
-	}
-	return fmt.Sprintf("msgType(%d)", msgType)
-}
-
-func (answer Answer) String() string {
-	switch answer {
-	case AnsNone:
-		return "AnsNone"
-	case AnsYes:
-		return "AnsYes"
-	case AnsNo:
-		return "AnsNo"
-	}
-	return fmt.Sprintf("answer(%d)", answer)
 }
 
 func (typeDir typeDir) String() string {

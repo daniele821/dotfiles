@@ -1,6 +1,7 @@
-package utils
+package configs
 
 import (
+	"autosaver/internal/utils"
 	"slices"
 )
 
@@ -28,7 +29,7 @@ func (f *Flag) HasOptionFlag(option Option) bool {
 
 func (f *Flag) GetActionFlag() Action {
 	if len(f.actionFlags) >= 2 {
-		ErrExit("multiple actions are not supported")
+		utils.ErrExit("multiple actions are not supported")
 	}
 	if len(f.actionFlags) == 1 {
 		return f.actionFlags[0]

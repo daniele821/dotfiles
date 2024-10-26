@@ -1,6 +1,7 @@
-package utils
+package configs
 
 import (
+	"autosaver/internal/utils"
 	"os"
 	"path/filepath"
 )
@@ -92,7 +93,7 @@ var (
 func home() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		ErrExit("could not get user home directory")
+		utils.ErrExit("could not get user home directory")
 	}
 	return home
 }
@@ -100,11 +101,11 @@ func home() string {
 func scriptPath() string {
 	path, err := os.Executable()
 	if err != nil {
-		ErrExit("could not get path of current executable")
+		utils.ErrExit("could not get path of current executable")
 	}
 	path, err = filepath.EvalSymlinks(path)
 	if err != nil {
-		ErrExit("could not solve symlink path of current executable")
+		utils.ErrExit("could not solve symlink path of current executable")
 	}
 	return path
 }

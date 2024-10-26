@@ -46,40 +46,40 @@ func ProcessExecute(file string) bool {
 	return run(file)
 }
 
-func ProcessGitPull() {
-	run("git", "-C", ScriptDir, "pull")
+func ProcessGitPull(scriptDir string) {
+	run("git", "-C", scriptDir, "pull")
 }
 
-func ProcessGitPush() {
-	run("git", "-C", ScriptDir, "push")
+func ProcessGitPush(scriptDir string) {
+	run("git", "-C", scriptDir, "push")
 }
 
-func ProcessGitStatus() {
-	run("git", "-C", ScriptDir, "status", "-su")
+func ProcessGitStatus(scriptDir string) {
+	run("git", "-C", scriptDir, "status", "-su")
 }
 
-func ProcessGitDiff(reverse bool) {
+func ProcessGitDiff(scriptDir string, reverse bool) {
 	if reverse {
-		run("git", "-C", ScriptDir, "diff", "HEAD", "--diff-filter=adcr")
+		run("git", "-C", scriptDir, "diff", "HEAD", "--diff-filter=adcr")
 	} else {
-		run("git", "-C", ScriptDir, "diff", "HEAD", "--diff-filter=adcr", "-R")
+		run("git", "-C", scriptDir, "diff", "HEAD", "--diff-filter=adcr", "-R")
 	}
 }
 
-func ProcessGitRestoreAll() {
-	run("git", "-C", ScriptDir, "reset", "HEAD")
-	run("git", "-C", ScriptDir, "restore", "--staged", ScriptDir)
-	run("git", "-C", ScriptDir, "restore", ScriptDir)
-	run("git", "-C", ScriptDir, "clean", "-fdq")
+func ProcessGitRestoreAll(scriptDir string) {
+	run("git", "-C", scriptDir, "reset", "HEAD")
+	run("git", "-C", scriptDir, "restore", "--staged", scriptDir)
+	run("git", "-C", scriptDir, "restore", scriptDir)
+	run("git", "-C", scriptDir, "clean", "-fdq")
 }
 
-func ProcessGitCommitAll(commitMsg string) {
-	run("git", "-C", ScriptDir, "add", ScriptDir)
-	run("git", "-C", ScriptDir, "commit", "-m", commitMsg)
+func ProcessGitCommitAll(scriptDir string, commitMsg string) {
+	run("git", "-C", scriptDir, "add", scriptDir)
+	run("git", "-C", scriptDir, "commit", "-m", commitMsg)
 }
 
-func ProcessHasGitChanges() bool {
-	cmd := exec.Command("git", "-C", ScriptDir, "status", "-s")
+func ProcessHasGitChanges(scriptDir string) bool {
+	cmd := exec.Command("git", "-C", scriptDir, "status", "-s")
 	output, _ := cmd.Output()
 	return strings.TrimSpace(string(output)) != ""
 }
