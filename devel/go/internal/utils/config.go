@@ -11,8 +11,7 @@ type typeDir int
 type typeFile int
 
 const (
-	ActNone Action = iota
-	ActList
+	ActList Action = iota + 1
 	ActUntracked
 	ActSave
 	ActBackup
@@ -20,7 +19,7 @@ const (
 	ActEdit
 	ActInit
 	ActRun
-	ActDefault
+	ActDefault = ActList
 )
 const (
 	OptDiff Option = iota + 1

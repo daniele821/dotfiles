@@ -37,5 +37,6 @@ func loadConf(configFile string) []string {
 }
 
 func ParseArgs(args []string) *utils.Flag {
-	return nil
+	var flag *utils.Flag
+	return flag
 }

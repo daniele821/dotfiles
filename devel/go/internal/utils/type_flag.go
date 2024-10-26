@@ -36,7 +36,7 @@ func (f *Flag) GetActionFlag() Action {
 	if len(f.actionFlags) == 1 {
 		return f.actionFlags[0]
 	}
-	return ActNone
+	return ActDefault
 }
 
 func (f *Flag) String() string {
