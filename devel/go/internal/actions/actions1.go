@@ -1,12 +1,50 @@
 package actions
 
-import "autosaver/internal/utils"
+import (
+	"autosaver/internal/utils"
+	"fmt"
+)
 
 func backupAction(flag *utils.Flag) {}
 
 func untrackedAction(flag *utils.Flag) {}
 
-func commitAction(flag *utils.Flag) {}
+func commitAction(flag *utils.Flag) {
+	optToggle := flag.HasOptionFlag(utils.OptToggle)
+	optDiff := flag.HasOptionFlag(utils.OptDiff)
+	autoAnswer := autoAnswer(flag)
+
+	if !optToggle {
+		utils.ProcessGitPull()
+	}
+
+	if utils.ProcessHasGitChanges() {
+		if optDiff {
+			utils.ProcessGitDiff(optToggle)
+		}
+		utils.ProcessGitStatus()
+		if !optToggle {
+			if utils.AskUser(utils.ColorMsg("Do you really want to commit all?", utils.MsgInfo), autoAnswer) {
+				var input string
+				fmt.Print("Write commit message: ")
+				fmt.Scanln(&input)
+				if input != "" {
+					utils.ProcessGitCommitAll("")
+				}
+			}
+		} else {
+			if utils.AskUser(utils.ColorMsg("Do you really want to restore all?", utils.MsgInfo), autoAnswer) {
+				utils.ProcessGitRestoreAll()
+			}
+		}
+	} else if optToggle {
+		utils.ProcessGitRestoreAll()
+	}
+
+	if !optToggle {
+		utils.ProcessGitPush()
+	}
+}
 
 // def backup_files(act, opts):
 //     odir = HOME
@@ -87,30 +125,3 @@ func commitAction(flag *utils.Flag) {}
 //             if opt_force and os.path.isfile(ofile):
 //                 if ask_user(omsg, opts):
 //                     delete_file(ofile)
-//
-//
-// def commit_files(opts):
-//     opt_toggle = FLAGS.TOGGLE in opts
-//     opt_diff = FLAGS.DIFF in opts
-//     msg_commit = color("msg", "Do you really want to commit all? ")
-//     msg_restore = color("msg", "Do you really want to restore all? ")
-//     if not opt_toggle:
-//         git_pull(SCRIPT_DIR)
-//     if has_git_changed(SCRIPT_DIR):
-//         if opt_diff:
-//             git_diff(SCRIPT_DIR, reverse=opt_toggle)
-//         git_status(SCRIPT_DIR)
-//         if opt_toggle:
-//             if ask_user(msg_restore, opts):
-//                 git_restore_all(SCRIPT_DIR)
-//         else:
-//             if ask_user(msg_commit, opts):
-//                 if commit_msg := input(color("msg", "Write commit message: ")):
-//                     git_commit_all(SCRIPT_DIR, commit_msg)
-//     else:
-//         if opt_toggle:
-//             git_restore_all(SCRIPT_DIR)
-//     if not opt_toggle:
-//         git_push(SCRIPT_DIR)
-//
-//
