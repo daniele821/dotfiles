@@ -63,7 +63,7 @@ func backupAction(flag *configs.Flag) {
 				}
 			}
 		case isHomeFile && isBackupFile && (optToggle || !slices.Contains(notdiffFiles, file)):
-			if utils.ProcessFilesDiffer(homeFile, backupFile) {
+			if utils.FilesDiffer(homeFile, backupFile) {
 				fileInfo(homeFile, "backup file is missing")
 				if optDiff {
 					if actBackup {
