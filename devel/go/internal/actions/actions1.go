@@ -26,9 +26,10 @@ func backupAction(flag *configs.Flag) {
 	fileInfo := func(file, descr string) {
 		msgFile := utils.ColorMsg(file, utils.MsgFile)
 		if optVerbose {
-			fmt.Printf("%s : %s", msgFile, descr)
+			fmt.Printf("%s : %s\n", msgFile, descr)
+		} else {
+			fmt.Println(msgFile)
 		}
-		fmt.Println(msgFile)
 	}
 
 	for _, file := range allFiles {
@@ -76,7 +77,7 @@ func backupAction(flag *configs.Flag) {
 						utils.CopyFile(homeFile, backupFile)
 					}
 				}
-				if actBackup && optForce {
+				if actBackup {
 					if utils.AskUser(utils.ColorMsg("Do you really want to update original file ? ", utils.MsgInfo), autoAnswer) {
 						utils.CopyFile(backupFile, homeFile)
 					}
