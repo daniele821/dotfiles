@@ -7,7 +7,7 @@ import (
 )
 
 type msgType int
-type answer int
+type Answer int
 
 const (
 	MsgNone msgType = iota
@@ -16,7 +16,7 @@ const (
 	MsgInfo
 )
 const (
-	AnsNone answer = iota
+	AnsNone Answer = iota
 	AnsYes
 	AnsNo
 )
@@ -36,7 +36,7 @@ func ColorMsg(str string, col msgType) string {
 	return res.String()
 }
 
-func AskUser(msg string, autoAnswer answer) bool {
+func AskUser(msg string, autoAnswer Answer) bool {
 	fmt.Print(msg)
 	switch autoAnswer {
 	case AnsYes, AnsNo:

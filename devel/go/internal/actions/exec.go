@@ -1,6 +1,8 @@
 package actions
 
-import "autosaver/internal/utils"
+import (
+	"autosaver/internal/utils"
+)
 
 func Execute(flags *utils.Flag) {
 	switch flags.GetActionFlag() {
@@ -17,4 +19,15 @@ func Execute(flags *utils.Flag) {
 	case utils.ActRun:
 		runAction(flags)
 	}
+}
+
+func autoAnswer(f *utils.Flag) utils.Answer {
+	autoAnswer := utils.AnsNone
+	if f.HasOptionFlag(utils.OptYes) {
+		autoAnswer = utils.AnsYes
+	}
+	if f.HasOptionFlag(utils.OptNo) {
+		autoAnswer = utils.AnsNo
+	}
+	return autoAnswer
 }

@@ -15,33 +15,43 @@ func initAction() {
 }
 
 func runAction(flag *utils.Flag) {
+	autoAnswer := autoAnswer(flag)
 	files := utils.AllFilesInDir(utils.AllDirs[utils.DirRun], "")
 	slices.Sort(files)
+	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
+	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
+	for _, file := range files {
+		msg2 := utils.ColorMsg(file, utils.MsgFile)
+		if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
+			if !utils.ProcessExecute(file) {
+				utils.ErrExit("init script failed!")
+			}
+		}
+	}
 }
 
-func editAction(flag *utils.Flag) {}
+func values[M ~map[K]V, K comparable, V any](m M) []V {
+	r := make([]V, 0, len(m))
+	for _, v := range m {
+		r = append(r, v)
+	}
+	return r
+}
 
-// def run_files(opts):
-//     msg1 = color("msg", "Do you really want to execute ")
-//     msg3 = color("msg", " ? ")
-//     for file in sorted(all_files(DIRS["run"])):
-//         msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-//         if ask_user(msg1+msg2+msg3, opts):
-//             if not os.access(file, os.X_OK):
-//                 error("file is not executable!")
-//             if not run_and_get_status(file):
-//                 error("init script failed!")
-//
-//
-// def edit_files(opts):
-//     msg1 = color("msg", "Do you really want to edit ")
-//     msg3 = color("msg", " ? ")
-//     files = [SCRIPT_PATH] + list(FILES.values()) + \
-//         sorted(all_files(DIRS["run"]))
-//     for file in files:
-//         if os.path.isfile(file):
-//             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
-//             if ask_user(msg1+msg2+msg3, opts):
-//                 edit(file)
-//
-//
+func editAction(flag *utils.Flag) {
+	autoAnswer := autoAnswer(flag)
+	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
+	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
+	files := utils.AllFilesInDir(utils.AllDirs[utils.DirRun], "")
+	files = append(files, values(utils.AllFiles)...)
+	files = append(files, utils.ScriptPath)
+	slices.Sort(files)
+	for _, file := range files {
+		if utils.IsRegularFile(file) {
+			msg2 := utils.ColorMsg(file, utils.MsgFile)
+			if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
+				utils.ProcessEdit(file)
+			}
+		}
+	}
+}

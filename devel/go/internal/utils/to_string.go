@@ -75,7 +75,7 @@ func (msgType msgType) String() string {
 	return fmt.Sprintf("msgType(%d)", msgType)
 }
 
-func (answer answer) String() string {
+func (answer Answer) String() string {
 	switch answer {
 	case AnsNone:
 		return "AnsNone"
