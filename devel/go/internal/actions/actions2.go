@@ -16,7 +16,7 @@ func initAction() {
 
 func runAction(flag *utils.Flag) {
 	autoAnswer := autoAnswer(flag)
-	files := utils.AllFilesInDir(utils.AllDirs[utils.DirRun], "")
+	files := utils.AllFilesInDir(runDir, scriptDir)
 	slices.Sort(files)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
@@ -42,7 +42,7 @@ func editAction(flag *utils.Flag) {
 	autoAnswer := autoAnswer(flag)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
-	files := utils.AllFilesInDir(utils.AllDirs[utils.DirRun], "")
+	files := utils.AllFilesInDir(runDir, scriptDir)
 	files = append(files, values(utils.AllFiles)...)
 	files = append(files, utils.ScriptPath)
 	slices.Sort(files)

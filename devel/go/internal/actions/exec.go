@@ -4,6 +4,11 @@ import (
 	"autosaver/internal/utils"
 )
 
+var scriptDir string = utils.ScriptDir
+var backupDir string = utils.AllDirs[utils.DirBackup]
+var runDir string = utils.AllDirs[utils.DirRun]
+var configDir string = utils.AllDirs[utils.DirConfig]
+
 func Execute(flags *utils.Flag) {
 	switch flags.GetActionFlag() {
 	case utils.ActList, utils.ActSave, utils.ActBackup:
