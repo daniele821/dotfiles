@@ -95,7 +95,8 @@ func AllFilesInDir(dir, relPath string) []string {
 	return files
 }
 
-func filesDiffer(file1, file2 string, chunkSize int) bool {
+func FilesDiffer(file1, file2 string) bool {
+	const chunkSize int = 64000
 	// shortcuts: check file metadata
 	stat1, err := os.Stat(file1)
 	if err != nil {
@@ -148,8 +149,4 @@ func filesDiffer(file1, file2 string, chunkSize int) bool {
 			return true
 		}
 	}
-}
-
-func FilesDiffer(file1, file2 string) bool {
-	return filesDiffer(file1, file2, 64000)
 }
