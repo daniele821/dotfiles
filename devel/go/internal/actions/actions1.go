@@ -26,7 +26,7 @@ func commitAction(flag *utils.Flag) {
 		if !optToggle {
 			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
 				var input string
-				fmt.Print("Write commit message: ")
+				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				fmt.Scanln(&input)
 				if input != "" {
 					utils.ProcessGitCommitAll("")
