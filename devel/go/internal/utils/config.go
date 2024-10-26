@@ -1,14 +1,12 @@
 package utils
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 )
 
 type Action int
 type Option int
-type Shortcut int
 type typeDir int
 type typeFile int
 
@@ -31,18 +29,6 @@ const (
 	OptYes
 	OptToggle
 	OptVerbose
-)
-const (
-	ShortcutSave Shortcut = iota + 1
-	ShortcutSaveAll
-	ShortcutRestore
-	ShortcutRestoreAll
-	ShortcutCommit
-	ShortcutUncommit
-	ShortcutUntracked
-	ShortcutInit
-	ShortcutRun
-	ShortcutEdit
 )
 const (
 	DirBackup typeDir = iota + 1
@@ -72,6 +58,37 @@ var (
 		FileNotDiff: filepath.Join(AllDirs[DirConfig], "files_to_notdiff.txt"),
 	}
 )
+var (
+	ParseShortcut = map[string]*Flag{
+		"save":       NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose}),
+		"saveall":    NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle}),
+		"restore":    NewFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose}),
+		"restoreall": NewFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle}),
+		"commit":     NewFlags([]Action{ActCommit}, []Option{OptYes}),
+		"uncommit":   NewFlags([]Action{ActCommit}, []Option{OptYes, OptToggle}),
+		"untracked":  NewFlags([]Action{ActUntracked}, []Option{}),
+		"init":       NewFlags([]Action{ActInit}, []Option{OptYes}),
+		"run":        NewFlags([]Action{ActRun}, []Option{OptYes}),
+		"edit":       NewFlags([]Action{ActEdit}, []Option{}),
+	}
+	ParseAction = map[string]Action{
+		"b": ActBackup,
+		"c": ActCommit,
+		"e": ActEdit,
+		"i": ActInit,
+		"r": ActRun,
+		"s": ActSave,
+		"u": ActUntracked,
+	}
+	ParseOption = map[string]Option{
+		"d": OptDiff,
+		"f": OptForce,
+		"n": OptNo,
+		"t": OptToggle,
+		"v": OptVerbose,
+		"y": OptYes,
+	}
+)
 
 func home() string {
 	home, err := os.UserHomeDir()
@@ -91,95 +108,4 @@ func scriptPath() string {
 		ErrExit("could not solve symlink path of current executable")
 	}
 	return path
-}
-
-func ShortcutToFlag(shortcut Shortcut) *Flag {
-	var flag *Flag
-	switch shortcut {
-	case ShortcutSave:
-		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose})
-	case ShortcutSaveAll:
-		flag.AppendFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle})
-	case ShortcutRestore:
-		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose})
-	case ShortcutRestoreAll:
-		flag.AppendFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle})
-	case ShortcutCommit:
-		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes})
-	case ShortcutUncommit:
-		flag.AppendFlags([]Action{ActCommit}, []Option{OptYes, OptToggle})
-	case ShortcutUntracked:
-		flag.AppendFlags([]Action{ActUntracked}, []Option{})
-	case ShortcutInit:
-		flag.AppendFlags([]Action{ActInit}, []Option{OptYes})
-	case ShortcutRun:
-		flag.AppendFlags([]Action{ActRun}, []Option{OptYes})
-	case ShortcutEdit:
-		flag.AppendFlags([]Action{ActEdit}, []Option{})
-	}
-	return flag
-}
-
-func ParseShortcut(shortcut string) (Shortcut, error) {
-	switch shortcut {
-	case "save":
-		return ShortcutSave, nil
-	case "saveall":
-		return ShortcutSaveAll, nil
-	case "restore":
-		return ShortcutRestore, nil
-	case "restoreall":
-		return ShortcutRestoreAll, nil
-	case "commit", "co":
-		return ShortcutCommit, nil
-	case "uncommit", "un":
-		return ShortcutUncommit, nil
-	case "untracked":
-		return ShortcutUntracked, nil
-	case "init":
-		return ShortcutInit, nil
-	case "run":
-		return ShortcutRun, nil
-	case "edit":
-		return ShortcutEdit, nil
-	}
-	return Shortcut(0), errors.New("not a valid shortcut")
-}
-
-func ParseAction(flag string) (Action, error) {
-	switch flag {
-	case "b":
-		return ActBackup, nil
-	case "c":
-		return ActCommit, nil
-	case "e":
-		return ActEdit, nil
-	case "i":
-		return ActInit, nil
-	case "r":
-		return ActRun, nil
-	case "s":
-		return ActSave, nil
-	case "u":
-		return ActUntracked, nil
-	}
-	return Action(0), errors.New("not a valid action flag")
-}
-
-func ParseOption(flag string) (Option, error) {
-	switch flag {
-	case "d":
-		return OptDiff, nil
-	case "f":
-		return OptForce, nil
-	case "n":
-		return OptNo, nil
-	case "t":
-		return OptToggle, nil
-	case "v":
-		return OptVerbose, nil
-	case "y":
-		return OptYes, nil
-	}
-	return Option(0), errors.New("not a valid option flag")
 }
