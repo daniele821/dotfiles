@@ -10,8 +10,9 @@ cd "${SCRIPT_DIR}" || exit 1
 
 changes="$(git -C "${SCRIPT_DIR}/../.." status -su | wc -l)"
 if [[ "${changes}" == "0" ]]; then
-    echo 'no changes were made'
-    exit 0
+    echo -n 'no changes were made, Do you really want to continue anyway? '
+    read -r answer
+    [[ "${answer,,}" != "y" ]] && exit 0
 fi
 
 if [[ "$1" == "-y" ]]; then
