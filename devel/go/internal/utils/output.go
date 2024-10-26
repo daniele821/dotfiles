@@ -60,7 +60,7 @@ func AskUser(msg string, autoAnswer answer) bool {
 }
 
 func ErrExit(msg string, a ...any) {
-	msg = fmt.Sprintf(msg, a)
+	msg = fmt.Sprintf(msg, a...)
 	os.Stderr.WriteString(ColorMsg("ERROR: ", MsgErr))
 	os.Stderr.WriteString(ColorMsg(msg, MsgErr))
 	os.Stderr.WriteString("\n")
