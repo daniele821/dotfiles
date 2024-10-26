@@ -63,10 +63,12 @@
         - [x] renamed shortcut "ru" to "un" (and changed what it does)
     - 2.2.5:
         - [x] renamed shortcut "co"
+- 3.0:
+    - 3.0.0:
+        - [x] go rewrite
 
 ## TODO AND COMPLETED LIST
 
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
-    - [ ] go rewrite
