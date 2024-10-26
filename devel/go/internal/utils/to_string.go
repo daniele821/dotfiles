@@ -84,7 +84,7 @@ func (answer answer) String() string {
 	case AnsNo:
 		return "AnsNo"
 	}
-	return "answer(" + string(answer) + ")"
+	return fmt.Sprintf("answer(%d)", answer)
 }
 
 func (typeDir typeDir) String() string {

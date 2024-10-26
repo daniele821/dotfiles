@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-type msgType int8
-type answer string
+type msgType int
+type answer int
 
 const (
 	MsgNone msgType = iota
@@ -16,9 +16,9 @@ const (
 	MsgInfo
 )
 const (
-	AnsNone answer = ""
-	AnsYes  answer = "y"
-	AnsNo   answer = "n"
+	AnsNone answer = iota
+	AnsYes
+	AnsNo
 )
 
 func ColorMsg(str string, col msgType) string {
@@ -46,10 +46,9 @@ func AskUser(msg string, autoAnswer answer) bool {
 		var input string
 		fmt.Scanln(&input)
 		{
-			input := answer(input)
 			switch input {
-			case AnsYes, AnsNo, AnsNone:
-				return input == AnsYes
+			case "y", "n", "":
+				return input == "y"
 			default:
 				fmt.Println("Invalid answer, retry:")
 				return AskUser(msg, autoAnswer)
