@@ -20,7 +20,7 @@ func (option Option) String() string {
 	case OptVerbose:
 		return "OptVerbose"
 	}
-	return fmt.Sprintf("Option: %d", option)
+	return fmt.Sprintf("Option(%d)", option)
 }
 
 func (action Action) String() string {
@@ -42,7 +42,7 @@ func (action Action) String() string {
 	case ActRun:
 		return "ActRun"
 	}
-	return fmt.Sprintf("Action: %d", action)
+	return fmt.Sprintf("Action(%d)", action)
 }
 
 func (flag *Flag) String() string {
@@ -59,4 +59,54 @@ func (flag *Flag) String() string {
 	actsStr := strings.TrimSpace(acts.String())
 	optsStr := strings.TrimSpace(opts.String())
 	return fmt.Sprintf("Flag -> Actions: [%s], Options: [%s]", actsStr, optsStr)
+}
+
+func (msgType msgType) String() string {
+	switch msgType {
+	case MsgNone:
+		return "MsgNone"
+	case MsgErr:
+		return "MsgErr"
+	case MsgFile:
+		return "MsgFile"
+	case MsgInfo:
+		return "MsgInfo"
+	}
+	return fmt.Sprintf("msgType(%d)", msgType)
+}
+
+func (answer answer) String() string {
+	switch answer {
+	case AnsNone:
+		return "AnsNone"
+	case AnsYes:
+		return "AnsYes"
+	case AnsNo:
+		return "AnsNo"
+	}
+	return "answer(" + string(answer) + ")"
+}
+
+func (typeDir typeDir) String() string {
+	switch typeDir {
+	case DirBackup:
+		return "DirBackup"
+	case DirRun:
+		return "DirRun"
+	case DirOther:
+		return "DirOther"
+	case DirConfig:
+		return "DirConfig"
+	}
+	return fmt.Sprintf("typeDir(%d)", typeDir)
+}
+
+func (typeFile typeFile) String() string {
+	switch typeFile {
+	case FileTrack:
+		return "FileTrack"
+	case FileNotDiff:
+		return "FileNotDiff"
+	}
+	return fmt.Sprintf("typeFile(%d)", typeFile)
 }
