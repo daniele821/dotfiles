@@ -9,6 +9,7 @@ import (
 )
 
 func backupAction(flag *configs.Flag) {
+	autoAnswer := autoAnswer(flag)
 	act := flag.GetActionFlag()
 	actSave := act == configs.ActSave
 	actBackup := act == configs.ActBackup
@@ -22,7 +23,13 @@ func backupAction(flag *configs.Flag) {
 	slices.Sort(allFiles)
 	allFiles = slices.Compact(allFiles)
 
-	println(actSave, actBackup, optToggle, optDiff, optVerbose, optForce)
+	fileInfo := func(file, descr string) {
+		msgFile := utils.ColorMsg(file, utils.MsgFile)
+		if optVerbose {
+			fmt.Printf("%s : %s", msgFile, descr)
+		}
+		fmt.Println(msgFile)
+	}
 
 	for _, file := range allFiles {
 		homeFile := filepath.Join(configs.Home, file)
@@ -30,60 +37,53 @@ func backupAction(flag *configs.Flag) {
 		isHomeFile := utils.IsRegularFile(homeFile)
 		isBackupFile := utils.IsRegularFile(backupFile)
 		switch {
-		case !isHomeFile && isBackupFile:
-			// todo
 		case isHomeFile && !isBackupFile:
-			// todo
+			fileInfo(homeFile, "backup file is missing")
+			if actSave {
+				if utils.AskUser(utils.ColorMsg("Do you really want to create backup file ? ", utils.MsgInfo), autoAnswer) {
+					utils.CopyFile(homeFile, backupFile)
+				}
+			}
+			if actBackup && optForce {
+				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
+					utils.DeleteFile(homeFile, false)
+				}
+			}
+		case !isHomeFile && isBackupFile:
+			fileInfo(homeFile, "backup file is missing")
+			if actSave {
+				if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer) {
+					utils.DeleteFile(backupFile, true)
+				}
+			}
+			if actBackup {
+				if utils.AskUser(utils.ColorMsg("Do you really want to create original file ? ", utils.MsgInfo), autoAnswer) {
+					utils.CopyFile(backupFile, homeFile)
+				}
+			}
 		case isHomeFile && isBackupFile && (optToggle || !slices.Contains(notdiffFiles, file)):
 			if utils.ProcessFilesDiffer(homeFile, backupFile) {
-				// todo
+				fileInfo(homeFile, "backup file is missing")
+				if optDiff {
+					if actBackup {
+						utils.ProcessDiff(homeFile, backupFile)
+					} else {
+						utils.ProcessDiff(backupFile, homeFile)
+					}
+				}
+				if actSave {
+					if utils.AskUser(utils.ColorMsg("Do you really want to update backup file ? ", utils.MsgInfo), autoAnswer) {
+						utils.CopyFile(homeFile, backupFile)
+					}
+				}
+				if actBackup && optForce {
+					if utils.AskUser(utils.ColorMsg("Do you really want to update original file ? ", utils.MsgInfo), autoAnswer) {
+						utils.CopyFile(backupFile, homeFile)
+					}
+				}
 			}
 		}
 	}
-
-	//	    match os.path.isfile(ofile), os.path.isfile(bfile):
-	//	        case True, False:
-	//	            fout(ofile, "backup file", "is missing")
-	//	            if act_save:
-	//	                if ask_user(qmsg("create", "backup"), opts):
-	//	                    copy_file(ofile, bfile)
-	//	            if act_backup and opt_force:
-	//	                if ask_user(qmsg("delete", "original", "[DANGER] "), opts):
-	//	                    delete_file(ofile)
-	//	        case False, True:
-	//	            fout(ofile, "original file", "is missing")
-	//	            if act_save:
-	//	                if ask_user(qmsg("delete", "backup"), opts):
-	//	                    delete_file(bfile, True)
-	//	            if act_backup:
-	//	                if ask_user(qmsg("create", "original"), opts):
-	//	                    copy_file(bfile, ofile)
-	//	        case True, True:
-	//	            if opt_toggle or file not in notdiff:
-	//	                if are_files_different(ofile, bfile):
-	//	                    fout(ofile, "original and backup files", "differ")
-	//	                    if opt_diff:
-	//	                        old = ofile if act_backup else bfile
-	//	                        new = bfile if act_backup else ofile
-	//	                        diff(old, new)
-	//	                    if act_save:
-	//	                        if ask_user(qmsg("update", "backup"), opts):
-	//	                            copy_file(ofile, bfile)
-	//	                    if act_backup:
-	//	                        if ask_user(qmsg("update", "original"), opts):
-	//	                            copy_file(bfile, ofile)
-
-	//	def qmsg(act, on,  prefix=""):
-	//	    res = prefix + "Do you really want to " + act + " " + on + " file? "
-	//	    return color("msg", res)
-	//
-	//	def fout(file, on=None, stat=None):
-	//	    msg_file = color("file", file)
-	//	    if opt_verbose and on and stat:
-	//	        print(msg_file + " : " + on + " " + stat)
-	//	    else:
-	//	        print(msg_file)
-
 }
 
 func untrackedAction(flag *configs.Flag) {
