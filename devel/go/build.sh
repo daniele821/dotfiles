@@ -12,7 +12,8 @@ go build -o "${TMPDIR}/" "${SCRIPT_DIR}/cmd/autosaver/main.go"
 mv "${TMPDIR}/"* "${SCRIPT_DIR}/autosaver"
 cp "${SCRIPT_DIR}/autosaver" "${SCRIPT_DIR}/../../autosaver"
 
-"${SCRIPT_DIR}/../../autosaver" commit
-git restore "${SCRIPT_DIR}/autosaver" "${SCRIPT_DIR}/../../autosaver"
+if [[ "$1" == "-y" ]]; then
+    "${SCRIPT_DIR}/../../autosaver" commit
+fi
 
 rmdir "${TMPDIR}"
