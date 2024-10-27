@@ -14,12 +14,12 @@ func NewFlags(actions []Action, options []Option) Flag {
 	return Flag{actions, options}
 }
 
-func (f Flag) AppendFlags(actions []Action, options []Option) {
+func (f *Flag) AppendFlags(actions []Action, options []Option) {
 	f.actionFlags = append(f.actionFlags, actions...)
 	f.optionFlags = append(f.optionFlags, options...)
 }
 
-func (f Flag) AppendAllFlags(flags Flag) {
+func (f *Flag) AppendAllFlags(flags Flag) {
 	f.AppendFlags(flags.actionFlags, flags.optionFlags)
 }
 
