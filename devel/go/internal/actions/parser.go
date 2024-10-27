@@ -63,7 +63,7 @@ func ParseArgs(args []string) configs.Flag {
 			}
 		} else {
 			shortcut := configs.ParseShortcut[word]
-			if shortcut.IsEmpty() {
+			if !shortcut.IsEmpty() {
 				flag.AppendAllFlags(shortcut)
 			} else {
 				utils.ErrExit("invalid shortcut value: \"%s\"", word)

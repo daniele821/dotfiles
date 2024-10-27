@@ -45,7 +45,7 @@ func (action Action) String() string {
 	return fmt.Sprintf("Action(%d)", action)
 }
 
-func (flag *Flag) String() string {
+func (flag Flag) String() string {
 	acts := strings.Builder{}
 	opts := strings.Builder{}
 	for _, act := range flag.actionFlags {
