@@ -72,3 +72,5 @@
 - COMPLETED [move to versions, once version tag is created!]:
 
 - TODO:
+    - [ ] -t alongside -i to delete all config files? 
+        - should i strictly remove the files and directories i know of, or purge even custom added files in the directories?
