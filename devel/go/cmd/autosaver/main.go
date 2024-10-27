@@ -2,23 +2,11 @@ package main
 
 import (
 	"autosaver/internal/actions"
-	"fmt"
 	"os"
 )
 
-func version(args string) {
-	if args == "--version" || args == "--v" || args == "-V" || args == "--V" || args == "version" || args == "v" {
-		fmt.Println("compiled at Sun Oct 27 02:09:59 AM CEST 2024")
-		os.Exit(0)
-	}
-}
-
 func main() {
 	args := os.Args[1:]
-
-	if len(args) >= 1 {
-		version(args[0])
-	}
 
 	params := []string{}
 	for _, arg := range args {
