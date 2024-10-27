@@ -7,12 +7,21 @@ import (
 	"slices"
 )
 
-func initAction() {
-	for _, dir := range configs.AllDirs {
-		utils.CreateDir(dir)
-	}
-	for _, file := range configs.AllFiles {
-		if !utils.IsRegularFile(file) {
+func initAction(flag *configs.Flag) {
+	optToggle := flag.HasOptionFlag(configs.OptToggle)
+	optForce := flag.HasOptionFlag(configs.OptForce)
+	if !optToggle {
+		for _, file := range configs.AllFiles {
+			utils.DeleteFile(file, false)
+		}
+		for _, dir := range configs.AllDirs {
+			utils.DeleteDir(dir, optForce)
+		}
+	} else {
+		for _, dir := range configs.AllDirs {
+			utils.CreateDir(dir)
+		}
+		for _, file := range configs.AllFiles {
 			utils.CreateFile(file)
 		}
 	}

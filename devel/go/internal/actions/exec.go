@@ -15,7 +15,7 @@ func Execute(flags *configs.Flag) {
 	case configs.ActEdit:
 		editAction(flags)
 	case configs.ActInit:
-		initAction()
+		initAction(flags)
 	case configs.ActRun:
 		runAction(flags)
 	}

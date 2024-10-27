@@ -31,6 +31,9 @@ func CreateDir(dirPath string) {
 }
 
 func CreateFile(filePath string) {
+	if IsRegularFile(filePath) {
+		return
+	}
 	CreateDir(filepath.Dir(filePath))
 	_, err := os.Create(filePath)
 	if err != nil {
@@ -48,6 +51,14 @@ func DeleteFile(filePath string, deleteDirs bool) {
 				break
 			}
 		}
+	}
+}
+
+func DeleteDir(dirPath string, recursiveDelete bool) {
+	if recursiveDelete {
+		os.RemoveAll(dirPath)
+	} else {
+		os.Remove(dirPath)
 	}
 }
 
