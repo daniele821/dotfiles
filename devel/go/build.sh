@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo -e '\e[1;33mWARNING: compiling go program and adding it to git repos can easily consume a lot of memory\e[m'
+
 # build autosaver binary file
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
