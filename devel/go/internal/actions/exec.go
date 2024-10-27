@@ -4,7 +4,7 @@ import (
 	"autosaver/internal/configs"
 )
 
-func Execute(flags *configs.Flag) {
+func Execute(flags configs.Flag) {
 	switch flags.GetActionFlag() {
 	case configs.ActList, configs.ActSave, configs.ActBackup:
 		backupAction(flags)

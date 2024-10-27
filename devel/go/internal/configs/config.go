@@ -59,7 +59,7 @@ var (
 	}
 )
 var (
-	ParseShortcut = map[string]*Flag{
+	ParseShortcut = map[string]Flag{
 		"save":       NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose}),
 		"saveall":    NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle}),
 		"restore":    NewFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose}),

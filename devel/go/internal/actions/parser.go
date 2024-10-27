@@ -37,10 +37,10 @@ func loadConf(configFile string) []string {
 	return slices.Compact(fileList)
 }
 
-func ParseArgs(args []string) *configs.Flag {
+func ParseArgs(args []string) configs.Flag {
 	var defAct configs.Action
 	var defOpt configs.Option
-	flag := &configs.Flag{}
+	flag := configs.Flag{}
 	for _, word := range args {
 		if strings.HasPrefix(word, "-") {
 			for _, letter := range word[1:] {
@@ -63,7 +63,7 @@ func ParseArgs(args []string) *configs.Flag {
 			}
 		} else {
 			shortcut := configs.ParseShortcut[word]
-			if shortcut != nil {
+			if shortcut.IsEmpty() {
 				flag.AppendAllFlags(shortcut)
 			} else {
 				utils.ErrExit("invalid shortcut value: \"%s\"", word)

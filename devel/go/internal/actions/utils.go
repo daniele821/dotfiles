@@ -15,7 +15,7 @@ var dirOther string = configs.AllDirs[configs.DirOther]
 var fileTrack string = configs.AllFiles[configs.FileTrack]
 var fileNotdiff string = configs.AllFiles[configs.FileNotDiff]
 
-func autoAnswer(f *configs.Flag) utils.Answer {
+func autoAnswer(f configs.Flag) utils.Answer {
 	autoAnswer := utils.AnsNone
 	if f.HasOptionFlag(configs.OptYes) {
 		autoAnswer = utils.AnsYes

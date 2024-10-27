@@ -8,7 +8,7 @@ import (
 	"slices"
 )
 
-func backupAction(flag *configs.Flag) {
+func backupAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	act := flag.GetActionFlag()
 	actSave := act == configs.ActSave
@@ -87,7 +87,7 @@ func backupAction(flag *configs.Flag) {
 	}
 }
 
-func untrackedAction(flag *configs.Flag) {
+func untrackedAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optForce := flag.HasOptionFlag(configs.OptForce)
@@ -110,7 +110,7 @@ func untrackedAction(flag *configs.Flag) {
 	}
 }
 
-func commitAction(flag *configs.Flag) {
+func commitAction(flag configs.Flag) {
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optDiff := flag.HasOptionFlag(configs.OptDiff)
 	autoAnswer := autoAnswer(flag)

@@ -7,7 +7,7 @@ import (
 	"slices"
 )
 
-func initAction(flag *configs.Flag) {
+func initAction(flag configs.Flag) {
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optForce := flag.HasOptionFlag(configs.OptForce)
 	if optToggle {
@@ -27,7 +27,7 @@ func initAction(flag *configs.Flag) {
 	}
 }
 
-func runAction(flag *configs.Flag) {
+func runAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	files := utils.AllFilesInDir(dirRun, "")
 	slices.Sort(files)
@@ -44,7 +44,7 @@ func runAction(flag *configs.Flag) {
 	}
 }
 
-func editAction(flag *configs.Flag) {
+func editAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
