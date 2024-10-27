@@ -46,6 +46,7 @@
     - [x] renamed shortcut "co"
 - 3.0:
     - [x] go rewrite
+- 3.1:
     - [x] added -tf flags for -i action, to delete config files
 
 ## TODO AND COMPLETED LIST
