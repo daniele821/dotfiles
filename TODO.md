@@ -74,3 +74,4 @@
 - TODO:
     - [ ] -t alongside -i to delete all config files? 
         - should i strictly remove the files and directories i know of, or purge even custom added files in the directories?
+            - [ ] -tf alongside -i to purge all files and directories (-f: with custom files included)
