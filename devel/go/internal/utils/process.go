@@ -42,40 +42,49 @@ func ProcessExecute(file string) bool {
 	return run(file)
 }
 
-func ProcessGitPull(scriptDir string) {
-	run("git", "-C", scriptDir, "pull")
+func ProcessGitPull(gitRootDir string) {
+	run("git", "-C", gitRootDir, "pull")
 }
 
-func ProcessGitPush(scriptDir string) {
-	run("git", "-C", scriptDir, "push")
+func ProcessGitPush(gitRootDir string) {
+	run("git", "-C", gitRootDir, "push")
 }
 
-func ProcessGitStatus(scriptDir string) {
-	run("git", "-C", scriptDir, "status", "-su")
+func ProcessGitStatus(gitRootDir string) {
+	run("git", "-C", gitRootDir, "status", "-su")
 }
 
-func ProcessGitDiff(scriptDir string, reverse bool) {
+func ProcessGitDiff(gitRootDir string, reverse bool) {
 	if reverse {
-		run("git", "-C", scriptDir, "diff", "HEAD", "--diff-filter=adcr")
+		run("git", "-C", gitRootDir, "diff", "HEAD", "--diff-filter=adcr")
 	} else {
-		run("git", "-C", scriptDir, "diff", "HEAD", "--diff-filter=adcr", "-R")
+		run("git", "-C", gitRootDir, "diff", "HEAD", "--diff-filter=adcr", "-R")
 	}
 }
 
-func ProcessGitRestoreAll(scriptDir string) {
-	run("git", "-C", scriptDir, "reset", "HEAD")
-	run("git", "-C", scriptDir, "restore", "--staged", scriptDir)
-	run("git", "-C", scriptDir, "restore", scriptDir)
-	run("git", "-C", scriptDir, "clean", "-fdq")
+func ProcessGitRestoreAll(gitRootDir string) {
+	run("git", "-C", gitRootDir, "reset", "HEAD")
+	run("git", "-C", gitRootDir, "restore", "--staged", gitRootDir)
+	run("git", "-C", gitRootDir, "restore", gitRootDir)
+	run("git", "-C", gitRootDir, "clean", "-fdq")
 }
 
-func ProcessGitCommitAll(scriptDir string, commitMsg string) {
-	run("git", "-C", scriptDir, "add", scriptDir)
-	run("git", "-C", scriptDir, "commit", "-m", commitMsg)
+func ProcessGitCommitAll(gitRootDir string, commitMsg string) {
+	run("git", "-C", gitRootDir, "add", gitRootDir)
+	run("git", "-C", gitRootDir, "commit", "-m", commitMsg)
 }
 
-func ProcessHasGitChanges(scriptDir string) bool {
-	cmd := exec.Command("git", "-C", scriptDir, "status", "-s")
+func ProcessHasGitChanges(gitRootDir string) bool {
+	cmd := exec.Command("git", "-C", gitRootDir, "status", "-s")
 	output, _ := cmd.Output()
 	return strings.TrimSpace(string(output)) != ""
+}
+
+func ProcessGitRootDir(scriptDir string) string {
+	cmd := exec.Command("git", "-C", scriptDir, "rev-parse", "--show-toplevel")
+	output, err := cmd.Output()
+	if err != nil {
+		ErrExit("the autosaver executable is not in a git repository!")
+	}
+	return strings.TrimSpace(string(output))
 }

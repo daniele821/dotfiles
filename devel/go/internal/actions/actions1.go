@@ -114,34 +114,35 @@ func commitAction(flag *configs.Flag) {
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optDiff := flag.HasOptionFlag(configs.OptDiff)
 	autoAnswer := autoAnswer(flag)
+	gitRootDir := utils.ProcessGitRootDir(dirScript)
 
 	if !optToggle {
-		utils.ProcessGitPull(dirScript)
+		utils.ProcessGitPull(gitRootDir)
 	}
 
-	if utils.ProcessHasGitChanges(dirScript) {
+	if utils.ProcessHasGitChanges(gitRootDir) {
 		if optDiff {
-			utils.ProcessGitDiff(dirScript, optToggle)
+			utils.ProcessGitDiff(gitRootDir, optToggle)
 		}
-		utils.ProcessGitStatus(dirScript)
+		utils.ProcessGitStatus(gitRootDir)
 		if !optToggle {
 			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				input := utils.ReadInput()
 				if input != "" {
-					utils.ProcessGitCommitAll(dirScript, input)
+					utils.ProcessGitCommitAll(gitRootDir, input)
 				}
 			}
 		} else {
 			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer) {
-				utils.ProcessGitRestoreAll(dirScript)
+				utils.ProcessGitRestoreAll(gitRootDir)
 			}
 		}
 	} else if optToggle {
-		utils.ProcessGitRestoreAll(dirScript)
+		utils.ProcessGitRestoreAll(gitRootDir)
 	}
 
 	if !optToggle {
-		utils.ProcessGitPush(dirScript)
+		utils.ProcessGitPush(gitRootDir)
 	}
 }
