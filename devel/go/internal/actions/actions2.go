@@ -10,7 +10,7 @@ import (
 func initAction(flag *configs.Flag) {
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optForce := flag.HasOptionFlag(configs.OptForce)
-	if !optToggle {
+	if optToggle {
 		for _, file := range configs.AllFiles {
 			utils.DeleteFile(file, false)
 		}
