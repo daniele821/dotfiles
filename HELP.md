@@ -25,11 +25,15 @@
 - note for options flags with specific action:
     - \<none\>|s|b:
         - t         : show also files from the list of the `notdiff` config file
+        - f         : (only with -b action) allow deleting original files
     - c:
         - t         : instead of commiting all changes, it restores everything
     - u:
         - t         : asks for each file if you want to delete the backup version
-        - f         : (requires -t), also asks to delete the original version
+        - f         : (requires -t) also asks to delete the original version
+    - i:
+        - t         : deletes config files, instead of creating them
+        - f         : (requires -t) deletes config directories recursively
 
 - shortcuts:
     - save          : save all files to backup
