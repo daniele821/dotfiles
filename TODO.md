@@ -51,6 +51,5 @@
 
 ## TODO AND COMPLETED LIST
 
-- COMPLETED [move to versions, once version tag is created!]:
-
 - TODO:
+    - [ ] add -p flag to print to record and output to stderr program performance
