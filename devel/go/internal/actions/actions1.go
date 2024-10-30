@@ -41,24 +41,24 @@ func backupAction(flag configs.Flag) {
 		case isHomeFile && !isBackupFile:
 			fileInfo(homeFile, "backup file is missing")
 			if actSave {
-				if utils.AskUser(utils.ColorMsg("Do you really want to create backup file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("Do you really want to create backup file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.CopyFile(homeFile, backupFile)
 				}
 			}
 			if actBackup && optForce {
-				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.DeleteFile(homeFile, false)
 				}
 			}
 		case !isHomeFile && isBackupFile:
 			fileInfo(homeFile, "backup file is missing")
 			if actSave {
-				if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.DeleteFile(backupFile, true)
 				}
 			}
 			if actBackup {
-				if utils.AskUser(utils.ColorMsg("Do you really want to create original file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("Do you really want to create original file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.CopyFile(backupFile, homeFile)
 				}
 			}
@@ -73,12 +73,12 @@ func backupAction(flag configs.Flag) {
 					}
 				}
 				if actSave {
-					if utils.AskUser(utils.ColorMsg("Do you really want to update backup file ? ", utils.MsgInfo), autoAnswer) {
+					if utils.AskUser(utils.ColorMsg("Do you really want to update backup file ? ", utils.MsgInfo), autoAnswer...) {
 						utils.CopyFile(homeFile, backupFile)
 					}
 				}
 				if actBackup {
-					if utils.AskUser(utils.ColorMsg("Do you really want to update original file ? ", utils.MsgInfo), autoAnswer) {
+					if utils.AskUser(utils.ColorMsg("Do you really want to update original file ? ", utils.MsgInfo), autoAnswer...) {
 						utils.CopyFile(backupFile, homeFile)
 					}
 				}
@@ -98,11 +98,11 @@ func untrackedAction(flag configs.Flag) {
 		backupFile := filepath.Join(dirBackup, file)
 		fmt.Println(utils.ColorMsg(homeFile, utils.MsgFile))
 		if optToggle {
-			if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer) {
+			if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer...) {
 				utils.DeleteFile(backupFile, true)
 			}
 			if optForce && utils.IsRegularFile(homeFile) {
-				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer) {
+				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.DeleteFile(homeFile, true)
 				}
 			}
@@ -126,7 +126,7 @@ func commitAction(flag configs.Flag) {
 		}
 		utils.ProcessGitStatus(gitRootDir)
 		if !optToggle {
-			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer) {
+			if utils.AskUser(utils.ColorMsg("Do you really want to commit all? ", utils.MsgInfo), autoAnswer...) {
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				input := utils.ReadInput()
 				if input != "" {
@@ -134,7 +134,7 @@ func commitAction(flag configs.Flag) {
 				}
 			}
 		} else {
-			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer) {
+			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer...) {
 				utils.ProcessGitRestoreAll(gitRootDir)
 			}
 		}

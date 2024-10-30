@@ -15,15 +15,14 @@ var dirOther string = configs.AllDirs[configs.DirOther]
 var fileTrack string = configs.AllFiles[configs.FileTrack]
 var fileNotdiff string = configs.AllFiles[configs.FileNotDiff]
 
-func autoAnswer(f configs.Flag) utils.Answer {
-	autoAnswer := utils.AnsNone
+func autoAnswer(f configs.Flag) []utils.Answer {
 	if f.HasOptionFlag(configs.OptYes) {
-		autoAnswer = utils.AnsYes
+		return []utils.Answer{utils.AnsYes}
 	}
 	if f.HasOptionFlag(configs.OptNo) {
-		autoAnswer = utils.AnsNo
+		return []utils.Answer{utils.AnsNo}
 	}
-	return autoAnswer
+	return nil
 }
 
 func values[M ~map[K]V, K comparable, V any](m M) []V {

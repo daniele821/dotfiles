@@ -36,7 +36,7 @@ func runAction(flag configs.Flag) {
 	for _, file := range files {
 		relfile, _ := filepath.Rel(dirScript, file)
 		msg2 := utils.ColorMsg(relfile, utils.MsgFile)
-		if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
+		if utils.AskUser(msg1+msg2+msg3, autoAnswer...) {
 			if !utils.ProcessExecute(file) {
 				utils.ErrExit("init script failed!")
 			}
@@ -55,7 +55,7 @@ func editAction(flag configs.Flag) {
 		if utils.IsRegularFile(file) {
 			relfile, _ := filepath.Rel(dirScript, file)
 			msg2 := utils.ColorMsg(relfile, utils.MsgFile)
-			if utils.AskUser(msg1+msg2+msg3, autoAnswer) {
+			if utils.AskUser(msg1+msg2+msg3, autoAnswer...) {
 				utils.ProcessEdit(file)
 			}
 		}
