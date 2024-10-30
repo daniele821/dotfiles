@@ -52,4 +52,5 @@
 ## TODO AND COMPLETED LIST
 
 - TODO:
-    - [ ] add -p flag to print to record and output to stderr program performance
+    - [ ] add DBG env var to print to record and output to stderr program performance 
+        - note: cannot use a flag, because the performance needs to be recorded of also the function to parse the flags
