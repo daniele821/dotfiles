@@ -3,8 +3,6 @@ package actions
 import (
 	"autosaver/internal/configs"
 	"autosaver/internal/utils"
-	"cmp"
-	"slices"
 )
 
 var dirScript string = configs.ScriptDir
@@ -23,28 +21,4 @@ func autoAnswer(f configs.Flag) []utils.Answer {
 		return []utils.Answer{utils.AnsNo}
 	}
 	return nil
-}
-
-func values[M ~map[K]V, K comparable, V any](m M) []V {
-	r := make([]V, 0, len(m))
-	for _, v := range m {
-		r = append(r, v)
-	}
-	return r
-}
-
-func sub[M cmp.Ordered](m1 []M, m2 []M) []M {
-	slices.Sort(m1)
-	slices.Sort(m2)
-	m1 = slices.Compact(m1)
-	m2 = slices.Compact(m2)
-	var res []M
-	for _, m := range m1 {
-		if !slices.Contains(m2, m) {
-			res = append(res, m)
-		}
-	}
-	slices.Sort(res)
-	res = slices.Compact(res)
-	return res
 }

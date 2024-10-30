@@ -93,7 +93,7 @@ func untrackedAction(flag configs.Flag) {
 	optForce := flag.HasOptionFlag(configs.OptForce)
 	trackedFiles := append(loadConf(fileTrack), loadConf(fileNotdiff)...)
 	backupFiles := utils.AllFilesInDir(dirBackup, dirBackup)
-	for _, file := range sub(backupFiles, trackedFiles) {
+	for _, file := range utils.Sub(backupFiles, trackedFiles) {
 		homeFile := filepath.Join(configs.Home, file)
 		backupFile := filepath.Join(dirBackup, file)
 		fmt.Println(utils.ColorMsg(homeFile, utils.MsgFile))

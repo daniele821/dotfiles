@@ -49,7 +49,7 @@ func editAction(flag configs.Flag) {
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
 	files := utils.AllFilesInDir(dirRun, "")
-	files = append(files, values(configs.AllFiles)...)
+	files = append(files, utils.Values(configs.AllFiles)...)
 	slices.Sort(files)
 	for _, file := range files {
 		if utils.IsRegularFile(file) {
