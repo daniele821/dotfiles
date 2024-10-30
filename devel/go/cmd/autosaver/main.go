@@ -9,7 +9,7 @@ func main() {
 	args := os.Args[1:]
 
 	params := []string{}
-	for _, arg := range args {
+	for _, arg := range append(args, "--") {
 		if arg == "--" {
 			flags := actions.ParseArgs(params)
 			actions.Execute(flags)
@@ -18,6 +18,4 @@ func main() {
 			params = append(params, arg)
 		}
 	}
-	flags := actions.ParseArgs(params)
-	actions.Execute(flags)
 }
