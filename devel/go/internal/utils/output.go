@@ -53,7 +53,7 @@ func AskUser(msg string, autoAnswer ...Answer) bool {
 	if len(autoAnswer) > 1 {
 		panic("multiple values of the variadic arg are not accepted!")
 	}
-	if len(autoAnswer) != 0 {
+	if len(autoAnswer) == 0 {
 		input := ReadInput()
 		{
 			switch input {
