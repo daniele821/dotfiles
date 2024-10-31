@@ -31,9 +31,6 @@
     - u:
         - t         : asks for each file if you want to delete the backup version
         - f         : (requires -t) also asks to delete the original version
-    - i:
-        - t         : deletes config files, instead of creating them
-        - f         : (requires -t) deletes config directories recursively
 
 - shortcuts:
     - save          : save all files to backup
@@ -48,6 +45,7 @@
     - run           : run all init scripts 
     - co            : "commit"
     - un            : "uncommit"
+    - sc            : "save commit"
         
 - notes:
     - multiple actions can be executed, by separating each with `--`
