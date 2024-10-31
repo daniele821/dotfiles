@@ -124,29 +124,6 @@ function save_action() {
         mkdir -p "${DIR_BACKUP}"
     fi
 }
-function help_msg() {
-    echo -e "\
-Flag options:
-- c         commit, pull, push if possible
-- d         show diffs
-- f         forcely allow dangerous operations
-- v         show verbose output
-- y         always answer yes to questions  \n
-Action options:
-- b         restore backup
-- e         edit config, init files
-- h         show help message
-- i         initialize necessary directories and files
-- r         run init scripts
-- s         save tracked files
-Shortcuts:
-save        -s -cvy
-restore     -b -vy
-init        -r -y
-edit        -e -y
-help        -h
-"
-}
 
 # init, parse, execute functions
 function init_ops() {
@@ -158,14 +135,13 @@ function parse() {
     restore) parse_options "-bvy" ;;
     init) parse_options "-ry" ;;
     edit) parse_options "-ey" ;;
-    help) parse_options "-h" ;;
     *) parse_options "${@}" ;;
     esac
 }
 function parse_options() {
-    while getopts ':bcdefhirsvy' OPTION; do
+    while getopts ':bcdefirsvy' OPTION; do
         case "${OPTION}" in
-        b | e | h | i | r | s) ACTION+="${OPTION}" ;;
+        b | e | i | r | s) ACTION+="${OPTION}" ;;
         c) OPT_COMM="y" ;;
         d) OPT_DIFF="y" ;;
         f) OPT_FORCE="y" ;;
@@ -182,7 +158,6 @@ function execute_action() {
     case "${ACTION}" in
     b | s | "") save_action ;;
     e) edit_config ;;
-    h) help_msg ;;
     i) init_ops ;;
     r) run_init ;;
     *)
