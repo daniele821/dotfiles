@@ -38,8 +38,6 @@ func loadConf(configFile string) []string {
 }
 
 func ParseArgs(args []string) configs.Flag {
-	var defAct configs.Action
-	var defOpt configs.Option
 	flag := configs.Flag{}
 	for _, word := range args {
 		if strings.HasPrefix(word, "-") {
@@ -47,14 +45,14 @@ func ParseArgs(args []string) configs.Flag {
 				char := string(letter)
 				act := configs.ParseAction[char]
 				opt := configs.ParseOption[char]
-				if act != defAct || opt != defOpt {
+				if act != nil || opt != nil {
 					acts := []configs.Action{}
 					opts := []configs.Option{}
-					if act != defAct {
-						acts = append(acts, act)
+					if act != nil {
+						acts = append(acts, *act)
 					}
-					if opt != defOpt {
-						opts = append(opts, opt)
+					if opt != nil {
+						opts = append(opts, *opt)
 					}
 					flag.AppendFlags(acts, opts)
 				} else {

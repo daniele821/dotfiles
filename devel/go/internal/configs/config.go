@@ -73,22 +73,22 @@ var (
 		"run":        NewFlags([]Action{ActRun}, []Option{OptYes}),
 		"edit":       NewFlags([]Action{ActEdit}, []Option{}),
 	}
-	ParseAction = map[string]Action{
-		"b": ActBackup,
-		"c": ActCommit,
-		"e": ActEdit,
-		"i": ActInit,
-		"r": ActRun,
-		"s": ActSave,
-		"u": ActUntracked,
+	ParseAction = map[string]*Action{
+		"b": utils.Point(ActBackup),
+		"c": utils.Point(ActCommit),
+		"e": utils.Point(ActEdit),
+		"i": utils.Point(ActInit),
+		"r": utils.Point(ActRun),
+		"s": utils.Point(ActSave),
+		"u": utils.Point(ActUntracked),
 	}
-	ParseOption = map[string]Option{
-		"d": OptDiff,
-		"f": OptForce,
-		"n": OptNo,
-		"t": OptToggle,
-		"v": OptVerbose,
-		"y": OptYes,
+	ParseOption = map[string]*Option{
+		"d": utils.Point(OptDiff),
+		"f": utils.Point(OptForce),
+		"n": utils.Point(OptNo),
+		"t": utils.Point(OptToggle),
+		"v": utils.Point(OptVerbose),
+		"y": utils.Point(OptYes),
 	}
 )
 

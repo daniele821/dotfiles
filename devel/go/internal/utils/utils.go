@@ -31,3 +31,8 @@ func Sub[M cmp.Ordered](m1 []M, m2 []M) []M {
 	res = slices.Compact(res)
 	return res
 }
+
+// Copy and returns pointer to said copy.
+func Point[T any](t T) *T {
+	return &t
+}
