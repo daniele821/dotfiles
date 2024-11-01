@@ -10,7 +10,7 @@
     sudo apt install neovim wl-clipboard ripgrep nodejs npm python3.12-venv golang -y
 
     # apps
-    sudo apt install kitty libreoffice gnome-calculator
+    sudo apt install kitty libreoffice gnome-calculator -y
 
     # cli essentials
     sudo apt install lsd tree bat zoxide fzf htop direnv -y
