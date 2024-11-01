@@ -1,5 +1,4 @@
 #!/bin/env bash
-# vim:ft=bash
 
 # disable powersave wifi mode (fixes bluetooth stutter)
 echo "disabling powersaver wifi mode (fix bluetooth stutter)"

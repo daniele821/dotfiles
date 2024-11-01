@@ -1,5 +1,4 @@
 #!/bin/env bash
-# vim:ft=bash
 
 {
     sudo apt update -y
@@ -9,18 +8,12 @@
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
     sudo apt install neovim wl-clipboard ripgrep nodejs npm python3.12-venv golang -y
 
-    # apps
-    sudo apt install kitty libreoffice gnome-calculator -y
-
     # cli essentials
-    sudo apt install lsd tree bat zoxide fzf htop direnv -y
+    sudo apt install lsd tree bat zoxide fzf htop direnv tldr -y
 
-    # replace bad gnome apps
-    sudo apt purge --auto-remove totem eog -y
-    sudo apt install mpv mpv-mpris loupe -y
-
-    # manually install starship
-    curl -sS https://starship.rs/install.sh | sh
+    # install apps & tools and uninstall bad apps
+    sudo apt purge celluloid -y
+    sudo apt install kitty ffmpeg mpv mpv-mpris -y
 
 } </dev/tty
 
