@@ -1,0 +1,6 @@
+.config/starship.toml
+.bash_aliases
+.ssh/config
+.gitconfig
+.config/kitty
+.config/mpv

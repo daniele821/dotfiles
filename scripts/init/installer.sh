@@ -2,8 +2,7 @@
 
 # modify the script, in all places where 'TODO' is written
 
-### TODO: VARIABLES TO MODIFY ###
-BRANCH="main"
+BRANCH="cosmic"
 
 function ask_user() {
     echo -ne "$@"
@@ -13,8 +12,7 @@ function ask_user() {
 
 # resolve requirements to run this script
 if ! command -v git &>/dev/null; then
-    ### TODO: add here method to install git ###
-    :
+    sudo apt install git -y
 fi </dev/tty
 
 # run initialization scripts in dotfiles repository
