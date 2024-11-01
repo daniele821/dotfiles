@@ -12,7 +12,7 @@ BUILD_DIR="${SCRIPT_DIR}/devel/${LANGUAGE}"
 
 if [[ "${LANGUAGE}" == "go" ]]; then
     cd "${BUILD_DIR}" || exit 1
-    go build -o "${SCRIPT_DIR}/autosaver" "${BUILD_DIR}/cmd/autosaver/main.go"
+    go build -o "${BUILD_DIR}/autosaver" "${BUILD_DIR}/cmd/autosaver/main.go"
 fi
 
 cp "${BUILD_DIR}/autosaver" "${SCRIPT_DIR}/autosaver"
