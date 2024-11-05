@@ -52,3 +52,5 @@
 ## TODO AND COMPLETED LIST
 
 - TODO:
+    - [ ] add conf file for git repo saver to specify all directories to take repos from
+    - [ ] add script file to git pull all git repos
