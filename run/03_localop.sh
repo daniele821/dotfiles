@@ -34,6 +34,15 @@ function ask_user() {
         curl -sS https://starship.rs/install.sh | sh
     fi
 
+    # install appimage imagemagick (no app icon)
+    if ask_user "Do you really want to install imagemagick, without app icon"; then
+        TMPDIR="$(mktemp -d)"
+        wget -O "${TMPDIR}/magick" https://imagemagick.org/archive/binaries/magick
+        chmod +x "${TMPDIR}/magick"
+        sudo mv "${TMPDIR}/magick" "/usr/local/bin/magick"
+        rmdir "${TMPDIR}"
+    fi
+
 } </dev/tty
 
 exit 0
