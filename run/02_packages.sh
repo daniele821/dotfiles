@@ -2,7 +2,7 @@
 
 {
     sudo apt update -y
-    sudo apt upgrade -y
+    sudo apt full-upgrade -y
 
     # neovim and dependecies
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
@@ -12,9 +12,11 @@
     sudo apt install lsd tree bat zoxide fzf htop direnv tldr -y
 
     # install apps & tools and uninstall bad apps
-    sudo apt purge celluloid -y
-    sudo apt install kitty ffmpeg mpv mpv-mpris -y
+    sudo apt purge totem thunderbird -y
+    sudo apt install kitty ffmpeg mpv mpv-mpris libreoffice -y
 
+    # cleanup
+    sudo apt autopurge -y
 } </dev/tty
 
 exit 0
