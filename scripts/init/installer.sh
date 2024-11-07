@@ -2,18 +2,31 @@
 
 # modify the script, in all places where 'TODO' is written
 
-BRANCH="cosmic"
-
 function ask_user() {
     echo -ne "$@"
     read -r answer
     [[ "${answer,,}" == "y" ]]
 }
+function exists() {
+    ! command -v "$@" &>/dev/null
+}
 
 # resolve requirements to run this script
-if ! command -v git &>/dev/null; then
-    sudo apt install git -y
+if exists git; then
+    if exists apt; then
+        sudo apt install git -y
+    elif exists dnf; then
+        sudo dnf --assumeyes install git
+    else
+        echo 'git is not installed'
+        exit 1
+    fi
 fi </dev/tty
+
+echo -n "What branch do you want to use? "
+read -r answer
+[[ -z "$answer" ]] && exit 1
+BRANCH="$answer"
 
 # run initialization scripts in dotfiles repository
 if ask_user "Do you want to run init scripts? "; then
