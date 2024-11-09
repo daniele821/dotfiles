@@ -13,7 +13,7 @@
 
     # install apps & tools and uninstall bad apps
     sudo apt purge totem thunderbird -y
-    sudo apt install kitty ffmpeg mpv mpv-mpris libreoffice gnome-calculator -y
+    sudo apt install kitty ffmpeg mpv mpv-mpris libreoffice -y
 
     # cleanup
     sudo apt autopurge -y
