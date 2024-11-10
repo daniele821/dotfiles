@@ -48,6 +48,9 @@
     - run           : run all init scripts 
     - co            : "commit"
     - un            : "uncommit"
+
+- envvars:
+    - DBG           : show performance and flags
         
 - notes:
     - multiple actions can be executed, by separating each with `--`
