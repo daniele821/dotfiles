@@ -54,4 +54,4 @@
 ## TODO AND COMPLETED LIST
 
 - TODO:
-    - [ ] add debug flag to print perfomance (-p)
+    - [ ] add os env var flag to print perfomance (PERF)
