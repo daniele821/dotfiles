@@ -14,14 +14,12 @@ while read -r line; do
     case "$COUNTER" in
     1) DIR="${line}" ;;
     2) URL="${line}" ;;
-    3) BRANCH="${line}" ;;
-    4) EMAIL="${line}" ;;
+    3) ;;
+    4) ;;
     5)
-        if ! [[ -d ${DIR} ]]; then
-            echo -e "Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m)"
-            git clone "${URL}" "${DIR}"
-            git -C "${DIR}" config user.email "${EMAIL}"
-            git -C "${DIR}" checkout "${BRANCH}"
+        if [[ -d ${DIR} ]]; then
+            echo -e "Updating \e[33m$URL\e[m in \e[32m$DIR\e[m"
+            git -C "${DIR}" pull --ff-only
         fi
         COUNTER=0
         ;;
