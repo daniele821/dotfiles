@@ -48,9 +48,10 @@
     - [x] go rewrite
 - 3.1:
     - [x] added -tf flags for -i action, to delete config files
+    - [x] add conf file for git repo saver to specify all directories to take repos from
+    - [x] add script file to git pull all git repos
 
 ## TODO AND COMPLETED LIST
 
 - TODO:
-    - [ ] add conf file for git repo saver to specify all directories to take repos from
-    - [ ] add script file to git pull all git repos
+    - [ ] add debug flag to print perfomance (-p)
