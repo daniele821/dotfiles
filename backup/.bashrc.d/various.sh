@@ -18,6 +18,9 @@ function open() {
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
 }
+function command_not_found_handle() {
+    :
+}
 
 complete -f preview
 complete -f open
@@ -30,7 +33,6 @@ alias lla='ls -lA'
 alias tree='lsd --group-dirs first --tree'
 alias cat='batcat'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
-alias command_not_found_handle=''
 
 for i in - {0..9}; do bind -r "\e$i"; done
 bind -x '"\C-l": clear'
