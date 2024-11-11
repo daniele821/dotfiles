@@ -31,7 +31,7 @@ alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 alias tree='lsd --group-dirs first --tree'
-alias cat='batcat'
+alias cat='bat'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
 for i in - {0..9}; do bind -r "\e$i"; done
