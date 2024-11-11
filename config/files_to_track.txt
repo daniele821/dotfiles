@@ -1,0 +1,5 @@
+.config/starship.toml
+.ssh/config
+.gitconfig
+.config/mpv
+
