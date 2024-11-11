@@ -2,4 +2,5 @@
 .ssh/config
 .gitconfig
 .config/mpv
+.bashrc.d
 
