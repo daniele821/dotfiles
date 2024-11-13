@@ -29,6 +29,16 @@ function ask_user() {
         done
     fi
 
+    # gsettings configurations (done here instead of installing gnome-tweaks)
+    if ask_user 'Do you really want to tweaks few gsettings preferences'; then
+        echo 'adding minimize and maximize buttons'
+        gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+        echo 'setting center-new-windows to true'
+        gsettings set org.gnome.mutter center-new-windows true
+        echo 'setting attach-modal to false'
+        gsettings set org.gnome.mutter attach-modal-dialogs false
+    fi
+
 } </dev/tty
 
 exit 0
