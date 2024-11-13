@@ -7,7 +7,7 @@
     # basic stuff
     sudo dnf --assumeyes remove gnome-boxes gnome-tour gnome-maps gnome-logs gnome-contacts gnome-clocks gnome-font-viewer
     sudo dnf --assumeyes remove gnome-connections gnome-classic-session gnome-characters gnome-weather gnome-calendar
-    sudo dnf --assumeyes remove yelp rhythmbox simple-scan mediawriter snapshot
+    sudo dnf --assumeyes remove yelp rhythmbox simple-scan mediawriter snapshot abrt
     sudo dnf --assumeyes install libreoffice-langpack-it
     sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv
     sudo dnf --assumeyes copr enable atim/starship
