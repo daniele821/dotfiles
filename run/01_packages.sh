@@ -5,7 +5,7 @@
     sudo dnf --assumeyes upgrade
 
     # basic stuff
-    sudo dnf --assumeyes remove gnome-boxes gnome-tour gnome-maps gnome-software gnome-logs gnome-contacts gnome-connections gnome-classic-session
+    sudo dnf --assumeyes remove gnome-boxes gnome-tour gnome-maps gnome-logs gnome-contacts gnome-connections gnome-classic-session
     sudo dnf --assumeyes remove yelp rhythmbox simple-scan mediawriter snapshot
     sudo dnf --assumeyes install gnome-tweaks libreoffice-langpack-it
     sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv
