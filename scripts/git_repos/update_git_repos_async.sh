@@ -23,7 +23,7 @@ while read -r line; do
     5)
         if [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
-            git -C "${DIR}" pull --progress --ff-only &>>"${TMP}" &
+            git -C "${DIR}" -c color.ui=always pull --progress --ff-only &>>"${TMP}" &
             PID="$!"
             TMPFILES+=("$TMP")
             CLONEPID+=("$PID")
