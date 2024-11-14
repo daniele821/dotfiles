@@ -38,6 +38,11 @@ function ask_user() {
 
         # use 'dconf watch /' to see how gnome settings app set preferences
 
+        # Displays
+        gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3200
+        gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-from 0.0
+        gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-to 0.0
+
         # Power
         gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
         gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
