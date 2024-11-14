@@ -70,6 +70,9 @@ function ask_user() {
         gsettings set org.gnome.desktop.interface color-scheme prefer-dark
         gsettings set org.gnome.desktop.interface accent-color teal
 
+        # Apps
+        gsettings set org.gnome.desktop.notifications.application:/org/gnome/desktop/notifications/application/org-gnome-ptyxis/ enable false
+
         # Keyboard
         gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'it')]"
         gsettings set org.gnome.desktop.input-sources per-window true
