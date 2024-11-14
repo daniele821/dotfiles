@@ -40,8 +40,7 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     echo -e "${MESSAGGES[i]}"
-    wait "${CLONEPID[$i]}"
-    \cat "${TMPFILES[$i]}"
+    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
     rm "${TMPFILES[$i]}"
 done
 
