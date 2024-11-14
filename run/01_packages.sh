@@ -9,7 +9,7 @@
     sudo dnf --assumeyes remove gnome-connections gnome-classic-session gnome-characters gnome-weather gnome-calendar
     sudo dnf --assumeyes remove yelp rhythmbox simple-scan mediawriter snapshot abrt
     sudo dnf --assumeyes install libreoffice-langpack-it
-    sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv
+    sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv htop
     sudo dnf --assumeyes copr enable atim/starship
     sudo dnf --assumeyes install starship
 
