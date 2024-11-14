@@ -29,12 +29,21 @@ function ask_user() {
         done
     fi
 
+    # install extension manager app via flatpak
+    if ask_user 'Do you really want to add flathub remote for flatpak'; then
+        flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        flatpak install -y flathub com.mattjakeman.ExtensionManager
+    fi
+
     # gsettings configurations (done here instead of installing gnome-tweaks)
     if ask_user 'Do you really want to tweaks few gsettings preferences'; then
         # tweaks
         gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
         gsettings set org.gnome.mutter center-new-windows true
         gsettings set org.gnome.mutter attach-modal-dialogs false
+
+        # various
+        gsettings set org.gnome.shell favorite-apps "['org.gnome.Ptyxis.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Evince.desktop', 'org.gnome.Nautilus.desktop']"
 
         # use 'dconf watch /' to see how gnome settings app set preferences
 
