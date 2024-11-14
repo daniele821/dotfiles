@@ -31,12 +31,23 @@ function ask_user() {
 
     # gsettings configurations (done here instead of installing gnome-tweaks)
     if ask_user 'Do you really want to tweaks few gsettings preferences'; then
-        echo 'adding minimize and maximize buttons'
+        # tweaks
         gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-        echo 'setting center-new-windows to true'
         gsettings set org.gnome.mutter center-new-windows true
-        echo 'setting attach-modal to false'
         gsettings set org.gnome.mutter attach-modal-dialogs false
+
+        # Power
+        gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
+        gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
+        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
+        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type nothing
+        gsettings set org.gnome.settings-daemon.plugins.power idle-brightness 100
+        gsettings set org.gnome.desktop.session idle-delay 0
+
+        # Multitasking
+        gsettings set org.gnome.desktop.interface enable-hot-corners false
+        gsettings set org.gnome.mutter dynamic-workspaces false
+        gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
     fi
 
 } </dev/tty
