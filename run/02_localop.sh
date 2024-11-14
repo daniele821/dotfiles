@@ -42,6 +42,7 @@ function ask_user() {
         gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 3200
         gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-from 0.0
         gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-to 0.0
+        gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
 
         # Power
         gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
