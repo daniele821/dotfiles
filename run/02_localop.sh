@@ -64,6 +64,10 @@ function ask_user() {
         gsettings set org.gnome.settings-daemon.plugins.media-keys control-center "['<Super>i']"
         gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
         gsettings set org.gnome.shell.keybindings toggle-message-tray '[]' && gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
+        gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'Launch Terminal'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'ptyxis --new-window'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Super>t'
 
         # System
         gsettings set org.gnome.desktop.interface clock-format 24h
