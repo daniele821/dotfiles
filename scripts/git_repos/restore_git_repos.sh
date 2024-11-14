@@ -4,6 +4,13 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
 
+CLONEPID=()
+TMPFILES=()
+MESSAGGES=()
+DIRS=()
+BRANCHES=()
+EMAILS=()
+
 # early exit if no backup file is present
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
@@ -18,10 +25,14 @@ while read -r line; do
     4) EMAIL="${line}" ;;
     5)
         if ! [[ -d ${DIR} ]]; then
-            echo -e "Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m)"
-            git clone "${URL}" "${DIR}"
-            git -C "${DIR}" config user.email "${EMAIL}"
-            git -C "${DIR}" checkout "${BRANCH}"
+            TMP="$(mktemp)"
+            git clone --progress "${URL}" "${DIR}" &>>"${TMP}" &
+            CLONEPID+=("$!")
+            TMPFILES+=("$TMP")
+            MESSAGGES+=("Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m):")
+            DIRS+=("$DIR")
+            BRANCHES+=("$BRANCH")
+            EMAILS+=("$EMAIL")
         fi
         COUNTER=0
         ;;
@@ -31,5 +42,13 @@ while read -r line; do
         ;;
     esac
 done <"$BACKUP_FILE"
+
+for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
+    echo -e "${MESSAGGES[i]}"
+    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}" &>/dev/null
+    git -C "${DIRS[$i]}" checkout "${BRANCH[$i]}" &>/dev/null
+    rm "${TMPFILES[$i]}"
+done
 
 exit 0

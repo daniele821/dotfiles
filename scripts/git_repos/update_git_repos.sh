@@ -4,6 +4,10 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
 
+TMPFILES=()
+CLONEPID=()
+MESSAGGES=()
+
 # early exit if no backup file is present
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
@@ -18,8 +22,12 @@ while read -r line; do
     4) ;;
     5)
         if [[ -d ${DIR} ]]; then
-            echo -e "Updating \e[33m$URL\e[m in \e[32m$DIR\e[m"
-            git -C "${DIR}" pull --ff-only
+            TMP="$(mktemp)"
+            git -C "${DIR}" -c color.ui=always pull --progress --ff-only &>>"${TMP}" &
+            PID="$!"
+            TMPFILES+=("$TMP")
+            CLONEPID+=("$PID")
+            MESSAGGES+=("Updating \e[33m$URL\e[m in \e[32m$DIR\e[m")
         fi
         COUNTER=0
         ;;
@@ -29,5 +37,11 @@ while read -r line; do
         ;;
     esac
 done <"$BACKUP_FILE"
+
+for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
+    echo -e "${MESSAGGES[i]}"
+    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    rm "${TMPFILES[$i]}"
+done
 
 exit 0
