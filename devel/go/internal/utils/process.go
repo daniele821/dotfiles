@@ -55,7 +55,7 @@ func ProcessGitStatus(gitRootDir string) {
 }
 
 func ProcessGitDiff(gitRootDir string, reverse bool) {
-	if reverse {
+	if !reverse {
 		run("git", "-C", gitRootDir, "diff", "HEAD", "--diff-filter=adcr")
 	} else {
 		run("git", "-C", gitRootDir, "diff", "HEAD", "--diff-filter=adcr", "-R")
