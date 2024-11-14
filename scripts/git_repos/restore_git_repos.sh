@@ -26,7 +26,7 @@ while read -r line; do
     5)
         if ! [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
-            git clone --progress "${URL}" "${DIR}" &>>"${TMP}" &
+            git clone -c color.ui=always --progress "${URL}" "${DIR}" &>>"${TMP}" &
             CLONEPID+=("$!")
             TMPFILES+=("$TMP")
             MESSAGGES+=("Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m):")
@@ -45,9 +45,9 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     echo -e "${MESSAGGES[i]}"
-    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
-    git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}" &>/dev/null
-    git -C "${DIRS[$i]}" checkout "${BRANCH[$i]}" &>/dev/null
+    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}"
+    git -C "${DIRS[$i]}" switch "${BRANCHES[$i]}"
     rm "${TMPFILES[$i]}"
 done
 
