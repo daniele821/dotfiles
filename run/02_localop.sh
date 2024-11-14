@@ -58,6 +58,12 @@ function ask_user() {
         # Keyboard
         gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'it')]"
         gsettings set org.gnome.desktop.input-sources per-window true
+        gsettings set org.gnome.settings-daemon.plugins.media-keys screenreader '[]'
+        gsettings set org.gnome.settings-daemon.plugins.media-keys home "['<Super>f']"
+        gsettings set org.gnome.settings-daemon.plugins.media-keys www "['<Super>b']"
+        gsettings set org.gnome.settings-daemon.plugins.media-keys control-center "['<Super>i']"
+        gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
+        gsettings set org.gnome.shell.keybindings toggle-message-tray '[]' && gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
 
         # System
         gsettings set org.gnome.desktop.interface clock-format 24h
