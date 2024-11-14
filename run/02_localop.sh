@@ -36,6 +36,8 @@ function ask_user() {
         gsettings set org.gnome.mutter center-new-windows true
         gsettings set org.gnome.mutter attach-modal-dialogs false
 
+        # use 'dconf watch /' to see how gnome settings app set preferences
+
         # Power
         gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
         gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
@@ -48,6 +50,18 @@ function ask_user() {
         gsettings set org.gnome.desktop.interface enable-hot-corners false
         gsettings set org.gnome.mutter dynamic-workspaces false
         gsettings set org.gnome.desktop.wm.preferences num-workspaces 4
+
+        # Appereance
+        gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+        gsettings set org.gnome.desktop.interface accent-color teal
+
+        # Keyboard
+        gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us'), ('xkb', 'it')]"
+        gsettings set org.gnome.desktop.input-sources per-window true
+
+        # System
+        gsettings set org.gnome.desktop.interface clock-format 24h
+        gsettings set org.gtk.Settings.FileChooser clock-format 24h
     fi
 
 } </dev/tty
