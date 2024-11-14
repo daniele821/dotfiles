@@ -75,6 +75,11 @@ function ask_user() {
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'ptyxis --new-window'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Super>t'
 
+        # Privacy & Security
+        gsettings set org.gnome.desktop.privacy recent-files-max-age -1
+        gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+        gsettings set org.gnome.desktop.privacy remove-old-temp-files true
+
         # System
         gsettings set org.gnome.desktop.interface clock-format 24h
         gsettings set org.gtk.Settings.FileChooser clock-format 24h
