@@ -83,6 +83,22 @@ function ask_user() {
         # System
         gsettings set org.gnome.desktop.interface clock-format 24h
         gsettings set org.gtk.Settings.FileChooser clock-format 24h
+
+        # org.gnome.Ptyxis
+        gsettings set org.gnome.Ptyxis use-system-font false
+        gsettings set org.gnome.Ptyxis font-name "'FiraCode Nerd Font 11'"
+        gsettings set org.gnome.Ptyxis text-blink-mode never
+        gsettings set org.gnome.Ptyxis restore-session false
+        gsettings set org.gnome.Ptyxis restore-window-size false
+        gsettings set org.gnome.Ptyxis default-columns 130
+        gsettings set org.gnome.Ptyxis default-rows 35
+        gsettings set org.gnome.Ptyxis enable-a11y false
+        gsettings set org.gnome.Ptyxis audible-bell false
+        gsettings set org.gnome.Ptyxis visual-bell false
+        gsettings set org.gnome.Ptyxis.Shortcuts move-previous-tab "'<Control>Tab'"
+        gsettings set org.gnome.Ptyxis.Shortcuts move-previous-tab "'<Shift><Control>Tab'"
+        gsettings set org.gnome.Ptyxis.Shortcuts move-next-tab "'<Control>Tab'"
+        gsettings set org.gnome.Ptyxis.Shortcuts zoom-in "'<Control>equal'"
     fi
 
 } </dev/tty
