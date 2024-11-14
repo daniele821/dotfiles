@@ -45,7 +45,7 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     echo -e "${MESSAGGES[i]}"
-    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
     git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}" &>/dev/null
     git -C "${DIRS[$i]}" checkout "${BRANCH[$i]}" &>/dev/null
     rm "${TMPFILES[$i]}"
