@@ -4,8 +4,8 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
 
-TMPFILES=()
 CLONEPID=()
+TMPFILES=()
 MESSAGGES=()
 DIRS=()
 BRANCHES=()
@@ -27,14 +27,12 @@ while read -r line; do
         if ! [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
             git clone --progress "${URL}" "${DIR}" &>>"${TMP}" &
-            PID="$!"
+            CLONEPID+=("$!")
             TMPFILES+=("$TMP")
-            CLONEPID+=("$PID")
             MESSAGGES+=("Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m):")
             DIRS+=("$DIR")
             BRANCHES+=("$BRANCH")
             EMAILS+=("$EMAIL")
-
         fi
         COUNTER=0
         ;;
@@ -47,12 +45,9 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     echo -e "${MESSAGGES[i]}"
-    tail -f "${TMPFILES[$i]}" &
-    PID="$!"
-    wait "${CLONEPID[$i]}"
-    kill "$PID"
-    git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}"
-    git -C "${DIRS[$i]}" checkout "${BRANCH[$i]}"
+    tail -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}" &>/dev/null
+    git -C "${DIRS[$i]}" checkout "${BRANCH[$i]}" &>/dev/null
     rm "${TMPFILES[$i]}"
 done
 
