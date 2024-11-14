@@ -79,6 +79,12 @@ function ask_user() {
         gsettings set org.gnome.settings-daemon.plugins.media-keys control-center "['<Super>i']"
         gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
         gsettings set org.gnome.shell.keybindings toggle-message-tray '[]' && gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '[]' && gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Super>Left']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right '[]' && gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Super>Right']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Super>1']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-2 "['<Shift><Super>2']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-3 "['<Shift><Super>3']"
+        gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-4 "['<Shift><Super>4']"
         gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'Launch Terminal'
         gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'ptyxis --new-window'
