@@ -54,6 +54,7 @@ function ask_user() {
         gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
 
         # Power
+        gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
         gsettings set org.gnome.settings-daemon.plugins.power idle-dim false
         gsettings set org.gnome.settings-daemon.plugins.power power-button-action nothing
         gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type nothing
