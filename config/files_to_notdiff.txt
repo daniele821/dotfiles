@@ -1,2 +1,3 @@
 .config/htop/htoprc
 .local/share/fonts
+.local/share/backgrounds
