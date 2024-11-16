@@ -85,8 +85,10 @@ function ask_user() {
         gsettings set org.gnome.shell.keybindings toggle-message-tray '[]' && gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
         gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '[]' && gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left "['<Shift><Super>Left']"
         gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right '[]' && gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right "['<Shift><Super>Right']"
-        gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control><Super>Left']"
-        gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control><Super>Right']"
+        gsettings set org.gnome.mutter.keybindings toggle-tiled-left '[]'
+        gsettings set org.gnome.mutter.keybindings toggle-tiled-right '[]'
+        gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Super>Left']"
+        gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Super>Right']"
         gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Shift><Super>1']"
         gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-2 "['<Shift><Super>2']"
         gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-3 "['<Shift><Super>3']"
