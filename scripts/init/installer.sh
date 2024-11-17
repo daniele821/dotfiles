@@ -37,6 +37,9 @@ fi </dev/tty
 
 # install git repos
 if ask_user "Do you want to download git repos? "; then
+    # hacky way to assure github is added to valid ssh servers
+    git clone git@daniele821.github.com:daniele821/dotfiles.git "$(mktemp -d)/temporary"
+
     TMP_DIR="$(mktemp -d /tmp/dotfilesXXXXXXXXXXXXXXXXX)" &&
         git clone https://github.com/daniele821/dotfiles "${TMP_DIR}" --branch="${BRANCH}" --depth=1 &&
         ! "${TMP_DIR}/scripts/git_repos/restore_git_repos.sh" && exit 1
