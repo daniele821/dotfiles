@@ -8,11 +8,11 @@ function ask_user() {
     [[ "${answer,,}" == "y" ]]
 }
 function exists() {
-    ! command -v "$@" &>/dev/null
+    command -v "$@" &>/dev/null
 }
 
 # resolve requirements to run this script
-if exists git; then
+if ! exists git; then
     if exists apt; then
         sudo apt install git -y
     elif exists dnf; then
