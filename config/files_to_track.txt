@@ -1,0 +1,7 @@
+.config/starship.toml
+.ssh/config
+.gitconfig
+.config/mpv
+.config/kitty
+.bashrc.d
+
