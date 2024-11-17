@@ -15,6 +15,7 @@ cd dotfiles || exit 1
 - to restore a backup, go to the branch you want (`git switch <branch_name>`), then run the following code:
 
 ```
+./build.sh
 ./autosaver restore
 ./autosaver run
 ```
