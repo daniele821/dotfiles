@@ -1,3 +1,8 @@
+# run autosaver script
+
+just run the `./autosaver` binary with the flags described here after.
+if the `./autosaver` binary file is missing, you need to build it with the `./build.sh` script
+
 # documentation for autosaver script
 
 - the script accept flags, which can either be `option` or `action` flags:
@@ -54,3 +59,4 @@
         
 - notes:
     - multiple actions can be executed, by separating each with `--`
+
