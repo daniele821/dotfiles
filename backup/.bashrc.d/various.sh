@@ -15,8 +15,15 @@ function run() {
 function open() {
     for file in "${@}"; do __exec_nohupped__ xdg-open "$file"; done
 }
+function preview() {
+    kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
+}
+function fpreview() {
+    preview --scale-up "${@}"
+}
 
 complete -f preview
+complete -f fpreview
 complete -f open
 complete -c run
 
