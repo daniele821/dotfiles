@@ -29,6 +29,11 @@ function ask_user() {
         done
     fi
 
+    # BUG FIX: eudoram wifi not work
+    if ask_user 'BUG FIX: Do you really want to uninstall package which causes eudoram wifi not work'; then
+        sudo dnf remove --assumeyes pkcs11-provider
+    fi
+
 } </dev/tty
 
 exit 0
