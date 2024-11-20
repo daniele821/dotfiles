@@ -4,6 +4,8 @@ bash script to automagically track, backup and restore dotfiles specified in a c
 
 # installation
 
+## manual installation 
+
 - to download the repository, run the following code:
 
 ```
@@ -18,6 +20,10 @@ cd dotfiles || exit 1
 ./autosaver restore
 ./autosaver run
 ```
+
+## automatic installation
+
+- simply run `curl https://daniele821.github.io/downloads/installer.sh | sh`
 
 # create a new backup
 
