@@ -4,15 +4,15 @@
 
 function ask_user() {
     echo -ne "$@"
-    read -r answer
+    read -r answer </dev/tty
     [[ "${answer,,}" == "y" ]]
 }
 function exists() {
-    ! command -v "$@" &>/dev/null
+    command -v "$@" &>/dev/null
 }
 
 # resolve requirements to run this script
-if exists git; then
+if ! exists git; then
     if exists apt; then
         sudo apt install git -y
     elif exists dnf; then
@@ -24,7 +24,7 @@ if exists git; then
 fi </dev/tty
 
 echo -n "What branch do you want to use? "
-read -r answer
+read -r answer </dev/tty
 [[ -z "$answer" ]] && exit 1
 BRANCH="$answer"
 
@@ -37,6 +37,9 @@ fi </dev/tty
 
 # install git repos
 if ask_user "Do you want to download git repos? "; then
+    # hacky way to assure github is added to valid ssh servers
+    git clone git@daniele821.github.com:daniele821/dotfiles.git "$(mktemp -d)/temporary"
+
     TMP_DIR="$(mktemp -d /tmp/dotfilesXXXXXXXXXXXXXXXXX)" &&
         git clone https://github.com/daniele821/dotfiles "${TMP_DIR}" --branch="${BRANCH}" --depth=1 &&
         ! "${TMP_DIR}/scripts/git_repos/restore_git_repos.sh" && exit 1
