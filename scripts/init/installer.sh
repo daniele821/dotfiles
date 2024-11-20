@@ -4,7 +4,7 @@
 
 function ask_user() {
     echo -ne "$@"
-    read -r answer
+    read -r answer </dev/tty
     [[ "${answer,,}" == "y" ]]
 }
 function exists() {
@@ -24,7 +24,7 @@ if ! exists git; then
 fi </dev/tty
 
 echo -n "What branch do you want to use? "
-read -r answer
+read -r answer </dev/tty
 [[ -z "$answer" ]] && exit 1
 BRANCH="$answer"
 
