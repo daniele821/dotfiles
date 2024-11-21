@@ -8,3 +8,5 @@ eval "$(starship init bash)"
 function blastoff() {
     git status -s &>/dev/null
 }
+
+export PS2="> "
