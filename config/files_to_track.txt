@@ -4,4 +4,5 @@
 .config/mpv
 .config/kitty
 .bashrc.d
+.config/plasma-localerc
 
