@@ -13,7 +13,34 @@ function run() {
     __exec_nohupped__ "$@"
 }
 function open() {
-    for file in "${@}"; do __exec_nohupped__ xdg-open "$file"; done
+    [[ "${#@}" -eq "0" ]] && return 0
+    pdfs=()
+    others=()
+    for file in "${@}"; do
+        if [[ "$(head -c 4 "$file")" == "%PDF" ]]; then
+            pdfs+=("$file")
+        else
+            others+=("$file")
+        fi &>/dev/null
+    done
+    if command -v okular &>/dev/null; then
+        [[ "${#pdfs[@]}" -gt 0 ]] && __exec_nohupped__ okular "${pdfs[@]}"
+    else
+        others+=("${pdfs[@]}")
+    fi
+    for file in "${others[@]}"; do
+        __exec_nohupped__ xdg-open "$file"
+    done
+}
+function fopen() {
+    [[ "${#@}" -eq "0" ]] && return 0
+    files=()
+    for file in "${@}"; do
+        if [[ -f "$file" ]]; then
+            files+=("$file")
+        fi &>/dev/null
+    done
+    open "${files[@]}"
 }
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
@@ -25,6 +52,7 @@ function fpreview() {
 complete -f preview
 complete -f fpreview
 complete -f open
+complete -f fopen
 complete -c run
 
 alias ls='lsd --group-dirs first'
