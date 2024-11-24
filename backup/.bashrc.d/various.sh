@@ -40,6 +40,25 @@ function open() {
         __exec_nohupped__ xdg-open "$file"
     done
 }
+function edit() {
+    ! command -v nvim &>/dev/null && echo 'neovim needs to be installed!' && return 1
+    case "$#" in
+    0) return 0 ;;
+    1) ;;
+    *) echo 'multiple files cannot be edited at once!' && return 1 ;;
+    esac
+    file="$1"
+    path="$(realpath "${file}")"
+    if ! [[ -f "${path}" ]]; then
+        echo "cannot edit ${path}" 1>&2
+    else
+        if test -w "${path}"; then
+            nvim "$path"
+        else
+            EDITOR=nvim sudoedit "$path"
+        fi
+    fi
+}
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
 }
