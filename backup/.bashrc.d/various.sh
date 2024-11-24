@@ -66,10 +66,6 @@ function fpreview() {
     preview --scale-up "${@}"
 }
 
-complete -f preview
-complete -f fpreview
-complete -f open
-complete -f fopen
 complete -c run
 
 alias ls='lsd --group-dirs first'
