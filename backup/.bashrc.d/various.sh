@@ -15,10 +15,13 @@ function run() {
 function open() {
     [[ "${#@}" -eq "0" ]] && return 0
     pdfs=()
+    dirs=()
     others=()
     for file in "${@}"; do
         if [[ "$(head -c 4 "$file")" == "%PDF" ]]; then
             pdfs+=("$file")
+        elif [[ -d "$file" ]]; then
+            dirs+=("$file")
         else
             others+=("$file")
         fi &>/dev/null
@@ -28,19 +31,14 @@ function open() {
     else
         others+=("${pdfs[@]}")
     fi
+    if command -v dolphin &>/dev/null; then
+        [[ "${#dirs[@]}" -gt 0 ]] && __exec_nohupped__ dolphin "${dirs[@]}"
+    else
+        others+=("${dirs[@]}")
+    fi
     for file in "${others[@]}"; do
         __exec_nohupped__ xdg-open "$file"
     done
-}
-function fopen() {
-    [[ "${#@}" -eq "0" ]] && return 0
-    files=()
-    for file in "${@}"; do
-        if [[ -f "$file" ]]; then
-            files+=("$file")
-        fi &>/dev/null
-    done
-    open "${files[@]}"
 }
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
