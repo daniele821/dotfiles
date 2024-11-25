@@ -43,16 +43,16 @@ func ParseArgs(args []string) configs.Flag {
 		if strings.HasPrefix(word, "-") {
 			for _, letter := range word[1:] {
 				char := string(letter)
-				act := configs.ParseAction[char]
-				opt := configs.ParseOption[char]
-				if act != nil || opt != nil {
+				act, okAct := configs.ParseAction[char]
+				opt, okOpt := configs.ParseOption[char]
+				if okAct || okOpt {
 					acts := []configs.Action{}
 					opts := []configs.Option{}
-					if act != nil {
-						acts = append(acts, *act)
+					if okAct {
+						acts = append(acts, act)
 					}
-					if opt != nil {
-						opts = append(opts, *opt)
+					if okOpt {
+						opts = append(opts, opt)
 					}
 					flag.AppendFlags(acts, opts)
 				} else {
