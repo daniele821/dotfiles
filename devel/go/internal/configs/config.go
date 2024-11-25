@@ -2,6 +2,7 @@ package configs
 
 import (
 	"autosaver/internal/utils"
+	"maps"
 	"os"
 	"path/filepath"
 )
@@ -59,21 +60,26 @@ var (
 	}
 )
 var (
-	ParseShortcut = map[string]Flag{
+	ParseShortcutLong = map[string]Flag{
 		"save":       NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose}),
 		"saveall":    NewFlags([]Action{ActSave}, []Option{OptYes, OptVerbose, OptToggle}),
 		"restore":    NewFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose}),
 		"restoreall": NewFlags([]Action{ActBackup}, []Option{OptYes, OptVerbose, OptToggle}),
 		"commit":     NewFlags([]Action{ActCommit}, []Option{OptYes}),
-		"co":         NewFlags([]Action{ActCommit}, []Option{OptYes}),
 		"uncommit":   NewFlags([]Action{ActCommit}, []Option{OptYes, OptToggle}),
-		"un":         NewFlags([]Action{ActCommit}, []Option{OptYes, OptToggle}),
 		"untracked":  NewFlags([]Action{ActUntracked}, []Option{}),
 		"init":       NewFlags([]Action{ActInit}, []Option{OptYes}),
 		"run":        NewFlags([]Action{ActRun}, []Option{OptYes}),
 		"edit":       NewFlags([]Action{ActEdit}, []Option{}),
 	}
-	ParseAction = map[string]*Action{
+	ParseShortcutAbbr = map[string]string{
+		"sa": "save",
+		"re": "restore",
+		"co": "commit",
+		"un": "uncommit",
+	}
+	ParseShortcut = merge(ParseShortcutLong, ParseShortcutAbbr)
+	ParseAction   = map[string]*Action{
 		"b": utils.Point(ActBackup),
 		"c": utils.Point(ActCommit),
 		"e": utils.Point(ActEdit),
@@ -110,4 +116,16 @@ func scriptPath() string {
 		utils.ErrExit("could not solve symlink path of current executable")
 	}
 	return path
+}
+
+func merge(long map[string]Flag, abbr map[string]string) map[string]Flag {
+	res := maps.Clone(long)
+	for key, val := range abbr {
+		if value, ok := long[val]; ok {
+			res[key] = value
+		} else {
+			utils.ErrExit("invalid shortcut abbreviation")
+		}
+	}
+	return res
 }
