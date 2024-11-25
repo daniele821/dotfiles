@@ -36,18 +36,16 @@
         - f         : (requires -t) deletes config directories recursively
 
 - shortcuts:
-    - save          : save all files to backup
+    - sa[ve]        : save all files to backup
     - saveall       : save all files to backup (even the `notdiff` ones)
-    - restore       : restore all files from backup
+    - re[store]     : restore all files from backup
     - restoreall    : restore all files from backup (even the `notdiff` ones)
-    - commit        : commit and push all changes in git repo
-    - uncommit      : delete all changes in git repo
+    - co[mmit]      : commit and push all changes in git repo
+    - un[commit]    : delete all changes in git repo
     - untracked     : list untracked files
     - init          : initialize needed directories and config files
     - edit          : allow to edit all files
     - run           : run all init scripts 
-    - co            : "commit"
-    - un            : "uncommit"
 
 - envvars:
     - DBG           : show performance and flags
