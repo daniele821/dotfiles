@@ -117,7 +117,9 @@ func commitAction(flag configs.Flag) {
 	gitRootDir := utils.ProcessGitRootDir(dirScript)
 
 	if !optToggle {
-		utils.ProcessGitPull(gitRootDir)
+		if !utils.ProcessGitPull(gitRootDir) {
+			utils.ErrExit("git pull failed!")
+		}
 	}
 
 	if utils.ProcessHasGitChanges(gitRootDir) {
@@ -130,12 +132,16 @@ func commitAction(flag configs.Flag) {
 				fmt.Print(utils.ColorMsg("Write commit message: ", utils.MsgInfo))
 				input := utils.ReadInput()
 				if input != "" {
-					utils.ProcessGitCommitAll(gitRootDir, input)
+					if !utils.ProcessGitCommitAll(gitRootDir, input) {
+						utils.ErrExit("commit via git of all changes failed!")
+					}
 				}
 			}
 		} else {
 			if utils.AskUser(utils.ColorMsg("Do you really want to restore all? ", utils.MsgInfo), autoAnswer...) {
-				utils.ProcessGitRestoreAll(gitRootDir)
+				if !utils.ProcessGitRestoreAll(gitRootDir) {
+					utils.ErrExit("restore via git of all changes failed!")
+				}
 			}
 		}
 	} else if optToggle {
@@ -143,6 +149,8 @@ func commitAction(flag configs.Flag) {
 	}
 
 	if !optToggle {
-		utils.ProcessGitPush(gitRootDir)
+		if !utils.ProcessGitPush(gitRootDir) {
+			utils.ErrExit("git push failed!")
+		}
 	}
 }
