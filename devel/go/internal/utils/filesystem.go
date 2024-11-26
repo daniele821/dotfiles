@@ -153,6 +153,10 @@ func FilesDiffer(file1, file2 string) bool {
 	if stat1.Size() != stat2.Size() {
 		return true
 	}
+	// check if files types differs
+	if GetFileType(file1) != GetFileType(file2) {
+		return true
+	}
 	// compare two symlinks
 	if FileTypeFileSymlink.Check(file1) && FileTypeFileSymlink.Check(file2) {
 		lnk1, _ := os.Readlink(file1)
