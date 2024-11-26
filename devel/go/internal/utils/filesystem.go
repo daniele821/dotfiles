@@ -37,8 +37,8 @@ func GetFileType(path string) FileType {
 	return fileType
 }
 
-func (f FileType) Check(fileType FileType) bool {
-	return f&fileType == fileType
+func (fileType FileType) Check(path string) bool {
+	return GetFileType(path)&fileType == fileType
 }
 
 func CreateDir(dirPath string) {
@@ -81,17 +81,16 @@ func ReadFile(filePath string) string {
 }
 
 func CopyFile(src, dst string) {
-	fileType := GetFileType(src)
-	if !fileType.Check(FileTypeFile) {
+	if !FileTypeFile.Check(src) {
 		ErrExit("path not a file: \"%s\"", src)
 	}
 	CreateDir(filepath.Dir(dst))
-	if fileType.Check(FileTypeFileRegular) {
+	if FileTypeFileRegular.Check(src) {
 		if os.WriteFile(dst, readFile(src), 0644) != nil {
 			DeleteFile(dst, false)
 			ErrExit("could not write to file: \"%s\"", dst)
 		}
-	} else if fileType.Check(FileTypeFileSymlink) {
+	} else if FileTypeFileSymlink.Check(src) {
 		pointed, err := os.Readlink(src)
 		if err != nil {
 			ErrExit("could not read file: \"%s\"", src)
@@ -106,7 +105,7 @@ func AllFilesInDir(dir, relPath string) []string {
 		if err != nil {
 			return err
 		}
-		if GetFileType(path).Check(FileTypeFile) {
+		if FileTypeFile.Check(path) {
 			if relPath != "" {
 				path, err = filepath.Rel(relPath, path)
 				if err != nil {
@@ -144,7 +143,7 @@ func FilesDiffer(file1, file2 string) bool {
 		return true
 	}
 	// compare two symlinks
-	if GetFileType(file1).Check(FileTypeFileSymlink) && GetFileType(file1).Check(FileTypeFileSymlink) {
+	if FileTypeFileSymlink.Check(file1) && FileTypeFileSymlink.Check(file2) {
 		lnk1, _ := os.Readlink(file1)
 		lnk2, _ := os.Readlink(file2)
 		return lnk1 == lnk2
