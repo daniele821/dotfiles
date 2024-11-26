@@ -61,9 +61,14 @@ function edit() {
 }
 function preview() {
     kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
+    echo -ne "\e[1A\e[J"
 }
 function fpreview() {
     preview --scale-up "${@}"
+}
+function safe-update() {
+    sudo dnf --assumeyes offline-upgrade download
+    sudo dnf --assumeyes offline-upgrade reboot
 }
 
 complete -c run
