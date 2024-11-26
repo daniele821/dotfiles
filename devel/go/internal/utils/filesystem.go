@@ -37,36 +37,13 @@ func GetFileType(path string) FileType {
 	return fileType
 }
 
-func IsRegularFile(path string) bool {
-	info, err := os.Lstat(path)
-	if err != nil {
-		return false
-	}
-	return info.Mode().IsRegular()
-}
-
-func IsDirectory(path string) bool {
-	info, err := os.Lstat(path)
-	if err != nil {
-		return false
-	}
-	return info.IsDir()
+func (f FileType) Check(fileType FileType) bool {
+	return f&fileType == fileType
 }
 
 func CreateDir(dirPath string) {
 	if os.MkdirAll(dirPath, 0777) != nil {
 		ErrExit("could not create directory: \"%s\"", dirPath)
-	}
-}
-
-func CreateFile(filePath string) {
-	if IsRegularFile(filePath) {
-		return
-	}
-	CreateDir(filepath.Dir(filePath))
-	_, err := os.Create(filePath)
-	if err != nil {
-		ErrExit("could not create file: \"%s\"", filePath)
 	}
 }
 
@@ -104,10 +81,22 @@ func ReadFile(filePath string) string {
 }
 
 func CopyFile(src, dst string) {
-	CreateFile(dst)
-	if os.WriteFile(dst, readFile(src), 0644) != nil {
-		DeleteFile(dst, false)
-		ErrExit("could not write to file: \"%s\"", dst)
+	fileType := GetFileType(src)
+	if !fileType.Check(FileTypeFile) {
+		ErrExit("path not a file: \"%s\"", src)
+	}
+	CreateDir(filepath.Dir(dst))
+	if fileType.Check(FileTypeFileRegular) {
+		if os.WriteFile(dst, readFile(src), 0644) != nil {
+			DeleteFile(dst, false)
+			ErrExit("could not write to file: \"%s\"", dst)
+		}
+	} else if fileType.Check(FileTypeFileSymlink) {
+		pointed, err := os.Readlink(src)
+		if err != nil {
+			ErrExit("could not read file: \"%s\"", src)
+		}
+		os.Symlink(pointed, dst)
 	}
 }
 
