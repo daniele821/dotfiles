@@ -157,7 +157,7 @@ func FilesDiffer(file1, file2 string) bool {
 	if FileTypeFileSymlink.Check(file1) && FileTypeFileSymlink.Check(file2) {
 		lnk1, _ := os.Readlink(file1)
 		lnk2, _ := os.Readlink(file2)
-		return lnk1 == lnk2
+		return lnk1 != lnk2
 	}
 	// long way: compare contents
 	f1, err := os.Open(file1)
