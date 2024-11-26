@@ -23,3 +23,21 @@ func (answer Answer) String() string {
 	}
 	return fmt.Sprintf("Answer(%d)", answer)
 }
+
+func (fileType FileType) String() string {
+	switch fileType {
+	case FileTypeExist:
+		return "FileTypeExist"
+	case FileTypeFile:
+		return "FileTypeFile"
+	case FileTypeDir:
+		return "FileTypeDir"
+	case FileTypeFileRegular:
+		return "FileTypeFileRegular"
+	case FileTypeFileSymlink:
+		return "FileTypeFileSymlink"
+	case FileTypeNotExist:
+		return "FileTypeNotExist"
+	}
+	return fmt.Sprintf("FileType(%d)", fileType)
+}
