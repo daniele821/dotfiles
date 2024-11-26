@@ -51,7 +51,7 @@ func backupAction(flag configs.Flag) {
 				}
 			}
 		case !isHomeFile && isBackupFile:
-			fileInfo(homeFile, "backup file is missing")
+			fileInfo(homeFile, "original file is missing")
 			if actSave {
 				if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.DeleteFile(backupFile, true)
@@ -64,7 +64,7 @@ func backupAction(flag configs.Flag) {
 			}
 		case isHomeFile && isBackupFile && (optToggle || !slices.Contains(notdiffFiles, file)):
 			if utils.FilesDiffer(homeFile, backupFile) {
-				fileInfo(homeFile, "backup file is missing")
+				fileInfo(homeFile, "backup and original files differ")
 				if optDiff {
 					if actBackup {
 						utils.ProcessDiff(homeFile, backupFile)
