@@ -46,7 +46,7 @@ func runAction(flag configs.Flag) {
 
 func editAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
-	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
+	msg1 := utils.ColorMsg("Do you really want to edit ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
 	files := utils.AllFilesInDir(dirRun, "")
 	files = append(files, utils.Values(configs.AllFiles)...)
