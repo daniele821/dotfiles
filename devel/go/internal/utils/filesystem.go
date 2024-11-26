@@ -106,7 +106,7 @@ func AllFilesInDir(dir, relPath string) []string {
 		if err != nil {
 			return err
 		}
-		if dirEntry.Type().IsRegular() {
+		if GetFileType(path).Check(FileTypeFile) {
 			if relPath != "" {
 				path, err = filepath.Rel(relPath, path)
 				if err != nil {
