@@ -40,6 +40,8 @@ const (
 const (
 	FileTrack typeFile = iota
 	FileNotDiff
+	FileTrackLink
+	FileNotDiffLink
 )
 
 var (
@@ -55,8 +57,10 @@ var (
 		DirConfig: filepath.Join(ScriptDir, "config"),
 	}
 	AllFiles = map[typeFile]string{
-		FileTrack:   filepath.Join(AllDirs[DirConfig], "files_to_track.txt"),
-		FileNotDiff: filepath.Join(AllDirs[DirConfig], "files_to_notdiff.txt"),
+		FileTrack:       filepath.Join(AllDirs[DirConfig], "files_to_track.txt"),
+		FileNotDiff:     filepath.Join(AllDirs[DirConfig], "files_to_notdiff.txt"),
+		FileTrackLink:   filepath.Join(AllDirs[DirConfig], "files_to_track_with_symlinks.txt"),
+		FileNotDiffLink: filepath.Join(AllDirs[DirConfig], "files_to_notdiff_with_symlinks.txt"),
 	}
 )
 var (
