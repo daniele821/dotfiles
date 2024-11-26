@@ -71,12 +71,9 @@ function safe-update() {
 
 complete -c run
 
-alias ls='lsd --group-dirs first'
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
-alias tree='lsd --group-dirs first --tree'
-alias cat='bat'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
 unset command_not_found_handle
