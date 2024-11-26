@@ -110,12 +110,8 @@ func CopyFile(src, dst string) {
 	}
 }
 
-func AllFilesInDir(dir, relPath string, fileTypes ...FileType) []string {
+func AllFilesInDir(dir, relPath string, fileType FileType) []string {
 	var files []string
-	fileType := FileTypeFile
-	if len(fileTypes) != 0 {
-		fileType |= fileTypes[0]
-	}
 	visit := func(path string, dirEntry fs.DirEntry, err error) error {
 		if err != nil {
 			return err

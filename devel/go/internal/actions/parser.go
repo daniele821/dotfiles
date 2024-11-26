@@ -28,8 +28,8 @@ func loadConf(configFile string) []string {
 			if !strings.HasPrefix(line, "/") && line != "" {
 				homeFile := filepath.Join(home, line)
 				backupFile := filepath.Join(backup, line)
-				fileList = append(fileList, utils.AllFilesInDir(homeFile, home)...)
-				fileList = append(fileList, utils.AllFilesInDir(backupFile, backup)...)
+				fileList = append(fileList, utils.AllFilesInDir(homeFile, home, utils.FileTypeFile)...)
+				fileList = append(fileList, utils.AllFilesInDir(backupFile, backup, utils.FileTypeFile)...)
 			}
 		}
 	}
