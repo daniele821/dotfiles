@@ -14,7 +14,7 @@ func loadConf(configFile string) []string {
 	home := configs.Home
 	backup := configs.AllDirs[configs.DirBackup]
 	fileList := []string{}
-	if utils.IsRegularFile(configFile) {
+	if utils.FileTypeFile.Check(configFile) {
 
 		file, err := os.Open(configFile)
 		if err != nil {

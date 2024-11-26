@@ -47,6 +47,17 @@ func CreateDir(dirPath string) {
 	}
 }
 
+func CreateFile(filePath string) {
+	if FileTypeExist.Check(filePath) {
+		return
+	}
+	CreateDir(filepath.Dir(filePath))
+	_, err := os.Create(filePath)
+	if err != nil {
+		ErrExit("could not create file: \"%s\"", filePath)
+	}
+}
+
 func DeleteFile(filePath string, deleteDirs bool) {
 	os.Remove(filePath)
 	dir := filePath

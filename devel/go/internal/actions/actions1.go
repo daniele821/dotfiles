@@ -35,8 +35,8 @@ func backupAction(flag configs.Flag) {
 	for _, file := range allFiles {
 		homeFile := filepath.Join(configs.Home, file)
 		backupFile := filepath.Join(dirBackup, file)
-		isHomeFile := utils.IsRegularFile(homeFile)
-		isBackupFile := utils.IsRegularFile(backupFile)
+		isHomeFile := utils.FileTypeFile.Check(homeFile)
+		isBackupFile := utils.FileTypeFile.Check(backupFile)
 		switch {
 		case isHomeFile && !isBackupFile:
 			fileInfo(homeFile, "backup file is missing")
@@ -101,7 +101,7 @@ func untrackedAction(flag configs.Flag) {
 			if utils.AskUser(utils.ColorMsg("Do you really want to delete backup file ? ", utils.MsgInfo), autoAnswer...) {
 				utils.DeleteFile(backupFile, true)
 			}
-			if optForce && utils.IsRegularFile(homeFile) {
+			if optForce && utils.FileTypeFile.Check(homeFile) {
 				if utils.AskUser(utils.ColorMsg("[DANGER] Do you really want to delete original file ? ", utils.MsgInfo), autoAnswer...) {
 					utils.DeleteFile(homeFile, true)
 				}
