@@ -42,12 +42,12 @@ func ProcessExecute(file string) bool {
 	return run(file)
 }
 
-func ProcessGitPull(gitRootDir string) bool {
-	return run("git", "-C", gitRootDir, "pull")
+func ProcessGitPull(gitRootDir string) {
+	run("git", "-C", gitRootDir, "pull")
 }
 
-func ProcessGitPush(gitRootDir string) bool {
-	return run("git", "-C", gitRootDir, "push")
+func ProcessGitPush(gitRootDir string) {
+	run("git", "-C", gitRootDir, "push")
 }
 
 func ProcessGitStatus(gitRootDir string) {
@@ -62,16 +62,16 @@ func ProcessGitDiff(gitRootDir string, reverse bool) {
 	}
 }
 
-func ProcessGitRestoreAll(gitRootDir string) bool {
-	return run("git", "-C", gitRootDir, "reset", "HEAD") &&
-		run("git", "-C", gitRootDir, "restore", "--staged", gitRootDir) &&
-		run("git", "-C", gitRootDir, "restore", gitRootDir) &&
-		run("git", "-C", gitRootDir, "clean", "-fdq")
+func ProcessGitRestoreAll(gitRootDir string) {
+	run("git", "-C", gitRootDir, "reset", "HEAD")
+	run("git", "-C", gitRootDir, "restore", "--staged", gitRootDir)
+	run("git", "-C", gitRootDir, "restore", gitRootDir)
+	run("git", "-C", gitRootDir, "clean", "-fdq")
 }
 
-func ProcessGitCommitAll(gitRootDir string, commitMsg string) bool {
-	return run("git", "-C", gitRootDir, "add", gitRootDir) &&
-		run("git", "-C", gitRootDir, "commit", "-m", commitMsg)
+func ProcessGitCommitAll(gitRootDir string, commitMsg string) {
+	run("git", "-C", gitRootDir, "add", gitRootDir)
+	run("git", "-C", gitRootDir, "commit", "-m", commitMsg)
 }
 
 func ProcessHasGitChanges(gitRootDir string) bool {
