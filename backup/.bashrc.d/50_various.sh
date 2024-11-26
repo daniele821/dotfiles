@@ -4,8 +4,6 @@ export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
 export GOPATH="$HOME/.local/share/go"
 
-eval "$(direnv hook bash)"
-
 function __exec_nohupped__() {
     (: && nohup "$@" &>/dev/null &)
 }
@@ -68,7 +66,7 @@ function fpreview() {
 }
 function safe-update() {
     sudo dnf --assumeyes offline-upgrade download
-    sudo dnf --assumeyes offline-upgrade reboot
+    sudo dnf offline-upgrade reboot
 }
 
 complete -c run
@@ -84,15 +82,3 @@ alias clear='printf "\033[2J\033[3J\033[1;1H"'
 unset command_not_found_handle
 for i in - {0..9}; do bind -r "\e$i"; done
 bind -x '"\C-l": clear'
-
-function __cleanup_prompt__() {
-    \builtin local -r retval="$?"
-    # set DISABLE_CLEANUP env var to disable this entire function
-    [[ -v DISABLE_CLEANUP ]] && return "$retval"
-    # force new line in terminal if previous output doesn't end with a newline
-    IFS='[;' read -p $'\e[6n' -d R -rs _ COLUMN LINE _
-    [[ "$LINE" -ne "1" ]] && echo
-    return "${retval}"
-}
-[[ -n "${PROMPT_COMMAND}" ]] && export PROMPT_COMMAND+=";"
-export PROMPT_COMMAND+="__cleanup_prompt__"
