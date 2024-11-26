@@ -29,7 +29,7 @@ func initAction(flag configs.Flag) {
 
 func runAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
-	files := utils.AllFilesInDir(dirRun, "")
+	files := utils.AllFilesInDir(dirRun, "", utils.FileTypeFileRegular)
 	slices.Sort(files)
 	msg1 := utils.ColorMsg("Do you really want to execute ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
@@ -48,7 +48,7 @@ func editAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	msg1 := utils.ColorMsg("Do you really want to edit ", utils.MsgInfo)
 	msg3 := utils.ColorMsg(" ? ", utils.MsgInfo)
-	files := utils.AllFilesInDir(dirRun, "")
+	files := utils.AllFilesInDir(dirRun, "", utils.FileTypeFileRegular)
 	files = append(files, utils.Values(configs.AllFiles)...)
 	slices.Sort(files)
 	for _, file := range files {
