@@ -8,6 +8,19 @@ import (
 	"slices"
 )
 
+func loadAllConf() (allTrackedFiles, allNotdiffFiles, AllFiles []string) {
+	trackedFiles := loadConf(fileTrack, utils.FileTypeFileRegular)
+	notdiffFiles := loadConf(fileNotdiff, utils.FileTypeFileRegular)
+	trackedFilesLink := loadConf(fileTrackLink, utils.FileTypeFile)
+	notdiffFilesLink := loadConf(fileNotdiffLink, utils.FileTypeFile)
+	allTracked := append(trackedFiles, trackedFilesLink...)
+	allNotdiff := append(notdiffFiles, notdiffFilesLink...)
+	allFiles := append(allTracked, allNotdiff...)
+	slices.Sort(allFiles)
+	allFiles = slices.Compact(allFiles)
+	return allTrackedFiles, allNotdiffFiles, allFiles
+}
+
 func backupAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	act := flag.GetActionFlag()
@@ -17,15 +30,7 @@ func backupAction(flag configs.Flag) {
 	optDiff := flag.HasOptionFlag(configs.OptDiff)
 	optForce := flag.HasOptionFlag(configs.OptForce)
 	optVerbose := flag.HasOptionFlag(configs.OptVerbose)
-	trackedFiles := loadConf(fileTrack, utils.FileTypeFileRegular)
-	notdiffFiles := loadConf(fileNotdiff, utils.FileTypeFileRegular)
-	trackedFilesLink := loadConf(fileTrackLink, utils.FileTypeFile)
-	notdiffFilesLink := loadConf(fileNotdiffLink, utils.FileTypeFile)
-	allTrackedFiles := append(trackedFiles, trackedFilesLink...)
-	allNotdiffFiles := append(notdiffFiles, notdiffFilesLink...)
-	allFiles := append(allTrackedFiles, allNotdiffFiles...)
-	slices.Sort(allFiles)
-	allFiles = slices.Compact(allFiles)
+	_, allNotdiffFiles, allFiles := loadAllConf()
 
 	fileInfo := func(file, descr string) {
 		msgFile := utils.ColorMsg(file, utils.MsgFile)
@@ -95,7 +100,7 @@ func untrackedAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optForce := flag.HasOptionFlag(configs.OptForce)
-	trackedFiles := append(loadConf(fileTrack, utils.FileTypeFile), loadConf(fileNotdiff, utils.FileTypeFile)...)
+	_, _, trackedFiles := loadAllConf()
 	backupFiles := utils.AllFilesInDir(dirBackup, dirBackup, utils.FileTypeFile)
 	for _, file := range utils.Sub(backupFiles, trackedFiles) {
 		homeFile := filepath.Join(configs.Home, file)
