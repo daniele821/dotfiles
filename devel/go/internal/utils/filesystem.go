@@ -11,12 +11,12 @@ import (
 type FileType int64
 
 const (
-	FileTypeExist FileType = 1 << iota
-	FileTypeFile           = 1<<iota | FileTypeExist
+	FileTypeNotExist FileType = 1 << iota
+	FileTypeExist
+	FileTypeFile = 1<<iota | FileTypeExist
 	FileTypeDir
 	FileTypeFileRegular = 1<<iota | FileTypeFile
 	FileTypeFileSymlink
-	FileTypeNotExist FileType = 0
 )
 
 func GetFileType(path string) FileType {
