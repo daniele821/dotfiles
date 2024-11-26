@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func loadConf(configFile string) []string {
+func loadConf(configFile string, fileType utils.FileType) []string {
 	home := configs.Home
 	backup := configs.AllDirs[configs.DirBackup]
 	fileList := []string{}
-	if utils.FileTypeFile.Check(configFile) {
+	if utils.FileTypeFileRegular.Check(configFile) {
 
 		file, err := os.Open(configFile)
 		if err != nil {
@@ -28,8 +28,8 @@ func loadConf(configFile string) []string {
 			if !strings.HasPrefix(line, "/") && line != "" {
 				homeFile := filepath.Join(home, line)
 				backupFile := filepath.Join(backup, line)
-				fileList = append(fileList, utils.AllFilesInDir(homeFile, home, utils.FileTypeFile)...)
-				fileList = append(fileList, utils.AllFilesInDir(backupFile, backup, utils.FileTypeFile)...)
+				fileList = append(fileList, utils.AllFilesInDir(homeFile, home, fileType)...)
+				fileList = append(fileList, utils.AllFilesInDir(backupFile, backup, fileType)...)
 			}
 		}
 	}

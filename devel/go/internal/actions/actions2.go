@@ -52,7 +52,7 @@ func editAction(flag configs.Flag) {
 	files = append(files, utils.Values(configs.AllFiles)...)
 	slices.Sort(files)
 	for _, file := range files {
-		if utils.FileTypeFile.Check(file) {
+		if utils.FileTypeFileRegular.Check(file) {
 			relfile, _ := filepath.Rel(dirScript, file)
 			msg2 := utils.ColorMsg(relfile, utils.MsgFile)
 			if utils.AskUser(msg1+msg2+msg3, autoAnswer...) {

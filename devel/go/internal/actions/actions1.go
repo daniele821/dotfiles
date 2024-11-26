@@ -17,9 +17,13 @@ func backupAction(flag configs.Flag) {
 	optDiff := flag.HasOptionFlag(configs.OptDiff)
 	optForce := flag.HasOptionFlag(configs.OptForce)
 	optVerbose := flag.HasOptionFlag(configs.OptVerbose)
-	trackedFiles := loadConf(fileTrack)
-	notdiffFiles := loadConf(fileNotdiff)
-	allFiles := append(trackedFiles, notdiffFiles...)
+	trackedFiles := loadConf(fileTrack, utils.FileTypeFileRegular)
+	notdiffFiles := loadConf(fileNotdiff, utils.FileTypeFileRegular)
+	trackedFilesLink := loadConf(fileTrackLink, utils.FileTypeFile)
+	notdiffFilesLink := loadConf(fileNotdiffLink, utils.FileTypeFile)
+	allTrackedFiles := append(trackedFiles, trackedFilesLink...)
+	allNotdiffFiles := append(notdiffFiles, notdiffFilesLink...)
+	allFiles := append(allTrackedFiles, allNotdiffFiles...)
 	slices.Sort(allFiles)
 	allFiles = slices.Compact(allFiles)
 
@@ -62,7 +66,7 @@ func backupAction(flag configs.Flag) {
 					utils.CopyFile(backupFile, homeFile)
 				}
 			}
-		case isHomeFile && isBackupFile && (optToggle || !slices.Contains(notdiffFiles, file)):
+		case isHomeFile && isBackupFile && (optToggle || !slices.Contains(allNotdiffFiles, file)):
 			if utils.FilesDiffer(homeFile, backupFile) {
 				fileInfo(homeFile, "backup and original files differ")
 				if optDiff {
@@ -91,7 +95,7 @@ func untrackedAction(flag configs.Flag) {
 	autoAnswer := autoAnswer(flag)
 	optToggle := flag.HasOptionFlag(configs.OptToggle)
 	optForce := flag.HasOptionFlag(configs.OptForce)
-	trackedFiles := append(loadConf(fileTrack), loadConf(fileNotdiff)...)
+	trackedFiles := append(loadConf(fileTrack, utils.FileTypeFile), loadConf(fileNotdiff, utils.FileTypeFile)...)
 	backupFiles := utils.AllFilesInDir(dirBackup, dirBackup, utils.FileTypeFile)
 	for _, file := range utils.Sub(backupFiles, trackedFiles) {
 		homeFile := filepath.Join(configs.Home, file)
