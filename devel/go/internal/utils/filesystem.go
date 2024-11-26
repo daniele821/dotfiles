@@ -8,6 +8,35 @@ import (
 	"path/filepath"
 )
 
+type FileType int64
+
+const (
+	FileTypeExist FileType = 1 << iota
+	FileTypeFile           = 1<<iota | FileTypeExist
+	FileTypeDir
+	FileTypeFileRegular = 1<<iota | FileTypeFile
+	FileTypeFileSymlink
+	FileTypeNotExist FileType = 0
+)
+
+func GetFileType(path string) FileType {
+	fileType := FileTypeNotExist
+	info, err := os.Lstat(path)
+	if err != nil {
+		return fileType
+	} else {
+		fileType |= FileTypeExist
+	}
+	if info.IsDir() {
+		fileType |= FileTypeDir
+	} else if info.Mode().IsRegular() {
+		fileType |= FileTypeFileRegular
+	} else if info.Mode()&os.ModeSymlink == os.ModeSymlink {
+		fileType |= FileTypeFileSymlink
+	}
+	return fileType
+}
+
 func IsRegularFile(path string) bool {
 	info, err := os.Lstat(path)
 	if err != nil {
