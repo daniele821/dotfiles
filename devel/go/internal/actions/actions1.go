@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 func loadAllConf() (allTrackedFiles, allNotdiffFiles, AllFiles []string) {
+	// load all config files
 	trackedFiles := loadConf(fileTrack, utils.FileTypeFileRegular)
 	notdiffFiles := loadConf(fileNotdiff, utils.FileTypeFileRegular)
 	trackedFilesLink := loadConf(fileTrackLink, utils.FileTypeFile)
@@ -18,6 +20,31 @@ func loadAllConf() (allTrackedFiles, allNotdiffFiles, AllFiles []string) {
 	allFiles := append(allTracked, allNotdiff...)
 	slices.Sort(allFiles)
 	allFiles = slices.Compact(allFiles)
+
+	// check for duplicates
+	if configs.EnvCheck {
+		list := map[string]int{}
+		duplicates := []string{}
+		allSlices := [][]string{trackedFiles, notdiffFiles, trackedFilesLink, notdiffFilesLink}
+		for _, fileSlice := range allSlices {
+			for _, file := range fileSlice {
+				if _, ok := list[file]; !ok {
+					list[file] = 0
+				} else {
+					duplicates = append(duplicates, file)
+				}
+			}
+		}
+		if len(duplicates) > 0 {
+			msg := strings.Builder{}
+			msg.WriteString("duplicate files:")
+			for _, file := range duplicates {
+				msg.WriteString(fmt.Sprintf("\n%s", filepath.Join(configs.Home, file)))
+			}
+			utils.ErrExit(msg.String())
+		}
+	}
+
 	return allTracked, allNotdiff, allFiles
 }
 
