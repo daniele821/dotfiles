@@ -102,6 +102,11 @@ var (
 	}
 )
 
+var (
+	EnvPerf  bool = envExists("DBG")
+	EnvCheck bool = envExists("CHK")
+)
+
 func home() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -132,4 +137,9 @@ func merge(long map[string]Flag, abbr map[string]string) map[string]Flag {
 		}
 	}
 	return res
+}
+
+func envExists(env string) bool {
+	_, exists := os.LookupEnv(env)
+	return exists
 }

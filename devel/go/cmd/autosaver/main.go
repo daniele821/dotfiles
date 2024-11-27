@@ -8,17 +8,8 @@ import (
 	"time"
 )
 
-var (
-	envPerf bool = envExists("DBG")
-)
-
-func envExists(env string) bool {
-	_, exists := os.LookupEnv(env)
-	return exists
-}
-
 func dbgOutput(output ...string) {
-	if !envPerf {
+	if !configs.EnvPerf {
 		return
 	}
 	for _, msg := range output {
