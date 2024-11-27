@@ -103,8 +103,7 @@ var (
 )
 
 var (
-	EnvPerf  bool = envExists("DBG")
-	EnvCheck bool = envExists("CHK")
+	EnvPerf bool = envExists("DBG")
 )
 
 func home() string {
