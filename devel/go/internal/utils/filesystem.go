@@ -96,6 +96,7 @@ func CopyFile(src, dst string) {
 		ErrExit("path not a file: \"%s\"", src)
 	}
 	CreateDir(filepath.Dir(dst))
+	DeleteFile(dst, false)
 	if FileTypeFileRegular.Check(src) {
 		if os.WriteFile(dst, readFile(src), 0644) != nil {
 			DeleteFile(dst, false)
