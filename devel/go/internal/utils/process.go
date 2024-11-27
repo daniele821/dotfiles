@@ -24,7 +24,7 @@ func checkIfExecInPath(executable string) bool {
 }
 
 func ProcessDiff(file1, file2 string) {
-	run("diff", "--color", "-u", file1, file2)
+	run("diff", "--no-dereference", "--color", "-u", file1, file2)
 }
 
 func ProcessEdit(file string) {
