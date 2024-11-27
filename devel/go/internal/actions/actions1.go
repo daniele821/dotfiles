@@ -18,7 +18,7 @@ func loadAllConf() (allTrackedFiles, allNotdiffFiles, AllFiles []string) {
 	allFiles := append(allTracked, allNotdiff...)
 	slices.Sort(allFiles)
 	allFiles = slices.Compact(allFiles)
-	return allTrackedFiles, allNotdiffFiles, allFiles
+	return allTracked, allNotdiff, allFiles
 }
 
 func backupAction(flag configs.Flag) {
