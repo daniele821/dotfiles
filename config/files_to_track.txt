@@ -5,3 +5,4 @@
 .bashrc.d
 .config/plasma-localerc
 .local/share/konsole/NerdProfile.profile
+.config/konsolerc
