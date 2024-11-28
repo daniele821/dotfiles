@@ -4,8 +4,9 @@ Font=FiraCode Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 [General]
 Name=NerdProfile
 Parent=FALLBACK/
-ShowTerminalSizeHint=true
-TerminalRows=30
+ShowTerminalSizeHint=false
+TerminalColumns=120
+TerminalRows=35
 
 [Interaction Options]
 ColorFilterEnabled=false
