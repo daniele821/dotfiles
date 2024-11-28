@@ -2,7 +2,6 @@
 .ssh/config
 .gitconfig
 .config/mpv
-.config/kitty
 .bashrc.d
 .config/plasma-localerc
-
+.local/share/konsole/NerdProfile.profile

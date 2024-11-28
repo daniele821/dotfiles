@@ -10,11 +10,11 @@
     sudo dnf --assumeyes remove mediawriter akregator khelpcenter
     sudo dnf --assumeyes remove kdebugsettings plasma-welcome kde-connect
     sudo dnf --assumeyes remove kaddressbook kmail kfind
-    sudo dnf --assumeyes remove konsole kjournald skanpage
+    sudo dnf --assumeyes remove kjournald skanpage
     sudo dnf --assumeyes remove abrt akonadi-server kmouth
     sudo dnf --assumeyes remove krdc krfb krdp
     sudo dnf --assumeyes remove plasma-discover PackageKit PackageKit-glib
-    sudo dnf --assumeyes install libreoffice-langpack-it mpv kitty
+    sudo dnf --assumeyes install libreoffice-langpack-it mpv
     sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv htop
 
     # starship copr
