@@ -17,10 +17,6 @@
     sudo dnf --assumeyes install libreoffice-langpack-it mpv
     sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv htop
 
-    # starship copr
-    sudo dnf --assumeyes copr enable atim/starship
-    sudo dnf --assumeyes install starship
-
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
