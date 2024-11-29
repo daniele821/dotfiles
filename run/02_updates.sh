@@ -19,7 +19,7 @@ function ask_user() {
         # download kitten for terminal image drawing protocol
         if ask_user 'Do you really want to download kitten locally'; then
             TMP_FILE="$(mktemp)"
-            wget https://github.com/kovidgoyal/kitty/releases/download/v0.37.0/kitten-linux-386 -O "${TMP_FILE}"
+            wget https://github.com/kovidgoyal/kitty/releases/latest/download/kitten-linux-386 -O "${TMP_FILE}"
             chmod +x "${TMP_FILE}"
             sudo mv "${TMP_FILE}" /usr/local/bin/kitten
         fi
