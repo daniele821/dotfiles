@@ -5,7 +5,7 @@ Font=FiraCode Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 Name=NerdProfile
 Parent=FALLBACK/
 ShowTerminalSizeHint=false
-TerminalColumns=120
+TerminalColumns=130
 TerminalRows=35
 
 [Interaction Options]
