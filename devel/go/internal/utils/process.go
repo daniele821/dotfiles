@@ -42,9 +42,7 @@ func ProcessExecute(file string) bool {
 	return run(file)
 }
 
-func ProcessGitPullAndCheck(gitRootDir string) bool {
-	run("git", "-C", gitRootDir, "pull", "--ff-only")
-
+func isBranchUptoDate(gitRootDir string) bool {
 	remote_byte, err1 := exec.Command("git", "-C", gitRootDir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}").Output()
 	remote := strings.TrimSpace(string(remote_byte))
 	branch_byte, err2 := exec.Command("git", "-C", gitRootDir, "rev-parse", "--abbrev-ref", "HEAD").Output()
@@ -64,8 +62,15 @@ func ProcessGitPullAndCheck(gitRootDir string) bool {
 	return true
 }
 
+func ProcessGitPullAndCheck(gitRootDir string) bool {
+	run("git", "-C", gitRootDir, "pull", "--ff-only")
+	return isBranchUptoDate(gitRootDir)
+}
+
 func ProcessGitPush(gitRootDir string) {
-	run("git", "-C", gitRootDir, "push")
+	if !isBranchUptoDate(gitRootDir) {
+		run("git", "-C", gitRootDir, "push")
+	}
 }
 
 func ProcessGitStatus(gitRootDir string) {
