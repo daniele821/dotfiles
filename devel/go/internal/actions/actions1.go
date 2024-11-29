@@ -127,7 +127,9 @@ func commitAction(flag configs.Flag) {
 	gitRootDir := utils.ProcessGitRootDir(dirScript)
 
 	if !optToggle {
-		utils.ProcessGitPull(gitRootDir)
+		if !utils.ProcessGitPullAndCheck(gitRootDir) {
+			utils.ErrExit("could not make current branch up to date with upstream!")
+		}
 	}
 
 	if utils.ProcessHasGitChanges(gitRootDir) {

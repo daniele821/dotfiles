@@ -42,8 +42,26 @@ func ProcessExecute(file string) bool {
 	return run(file)
 }
 
-func ProcessGitPull(gitRootDir string) {
-	run("git", "-C", gitRootDir, "pull")
+func ProcessGitPullAndCheck(gitRootDir string) bool {
+	run("git", "-C", gitRootDir, "pull", "--ff-only")
+
+	remote_byte, err1 := exec.Command("git", "-C", gitRootDir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}").Output()
+	remote := strings.TrimSpace(string(remote_byte))
+	branch_byte, err2 := exec.Command("git", "-C", gitRootDir, "rev-parse", "--abbrev-ref", "HEAD").Output()
+	branch := strings.TrimSpace(string(branch_byte))
+
+	remote_hash_byte, err3 := exec.Command("git", "-C", gitRootDir, "rev-parse", remote).Output()
+	remote_hash := strings.TrimSpace(string(remote_hash_byte))
+	branch_hash_byte, err4 := exec.Command("git", "-C", gitRootDir, "rev-parse", branch).Output()
+	branch_hash := strings.TrimSpace(string(branch_hash_byte))
+
+	if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
+		return false
+	}
+	if remote_hash != branch_hash {
+		return false
+	}
+	return true
 }
 
 func ProcessGitPush(gitRootDir string) {
