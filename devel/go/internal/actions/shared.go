@@ -16,11 +16,11 @@ var fileTrackLink string = configs.AllFiles[configs.FileTrackLink]
 var fileNotdiffLink string = configs.AllFiles[configs.FileNotDiffLink]
 
 func autoAnswer(f configs.Flag) []utils.Answer {
-	if f.HasOptionFlag(configs.OptYes) {
-		return []utils.Answer{utils.AnsYes}
-	}
 	if f.HasOptionFlag(configs.OptNo) {
 		return []utils.Answer{utils.AnsNo}
+	}
+	if f.HasOptionFlag(configs.OptYes) {
+		return []utils.Answer{utils.AnsYes}
 	}
 	return nil
 }
