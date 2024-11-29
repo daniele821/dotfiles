@@ -64,10 +64,6 @@ function preview() {
 function fpreview() {
     preview --scale-up "${@}"
 }
-function safe-update() {
-    sudo dnf --assumeyes offline-upgrade download
-    sudo dnf offline-upgrade reboot
-}
 
 complete -c run
 
