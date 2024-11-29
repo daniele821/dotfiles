@@ -10,7 +10,7 @@
     sudo dnf --assumeyes remove mediawriter akregator khelpcenter
     sudo dnf --assumeyes remove kdebugsettings plasma-welcome kde-connect
     sudo dnf --assumeyes remove kaddressbook kmail kfind
-    sudo dnf --assumeyes remove kjournald skanpage
+    sudo dnf --assumeyes remove kjournald skanpage plasma-drkonqi
     sudo dnf --assumeyes remove abrt akonadi-server kmouth
     sudo dnf --assumeyes remove krdc krfb krdp
     sudo dnf --assumeyes remove plasma-discover PackageKit PackageKit-glib
