@@ -41,6 +41,8 @@ func (action Action) String() string {
 		return "ActInit"
 	case ActRun:
 		return "ActRun"
+	case ActHelp:
+		return "ActHelp"
 	}
 	return fmt.Sprintf("Action(%d)", action)
 }

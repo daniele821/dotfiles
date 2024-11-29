@@ -21,6 +21,7 @@ const (
 	ActEdit
 	ActInit
 	ActRun
+	ActHelp
 	ActDefault = ActList
 )
 const (
@@ -48,6 +49,7 @@ var (
 	Home       string = home()
 	ScriptPath string = scriptPath()
 	ScriptDir  string = filepath.Dir(ScriptPath)
+	HelpPath   string = filepath.Join(ScriptDir, "HELP.txt")
 )
 var (
 	AllDirs = map[typeDir]string{
@@ -75,6 +77,7 @@ var (
 		"init":       NewFlags([]Action{ActInit}, []Option{OptYes}),
 		"run":        NewFlags([]Action{ActRun}, []Option{OptYes}),
 		"edit":       NewFlags([]Action{ActEdit}, []Option{}),
+		"help":       NewFlags([]Action{ActHelp}, []Option{}),
 	}
 	ParseShortcutAbbr = map[string]string{
 		"sa": "save",
@@ -91,6 +94,7 @@ var (
 		"r": ActRun,
 		"s": ActSave,
 		"u": ActUntracked,
+		"h": ActHelp,
 	}
 	ParseOption = map[string]Option{
 		"d": OptDiff,

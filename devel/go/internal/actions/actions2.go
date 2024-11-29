@@ -3,6 +3,7 @@ package actions
 import (
 	"autosaver/internal/configs"
 	"autosaver/internal/utils"
+	"fmt"
 	"path/filepath"
 	"slices"
 )
@@ -59,5 +60,14 @@ func editAction(flag configs.Flag) {
 				utils.ProcessEdit(file)
 			}
 		}
+	}
+}
+
+func helpAction() {
+	if !utils.FileTypeFileRegular.Check(configs.HelpPath) {
+		help, _ := filepath.Rel(dirScript, configs.HelpPath)
+		utils.ErrExit("%s is missing!", help)
+	} else {
+		fmt.Println(utils.ReadFile(configs.HelpPath))
 	}
 }

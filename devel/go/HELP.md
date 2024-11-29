@@ -13,6 +13,7 @@
     - e             : allows to edit files
     - i             : creates necessary directories and files
     - r             : runs init scripts
+    - h             : show this help message
 
 - options flags:
     - d             : show diffs
@@ -46,6 +47,7 @@
     - init          : initialize needed directories and config files
     - edit          : allow to edit all files
     - run           : run all init scripts 
+    - help          : show this help message
 
 - envvars:
     - DBG           : show performance and flags

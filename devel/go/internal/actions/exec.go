@@ -18,5 +18,7 @@ func Execute(flags configs.Flag) {
 		initAction(flags)
 	case configs.ActRun:
 		runAction(flags)
+	case configs.ActHelp:
+		helpAction()
 	}
 }
