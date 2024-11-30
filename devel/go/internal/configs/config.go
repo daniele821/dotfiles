@@ -49,7 +49,7 @@ var (
 	Home       string = home()
 	ScriptPath string = scriptPath()
 	ScriptDir  string = filepath.Dir(ScriptPath)
-	HelpPath   string = filepath.Join(ScriptDir, "HELP.txt")
+	HelpPath   string = filepath.Join(ScriptDir, ".HELP.txt")
 )
 var (
 	AllDirs = map[typeDir]string{

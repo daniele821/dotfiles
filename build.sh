@@ -16,4 +16,4 @@ if [[ "${LANGUAGE}" == "go" ]]; then
 fi
 
 cp "${BUILD_DIR}/autosaver" "${SCRIPT_DIR}/autosaver"
-cp "${BUILD_DIR}/HELP.txt" "${SCRIPT_DIR}/HELP.txt"
+cp "${BUILD_DIR}/.HELP.txt" "${SCRIPT_DIR}/.HELP.txt"
