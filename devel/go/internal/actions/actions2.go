@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 func initAction(flag configs.Flag) {
@@ -68,6 +69,14 @@ func helpAction() {
 		help, _ := filepath.Rel(dirScript, configs.HelpPath)
 		utils.ErrExit("%s is missing!", help)
 	} else {
-		fmt.Println(utils.ReadFile(configs.HelpPath))
+		file := utils.ReadFile(configs.HelpPath)
+		fileSplit := strings.Split(file, "*")
+		for index, i := range fileSplit {
+			if index%2 == 0 {
+				fmt.Print(i)
+			} else {
+				fmt.Printf("\x1b[m\x1b[%sm", i)
+			}
+		}
 	}
 }
