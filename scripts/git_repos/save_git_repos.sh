@@ -10,6 +10,7 @@ CONFIG_FILE="${CONFIG_DIR}/config.txt"
 
 if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
     TMP_FILE="$(mktemp)"
+    touch "${CONFIG_FILE}"
     cp "${CONFIG_FILE}" "${TMP_FILE}"
     nvim "${TMP_FILE}"
     echo -e "\e[1;33mNEW CONFIGURATION FILE:\e[m"
@@ -17,7 +18,6 @@ if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
     echo -ne 'Do you want to save configuration file? '
     read -r answer
     [[ "${answer,,}" == "y" ]] && echo 'saving configuration file ...' && cp "${TMP_FILE}" "${CONFIG_FILE}"
-    touch "${CONFIG_FILE}"
     rm "${TMP_FILE}"
 fi
 
