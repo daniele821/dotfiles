@@ -9,16 +9,42 @@ CONFIG_FILE="${CONFIG_DIR}/config.txt"
 [[ -f "${BACKUP_FILE}" ]] && rm "${BACKUP_FILE}"
 
 if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
-    TMP_FILE="$(mktemp)"
+    # create temporary files
+    TMP_FILE1="$(mktemp)"
+    TMP_FILE2="$(mktemp)"
+    TMP_FILE3="$(mktemp)"
+    TMP_FILE4="$(mktemp)"
+    TMP_FILE="${TMP_FILE4}"
+
+    # make user write to config file
     touch "${CONFIG_FILE}"
-    cp "${CONFIG_FILE}" "${TMP_FILE}"
-    nvim "${TMP_FILE}"
+    cp "${CONFIG_FILE}" "${TMP_FILE1}"
+    nvim "${TMP_FILE1}"
+
+    # config file cleanup
+    sort "${TMP_FILE1}" -u >"${TMP_FILE2}"
+    while IFS="" read -r line || [[ -n "$line" ]]; do
+        if [[ -n "$line" ]]; then
+            [[ "${line:0-1}" == '/' ]] && line="${line::-1}"
+            [[ "${line:0:1}" == '~' ]] && line="${HOME}${line:1}"
+            if [[ -d "${line}" ]]; then
+                echo "${line}" >>"${TMP_FILE3}"
+            else
+                echo -e "\e[1;33mWARNING: '${line}' not a directory\e[m" >/dev/tty
+            fi
+        fi
+    done <"${TMP_FILE2}"
+    sort "${TMP_FILE3}" -u >"${TMP_FILE4}"
+
+    # ask user if he wants to save config save
     echo -e "\e[1;33mNEW CONFIGURATION FILE:\e[m"
     \cat "${TMP_FILE}"
     echo -ne 'Do you want to save configuration file? '
     read -r answer
     [[ "${answer,,}" == "y" ]] && echo 'saving configuration file ...' && cp "${TMP_FILE}" "${CONFIG_FILE}"
-    rm "${TMP_FILE}"
+
+    # remove temporary files
+    rm "${TMP_FILE1}" "${TMP_FILE2}" "${TMP_FILE3}" "${TMP_FILE4}"
 fi
 
 while read -r rootdir; do
