@@ -1,12 +1,24 @@
 #!/bin/bash
 
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
-CONFIG_FILE="${SCRIPT_DIR}/config.txt"
+CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/git_repos"
+BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
+CONFIG_FILE="${CONFIG_DIR}/config.txt"
 
-! [[ -f "${CONFIG_FILE}" ]] && touch "${CONFIG_FILE}" && exit 0
+! [[ -f "${CONFIG_FILE}" ]] && mkdir -p "${CONFIG_DIR}" && touch "${CONFIG_FILE}" && FILE_MISSING=
 [[ -f "${BACKUP_FILE}" ]] && rm "${BACKUP_FILE}"
+
+if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
+    TMP_FILE="$(mktemp)"
+    cp "${CONFIG_FILE}" "${TMP_FILE}"
+    nvim "${TMP_FILE}"
+    \cat "${TMP_FILE}"
+    echo -ne 'Do you want to save configuration file? '
+    read -r answer
+    [[ "${answer,,}" == "y" ]] && echo 'saving configuration file ...' && cp "${TMP_FILE}" "${CONFIG_FILE}"
+    touch "${CONFIG_FILE}"
+    rm "${TMP_FILE}"
+fi
 
 while read -r rootdir; do
     [[ -d "${rootdir}" ]] && echo "Searching git repos inside ${rootdir}..."

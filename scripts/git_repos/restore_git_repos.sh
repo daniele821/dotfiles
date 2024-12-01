@@ -1,8 +1,8 @@
 #!/bin/bash
 
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-BACKUP_FILE="${SCRIPT_DIR}/git_repos.txt"
+CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/git_repos"
+BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
 
 CLONEPID=()
 TMPFILES=()
