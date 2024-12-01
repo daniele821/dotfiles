@@ -23,6 +23,11 @@ git@daniele821.github.com:daniele821/python.git
 main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
+/personal/repos/danix1234/elaborato_WEB_2025
+git@danix1234.github.com:danix1234/Elaborato_WEB_2024.git
+main
+daniele.muffato@studio.unibo.it
+---------------------------------------------------------------------
 /personal/repos/danix1234/unibo-2a
 git@danix1234.github.com:danix1234/unibo-2a.git
 main
