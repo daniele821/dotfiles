@@ -1,2 +1,8 @@
 .config/htop/htoprc
 .local/share/fonts
+
+// kde apps configs
+.local/share/konsole/NerdProfile.profile
+.config/plasma-localerc
+.config/konsolerc
+.config/dolphinrc

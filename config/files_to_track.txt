@@ -3,9 +3,3 @@
 .gitconfig
 .config/mpv
 .bashrc.d
-
-// kde apps configs
-.local/share/konsole/NerdProfile.profile
-.config/plasma-localerc
-.config/konsolerc
-.config/dolphinrc
