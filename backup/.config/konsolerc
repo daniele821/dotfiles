@@ -10,5 +10,8 @@ RememberWindowSize=false
 [MainWindow]
 ToolBarsMovable=Disabled
 
+[Notification Messages]
+ShowPasteHugeTextWarning=false
+
 [UiSettings]
 ColorScheme=
