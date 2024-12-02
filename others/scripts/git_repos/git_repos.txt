@@ -1,3 +1,8 @@
+/personal/repos/daniele821/advent_of_code
+git@daniele821.github.com:daniele821/advent_of_code.git
+main
+danixgithub1@gmail.com
+---------------------------------------------------------------------
 /personal/repos/daniele821/dotfiles
 git@daniele821.github.com:daniele821/dotfiles.git
 fedora-kde
