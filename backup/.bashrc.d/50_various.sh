@@ -65,7 +65,7 @@ function fpreview() {
     preview --scale-up "${@}"
 }
 function safe-upgrade() {
-    echo "checking if updates are available..."
+    echo -e "\e[1;34mchecking if updates are available...\e[m"
     updates="$(dnf check-upgrade | wc -l)"
     [[ "${updates}" -eq 0 ]] && echo -e "\e[1;31mThere are no updates available!\e[m" && return 0
     echo -e "\e[1;34mThere are ${updates} updates available!\e[m"
