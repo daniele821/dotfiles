@@ -29,7 +29,7 @@ main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/danix1234/elaborato_WEB_2025
-git@danix1234.github.com:danix1234/Elaborato_WEB_2024.git
+git@danix1234.github.com:danix1234/elaborato_WEB_2025.git
 main
 daniele.muffato@studio.unibo.it
 ---------------------------------------------------------------------
