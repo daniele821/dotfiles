@@ -48,7 +48,7 @@ if [[ "$1" == '-e' || "$1" == 'edit' || ! -f "${CONFIG_FILE}" ]]; then
 fi
 
 [[ -f "${CONFIG_FILE}" ]] && while read -r rootdir; do
-    [[ -d "${rootdir}" ]] && echo "Searching git repos inside ${rootdir}..."
+    [[ -d "${rootdir}" ]] && echo "Searching git repos inside ${rootdir}..." >/dev/tty
     [[ -d "${rootdir}" ]] && find "${rootdir}" -iname .git 2>/dev/null | sort | while read -r dir; do
         DIR="$(dirname "${dir}" 2>/dev/null)"
         EMAIL="$(git -C "${DIR}" config user.email 2>/dev/null)"
