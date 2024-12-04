@@ -47,7 +47,7 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     echo -e "${MESSAGGES[i]}"
     tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
     git -C "${DIRS[$i]}" config user.email "${EMAILS[$i]}"
-    git -C "${DIRS[$i]}" switch "${BRANCHES[$i]}"
+    git -C "${DIRS[$i]}" checkout "${BRANCHES[$i]}"
     rm "${TMPFILES[$i]}"
 done
 
