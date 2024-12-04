@@ -5,10 +5,7 @@ CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/
 BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
 CONFIG_FILE="${CONFIG_DIR}/config.txt"
 
-! [[ -f "${CONFIG_FILE}" ]] && mkdir -p "${CONFIG_DIR}" && touch "${CONFIG_FILE}" && FILE_MISSING=
-[[ -f "${BACKUP_FILE}" ]] && rm "${BACKUP_FILE}"
-
-if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
+if [[ "$1" == '-e' || "$1" == 'edit' || ! -f "${CONFIG_FILE}" ]]; then
     # create temporary files
     TMP_FILE1="$(mktemp)"
     TMP_FILE2="$(mktemp)"
@@ -17,8 +14,7 @@ if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
     TMP_FILE="${TMP_FILE4}"
 
     # make user write to config file
-    touch "${CONFIG_FILE}"
-    cp "${CONFIG_FILE}" "${TMP_FILE1}"
+    [[ -f "${CONFIG_FILE}" ]] && cp "${CONFIG_FILE}" "${TMP_FILE1}"
     nvim "${TMP_FILE1}"
 
     # config file cleanup
@@ -30,7 +26,7 @@ if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
             if [[ -d "${line}" ]]; then
                 echo "${line}" >>"${TMP_FILE3}"
             else
-                echo -e "\e[1;33mWARNING: '${line}' not a directory\e[m" >/dev/tty
+                echo -e "WARNING: '${line}' not a directory" >/dev/tty
             fi
         fi
     done <"${TMP_FILE2}"
@@ -41,13 +37,17 @@ if [[ "$1" == '-e' || "$1" == 'edit' || -v 'FILE_MISSING' ]]; then
     \cat "${TMP_FILE}"
     echo -ne 'Do you want to save configuration file? '
     read -r answer
-    [[ "${answer,,}" == "y" ]] && echo 'saving configuration file ...' && cp "${TMP_FILE}" "${CONFIG_FILE}"
+    if [[ "${answer,,}" == "y" ]]; then
+        echo 'saving configuration file ...'
+        mkdir -p "${CONFIG_DIR}"
+        cp "${TMP_FILE}" "${CONFIG_FILE}"
+    fi
 
     # remove temporary files
     rm "${TMP_FILE1}" "${TMP_FILE2}" "${TMP_FILE3}" "${TMP_FILE4}"
 fi
 
-while read -r rootdir; do
+[[ -f "${CONFIG_FILE}" ]] && while read -r rootdir; do
     [[ -d "${rootdir}" ]] && echo "Searching git repos inside ${rootdir}..."
     [[ -d "${rootdir}" ]] && find "${rootdir}" -iname .git 2>/dev/null | sort | while read -r dir; do
         DIR="$(dirname "${dir}" 2>/dev/null)"
@@ -73,3 +73,5 @@ while read -r rootdir; do
         fi
     done >>"${BACKUP_FILE}"
 done <"${CONFIG_FILE}"
+
+exit 0
