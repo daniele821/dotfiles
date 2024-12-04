@@ -21,7 +21,7 @@ if [[ "$1" == '-e' || "$1" == 'edit' || ! -f "${CONFIG_FILE}" ]]; then
     sort "${TMP_FILE1}" -u >"${TMP_FILE2}"
     while IFS="" read -r line || [[ -n "$line" ]]; do
         if [[ -n "$line" ]]; then
-            [[ "${line:0-1}" == '/' ]] && line="${line::-1}"
+            [[ "${line:0-1}" == '/' && ${line} != "/" ]] && line="${line::-1}"
             [[ "${line:0:1}" == '~' ]] && line="${HOME}${line:1}"
             if [[ -d "${line}" ]]; then
                 echo "${line}" >>"${TMP_FILE3}"
