@@ -63,7 +63,7 @@ fi
             echo -e "${DIR}\n${URL}\n${BRANCH}\n${EMAIL}"
             echo "---------------------------------------------------------------------"
         fi
-    done >>"${BACKUP_FILE}"
-done <"${CONFIG_FILE}"
+    done
+done <"${CONFIG_FILE}" >"${BACKUP_FILE}"
 
 exit 0
