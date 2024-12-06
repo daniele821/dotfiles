@@ -13,5 +13,8 @@ ToolBarsMovable=Disabled
 [Notification Messages]
 ShowPasteHugeTextWarning=false
 
+[TabBar]
+ExpandTabWidth=true
+
 [UiSettings]
 ColorScheme=
