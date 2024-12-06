@@ -1,8 +1,3 @@
-/personal/repos/daniele821/advent_of_code
-git@daniele821.github.com:daniele821/advent_of_code.git
-main
-danixgithub1@gmail.com
----------------------------------------------------------------------
 /personal/repos/daniele821/dotfiles
 git@daniele821.github.com:daniele821/dotfiles.git
 fedora-kde
@@ -30,7 +25,7 @@ danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/danix1234/elaborato_WEB_2025
 git@danix1234.github.com:danix1234/elaborato_WEB_2025.git
-main
+devel-dani
 daniele.muffato@studio.unibo.it
 ---------------------------------------------------------------------
 /personal/repos/danix1234/unibo-2a
