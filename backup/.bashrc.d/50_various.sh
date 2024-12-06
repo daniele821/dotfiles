@@ -65,17 +65,7 @@ function fpreview() {
     preview --scale-up "${@}"
 }
 function safe-upgrade() {
-    echo -e "\e[1;34mchecking if updates are available...\e[m"
-    updates="$(dnf check-upgrade | wc -l)"
-    [[ "${updates}" -eq 0 ]] && echo -e "\e[1;31mThere are no updates available!\e[m" && return 0
-    echo -e "\e[1;34mThere are ${updates} updates available!\e[m"
-
-    if [[ "$1" != "-y" ]]; then
-        echo -ne "\e[1;33mDo you really want to safely upgrade your system?\e[m "
-        read -r answer </dev/tty
-        [[ "${answer,,}" != "y" ]] && return 0
-    fi
-    sudo dnf --assumeyes offline-upgrade download
+    sudo -k dnf --assumeyes offline-upgrade download
     sudo dnf --assumeyes offline-upgrade reboot
     return 0
 }
