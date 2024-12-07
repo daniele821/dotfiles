@@ -15,7 +15,7 @@
     sudo dnf --assumeyes remove krdc krfb krdp
     sudo dnf --assumeyes remove plasma-discover PackageKit PackageKit-glib
     sudo dnf --assumeyes install libreoffice-langpack-it mpv
-    sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr golang direnv htop
+    sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr git golang direnv htop
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
