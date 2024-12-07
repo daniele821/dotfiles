@@ -69,6 +69,15 @@ function safe-upgrade() {
     sudo dnf --assumeyes offline-upgrade download
     sudo dnf --assumeyes offline-upgrade reboot
 }
+function convert2html() {
+    [[ $# -gt 1 ]] && echo 'multiple files not supported!' && return 1
+    [[ $# -eq 0 ]] && return 0
+    [[ ! -f "$1" ]] && echo 'not a file!' && return 1
+    TMPFILE="$(mktemp)"
+    nvim "$1" --headless -c "TOhtml ${TMPFILE} | qa" &>/dev/null
+    \cat "${TMPFILE}"
+    rm "${TMPFILE}"
+}
 
 complete -c run
 
