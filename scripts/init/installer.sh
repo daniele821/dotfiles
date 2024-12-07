@@ -12,16 +12,17 @@ function exists() {
 }
 
 # resolve requirements to run this script
-if ! exists git; then
-    if exists apt; then
-        sudo apt install git -y
-    elif exists dnf; then
-        sudo dnf --assumeyes install git
+if ! exists git || ! exists go; then
+    if exists dnf; then
+        sudo dnf --assumeyes install git golang || exit
     else
-        echo 'git is not installed'
-        exit 1
-    fi
-fi </dev/tty
+        echo 'unable to install required programs!'
+        exit
+    fi </dev/tty
+fi
+
+# requirements
+export GOPATH="$(mktemp -d 2>/dev/null)"
 
 echo -n "What branch do you want to use? "
 read -r answer </dev/tty
