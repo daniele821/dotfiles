@@ -5,6 +5,7 @@ import (
 	"autosaver/internal/configs"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -24,21 +25,24 @@ func runPerf(msg string, run func()) {
 	dbgOutput(msg, perf.String(), "\n")
 }
 
-func main() {
+func execute() {
 	args := os.Args[1:]
 
 	params := []string{}
 	for _, arg := range append(args, "--") {
 		if arg == "--" {
 			var flags configs.Flag
-			dbgOutput()
-			runPerf("Parsing flags   -->   ", func() { flags = actions.ParseArgs(params) })
-			dbgOutput(flags.String(), "\n")
-			runPerf("Executing       -->   ", func() { actions.Execute(flags) })
-			dbgOutput("\n")
+			runPerf("Parsing flags     -->   ", func() { flags = actions.ParseArgs(params) })
+			dbgOutput("Flags             -->   \"", strings.Join(params, " "), "\": ", flags.String(), "\n")
+			runPerf("Executing         -->   ", func() { actions.Execute(flags) })
+			dbgOutput("-----------------------------------\n")
 			params = nil
 		} else {
 			params = append(params, arg)
 		}
 	}
+}
+
+func main() {
+	runPerf("Program execution -->   ", execute)
 }
