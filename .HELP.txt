@@ -36,3 +36,4 @@ Program to backup dotfiles, with git integration
 
 *1;4*Environment variables:**
   *1*DBG             **      show perfomance and potentially other infos
+  *1*BUILD           **      force compilation of executable file
