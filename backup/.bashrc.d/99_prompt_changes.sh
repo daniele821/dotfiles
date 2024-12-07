@@ -27,5 +27,3 @@ function __cleanup_prompt__() {
 #   this is probably because they get appended once whilst logging into the current user, and once
 #   when starting a bash process
 PROMPT_COMMAND="__cleanup_prompt__;"${PROMPT_COMMAND}
-
-export PS2="> "
