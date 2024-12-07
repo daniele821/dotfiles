@@ -3,4 +3,19 @@
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
-[[ -f "${SCRIPT_DIR}/.autosaver" ]] && exit 0
+COMPILED_BINARY="${SCRIPT_DIR}/.autosaver"
+
+[[ -v "BUILD" ]] && rm "${COMPILED_BINARY}" &>/dev/null
+
+if [[ -f "${COMPILED_BINARY}" ]]; then
+    "${COMPILED_BINARY}" "${@}"
+    exit
+fi
+
+if which 'go' &>/dev/null; then
+    cd "${SCRIPT_DIR}/devel" || exit
+    go build -o "${COMPILED_BINARY}" "${SCRIPT_DIR}/devel/cmd/autosaver/main.go"
+    "${COMPILED_BINARY}" "${@}"
+else
+    echo 'go is required to compile the program!'
+fi
