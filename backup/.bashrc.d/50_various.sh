@@ -45,25 +45,31 @@ function open() {
     done
 }
 function popen() {
-    [[ "${#@}" -eq "0" ]] && return 0
+    FILES=("${@}")
+    [[ "${#FILES[@]}" -eq "0" ]] && FILES=(*)
+    [[ "${#FILES[@]}" -eq "0" ]] && return 0
     acc=()
-    for file in "${@}"; do
+    for file in "${FILES[@]}"; do
         type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
         case "$type" in
         application/pdf) acc+=("$file") ;;
         esac &>/dev/null
     done
+    echo "found ${#acc[@]} files"
     open "${acc[@]}"
 }
 function vopen() {
-    [[ "${#@}" -eq "0" ]] && return 0
+    FILES=("${@}")
+    [[ "${#FILES[@]}" -eq "0" ]] && FILES=(*)
+    [[ "${#FILES[@]}" -eq "0" ]] && return 0
     acc=()
-    for file in "${@}"; do
+    for file in "${FILES[@]}"; do
         type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
         case "$type" in
         video/*) acc+=("$file") ;;
         esac &>/dev/null
     done
+    echo "found ${#acc[@]} files"
     open "${acc[@]}"
 }
 function edit() {
