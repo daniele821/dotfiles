@@ -1,5 +1,6 @@
 .config/htop/htoprc
 .local/share/fonts
+.local/share/wallpapers
 
 // kde apps configs
 .local/share/konsole/NerdProfile.profile
