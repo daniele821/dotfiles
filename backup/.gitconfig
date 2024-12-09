@@ -8,6 +8,6 @@
 [pager]
     diff = false
 [alias]
-    lo = !git --no-pager log --oneline --graph -30
+    lo = !git --no-pager log --oneline --graph -20
     st = status -s
     mi = merge --no-commit --no-ff
