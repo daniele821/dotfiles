@@ -14,15 +14,16 @@ function open() {
     [[ "${#@}" -eq "0" ]] && return 0
     pdfs=()
     dirs=()
+    videos=()
     others=()
     for file in "${@}"; do
-        if [[ "$(head -c 4 "$file")" == "%PDF" ]]; then
-            pdfs+=("$file")
-        elif [[ -d "$file" ]]; then
-            dirs+=("$file")
-        else
-            others+=("$file")
-        fi &>/dev/null
+        type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
+        case "$type" in
+        application/pdf) pdfs+=("$file") ;;
+        inode/directory) dirs+=("$file") ;;
+        video/*) videos+=("$file") ;;
+        *) others+=("$file") ;;
+        esac &>/dev/null
     done
     if command -v okular &>/dev/null; then
         [[ "${#pdfs[@]}" -gt 0 ]] && __exec_nohupped__ okular "${pdfs[@]}"
@@ -34,9 +35,36 @@ function open() {
     else
         others+=("${dirs[@]}")
     fi
+    if command -v mpv &>/dev/null; then
+        [[ "${#videos[@]}" -gt 0 ]] && __exec_nohupped__ mpv "${videos[@]}"
+    else
+        others+=("${videos[@]}")
+    fi
     for file in "${others[@]}"; do
         __exec_nohupped__ xdg-open "$file"
     done
+}
+function popen() {
+    [[ "${#@}" -eq "0" ]] && return 0
+    acc=()
+    for file in "${@}"; do
+        type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
+        case "$type" in
+        application/pdf) acc+=("$file") ;;
+        esac &>/dev/null
+    done
+    open "${acc[@]}"
+}
+function vopen() {
+    [[ "${#@}" -eq "0" ]] && return 0
+    acc=()
+    for file in "${@}"; do
+        type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
+        case "$type" in
+        video/*) acc+=("$file") ;;
+        esac &>/dev/null
+    done
+    open "${acc[@]}"
 }
 function edit() {
     ! command -v nvim &>/dev/null && echo 'neovim needs to be installed!' && return 1
