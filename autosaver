@@ -129,8 +129,11 @@ def create_file(path):
 
 
 def create_symlink(path, link):
-    if not os.path.exists(path):
-        create_file(path)
+    if (os.path.exists(path) and isoriginal(path)) or issymlink(path):
+        purge(path)
+    if not isoriginal(path):
+        raise Exception("symlink cannot be created in a symlinked location ({})".format(path))
+    create_file(path)
     delete_file(path)
     os.symlink(link, path)
 
@@ -651,23 +654,23 @@ def execute(flags):
 
 
 # EXECUTION
-if __name__ == "__main__":
-    # disable stderr output
-    if os.getenv("DBG") is None:
-        sys.stderr = open(os.devnull, "w")
-
-    # split execution for every '--' found
-    try:
-        args = sys.argv[1:] + ["--"]
-        params = []
-        for arg in args:
-            if arg == "--":
-                execute(parse(params))
-                params.clear()
-            else:
-                params.append(arg)
-    except Exception as e:
-        if os.getenv("DBG") is None:
-            err_exit(str(e.__class__.__name__) + ": " + str(e))
+def main():
+    args = sys.argv[1:] + ["--"]
+    params = []
+    for arg in args:
+        if arg == "--":
+            execute(parse(params))
+            params.clear()
         else:
-            print(e.with_traceback())
+            params.append(arg)
+
+
+if __name__ == "__main__":
+    if os.getenv("DBG") is not None:
+        main()
+    else:
+        try:
+            sys.stderr = open(os.devnull, "w")
+            main()
+        except Exception as e:
+            err_exit(str(e.__class__.__name__) + ": " + str(e))
