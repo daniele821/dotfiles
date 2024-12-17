@@ -167,21 +167,24 @@ def create_dir(path):
 
 
 def create_file(path):
-    __assert_valid__(path, ["sym"])
+    __assert_valid__(path, ["sym", "none"])
     create_dir(os.path.dirname(os.path.normpath(path)))
     with open(path, "w"):
         pass
     __assert_valid__(path, ["sym", "file"])
 
 
-def delete_dir(path, cleanup=False):
-    __assert_valid__(path, ["sym"])
-    os.rmdir(path)
+def delete_dir(path, allow_force=False):
+    __assert_valid__(path, ["sym", "dir"])
+    if not os.listdir(path):
+        os.rmdir(path)
+    elif allow_force:
+        shutil.rmtree(path)
     __assert_valid__(path, ["sym", "none"])
 
 
 def delete_file(path):
-    __assert_valid__(path, ["sym"])
+    __assert_valid__(path, ["sym", "file"])
     os.remove(path)
     __assert_valid__(path, ["sym", "none"])
 
@@ -396,25 +399,25 @@ def init(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     if not opt_toggle:
         for dir in DIRS.values():
-            if not exist(dir) and isoriginal(dir):
+            try:
                 create_dir(dir)
-            if not isrealdir(dir):
+            except Exception:
                 warn_msg("unable to create directory: {}".format(relpath(dir)))
         for file in FILES.values():
-            if not exist(file) and isoriginal(file):
+            try:
                 create_file(file)
-            if not isrealfile(file):
+            except Exception:
                 warn_msg("unable to create file: {}".format(relpath(file)))
     else:
         for file in FILES.values():
-            if isrealfile(file):
+            try:
                 delete_file(file)
-            if exist(file):
+            except Exception:
                 warn_msg("unable to delete file: {}".format(relpath(file)))
         for dir in DIRS.values():
-            if isrealdir(dir):
-                delete_dir(dir)
-            if exist(dir):
+            try:
+                delete_dir(dir, allow_force=True)
+            except Exception:
                 warn_msg("unable to delete directory: {}".format(relpath(dir)))
 
 
