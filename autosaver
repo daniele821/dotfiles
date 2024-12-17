@@ -129,8 +129,10 @@ def create_file(path):
 
 
 def create_symlink(path, link):
-    if os.path.exists(path) or issymlink(path):
-        delete_file(path)
+    if (os.path.exists(path) and isoriginal(path)) or issymlink(path):
+        purge(path)
+    if not isoriginal(path):
+        raise Exception("symlink cannot be created in a symlinked location ({})".format(path))
     create_file(path)
     delete_file(path)
     os.symlink(link, path)
