@@ -328,42 +328,6 @@ SHORTCUTS |= {"co": SHORTCUTS["commit"]}
 SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 
 
-# ACTION UTILITIES
-def all_files(dir, relpath, regfiles=True, symlink=False):
-    if not __is_original__(dir):
-        raise Exception("invalid symlinked directory ({})".format(dir))
-    files = set()
-    for root, dirdirs, dirfiles in os.walk(dir):
-        for fname in set(dirfiles) | set(dirdirs):
-            fname = os.path.join(root, fname)
-            if regfiles and isfile(fname):
-                fname = os.path.relpath(fname, relpath)
-                files.add(fname)
-    return files
-
-
-def load_config(conf, allow_symlinks=False):
-    if not isfile(conf):
-        return set()
-    odir = HOME
-    bdir = DIRS["backup"]
-    files = set()
-    for line in pathlib.Path(conf).read_text().splitlines():
-        if not line.startswith("/") and line.strip():
-            ofile = os.path.join(odir, line)
-            bfile = os.path.join(bdir, line)
-            for file, dir in ((ofile, odir), (bfile, bdir)):
-                if allow_symlinks:
-                    if isdir(file):
-                        files.update(all_files(file, dir, regfiles=False, symlink=True))
-                else:
-                    if isfile(file):
-                        files.add(line)
-                    elif isdir(file):
-                        files.update(all_files(file, dir))
-    return files
-
-
 # ACTIONS
 def help(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
@@ -600,6 +564,42 @@ def commit(flags):
 
     if not opt_toggle:
         git_push()
+
+
+# ACTION UTILITIES
+def all_files(dir, relpath, regfiles=True, symlink=False):
+    if not __is_original__(dir):
+        raise Exception("invalid symlinked directory ({})".format(dir))
+    files = set()
+    for root, dirdirs, dirfiles in os.walk(dir):
+        for fname in set(dirfiles) | set(dirdirs):
+            fname = os.path.join(root, fname)
+            if regfiles and isfile(fname):
+                fname = os.path.relpath(fname, relpath)
+                files.add(fname)
+    return files
+
+
+def load_config(conf, allow_symlinks=False):
+    if not isfile(conf):
+        return set()
+    odir = HOME
+    bdir = DIRS["backup"]
+    files = set()
+    for line in pathlib.Path(conf).read_text().splitlines():
+        if not line.startswith("/") and line.strip():
+            ofile = os.path.join(odir, line)
+            bfile = os.path.join(bdir, line)
+            for file, dir in ((ofile, odir), (bfile, bdir)):
+                if allow_symlinks:
+                    if isdir(file):
+                        files.update(all_files(file, dir, regfiles=False, symlink=True))
+                else:
+                    if isfile(file):
+                        files.add(line)
+                    elif isdir(file):
+                        files.update(all_files(file, dir))
+    return files
 
 
 # EXECUTION UTILITIES
