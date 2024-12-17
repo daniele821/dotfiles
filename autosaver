@@ -189,6 +189,17 @@ def delete_file(path):
     __assert_valid__(path, ["sym", "none"])
 
 
+def purge_path(path, allow_force=False):
+    if not __exists__(path):
+        return
+    __assert_valid__(path, ["sym"])
+    if isrealdir(path):
+        delete_dir(path, allow_force)
+    elif isrealfile(path):
+        delete_file(path)
+    __assert_valid__(path, ["sym", "none"])
+
+
 def copy_file(src, dst):
     __assert_valid__(src, ["sym", "file"])
     __assert_valid__(dst, ["sym"])
@@ -411,12 +422,12 @@ def init(flags):
     else:
         for file in FILES.values():
             try:
-                delete_file(file)
+                purge_path(file)
             except Exception:
                 warn_msg("unable to delete file: {}".format(relpath(file)))
         for dir in DIRS.values():
             try:
-                delete_dir(dir, allow_force=True)
+                purge_path(dir, allow_force=True)
             except Exception:
                 warn_msg("unable to delete directory: {}".format(relpath(dir)))
 
