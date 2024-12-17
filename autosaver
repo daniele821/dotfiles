@@ -159,13 +159,13 @@ def isrealdir(path):
 
 
 def create_dir(path):
-    __assert_valid__(path, ["sym"])
+    __assert_valid__(path, ["sym"])  # no need to check if it already exists
     os.makedirs(path, exist_ok=True)
     __assert_valid__(path, ["sym", "dir"])
 
 
 def create_file(path):
-    __assert_valid__(path, ["sym", "none"])
+    __assert_valid__(path, ["sym", "none"])  # MUST check if already exists to avoid losing data
     create_dir(os.path.dirname(os.path.normpath(path)))
     with open(path, "w"):
         pass
@@ -206,10 +206,14 @@ def copy_file(src, dst):
     __assert_valid__(dst, ["sym", "file"])
 
 
-# FILESYSTEM UTILITIES
 def relpath(path):
     __assert_valid__(path, ["sym", "exist"])
     return os.path.relpath(path, SCRIPT_DIR)
+
+
+def make_executable(path):
+    __assert_valid__(path, ["sym", "file"])
+    os.chmod(path, os.stat(path).st_mode | 0o111)
 
 
 # DATA STRUCTURES
@@ -415,12 +419,17 @@ def init(flags):
     if not opt_toggle:
         for dir in DIRS.values():
             try:
+                if isrealfile(dir):
+                    delete_file(dir)
                 create_dir(dir)
             except Exception:
                 warn_msg("unable to create directory: {}".format(relpath(dir)))
         for file in FILES.values():
             try:
-                create_file(file)
+                if isrealdir(file):
+                    delete_dir(file, allow_force=True)
+                if not exist(file):
+                    create_file(file)
             except Exception:
                 warn_msg("unable to create file: {}".format(relpath(file)))
     else:
@@ -437,15 +446,19 @@ def init(flags):
 
 
 def run(flags):
-    if not isdir(DIRS["run"]):
+    rundir = DIRS["run"]
+    if not exist(rundir):
         return
+    elif exist(rundir) and not isrealdir(rundir):
+        warn_msg("not a directory: {}".format(relpath(rundir)))
+    return
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
-    for file in sorted(list_files(DIRS["run"])):
+    for file in sorted(list_files(rundir)):
         if not __is_original__(file):
             raise Exception("following symlinks is not supported ({})".format(file))
-        if isfile(file):
-            os.chmod(file, 0o755)
+        if isrealfile(file):
+            make_executable(file)
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
