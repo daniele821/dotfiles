@@ -187,13 +187,17 @@ def isrealdir(path):
 
 
 def create_dir(path):
-    __assert_valid__(path, ["sym"])  # no need to check if it already exists
+    if isrealdir(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
     os.makedirs(path, exist_ok=True)
     __assert_valid__(path, ["sym", "dir"])
 
 
 def create_file(path):
-    __assert_valid__(path, ["sym", "none"])  # MUST check if already exists to avoid losing data
+    if isrealfile(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
     create_dir(os.path.dirname(os.path.normpath(path)))
     with open(path, "w"):
         pass
@@ -201,6 +205,8 @@ def create_file(path):
 
 
 def delete_dir(path, allow_force=False):
+    if not exist(path):
+        return
     __assert_valid__(path, ["sym", "dir"])
     if not os.listdir(path):
         os.rmdir(path)
@@ -210,15 +216,17 @@ def delete_dir(path, allow_force=False):
 
 
 def delete_file(path):
+    if not exist(path):
+        return
     __assert_valid__(path, ["sym", "file"])
     os.remove(path)
     __assert_valid__(path, ["sym", "none"])
 
 
 def purge_path(path, allow_force=False):
-    if not __exists__(path):
+    if not exist(path):
         return
-    __assert_valid__(path, ["sym"])
+    __assert_valid__(path, ["sym", "exist"])
     if isrealdir(path):
         delete_dir(path, allow_force)
     elif isrealfile(path):
@@ -228,7 +236,7 @@ def purge_path(path, allow_force=False):
 
 def copy_file(src, dst):
     __assert_valid__(src, ["sym", "file"])
-    __assert_valid__(dst, ["sym"])
+    __assert_valid__(dst, ["sym", "none"])
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
@@ -442,16 +450,16 @@ def init(flags):
     if not opt_toggle:
         for dir in DIRS.values():
             try:
-                purge_path(dir)
+                if not isrealdir(dir):
+                    purge_path(dir, True)
                 create_dir(dir)
             except Exception:
                 warn_msg("unable to create directory: {}".format(relpath(dir)))
         for file in FILES.values():
             try:
-                if isrealdir(file):
-                    delete_dir(file, allow_force=True)
-                if not exist(file):
-                    create_file(file)
+                if not isrealfile(file):
+                    purge_path(dir, True)
+                create_file(file)
             except Exception:
                 warn_msg("unable to create file: {}".format(relpath(file)))
     else:
