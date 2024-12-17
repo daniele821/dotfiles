@@ -31,6 +31,10 @@ def warn_msg(msg):
     color("msg", "WARNING: " + msg, True)
 
 
+def dbg(msg):
+    sys.stderr.write(msg + "\n")
+
+
 def ask_user(msg, flags=None):
     print(msg, end="")
     opt_yes = flags is not None and flags.has_option(Option.YES)
@@ -294,6 +298,7 @@ FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
+ENV_DBG = os.getenv("DBG")
 
 
 class Action(enum.Enum):
@@ -661,7 +666,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if os.getenv("DBG") is not None:
+    if ENV_DBG is not None:
         main()
     else:
         try:
