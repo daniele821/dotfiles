@@ -51,13 +51,29 @@ def dbg_files(msg=None, output=None):
     if ENV_FILES is None:
         return
     category = "files"
-    if not hasattr(dbg_files, "init"):
-        dbg("----------------------------------", category=category)
-        dbg("LIST OF ALL FILESYSTEM OPERATIONS:", category=category)
-        dbg_files.init = True
     if msg is None and output is None:
         return
-    dbg(msg, output, category)
+    if msg is not None:
+        dbg(msg=msg, category=category)
+    if output is not None:
+        term_width = shutil.get_terminal_size().columns
+        if hasattr(dbg, "output"):
+            if dbg.output[category]:
+                dbg.output[category] = [
+                    "",
+                    "*" * term_width,
+                    "\x1b[1;37mLIST OF ALL FILESYSTEM OPERATIONS:\x1b[m",
+                ] + dbg.output[category] + [
+                    "*" * term_width,
+                    "",
+                ]
+        else:
+            print()
+            print("*" * term_width)
+            print("\x1b[1;37mNO FILESYSTEM MODIFICATIONS WERE MADE!\x1b[m")
+            print("*" * term_width)
+            print()
+        dbg(output=output, category=category)
 
 
 def ask_user(msg, flags=None):
