@@ -138,6 +138,11 @@ def __assert_valid__(path, checks=[]):
                 raise Exception("nothing exists in path: {}".format(path))
 
 
+def assert_file(paths):
+    for path in paths:
+        __assert_valid__(path, ["sym", "file"])
+
+
 def isoriginal(path):
     __assert_valid__(path)
     return __is_original__(path)
@@ -207,13 +212,31 @@ def copy_file(src, dst):
 
 
 def relpath(path):
-    __assert_valid__(path, ["sym", "exist"])
+    __assert_valid__(path, ["exist"])
     return os.path.relpath(path, SCRIPT_DIR)
 
 
 def make_executable(path):
     __assert_valid__(path, ["sym", "file"])
     os.chmod(path, os.stat(path).st_mode | 0o111)
+
+
+def list_files(dir):
+    __assert_valid__(dir, ["sym", "dir"])
+    return [os.path.join(dir, i) for i in os.listdir(dir)]
+
+
+def all_files(dir, relpath):
+    __assert_valid__(dir, ["sym", "dir"])
+    __assert_valid__(relpath, ["sym", "dir"])
+    files = set()
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if isrealfile(fname):
+                fname = os.path.relpath(fname, relpath)
+                files.add(fname)
+    return files
 
 
 # DATA STRUCTURES
@@ -424,7 +447,7 @@ def run(flags):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
-                    if not subprocess.run(["sh", file]).returncode:
+                    if subprocess.run(["sh", file]).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!")
@@ -439,7 +462,7 @@ def edit(flags):
             editor = edit_prog
             break
     if editor is None:
-        err_exit("no editor could be found")
+        err_exit("no terminal editor could be found!")
 
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
@@ -567,20 +590,9 @@ def commit(flags):
 
 
 # ACTION UTILITIES
-def all_files(dir, relpath, regfiles=True, symlink=False):
-    files = set()
-    for root, dirdirs, dirfiles in os.walk(dir):
-        for fname in set(dirfiles) | set(dirdirs):
-            fname = os.path.join(root, fname)
-            if regfiles and isfile(fname):
-                fname = os.path.relpath(fname, relpath)
-                files.add(fname)
-    return files
+def load_config(conf):
+    assert_file(conf)
 
-
-def load_config(conf, allow_symlinks=False):
-    if not isfile(conf):
-        return set()
     odir = HOME
     bdir = DIRS["backup"]
     files = set()
@@ -589,14 +601,10 @@ def load_config(conf, allow_symlinks=False):
             ofile = os.path.join(odir, line)
             bfile = os.path.join(bdir, line)
             for file, dir in ((ofile, odir), (bfile, bdir)):
-                if allow_symlinks:
-                    if isdir(file):
-                        files.update(all_files(file, dir, regfiles=False, symlink=True))
-                else:
-                    if isfile(file):
-                        files.add(line)
-                    elif isdir(file):
-                        files.update(all_files(file, dir))
+                if isrealfile(file):
+                    files.add(line)
+                elif isrealdir(file):
+                    files.update(all_files(file, dir))
     return files
 
 
