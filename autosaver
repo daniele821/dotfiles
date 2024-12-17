@@ -101,24 +101,47 @@ def __is_original__(path):
     return path == os.path.realpath(path)
 
 
-def __assert_valid__(*paths):
-    for path in paths:
-        if os.path.isabs(path):
-            raise Exception("relative paths are not supported!")
-        if __is_original__(path):
-            raise Exception("symlinked locations are not supported!")
-
-
-def __file_exists__(path):
+def __exists__(path):
     return os.path.exists(path) or os.path.islink(path)
 
 
+def __is_file__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isfile(path)
+
+
+def __is_dir__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path)
+
+
+def __assert_valid__(*paths, checks=["abs", "sym"]):
+    if checks:
+        for path in paths:
+            if "abs" in checks:
+                if os.path.isabs(path):
+                    raise Exception("relative paths are not supported!")
+            if "sym" in checks:
+                if __is_original__(path):
+                    raise Exception("symlinked locations are not supported!")
+
+
+def isoriginal(path):
+    __assert_valid__(path, checks=["abs"])
+    return __is_original__(path)
+
+
+def exist(path):
+    __assert_valid__(path, checks=["abs"])
+    return __exists__(path)
+
+
 def isrealfile(path):
-    return os.path.exists(path) and not os.path.islink(path) and os.path.isfile(path) and __is_original__(path)
+    __assert_valid__(path, checks=["abs"])
+    return __is_file__(path) and __is_original__(path)
 
 
 def isrealdir(path):
-    return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path) and __is_original__(path)
+    __assert_valid__(path, checks=["abs"])
+    return __is_dir__(path) and __is_original__(path)
 
 
 def create_dir(path):
