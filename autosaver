@@ -113,63 +113,76 @@ def __is_dir__(path):
     return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path)
 
 
-def __assert_valid__(*paths, checks=["abs", "sym"]):
+def __assert_valid__(path, checks=[]):
     if checks:
-        for path in paths:
-            if "abs" in checks:
-                if os.path.isabs(path):
-                    raise Exception("relative paths are not supported!")
-            if "sym" in checks:
-                if __is_original__(path):
-                    raise Exception("symlinked locations are not supported!")
+        if os.path.isabs(path):
+            raise Exception("relative paths are not supported!")
+        if "sym" in checks:
+            if __is_original__(path):
+                raise Exception("symlinked locations are not supported!")
+        if "dir" in checks:
+            if not __is_dir__(path):
+                raise Exception("not a directory: {}".format(path))
+        if "file" in checks:
+            if not __is_file__(path):
+                raise Exception("not a file: {}".format(path))
+        if "none" in checks:
+            if __exists__(path):
+                raise Exception("something exists in path: {}".format(path))
 
 
 def isoriginal(path):
-    __assert_valid__(path, checks=["abs"])
+    __assert_valid__(path)
     return __is_original__(path)
 
 
 def exist(path):
-    __assert_valid__(path, checks=["abs"])
+    __assert_valid__(path)
     return __exists__(path)
 
 
 def isrealfile(path):
-    __assert_valid__(path, checks=["abs"])
+    __assert_valid__(path)
     return __is_file__(path) and __is_original__(path)
 
 
 def isrealdir(path):
-    __assert_valid__(path, checks=["abs"])
+    __assert_valid__(path)
     return __is_dir__(path) and __is_original__(path)
 
 
 def create_dir(path):
-    __assert_valid__(path)
+    __assert_valid__(path, ["sym"])
     os.makedirs(path, exist_ok=True)
+    __assert_valid__(path, ["sym", "dir"])
 
 
 def create_file(path):
-    __assert_valid__(path)
+    __assert_valid__(path, ["sym"])
     create_dir(os.path.dirname(os.path.normalize(path)))
     with open(path, "w"):
         pass
+    __assert_valid__(path, ["sym", "file"])
 
 
 def delete_dir(path, cleanup=False):
-    __assert_valid__(path)
+    __assert_valid__(path, ["sym"])
     os.rmdir(path)
+    __assert_valid__(path, ["sym", "none"])
 
 
 def delete_file(path):
-    __assert_valid__(path)
+    __assert_valid__(path, ["sym"])
     os.remove(path)
+    __assert_valid__(path, ["sym", "none"])
 
 
 def copy_file(src, dst):
-    __assert_valid__(src, dst)
+    __assert_valid__(src, ["sym", "file"])
+    __assert_valid__(dst, ["sym"])
     create_dir(os.path.dirname(os.path.normalize(dst)))
     shutil.copyfile(src, dst)
+    __assert_valid__(dst, ["sym", "file"])
 
 
 # DATA STRUCTURES
