@@ -34,6 +34,12 @@ function ask_user() {
         sudo usermod -a -G wireshark "${USER}"
     fi
 
+    # create symlinks
+    if ask_user 'Do you really want to create symlink for neovim'; then
+        rm -rf "$HOME/.config/nvim" &>/dev/null # rm -rf is very DANGEROUS!
+        ln -s /personal/repos/daniele821/nvim-config "$HOME/.config/nvim"
+    fi
+
 } </dev/tty
 
 exit 0

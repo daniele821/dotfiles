@@ -27,10 +27,59 @@ def err_exit(msg):
     exit(1)
 
 
-def ask_user(msg, flags):
+def warn_msg(msg):
+    color("msg", "WARNING: " + msg, True)
+
+
+def dbg(msg=None, output=False, category=None):
+    if category is None:
+        return
+    if not hasattr(dbg, "output"):
+        dbg.output = {}
+    if category not in dbg.output:
+        dbg.output[category] = []
+    if msg is not None:
+        dbg.output[category] += [msg]
+    if output:
+        lines = dbg.output[category]
+        if lines:
+            print("\n".join(dbg.output[category]))
+        dbg.output[category] = []
+
+
+def dbg_files(msg=None, output=None):
+    if ENV_FILES is None:
+        return
+    category = "files"
+    if msg is None and output is None:
+        return
+    if msg is not None:
+        dbg(msg=msg, category=category)
+    if output is not None:
+        term_width = shutil.get_terminal_size().columns
+        if hasattr(dbg, "output"):
+            if dbg.output[category]:
+                dbg.output[category] = [
+                    "",
+                    "*" * term_width,
+                    "\x1b[1;37mLIST OF ALL FILESYSTEM OPERATIONS:\x1b[m",
+                ] + dbg.output[category] + [
+                    "*" * term_width,
+                    "",
+                ]
+        else:
+            print()
+            print("*" * term_width)
+            print("\x1b[1;37mNO FILESYSTEM MODIFICATIONS WERE MADE!\x1b[m")
+            print("*" * term_width)
+            print()
+        dbg(output=output, category=category)
+
+
+def ask_user(msg, flags=None):
     print(msg, end="")
-    opt_yes = flags.has_option(Option.YES)
-    opt_no = flags.has_option(Option.NO)
+    opt_yes = flags is not None and flags.has_option(Option.YES)
+    opt_no = flags is not None and flags.has_option(Option.NO)
     if opt_no:
         print("n")
         return False
@@ -47,15 +96,15 @@ def ask_user(msg, flags):
 
 
 # GIT UTILITIES
+def __cmd_output__(*cmd):
+    return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
+
+
 def git_is_branch_uptodate():
-    remote = subprocess.run(["git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
-                            capture_output=True, text=True).stdout.strip()
-    branch = subprocess.run(["git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD"],
-                            capture_output=True, text=True).stdout.strip()
-    remote_hash = subprocess.run(["git", "-C", SCRIPT_DIR, "rev-parse", remote],
-                                 capture_output=True, text=True).stdout.strip()
-    branch_hash = subprocess.run(["git", "-C", SCRIPT_DIR, "rev-parse", branch],
-                                 capture_output=True, text=True).stdout.strip()
+    remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+    remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
+    branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
     return remote_hash == branch_hash
 
 
@@ -70,8 +119,7 @@ def git_push():
 
 
 def git_has_changes():
-    return subprocess.run(["git", "-C", SCRIPT_DIR, "status", "-s"],
-                          capture_output=True, text=True).stdout.strip() != ""
+    return __cmd_output__("git", "-C", SCRIPT_DIR, "status", "-s") != ""
 
 
 def git_diff(reverse=False):
@@ -95,110 +143,170 @@ def git_commit_all(commit_msg):
     subprocess.run(["git", "-C", SCRIPT_DIR, "commit", "-m", commit_msg])
 
 
-# FILESYSTEM UTILITIES
-def __clean_path__(path):
-    if not os.path.exists(path):
-        dir = os.path.dirname(path)
-        while True:
-            if os.path.exists(dir):
-                break
-            dir = os.path.dirname(dir)
-        if not isoriginal(dir):
-            raise Exception("symlinked locations are not supported ({})".format(dir))
-        return os.path.normpath(path)
-    if not os.path.isabs(path):
-        raise Exception("relative paths are not supported ({})".format(path))
-    if not isoriginal(path) and not issymlink(path):
-        raise Exception("following symlinks is not supported ({})".format(path))
-    return os.path.normpath(path)
-
-
-def create_dir(path):
-    path = __clean_path__(path)
-    os.makedirs(path, exist_ok=True)
-    if os.path.islink(path) or not os.path.isdir(path):
-        raise Exception("unable to create directory ({})".format(path))
-
-
-def create_file(path):
-    path = __clean_path__(path)
-    create_dir(os.path.dirname(path))
-    with open(path, "w"):
-        if os.path.islink(path) or not os.path.isfile(path):
-            raise Exception("unable to create file ({})".format(path))
-
-
-def create_symlink(path, link):
-    if (os.path.exists(path) and isoriginal(path)) or issymlink(path):
-        purge(path)
-    if not isoriginal(path):
-        raise Exception("symlink cannot be created in a symlinked location ({})".format(path))
-    create_file(path)
-    delete_file(path)
-    os.symlink(link, path)
-
-
-def delete_dir(path, cleanup=False):
-    os.rmdir(__clean_path__(path))
-
-
-def delete_file(path):
-    os.remove(__clean_path__(path))
-
-
-def purge(path):
-    path = __clean_path__(path)
-    if os.path.exists(path):
-        if os.path.islink(path) or os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
-    if os.path.exists(path):
-        raise Exception("unable to purge file ({})".format(path))
-
-
-def isoriginal(path):
+# FILESYSTEM OPERATIONS
+def __is_original__(path):
     path = os.path.normpath(path)
     return path == os.path.realpath(path)
 
 
-def issymlink(path):
-    if not os.path.exists(path):
-        # somehow os.path.exists returns false if path leads to a broken symlink
-        if not isoriginal(path) and not isoriginal(os.path.dirname(path)):
-            return False
-        return os.path.islink(path)
-        return False
-    if not isoriginal(path) and not isoriginal(os.path.dirname(path)):
-        return False
-    return os.path.islink(path)
+def __exists__(path):
+    return os.path.exists(path) or os.path.islink(path)
 
 
-def isregfile(path):
-    if not isoriginal(path):
-        return False
-    return os.path.exists(path) and os.path.isfile(path) and not os.path.islink(path)
+def __is_file__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isfile(path)
 
 
-def isdir(path):
-    if not isoriginal(path):
-        return False
-    return os.path.exists(path) and os.path.isdir(path) and not os.path.islink(path)
+def __is_dir__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path)
 
 
-def isemptydir(path):
-    return isdir(path) and not os.listdir(path)
+def __assert_valid__(path, checks=[]):
+    if checks:
+        if not os.path.isabs(path):
+            raise Exception("relative paths are not supported: {}".format(path))
+        if "sym" in checks:
+            if not __is_original__(path):
+                raise Exception("symlinked locations are not supported: {}".format(path))
+        if "dir" in checks:
+            if not __is_dir__(path):
+                raise Exception("not a directory: {}".format(path))
+        if "file" in checks:
+            if not __is_file__(path):
+                raise Exception("not a file: {}".format(path))
+        if "none" in checks:
+            if __exists__(path):
+                raise Exception("something exists in path: {}".format(path))
+        if "exist" in checks:
+            if not __exists__(path):
+                raise Exception("nothing exists in path: {}".format(path))
 
 
-def list_files(path):
-    if not isdir(path):
-        raise Exception("parameter passed is not a directory ({})".format(path))
-    return [os.path.join(path, i) for i in os.listdir(path)]
+def isoriginal(path):
+    __assert_valid__(path)
+    return __is_original__(path)
+
+
+def exist(path):
+    __assert_valid__(path)
+    return __exists__(path)
+
+
+def isrealfile(path):
+    __assert_valid__(path)
+    return __is_file__(path) and __is_original__(path)
+
+
+def isrealdir(path):
+    __assert_valid__(path)
+    return __is_dir__(path) and __is_original__(path)
+
+
+def create_dir(path):
+    if isrealdir(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
+    os.makedirs(path, exist_ok=True)
+    __assert_valid__(path, ["sym", "dir"])
+    dbg_files("\x1b[32m+ CREATED DIRECTORY: {}\x1b[m".format(path))
+
+
+def create_file(path):
+    if isrealfile(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
+    create_dir(os.path.dirname(os.path.normpath(path)))
+    with open(path, "w"):
+        pass
+    __assert_valid__(path, ["sym", "file"])
+    dbg_files("\x1b[32m+ CREATED FILE:    : {}\x1b[m".format(path))
+
+
+def delete_dir(path, allow_force=False):
+    purge = False
+    if not exist(path):
+        return
+    __assert_valid__(path, ["sym", "dir"])
+    if not os.listdir(path):
+        os.rmdir(path)
+    elif allow_force:
+        shutil.rmtree(path)
+        purge = True
+    __assert_valid__(path, ["sym", "none"])
+    if purge:
+        dbg_files("\x1b[31m- \x1b[4mPURGED DIRECTORY:  {}\x1b[m".format(path))
+    else:
+        dbg_files("\x1b[31m- DELETED DIRECTORY: {}\x1b[m".format(path))
+
+
+def delete_file(path):
+    if not exist(path):
+        return
+    __assert_valid__(path, ["sym", "file"])
+    os.remove(path)
+    __assert_valid__(path, ["sym", "none"])
+    dbg_files("\x1b[31m- DELETED FILES:     {}\x1b[m".format(path))
+
+
+def purge_path(path, allow_force=False):
+    if not exist(path):
+        return
+    __assert_valid__(path, ["sym", "exist"])
+    if isrealdir(path):
+        delete_dir(path, allow_force)
+    elif isrealfile(path):
+        delete_file(path)
+    __assert_valid__(path, ["sym", "none"])
 
 
 def copy_file(src, dst):
-    create_dir(os.path.dirname(dst))
+    __assert_valid__(src, ["sym", "file"])
+    __assert_valid__(dst, ["sym", "none"])
+    create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
+    __assert_valid__(dst, ["sym", "file"])
+    dbg_files("\x1b[33m> COPIED FILES:      {} -> {}\x1b[m".format(src, dst))
+
+
+def relpath(path):
+    __assert_valid__(path, [])
+    return os.path.relpath(path, SCRIPT_DIR)
+
+
+def make_executable(path):
+    __assert_valid__(path, ["sym", "file"])
+    if os.stat(path).st_mode & 0o111 == 0o111:
+        return
+    os.chmod(path, os.stat(path).st_mode | 0o111)
+    dbg_files("\x1b[34m* MADE EXECUTABLE:   {}\x1b[m".format(path))
+
+
+def list_files(dir):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return []
+    elif not exist(dir):
+        return []
+    __assert_valid__(dir, ["sym", "dir"])
+    return [os.path.join(dir, i) for i in os.listdir(dir)]
+
+
+def all_files(dir, relpath):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return set()
+    elif not exist(dir):
+        return set()
+    __assert_valid__(dir, ["sym", "dir"])
+    __assert_valid__(relpath, ["sym", "dir"])
+    files = set()
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if isrealfile(fname):
+                fname = os.path.relpath(fname, relpath)
+                files.add(fname)
+    return files
 
 
 # DATA STRUCTURES
@@ -250,8 +358,9 @@ DIRS = {
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "link": os.path.join(DIRS["config"], "symlinks_to_track.txt"),
 }
+ENV_DBG = os.getenv("DBG")
+ENV_FILES = os.getenv("FILES")
 
 
 class Action(enum.Enum):
@@ -314,44 +423,6 @@ SHORTCUTS |= {"co": SHORTCUTS["commit"]}
 SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 
 
-# ACTION UTILITIES
-def all_files(dir, relpath, regfiles=True, symlink=False):
-    if not isoriginal(dir):
-        raise Exception("invalid symlinked directory ({})".format(dir))
-    files = set()
-    for root, dirdirs, dirfiles in os.walk(dir):
-        for fname in set(dirfiles) | set(dirdirs):
-            fname = os.path.join(root, fname)
-            if (regfiles and isregfile(fname)) or (symlink and issymlink(fname)):
-                fname = os.path.relpath(fname, relpath)
-                files.add(fname)
-    return files
-
-
-def load_config(conf, allow_symlinks=False):
-    if not isregfile(conf):
-        return set()
-    odir = HOME
-    bdir = DIRS["backup"]
-    files = set()
-    for line in pathlib.Path(conf).read_text().splitlines():
-        if not line.startswith("/") and line.strip():
-            ofile = os.path.join(odir, line)
-            bfile = os.path.join(bdir, line)
-            for file, dir in ((ofile, odir), (bfile, bdir)):
-                if allow_symlinks:
-                    if issymlink(file):
-                        files.add(line)
-                    elif isdir(file):
-                        files.update(all_files(file, dir, regfiles=False, symlink=True))
-                else:
-                    if isregfile(file):
-                        files.add(line)
-                    elif isdir(file):
-                        files.update(all_files(file, dir))
-    return files
-
-
 # ACTIONS
 def help(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
@@ -394,6 +465,7 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
+  \x1b[1mFILES\x1b[m                 show list of all modified files after execution ends
   '''
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
@@ -405,40 +477,49 @@ def help(flags):
 def init(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     if not opt_toggle:
-        for dir in DIRS.values():
-            if not isdir(dir):
-                purge(dir)
-            if not os.path.exists(dir):
-                create_dir(dir)
-        for file in FILES.values():
-            if not isregfile(file):
-                purge(file)
-            if not os.path.exists(file):
-                create_file(file)
+        for path in DIRS.values():
+            try:
+                if not isrealdir(path):
+                    purge_path(path, True)
+                create_dir(path)
+            except Exception:
+                warn_msg("unable to create directory: {}".format(relpath(path)))
+        for path in FILES.values():
+            try:
+                if not isrealfile(path):
+                    purge_path(path, True)
+                create_file(path)
+            except Exception:
+                warn_msg("unable to create file: {}".format(relpath(path)))
     else:
-        for dir in DIRS.values():
-            purge(dir)
-        for file in FILES.values():
-            purge(file)
+        for path in FILES.values():
+            try:
+                purge_path(path)
+            except Exception:
+                warn_msg("unable to delete file: {}".format(relpath(path)))
+        for path in DIRS.values():
+            try:
+                purge_path(path, allow_force=True)
+            except Exception:
+                warn_msg("unable to delete directory: {}".format(relpath(path)))
 
 
 def run(flags):
-    if not isdir(DIRS["run"]):
-        return
+    rundir = DIRS["run"]
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
-    for file in sorted(list_files(DIRS["run"])):
-        if not isoriginal(file):
-            raise Exception("following symlinks is not supported ({})".format(file))
-        if isregfile(file):
-            os.chmod(file, 0o755)
-            msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+    for file in sorted(list_files(rundir)):
+        if isrealfile(file):
+            make_executable(file)
+            msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
                     if subprocess.run(["sh", file]).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!")
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
 
 
 def edit(flags):
@@ -448,24 +529,27 @@ def edit(flags):
             editor = edit_prog
             break
     if editor is None:
-        err_exit("no editor could be found")
+        err_exit("no terminal editor could be found!")
 
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
-    files = [SCRIPT_PATH] + list(FILES.values())
-    if isdir(DIRS["run"]):
+    files = [SCRIPT_PATH]
+    for file in FILES.values():
+        if exist(file):
+            files += [file]
+    if isrealdir(DIRS["run"]):
         files += sorted(list_files(DIRS["run"]))
     for file in files:
-        if not isoriginal(file):
-            raise Exception("following symlinks is not supported ({})".format(file))
-        if isregfile(file):
-            msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+        if isrealfile(file):
+            msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
                     if subprocess.run([editor, file]).returncode:
                         raise Exception()
                 except Exception:
-                    err_exit("init script failed!")
+                    err_exit("unable to edit file!")
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
 
 
 def backup(flags):
@@ -479,12 +563,7 @@ def backup(flags):
     opt_verbose = flags.has_option(Option.VERBOSE)
     tracked = load_config(FILES["track"])
     notdiff = load_config(FILES["notdiff"])
-    symlink = load_config(FILES["link"], True)
-    all = sorted(tracked | notdiff | symlink)
-
-    def qmsg(act, on,  prefix=""):
-        res = prefix + "Do you really want to " + act + " " + on + " file? "
-        return color("msg", res)
+    all = sorted(tracked | notdiff)
 
     def fout(file, on=None, stat=None):
         msg_file = color("file", file)
@@ -494,25 +573,25 @@ def backup(flags):
             print(msg_file)
 
     for file in all:
-        ofile = os.path.join(odir, file)
-        bfile = os.path.join(bdir, file)
-        if file not in symlink:
-            match isregfile(ofile), isregfile(bfile):
+        try:
+            ofile = os.path.join(odir, file)
+            bfile = os.path.join(bdir, file)
+            match isrealfile(ofile), isrealfile(bfile):
                 case True, False:
                     fout(ofile, "backup file", "is missing")
                     if act_save:
-                        if ask_user(qmsg("create", "backup"), flags):
+                        if ask_user(color("msg", "Do you really want to create backup file? "), flags):
                             copy_file(ofile, bfile)
                     if act_backup and opt_force:
-                        if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
+                        if ask_user(color("msg", "Do you really want to delete original file? "), flags):
                             delete_file(ofile)
                 case False, True:
                     fout(ofile, "original file", "is missing")
                     if act_save:
-                        if ask_user(qmsg("delete", "backup"), flags):
+                        if ask_user(color("msg", "Do you really want to delete backup file? "), flags):
                             delete_file(bfile, True)
                     if act_backup:
-                        if ask_user(qmsg("create", "original"), flags):
+                        if ask_user(color("msg", "Do you really want to create original file? "), flags):
                             copy_file(bfile, ofile)
                 case True, True:
                     if opt_toggle or file not in notdiff:
@@ -523,54 +602,18 @@ def backup(flags):
                                 new = bfile if act_backup else ofile
                                 subprocess.run(["diff", "--color", "-u", old, new])
                             if act_save:
-                                if ask_user(qmsg("update", "backup"), flags):
+                                if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                     copy_file(ofile, bfile)
                             if act_backup:
-                                if ask_user(qmsg("update", "original"), flags):
+                                if ask_user(color("msg", "Do you really want to update original file? "), flags):
                                     copy_file(bfile, ofile)
-        else:
-            olink = None
-            blink = None
-            if issymlink(ofile):
-                olink = os.readlink(ofile)
-            if issymlink(bfile):
-                blink = os.readlink(bfile)
-            if olink != blink:
-                match olink is not None, blink is not None:
-                    case False, True:
-                        fout(ofile, "original symlink", "is missing")
-                        if act_save:
-                            if ask_user(qmsg("delete", "backup"), flags):
-                                delete_file(bfile)
-                        if act_backup:
-                            if ask_user(qmsg("create", "original"), flags):
-                                create_symlink(ofile, blink)
-                    case True, False:
-                        fout(ofile, "backup symlink", "is missing")
-                        if act_save:
-                            if ask_user(qmsg("create", "backup"), flags):
-                                create_symlink(bfile, olink)
-                        if act_backup and opt_force:
-                            if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
-                                delete_file(ofile)
-                    case True, True:
-                        if olink != blink:
-                            fout(ofile, "original and backup symlink", "differ")
-                        if opt_diff:
-                            old = olink if act_backup else blink
-                            new = blink if act_backup else olink
-                            os.system("diff --color -u <( echo {} ) <( echo {})".format(old, new))
-                        if act_save:
-                            if ask_user(qmsg("update", "backup"), flags):
-                                create_symlink(bfile, olink)
-                        if act_backup:
-                            if ask_user(qmsg("update", "original"), flags):
-                                create_symlink(ofile, blink)
+        except Exception:
+            warn_msg("operation failed!")
 
 
 def untracked(flags):
-    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"]) | load_config(FILES["link"], True)
-    backup = all_files(DIRS["backup"], DIRS["backup"], True, True)
+    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
+    backup = all_files(DIRS["backup"], DIRS["backup"])
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     bmsg = "Do you really want to delete backup file ? "
@@ -584,7 +627,7 @@ def untracked(flags):
         if opt_toggle:
             if ask_user(bmsg, flags):
                 delete_file(bfile)
-            if opt_force and isregfile(ofile) or issymlink(ofile):
+            if opt_force and isrealfile(ofile):
                 if ask_user(omsg, flags):
                     delete_file(ofile)
 
@@ -613,6 +656,29 @@ def commit(flags):
 
     if not opt_toggle:
         git_push()
+
+
+# ACTION UTILITIES
+def load_config(conf):
+    if exist(conf) and not isrealfile(conf):
+        warn_msg("not a file: {}".format(relpath(conf)))
+        return set()
+    elif not exist(conf):
+        return set()
+
+    odir = HOME
+    bdir = DIRS["backup"]
+    files = set()
+    for line in pathlib.Path(conf).read_text().splitlines():
+        if not line.startswith("/") and line.strip():
+            ofile = os.path.join(odir, line)
+            bfile = os.path.join(bdir, line)
+            for file, dir in ((ofile, odir), (bfile, bdir)):
+                if isrealfile(file):
+                    files.add(line)
+                elif isrealdir(file):
+                    files.update(all_files(file, dir))
+    return files
 
 
 # EXECUTION UTILITIES
@@ -663,10 +729,11 @@ def main():
             params.clear()
         else:
             params.append(arg)
+    dbg_files(output=True)
 
 
 if __name__ == "__main__":
-    if os.getenv("DBG") is not None:
+    if ENV_DBG is not None:
         main()
     else:
         try:
