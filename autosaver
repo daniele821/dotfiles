@@ -411,8 +411,7 @@ def init(flags):
     if not opt_toggle:
         for dir in DIRS.values():
             try:
-                if isrealfile(dir):
-                    delete_file(dir)
+                purge_path(dir)
                 create_dir(dir)
             except Exception:
                 warn_msg("unable to create directory: {}".format(relpath(dir)))
