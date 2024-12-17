@@ -27,6 +27,10 @@ def err_exit(msg):
     exit(1)
 
 
+def warn_msg(msg):
+    color("msg", "WARNING: " + msg, True)
+
+
 def ask_user(msg, flags):
     print(msg, end="")
     opt_yes = flags.has_option(Option.YES)
@@ -96,6 +100,11 @@ def git_commit_all(commit_msg):
 
 
 # FILESYSTEM UTILITIES
+def relpath(path):
+    return os.path.relpath(path, SCRIPT_DIR)
+
+
+# FILESYSTEM OPERATIONS
 def __is_original__(path):
     path = os.path.normpath(path)
     return path == os.path.realpath(path)
@@ -115,11 +124,11 @@ def __is_dir__(path):
 
 def __assert_valid__(path, checks=[]):
     if checks:
-        if os.path.isabs(path):
-            raise Exception("relative paths are not supported!")
+        if not os.path.isabs(path):
+            raise Exception("relative paths are not supported: {}".format(path))
         if "sym" in checks:
-            if __is_original__(path):
-                raise Exception("symlinked locations are not supported!")
+            if not __is_original__(path):
+                raise Exception("symlinked locations are not supported: {}".format(path))
         if "dir" in checks:
             if not __is_dir__(path):
                 raise Exception("not a directory: {}".format(path))
@@ -159,7 +168,7 @@ def create_dir(path):
 
 def create_file(path):
     __assert_valid__(path, ["sym"])
-    create_dir(os.path.dirname(os.path.normalize(path)))
+    create_dir(os.path.dirname(os.path.normpath(path)))
     with open(path, "w"):
         pass
     __assert_valid__(path, ["sym", "file"])
@@ -180,7 +189,7 @@ def delete_file(path):
 def copy_file(src, dst):
     __assert_valid__(src, ["sym", "file"])
     __assert_valid__(dst, ["sym"])
-    create_dir(os.path.dirname(os.path.normalize(dst)))
+    create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
 
@@ -387,20 +396,26 @@ def init(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     if not opt_toggle:
         for dir in DIRS.values():
-            if not isdir(dir):
-                purge(dir)
-            if not os.path.exists(dir):
+            if not exist(dir) and isoriginal(dir):
                 create_dir(dir)
+            if not isrealdir(dir):
+                warn_msg("unable to create directory: {}".format(relpath(dir)))
         for file in FILES.values():
-            if not isfile(file):
-                purge(file)
-            if not os.path.exists(file):
+            if not exist(file) and isoriginal(file):
                 create_file(file)
+            if not isrealfile(file):
+                warn_msg("unable to create file: {}".format(relpath(file)))
     else:
-        for dir in DIRS.values():
-            purge(dir)
         for file in FILES.values():
-            purge(file)
+            if isrealfile(file):
+                delete_file(file)
+            if exist(file):
+                warn_msg("unable to delete file: {}".format(relpath(file)))
+        for dir in DIRS.values():
+            if isrealdir(dir):
+                delete_dir(dir)
+            if exist(dir):
+                warn_msg("unable to delete directory: {}".format(relpath(dir)))
 
 
 def run(flags):
