@@ -477,31 +477,31 @@ def help(flags):
 def init(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     if not opt_toggle:
-        for dir in DIRS.values():
+        for path in DIRS.values():
             try:
-                if not isrealdir(dir):
-                    purge_path(dir, True)
-                create_dir(dir)
+                if not isrealdir(path):
+                    purge_path(path, True)
+                create_dir(path)
             except Exception:
-                warn_msg("unable to create directory: {}".format(relpath(dir)))
-        for file in FILES.values():
+                warn_msg("unable to create directory: {}".format(relpath(path)))
+        for path in FILES.values():
             try:
-                if not isrealfile(file):
-                    purge_path(dir, True)
-                create_file(file)
+                if not isrealfile(path):
+                    purge_path(path, True)
+                create_file(path)
             except Exception:
-                warn_msg("unable to create file: {}".format(relpath(file)))
+                warn_msg("unable to create file: {}".format(relpath(path)))
     else:
-        for file in FILES.values():
+        for path in FILES.values():
             try:
-                purge_path(file)
+                purge_path(path)
             except Exception:
-                warn_msg("unable to delete file: {}".format(relpath(file)))
-        for dir in DIRS.values():
+                warn_msg("unable to delete file: {}".format(relpath(path)))
+        for path in DIRS.values():
             try:
-                purge_path(dir, allow_force=True)
+                purge_path(path, allow_force=True)
             except Exception:
-                warn_msg("unable to delete directory: {}".format(relpath(dir)))
+                warn_msg("unable to delete directory: {}".format(relpath(path)))
 
 
 def run(flags):
