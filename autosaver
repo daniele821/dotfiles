@@ -265,9 +265,9 @@ def list_files(dir):
 def all_files(dir, relpath):
     if exist(dir) and not isrealdir(dir):
         warn_msg("not a directory: {}".format(relpath(dir)))
-        return []
+        return set()
     elif not exist(dir):
-        return []
+        return set()
     __assert_valid__(dir, ["sym", "dir"])
     __assert_valid__(relpath, ["sym", "dir"])
     files = set()
