@@ -31,10 +31,10 @@ def warn_msg(msg):
     color("msg", "WARNING: " + msg, True)
 
 
-def ask_user(msg, flags):
+def ask_user(msg, flags=None):
     print(msg, end="")
-    opt_yes = flags.has_option(Option.YES)
-    opt_no = flags.has_option(Option.NO)
+    opt_yes = flags is not None and flags.has_option(Option.YES)
+    opt_no = flags is not None and flags.has_option(Option.NO)
     if opt_no:
         print("n")
         return False
@@ -217,11 +217,21 @@ def make_executable(path):
 
 
 def list_files(dir):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return []
+    elif not exist(dir):
+        return []
     __assert_valid__(dir, ["sym", "dir"])
     return [os.path.join(dir, i) for i in os.listdir(dir)]
 
 
 def all_files(dir, relpath):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return []
+    elif not exist(dir):
+        return []
     __assert_valid__(dir, ["sym", "dir"])
     __assert_valid__(relpath, ["sym", "dir"])
     files = set()
@@ -429,11 +439,6 @@ def init(flags):
 
 def run(flags):
     rundir = DIRS["run"]
-    if not exist(rundir):
-        return
-    elif exist(rundir) and not isrealdir(rundir):
-        warn_msg("not a directory: {}".format(relpath(rundir)))
-        return
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(list_files(rundir)):
@@ -542,7 +547,7 @@ def backup(flags):
 
 def untracked(flags):
     tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
-    backup = all_files(DIRS["backup"], DIRS["backup"], True, True)
+    backup = all_files(DIRS["backup"], DIRS["backup"])
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     bmsg = "Do you really want to delete backup file ? "
