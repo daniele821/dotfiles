@@ -24,7 +24,7 @@ def color(clr, str, output=False):
 
 def err_exit(msg):
     color("err", "ERROR: " + msg, True)
-    exit(1)
+    exit(0)
 
 
 def warn_msg(msg):
