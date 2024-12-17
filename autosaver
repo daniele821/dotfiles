@@ -31,20 +31,28 @@ def warn_msg(msg):
     color("msg", "WARNING: " + msg, True)
 
 
-def dbg(msg=None, output=False, type=None):
-    if type is None:
+def dbg(msg=None, output=False, category=None):
+    if category is None:
         return
     if not hasattr(dbg, "output"):
         dbg.output = {}
+    if category not in dbg.output:
+        dbg.output[category] = []
     if msg is not None:
-        if type not in dbg.output:
-            dbg.output[type] = []
-        dbg.output[type] += [msg]
+        dbg.output[category] += [msg]
     if output:
-        print("------------------------------")
-        print("LIST OF FILESYSTEM OPERATIONS:")
-        print("\n".join(dbg.output[type]))
-        dbg.output[type] = []
+        lines = dbg.output[category]
+        if lines:
+            print("\n".join(dbg.output[category]))
+        dbg.output[category] = []
+
+
+def dbg_files(msg=None, output=None):
+    if ENV_FILES is None:
+        return
+    if msg is None and output is None:
+        return
+    dbg(msg, output, "files")
 
 
 def ask_user(msg, flags=None):
@@ -677,7 +685,7 @@ def main():
             params.clear()
         else:
             params.append(arg)
-    dbg(output=True)
+    dbg_files(output=True)
 
 
 if __name__ == "__main__":
