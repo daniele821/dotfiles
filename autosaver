@@ -50,9 +50,14 @@ def dbg(msg=None, output=False, category=None):
 def dbg_files(msg=None, output=None):
     if ENV_FILES is None:
         return
+    category = "files"
+    if not hasattr(dbg_files, "init"):
+        dbg("----------------------------------", category=category)
+        dbg("LIST OF ALL FILESYSTEM OPERATIONS:", category=category)
+        dbg_files.init = True
     if msg is None and output is None:
         return
-    dbg(msg, output, "files")
+    dbg(msg, output, category)
 
 
 def ask_user(msg, flags=None):
