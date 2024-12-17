@@ -96,108 +96,60 @@ def git_commit_all(commit_msg):
 
 
 # FILESYSTEM UTILITIES
-def __clean_path__(path):
-    if not os.path.exists(path):
-        dir = os.path.dirname(path)
-        while True:
-            if os.path.exists(dir):
-                break
-            dir = os.path.dirname(dir)
-        if not isoriginal(dir):
-            raise Exception("symlinked locations are not supported ({})".format(dir))
-        return os.path.normpath(path)
-    if not os.path.isabs(path):
-        raise Exception("relative paths are not supported ({})".format(path))
-    if not isoriginal(path) and not issymlink(path):
-        raise Exception("following symlinks is not supported ({})".format(path))
-    return os.path.normpath(path)
-
-
-def create_dir(path):
-    path = __clean_path__(path)
-    os.makedirs(path, exist_ok=True)
-    if os.path.islink(path) or not os.path.isdir(path):
-        raise Exception("unable to create directory ({})".format(path))
-
-
-def create_file(path):
-    path = __clean_path__(path)
-    create_dir(os.path.dirname(path))
-    with open(path, "w"):
-        if os.path.islink(path) or not os.path.isfile(path):
-            raise Exception("unable to create file ({})".format(path))
-
-
-def create_symlink(path, link):
-    if (os.path.exists(path) and isoriginal(path)) or issymlink(path):
-        purge(path)
-    if not isoriginal(path):
-        raise Exception("symlink cannot be created in a symlinked location ({})".format(path))
-    create_file(path)
-    delete_file(path)
-    os.symlink(link, path)
-
-
-def delete_dir(path, cleanup=False):
-    os.rmdir(__clean_path__(path))
-
-
-def delete_file(path):
-    os.remove(__clean_path__(path))
-
-
-def purge(path):
-    path = __clean_path__(path)
-    if os.path.exists(path):
-        if os.path.islink(path) or os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
-    if os.path.exists(path):
-        raise Exception("unable to purge file ({})".format(path))
-
-
-def isoriginal(path):
+def __is_original__(path):
     path = os.path.normpath(path)
     return path == os.path.realpath(path)
 
 
-def issymlink(path):
-    if not os.path.exists(path):
-        # somehow os.path.exists returns false if path leads to a broken symlink
-        if not isoriginal(path) and not isoriginal(os.path.dirname(path)):
-            return False
-        return os.path.islink(path)
-        return False
-    if not isoriginal(path) and not isoriginal(os.path.dirname(path)):
-        return False
-    return os.path.islink(path)
+def __assert_valid__(path):
+    if os.path.isabs(path):
+        raise Exception("relative paths are not supported!")
+    if __is_original__(path):
+        raise Exception("symlinked locations are not supported!")
 
 
-def isregfile(path):
-    if not isoriginal(path):
-        return False
-    return os.path.exists(path) and os.path.isfile(path) and not os.path.islink(path)
+def __assert_all_valid__(*paths):
+    for path in paths:
+        __assert_valid__(path)
 
 
-def isdir(path):
-    if not isoriginal(path):
-        return False
-    return os.path.exists(path) and os.path.isdir(path) and not os.path.islink(path)
+def __file_exists__(path):
+    return os.path.exists(path) or os.path.islink(path)
 
 
-def isemptydir(path):
-    return isdir(path) and not os.listdir(path)
+def isrealfile(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isfile(path) and __is_original__(path)
 
 
-def list_files(path):
-    if not isdir(path):
-        raise Exception("parameter passed is not a directory ({})".format(path))
-    return [os.path.join(path, i) for i in os.listdir(path)]
+def isrealdir(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path) and __is_original__(path)
+
+
+def create_dir(path):
+    __assert_valid__(path)
+    os.makedirs(path, exist_ok=True)
+
+
+def create_file(path):
+    __assert_valid__(path)
+    create_dir(os.path.dirname(os.path.normalize(path)))
+    with open(path, "w"):
+        pass
+
+
+def delete_dir(path, cleanup=False):
+    __assert_valid__(path)
+    os.rmdir(path)
+
+
+def delete_file(path):
+    __assert_valid__(path)
+    os.remove(path)
 
 
 def copy_file(src, dst):
-    create_dir(os.path.dirname(dst))
+    __assert_all_valid__(src, dst)
+    create_dir(os.path.dirname(os.path.normalize(dst)))
     shutil.copyfile(src, dst)
 
 
@@ -315,20 +267,20 @@ SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 
 # ACTION UTILITIES
 def all_files(dir, relpath, regfiles=True, symlink=False):
-    if not isoriginal(dir):
+    if not __is_original__(dir):
         raise Exception("invalid symlinked directory ({})".format(dir))
     files = set()
     for root, dirdirs, dirfiles in os.walk(dir):
         for fname in set(dirfiles) | set(dirdirs):
             fname = os.path.join(root, fname)
-            if (regfiles and isregfile(fname)) or (symlink and issymlink(fname)):
+            if regfiles and isfile(fname):
                 fname = os.path.relpath(fname, relpath)
                 files.add(fname)
     return files
 
 
 def load_config(conf, allow_symlinks=False):
-    if not isregfile(conf):
+    if not isfile(conf):
         return set()
     odir = HOME
     bdir = DIRS["backup"]
@@ -339,12 +291,10 @@ def load_config(conf, allow_symlinks=False):
             bfile = os.path.join(bdir, line)
             for file, dir in ((ofile, odir), (bfile, bdir)):
                 if allow_symlinks:
-                    if issymlink(file):
-                        files.add(line)
-                    elif isdir(file):
+                    if isdir(file):
                         files.update(all_files(file, dir, regfiles=False, symlink=True))
                 else:
-                    if isregfile(file):
+                    if isfile(file):
                         files.add(line)
                     elif isdir(file):
                         files.update(all_files(file, dir))
@@ -410,7 +360,7 @@ def init(flags):
             if not os.path.exists(dir):
                 create_dir(dir)
         for file in FILES.values():
-            if not isregfile(file):
+            if not isfile(file):
                 purge(file)
             if not os.path.exists(file):
                 create_file(file)
@@ -427,9 +377,9 @@ def run(flags):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(list_files(DIRS["run"])):
-        if not isoriginal(file):
+        if not __is_original__(file):
             raise Exception("following symlinks is not supported ({})".format(file))
-        if isregfile(file):
+        if isfile(file):
             os.chmod(file, 0o755)
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
@@ -455,9 +405,9 @@ def edit(flags):
     if isdir(DIRS["run"]):
         files += sorted(list_files(DIRS["run"]))
     for file in files:
-        if not isoriginal(file):
+        if not __is_original__(file):
             raise Exception("following symlinks is not supported ({})".format(file))
-        if isregfile(file):
+        if isfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
@@ -494,7 +444,7 @@ def backup(flags):
     for file in all:
         ofile = os.path.join(odir, file)
         bfile = os.path.join(bdir, file)
-        match isregfile(ofile), isregfile(bfile):
+        match isfile(ofile), isfile(bfile):
             case True, False:
                 fout(ofile, "backup file", "is missing")
                 if act_save:
@@ -543,7 +493,7 @@ def untracked(flags):
         if opt_toggle:
             if ask_user(bmsg, flags):
                 delete_file(bfile)
-            if opt_force and isregfile(ofile) or issymlink(ofile):
+            if opt_force and isfile(ofile):
                 if ask_user(omsg, flags):
                     delete_file(ofile)
 
