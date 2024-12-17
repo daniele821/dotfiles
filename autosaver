@@ -497,10 +497,6 @@ def backup(flags):
     notdiff = load_config(FILES["notdiff"])
     all = sorted(tracked | notdiff)
 
-    def qmsg(act, on,  prefix=""):
-        res = prefix + "Do you really want to " + act + " " + on + " file? "
-        return color("msg", res)
-
     def fout(file, on=None, stat=None):
         msg_file = color("file", file)
         if opt_verbose and on and stat:
@@ -511,22 +507,22 @@ def backup(flags):
     for file in all:
         ofile = os.path.join(odir, file)
         bfile = os.path.join(bdir, file)
-        match isfile(ofile), isfile(bfile):
+        match isrealfile(ofile), isrealfile(bfile):
             case True, False:
                 fout(ofile, "backup file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("create", "backup"), flags):
+                    if ask_user(color("msg", "Do you really want to create backup file? "), flags):
                         copy_file(ofile, bfile)
                 if act_backup and opt_force:
-                    if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
+                    if ask_user(color("msg", "Do you really want to delete original file? "), flags):
                         delete_file(ofile)
             case False, True:
                 fout(ofile, "original file", "is missing")
                 if act_save:
-                    if ask_user(qmsg("delete", "backup"), flags):
+                    if ask_user(color("msg", "Do you really want to delete backup file? "), flags):
                         delete_file(bfile, True)
                 if act_backup:
-                    if ask_user(qmsg("create", "original"), flags):
+                    if ask_user(color("msg", "Do you really want to create original file? "), flags):
                         copy_file(bfile, ofile)
             case True, True:
                 if opt_toggle or file not in notdiff:
@@ -537,10 +533,10 @@ def backup(flags):
                             new = bfile if act_backup else ofile
                             subprocess.run(["diff", "--color", "-u", old, new])
                         if act_save:
-                            if ask_user(qmsg("update", "backup"), flags):
+                            if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                 copy_file(ofile, bfile)
                         if act_backup:
-                            if ask_user(qmsg("update", "original"), flags):
+                            if ask_user(color("msg", "Do you really want to update original file? "), flags):
                                 copy_file(bfile, ofile)
 
 
