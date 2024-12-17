@@ -419,17 +419,17 @@ def run(flags):
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(list_files(rundir)):
-        if not __is_original__(file):
-            raise Exception("following symlinks is not supported ({})".format(file))
         if isrealfile(file):
             make_executable(file)
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
-                    if subprocess.run(["sh", file]).returncode:
+                    if not subprocess.run(["sh", file]).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!")
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
 
 
 def edit(flags):
@@ -568,8 +568,6 @@ def commit(flags):
 
 # ACTION UTILITIES
 def all_files(dir, relpath, regfiles=True, symlink=False):
-    if not __is_original__(dir):
-        raise Exception("invalid symlinked directory ({})".format(dir))
     files = set()
     for root, dirdirs, dirfiles in os.walk(dir):
         for fname in set(dirfiles) | set(dirdirs):
