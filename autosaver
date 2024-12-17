@@ -451,7 +451,7 @@ def run(flags):
         return
     elif exist(rundir) and not isrealdir(rundir):
         warn_msg("not a directory: {}".format(relpath(rundir)))
-    return
+        return
     msg1 = color("msg", "Do you really want to execute ")
     msg3 = color("msg", " ? ")
     for file in sorted(list_files(rundir)):
