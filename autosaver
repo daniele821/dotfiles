@@ -99,11 +99,6 @@ def git_commit_all(commit_msg):
     subprocess.run(["git", "-C", SCRIPT_DIR, "commit", "-m", commit_msg])
 
 
-# FILESYSTEM UTILITIES
-def relpath(path):
-    return os.path.relpath(path, SCRIPT_DIR)
-
-
 # FILESYSTEM OPERATIONS
 def __is_original__(path):
     path = os.path.normpath(path)
@@ -138,6 +133,9 @@ def __assert_valid__(path, checks=[]):
         if "none" in checks:
             if __exists__(path):
                 raise Exception("something exists in path: {}".format(path))
+        if "exist" in checks:
+            if not __exists__(path):
+                raise Exception("nothing exists in path: {}".format(path))
 
 
 def isoriginal(path):
@@ -206,6 +204,12 @@ def copy_file(src, dst):
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
+
+
+# FILESYSTEM UTILITIES
+def relpath(path):
+    __assert_valid__(path, ["sym", "exist"])
+    return os.path.relpath(path, SCRIPT_DIR)
 
 
 # DATA STRUCTURES
