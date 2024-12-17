@@ -101,16 +101,12 @@ def __is_original__(path):
     return path == os.path.realpath(path)
 
 
-def __assert_valid__(path):
-    if os.path.isabs(path):
-        raise Exception("relative paths are not supported!")
-    if __is_original__(path):
-        raise Exception("symlinked locations are not supported!")
-
-
-def __assert_all_valid__(*paths):
+def __assert_valid__(*paths):
     for path in paths:
-        __assert_valid__(path)
+        if os.path.isabs(path):
+            raise Exception("relative paths are not supported!")
+        if __is_original__(path):
+            raise Exception("symlinked locations are not supported!")
 
 
 def __file_exists__(path):
@@ -148,7 +144,7 @@ def delete_file(path):
 
 
 def copy_file(src, dst):
-    __assert_all_valid__(src, dst)
+    __assert_valid__(src, dst)
     create_dir(os.path.dirname(os.path.normalize(dst)))
     shutil.copyfile(src, dst)
 
