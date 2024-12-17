@@ -23,6 +23,19 @@ function ask_user() {
             chmod +x "${TMP_FILE}"
             sudo mv "${TMP_FILE}" /usr/local/bin/kitten
         fi
+    else
+        echo "unable to download some programs: $(uname -m) platform support needs to be manually added"
+    fi
+
+    # download fira code nerd font
+    if ask_user 'Do you really want to download firacode nerd font'; then
+        FIRACODE_DIR="$HOME/.local/share/fonts/FiraCode"
+        [[ -f "${FIRACODE_DIR}" ]] && rm -rf "$HOME/.local/share/fonts/FiraCode" # rewritten manually: rm -rf is HUGELY dangerous!
+        mkdir -p "${FIRACODE_DIR}"
+        cd "$(mktemp -d /tmp/firacode-fontXXXXXXXXXXXXXXXXXXX)" || exit 1
+        wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/FiraCode.zip" # THIS LINKS NEEDS TO BE MANUALLY UPDATED!
+        unzip ./*.zip
+        mv ./*.ttf "${FIRACODE_DIR}/"
     fi
 
 } </dev/tty
