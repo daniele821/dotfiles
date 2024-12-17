@@ -138,11 +138,6 @@ def __assert_valid__(path, checks=[]):
                 raise Exception("nothing exists in path: {}".format(path))
 
 
-def assert_file(paths):
-    for path in paths:
-        __assert_valid__(path, ["sym", "file"])
-
-
 def isoriginal(path):
     __assert_valid__(path)
     return __is_original__(path)
@@ -444,7 +439,7 @@ def run(flags):
     for file in sorted(list_files(rundir)):
         if isrealfile(file):
             make_executable(file)
-            msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+            msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
                     if subprocess.run(["sh", file]).returncode:
@@ -474,7 +469,7 @@ def edit(flags):
         files += sorted(list_files(DIRS["run"]))
     for file in files:
         if isrealfile(file):
-            msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
+            msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
                     if subprocess.run([editor, file]).returncode:
@@ -594,7 +589,11 @@ def commit(flags):
 
 # ACTION UTILITIES
 def load_config(conf):
-    assert_file(conf)
+    if exist(conf) and not isrealfile(conf):
+        warn_msg("not a file: {}".format(relpath(conf)))
+        return set()
+    elif not exist(conf):
+        return set()
 
     odir = HOME
     bdir = DIRS["backup"]
