@@ -466,20 +466,23 @@ def edit(flags):
 
     msg1 = color("msg", "Do you really want to edit ")
     msg3 = color("msg", " ? ")
-    files = [SCRIPT_PATH] + list(FILES.values())
-    if isdir(DIRS["run"]):
+    files = [SCRIPT_PATH]
+    for file in FILES.values():
+        if exist(file):
+            files += [file]
+    if isrealdir(DIRS["run"]):
         files += sorted(list_files(DIRS["run"]))
     for file in files:
-        if not __is_original__(file):
-            raise Exception("following symlinks is not supported ({})".format(file))
-        if isfile(file):
+        if isrealfile(file):
             msg2 = color("file", os.path.relpath(file, SCRIPT_DIR))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
                     if subprocess.run([editor, file]).returncode:
                         raise Exception()
                 except Exception:
-                    err_exit("init script failed!")
+                    err_exit("unable to edit file!")
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
 
 
 def backup(flags):
@@ -558,7 +561,7 @@ def untracked(flags):
         if opt_toggle:
             if ask_user(bmsg, flags):
                 delete_file(bfile)
-            if opt_force and isfile(ofile):
+            if opt_force and isrealfile(ofile):
                 if ask_user(omsg, flags):
                     delete_file(ofile)
 
