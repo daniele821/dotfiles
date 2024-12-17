@@ -19,7 +19,7 @@ add_newline = false
 
 [directory]
 truncation_length = -1
-truncate_to_repo = true
+truncate_to_repo = false
 truncation_symbol = "../"
 read_only = " 󰌾"
 style = "bold cyan"
