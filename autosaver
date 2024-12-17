@@ -250,7 +250,6 @@ DIRS = {
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "link": os.path.join(DIRS["config"], "symlinks_to_track.txt"),
 }
 
 
@@ -479,8 +478,7 @@ def backup(flags):
     opt_verbose = flags.has_option(Option.VERBOSE)
     tracked = load_config(FILES["track"])
     notdiff = load_config(FILES["notdiff"])
-    symlink = load_config(FILES["link"], True)
-    all = sorted(tracked | notdiff | symlink)
+    all = sorted(tracked | notdiff)
 
     def qmsg(act, on,  prefix=""):
         res = prefix + "Do you really want to " + act + " " + on + " file? "
@@ -496,80 +494,41 @@ def backup(flags):
     for file in all:
         ofile = os.path.join(odir, file)
         bfile = os.path.join(bdir, file)
-        if file not in symlink:
-            match isregfile(ofile), isregfile(bfile):
-                case True, False:
-                    fout(ofile, "backup file", "is missing")
-                    if act_save:
-                        if ask_user(qmsg("create", "backup"), flags):
-                            copy_file(ofile, bfile)
-                    if act_backup and opt_force:
-                        if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
-                            delete_file(ofile)
-                case False, True:
-                    fout(ofile, "original file", "is missing")
-                    if act_save:
-                        if ask_user(qmsg("delete", "backup"), flags):
-                            delete_file(bfile, True)
-                    if act_backup:
-                        if ask_user(qmsg("create", "original"), flags):
-                            copy_file(bfile, ofile)
-                case True, True:
-                    if opt_toggle or file not in notdiff:
-                        if not filecmp.cmp(ofile, bfile):
-                            fout(ofile, "original and backup files", "differ")
-                            if opt_diff:
-                                old = ofile if act_backup else bfile
-                                new = bfile if act_backup else ofile
-                                subprocess.run(["diff", "--color", "-u", old, new])
-                            if act_save:
-                                if ask_user(qmsg("update", "backup"), flags):
-                                    copy_file(ofile, bfile)
-                            if act_backup:
-                                if ask_user(qmsg("update", "original"), flags):
-                                    copy_file(bfile, ofile)
-        else:
-            olink = None
-            blink = None
-            if issymlink(ofile):
-                olink = os.readlink(ofile)
-            if issymlink(bfile):
-                blink = os.readlink(bfile)
-            if olink != blink:
-                match olink is not None, blink is not None:
-                    case False, True:
-                        fout(ofile, "original symlink", "is missing")
-                        if act_save:
-                            if ask_user(qmsg("delete", "backup"), flags):
-                                delete_file(bfile)
-                        if act_backup:
-                            if ask_user(qmsg("create", "original"), flags):
-                                create_symlink(ofile, blink)
-                    case True, False:
-                        fout(ofile, "backup symlink", "is missing")
-                        if act_save:
-                            if ask_user(qmsg("create", "backup"), flags):
-                                create_symlink(bfile, olink)
-                        if act_backup and opt_force:
-                            if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
-                                delete_file(ofile)
-                    case True, True:
-                        if olink != blink:
-                            fout(ofile, "original and backup symlink", "differ")
+        match isregfile(ofile), isregfile(bfile):
+            case True, False:
+                fout(ofile, "backup file", "is missing")
+                if act_save:
+                    if ask_user(qmsg("create", "backup"), flags):
+                        copy_file(ofile, bfile)
+                if act_backup and opt_force:
+                    if ask_user(qmsg("delete", "original", "[DANGER] "), flags):
+                        delete_file(ofile)
+            case False, True:
+                fout(ofile, "original file", "is missing")
+                if act_save:
+                    if ask_user(qmsg("delete", "backup"), flags):
+                        delete_file(bfile, True)
+                if act_backup:
+                    if ask_user(qmsg("create", "original"), flags):
+                        copy_file(bfile, ofile)
+            case True, True:
+                if opt_toggle or file not in notdiff:
+                    if not filecmp.cmp(ofile, bfile):
+                        fout(ofile, "original and backup files", "differ")
                         if opt_diff:
-                            old = olink if act_backup else blink
-                            new = blink if act_backup else olink
-                            os.system("diff --color -u <( echo {} ) <( echo {})".format(old, new))
+                            old = ofile if act_backup else bfile
+                            new = bfile if act_backup else ofile
+                            subprocess.run(["diff", "--color", "-u", old, new])
                         if act_save:
                             if ask_user(qmsg("update", "backup"), flags):
-                                create_symlink(bfile, olink)
+                                copy_file(ofile, bfile)
                         if act_backup:
                             if ask_user(qmsg("update", "original"), flags):
-                                create_symlink(ofile, blink)
+                                copy_file(bfile, ofile)
 
 
 def untracked(flags):
-    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"]) | load_config(FILES["link"], True)
+    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
     backup = all_files(DIRS["backup"], DIRS["backup"], True, True)
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
