@@ -1,0 +1,3 @@
+.// vim:commentstring=//\ %s
+
+.config/nvim

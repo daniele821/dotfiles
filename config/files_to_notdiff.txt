@@ -1,0 +1,10 @@
+// vim:commentstring=//\ %s
+
+.config/htop/htoprc
+
+// kde apps configs
+.local/share/konsole/NerdProfile.profile
+.config/plasma-localerc
+.config/konsolerc
+.config/dolphinrc
+.config/okularpartrc

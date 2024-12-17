@@ -1,0 +1,20 @@
+[Desktop Entry]
+DefaultProfile=NerdProfile.profile
+
+[General]
+ConfigVersion=1
+
+[KonsoleWindow]
+RememberWindowSize=false
+
+[MainWindow]
+ToolBarsMovable=Disabled
+
+[Notification Messages]
+ShowPasteHugeTextWarning=false
+
+[TabBar]
+ExpandTabWidth=true
+
+[UiSettings]
+ColorScheme=
