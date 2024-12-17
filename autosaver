@@ -31,8 +31,20 @@ def warn_msg(msg):
     color("msg", "WARNING: " + msg, True)
 
 
-def dbg(msg):
-    sys.stderr.write(msg + "\n")
+def dbg(msg=None, output=False, type=None):
+    if type is None:
+        return
+    if not hasattr(dbg, "output"):
+        dbg.output = {}
+    if msg is not None:
+        if type not in dbg.output:
+            dbg.output[type] = []
+        dbg.output[type] += [msg]
+    if output:
+        print("------------------------------")
+        print("LIST OF FILESYSTEM OPERATIONS:")
+        print("\n".join(dbg.output[type]))
+        dbg.output[type] = []
 
 
 def ask_user(msg, flags=None):
@@ -299,6 +311,7 @@ FILES = {
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DBG = os.getenv("DBG")
+ENV_FILES = os.getenv("FILES")
 
 
 class Action(enum.Enum):
@@ -403,6 +416,7 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
+  \x1b[1mFILES\x1b[m                 show list of all modified files after execution ends
   '''
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
@@ -663,6 +677,7 @@ def main():
             params.clear()
         else:
             params.append(arg)
+    dbg(output=True)
 
 
 if __name__ == "__main__":
