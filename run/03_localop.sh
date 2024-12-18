@@ -2,7 +2,7 @@
 
 # utility functions
 function ask_user() {
-    echo -en "\x1b[1m${*}? \x1b[m"
+    echo -en "\x1b[1;37m${*}? \x1b[m"
     read -r answer </dev/tty
     [[ "${answer,,}" == 'y' ]]
 }
