@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import pathlib
 import filecmp
+import traceback
 
 
 # OUTPUT UTILITIES
@@ -22,58 +23,26 @@ def color(clr, str, output=False):
     return result
 
 
-def err_exit(msg):
+def err_exit(msg, exc=False):
     color("err", "ERROR: " + msg, True)
-    exit(1)
+    if exc:
+        dbg_exc()
+    exit(0)
 
 
-def warn_msg(msg):
+def warn_msg(msg, exc=False):
     color("msg", "WARNING: " + msg, True)
+    if exc:
+        dbg_exc()
 
 
-def dbg(msg=None, output=False, category=None):
-    if category is None:
-        return
-    if not hasattr(dbg, "output"):
-        dbg.output = {}
-    if category not in dbg.output:
-        dbg.output[category] = []
-    if msg is not None:
-        dbg.output[category] += [msg]
-    if output:
-        lines = dbg.output[category]
-        if lines:
-            print("\n".join(dbg.output[category]))
-        dbg.output[category] = []
+def dbg(msg):
+    sys.stderr.write(msg)
 
 
-def dbg_files(msg=None, output=None):
-    if ENV_FILES is None:
-        return
-    category = "files"
-    if msg is None and output is None:
-        return
-    if msg is not None:
-        dbg(msg=msg, category=category)
-    if output is not None:
-        term_width = shutil.get_terminal_size().columns
-        if hasattr(dbg, "output"):
-            if dbg.output[category]:
-                dbg.output[category] = [
-                    "",
-                    "*" * term_width,
-                    "\x1b[1;37mLIST OF ALL FILESYSTEM OPERATIONS:\x1b[m",
-                ] + dbg.output[category] + [
-                    "*" * term_width,
-                    "",
-                ]
-        else:
-            print()
-            print("*" * term_width)
-            print("\x1b[1;37mNO FILESYSTEM MODIFICATIONS WERE MADE!\x1b[m")
-            print("*" * term_width)
-            print()
-        dbg(output=output, category=category)
+def dbg_exc():
+    dbg(traceback.format_exc())
+    dbg("\n")
 
 
 def ask_user(msg, flags=None):
@@ -208,7 +177,6 @@ def create_dir(path):
     __assert_valid__(path, ["sym", "none"])
     os.makedirs(path, exist_ok=True)
     __assert_valid__(path, ["sym", "dir"])
-    dbg_files("\x1b[32m+ CREATED DIRECTORY: {}\x1b[m".format(path))
 
 
 def create_file(path):
@@ -219,11 +187,9 @@ def create_file(path):
     with open(path, "w"):
         pass
     __assert_valid__(path, ["sym", "file"])
-    dbg_files("\x1b[32m+ CREATED FILE:    : {}\x1b[m".format(path))
 
 
 def delete_dir(path, allow_force=False):
-    purge = False
     if not exist(path):
         return
     __assert_valid__(path, ["sym", "dir"])
@@ -231,12 +197,7 @@ def delete_dir(path, allow_force=False):
         os.rmdir(path)
     elif allow_force:
         shutil.rmtree(path)
-        purge = True
     __assert_valid__(path, ["sym", "none"])
-    if purge:
-        dbg_files("\x1b[31m- \x1b[4mPURGED DIRECTORY:  {}\x1b[m".format(path))
-    else:
-        dbg_files("\x1b[31m- DELETED DIRECTORY: {}\x1b[m".format(path))
 
 
 def delete_file(path):
@@ -245,7 +206,6 @@ def delete_file(path):
     __assert_valid__(path, ["sym", "file"])
     os.remove(path)
     __assert_valid__(path, ["sym", "none"])
-    dbg_files("\x1b[31m- DELETED FILES:     {}\x1b[m".format(path))
 
 
 def purge_path(path, allow_force=False):
@@ -265,7 +225,6 @@ def copy_file(src, dst):
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
-    dbg_files("\x1b[33m> COPIED FILES:      {} -> {}\x1b[m".format(src, dst))
 
 
 def relpath(path):
@@ -278,7 +237,6 @@ def make_executable(path):
     if os.stat(path).st_mode & 0o111 == 0o111:
         return
     os.chmod(path, os.stat(path).st_mode | 0o111)
-    dbg_files("\x1b[34m* MADE EXECUTABLE:   {}\x1b[m".format(path))
 
 
 def list_files(dir):
@@ -330,11 +288,10 @@ class Flag():
             err_exit("multiple actions are not supported!")
         elif len(self.actions) == 0:
             self.actions = set([Action.DEFAULT])
-        self.actions = self.actions.pop()
         return self
 
     def get_action(self):
-        return self.actions
+        return next(iter(self.actions))
 
     def has_option(self, option):
         return option in self.options
@@ -360,7 +317,6 @@ FILES = {
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DBG = os.getenv("DBG")
-ENV_FILES = os.getenv("FILES")
 
 
 class Action(enum.Enum):
@@ -465,7 +421,6 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
-  \x1b[1mFILES\x1b[m                 show list of all modified files after execution ends
   '''
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
@@ -483,25 +438,25 @@ def init(flags):
                     purge_path(path, True)
                 create_dir(path)
             except Exception:
-                warn_msg("unable to create directory: {}".format(relpath(path)))
+                warn_msg("unable to create directory: {}".format(relpath(path)), True)
         for path in FILES.values():
             try:
                 if not isrealfile(path):
                     purge_path(path, True)
                 create_file(path)
             except Exception:
-                warn_msg("unable to create file: {}".format(relpath(path)))
+                warn_msg("unable to create file: {}".format(relpath(path)), True)
     else:
         for path in FILES.values():
             try:
                 purge_path(path)
             except Exception:
-                warn_msg("unable to delete file: {}".format(relpath(path)))
+                warn_msg("unable to delete file: {}".format(relpath(path)), True)
         for path in DIRS.values():
             try:
                 purge_path(path, allow_force=True)
             except Exception:
-                warn_msg("unable to delete directory: {}".format(relpath(path)))
+                warn_msg("unable to delete directory: {}".format(relpath(path)), True)
 
 
 def run(flags):
@@ -517,7 +472,7 @@ def run(flags):
                     if subprocess.run(["sh", file]).returncode:
                         raise Exception()
                 except Exception:
-                    err_exit("init script failed!")
+                    err_exit("init script failed!", True)
         else:
             warn_msg("not a file: {}".format(relpath(file)))
 
@@ -547,7 +502,7 @@ def edit(flags):
                     if subprocess.run([editor, file]).returncode:
                         raise Exception()
                 except Exception:
-                    err_exit("unable to edit file!")
+                    err_exit("unable to edit file!", True)
         else:
             warn_msg("not a file: {}".format(relpath(file)))
 
@@ -608,7 +563,7 @@ def backup(flags):
                                 if ask_user(color("msg", "Do you really want to update original file? "), flags):
                                     copy_file(bfile, ofile)
         except Exception:
-            warn_msg("operation failed!")
+            warn_msg("operation failed!", True)
 
 
 def untracked(flags):
@@ -729,15 +684,12 @@ def main():
             params.clear()
         else:
             params.append(arg)
-    dbg_files(output=True)
 
 
 if __name__ == "__main__":
-    if ENV_DBG is not None:
+    if ENV_DBG is None:
+        sys.stderr = open(os.devnull, "w")
+    try:
         main()
-    else:
-        try:
-            sys.stderr = open(os.devnull, "w")
-            main()
-        except Exception as e:
-            err_exit(str(e.__class__.__name__) + ": " + str(e))
+    except Exception as e:
+        err_exit(str(e.__class__.__name__) + ": " + str(e), True)
