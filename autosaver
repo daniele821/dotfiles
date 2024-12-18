@@ -221,7 +221,7 @@ def purge_path(path, allow_force=False):
 
 def copy_file(src, dst):
     __assert_valid__(src, ["sym", "file"])
-    __assert_valid__(dst, ["sym", "none"])
+    __assert_valid__(dst, ["sym"])
     if isrealfile(dst):
         delete_file(dst)
     else:
