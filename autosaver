@@ -254,21 +254,19 @@ def list_files(dir):
 
 def all_files(dir, relpath):
     if exist(dir) and not isrealdir(dir):
-        warn_msg("not a directory: {}".format(dir))
+        warn_msg("not a directory: {}".format(relpath(dir)))
         return set()
     elif not exist(dir):
         return set()
     __assert_valid__(dir, ["sym", "dir"])
     __assert_valid__(relpath, ["sym", "dir"])
     files = set()
-    for root, dirdirs, dirfiles in os.walk(dir):
-        for fname in set(dirfiles) | set(dirdirs):
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
             fname = os.path.join(root, fname)
             if isrealfile(fname):
                 fname = os.path.relpath(fname, relpath)
                 files.add(fname)
-            elif os.path.islink(fname):
-                warn_msg("symlink present in a scanned directory: {}".format(fname))
     return files
 
 
