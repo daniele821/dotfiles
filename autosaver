@@ -288,11 +288,10 @@ class Flag():
             err_exit("multiple actions are not supported!")
         elif len(self.actions) == 0:
             self.actions = set([Action.DEFAULT])
-        self.actions = self.actions.pop()
         return self
 
     def get_action(self):
-        return self.actions
+        return next(iter(self.actions))
 
     def has_option(self, option):
         return option in self.options
@@ -692,5 +691,5 @@ if __name__ == "__main__":
         sys.stderr = open(os.devnull, "w")
     try:
         main()
-    except Exception as e:
-        err_exit(str(e.__class__.__name__) + ": " + str(e), True)
+    except:
+        err_exit(traceback.format_exc(0), True)
