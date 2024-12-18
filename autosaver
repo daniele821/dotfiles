@@ -576,15 +576,18 @@ def untracked(flags):
     omsg = "[DANGER] Do you really want to delete original file ? "
     omsg = color("msg", omsg)
     for file in sorted(backup - tracked):
-        ofile = os.path.join(HOME, file)
-        bfile = os.path.join(DIRS["backup"], file)
-        print(color("file", ofile))
-        if opt_toggle:
-            if ask_user(bmsg, flags):
-                delete_file(bfile)
-            if opt_force and isrealfile(ofile):
-                if ask_user(omsg, flags):
-                    delete_file(ofile)
+        try:
+            ofile = os.path.join(HOME, file)
+            bfile = os.path.join(DIRS["backup"], file)
+            print(color("file", ofile))
+            if opt_toggle:
+                if ask_user(bmsg, flags):
+                    delete_file(bfile)
+                if opt_force and isrealfile(ofile):
+                    if ask_user(omsg, flags):
+                        delete_file(ofile)
+        except Exception:
+            warn_msg("operation failed!", True)
 
 
 def commit(flags):
