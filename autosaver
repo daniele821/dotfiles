@@ -252,7 +252,7 @@ def list_files(dir):
     return [os.path.join(dir, i) for i in os.listdir(dir)]
 
 
-def all_files(dir, relpath):
+def all_files(dir, relpath, flags):
     if exist(dir) and not isrealdir(dir):
         warn_msg("not a directory: {}".format(dir))
         return set()
@@ -268,7 +268,16 @@ def all_files(dir, relpath):
                 fname = os.path.relpath(fname, relpath)
                 files.add(fname)
             elif os.path.islink(fname):
-                warn_msg("symlink present in a scanned directory: {}".format(fname))
+                if flags.has_option(Option.LINK):
+                    msg1 = color("msg", "[SYMLINK] Do you really want to delete symlink ")
+                    msg2 = color("file", fname)
+                    msg3 = color("msg", " ? ")
+                    if ask_user(msg1+msg2+msg3, flags):
+                        __assert_valid__(fname, ["exist"])
+                        os.remove(fname)
+                        __assert_valid__(fname, ["sym", "none"])
+                else:
+                    warn_msg("symlink present in a scanned directory: {}".format(fname))
     return files
 
 
@@ -340,6 +349,7 @@ class Action(enum.Enum):
 class Option(enum.Enum):
     DIFF = enum.auto()
     FORCE = enum.auto()
+    LINK = enum.auto()
     NO = enum.auto()
     YES = enum.auto()
     TOGGLE = enum.auto()
@@ -359,6 +369,7 @@ ACTIONS = {
 OPTIONS = {
     "d": Option.DIFF,
     "f": Option.FORCE,
+    "l": Option.LINK,
     "n": Option.NO,
     "t": Option.TOGGLE,
     "v": Option.VERBOSE,
@@ -405,6 +416,7 @@ def help(flags):
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
   \x1b[1m-f\x1b[m                    allow dangerous operations
+  \x1b[1m-l\x1b[m                    find symlink if safe and allow removing them
   \x1b[1m-y\x1b[m                    auto answer yes to all questions
   \x1b[1m-n\x1b[m                    auto answer no to all questions
   \x1b[1m-t\x1b[m                    toggle secondary mode of the action
@@ -521,8 +533,8 @@ def backup(flags):
     opt_diff = flags.has_option(Option.DIFF)
     opt_force = flags.has_option(Option.FORCE)
     opt_verbose = flags.has_option(Option.VERBOSE)
-    tracked = load_config(FILES["track"])
-    notdiff = load_config(FILES["notdiff"])
+    tracked = load_config(FILES["track"], flags)
+    notdiff = load_config(FILES["notdiff"], flags)
     all = sorted(tracked | notdiff)
 
     def fout(file, on=None, stat=None):
@@ -572,8 +584,8 @@ def backup(flags):
 
 
 def untracked(flags):
-    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
-    backup = all_files(DIRS["backup"], DIRS["backup"])
+    tracked = load_config(FILES["track"], flags) | load_config(FILES["notdiff"], flags)
+    backup = all_files(DIRS["backup"], DIRS["backup"], flags)
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     bmsg = "Do you really want to delete backup file ? "
@@ -622,7 +634,7 @@ def commit(flags):
 
 
 # ACTION UTILITIES
-def load_config(conf):
+def load_config(conf, flags):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: {}".format(relpath(conf)))
         return set()
@@ -640,7 +652,7 @@ def load_config(conf):
                 if isrealfile(file):
                     files.add(line)
                 elif isrealdir(file):
-                    files.update(all_files(file, dir))
+                    files.update(all_files(file, dir, flags))
     return files
 
 
