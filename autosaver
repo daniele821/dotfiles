@@ -222,10 +222,8 @@ def purge_path(path, allow_force=False):
 def copy_file(src, dst):
     __assert_valid__(src, ["sym", "file"])
     __assert_valid__(dst, ["sym"])
-    if isrealfile(dst):
-        delete_file(dst)
-    else:
-        create_dir(os.path.dirname(os.path.normpath(dst)))
+    purge_path(dst)
+    create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
 
@@ -452,12 +450,12 @@ def init(flags):
     else:
         for path in FILES.values():
             try:
-                purge_path(path)
+                purge_path(path, True)
             except Exception:
                 warn_msg("unable to delete file: {}".format(relpath(path)), True)
         for path in DIRS.values():
             try:
-                purge_path(path, allow_force=True)
+                purge_path(path, True)
             except Exception:
                 warn_msg("unable to delete directory: {}".format(relpath(path)), True)
 
@@ -541,13 +539,13 @@ def backup(flags):
                         if ask_user(color("msg", "Do you really want to create backup file? "), flags):
                             copy_file(ofile, bfile)
                     if act_backup and opt_force:
-                        if ask_user(color("msg", "Do you really want to delete original file? "), flags):
-                            delete_file(ofile)
+                        if ask_user(color("msg", "[DANGER] Do you really want to delete original file? "), flags):
+                            purge_path(ofile)
                 case False, True:
                     fout(ofile, "original file", "is missing")
                     if act_save:
                         if ask_user(color("msg", "Do you really want to delete backup file? "), flags):
-                            delete_file(bfile, True)
+                            purge_path(bfile, True)
                     if act_backup:
                         if ask_user(color("msg", "Do you really want to create original file? "), flags):
                             copy_file(bfile, ofile)
