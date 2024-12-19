@@ -4,12 +4,14 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/git_repos"
 BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
 
+# early exit if no backup file is present
+[[ -f "${BACKUP_FILE}" ]] || exit 0
+
 TMPFILES=()
 CLONEPID=()
 MESSAGGES=()
 
-# early exit if no backup file is present
-[[ -f "${BACKUP_FILE}" ]] || exit 0
+[[ "$*" == "-f" ]] && FORCE_FLAG="yes"
 
 # clone missing directories
 COUNTER=0
@@ -18,12 +20,46 @@ while read -r line; do
     case "$COUNTER" in
     1) DIR="${line}" ;;
     2) URL="${line}" ;;
-    3) ;;
-    4) ;;
+    3) BRANCH="${line}" ;;
+    4) EMAIL="${line}" ;;
     5)
         if [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
-            git -C "${DIR}" -c color.ui=always pull --progress --ff-only &>>"${TMP}" &
+            function update_repo() {
+                EMAIL_NEW="$(git -C "${DIR}" config user.email 2>/dev/null)"
+                BRANCH_NEW="$(git -C "${DIR}" rev-parse --abbrev-ref HEAD 2>/dev/null)"
+                URL_NEW="$(git -C "${DIR}" remote get-url "$(git -C "${DIR}" remote 2>/dev/null)" 2>/dev/null)"
+                if [[ "${URL_NEW}" != "${URL}" ]]; then
+                    echo -e "\e[1;31mUrl was changed: \e[1;32m${URL}\e[1;31m -> \e[1;32m${URL_NEW}\e[1;31m. Quitting...\e[m"
+                    return 1
+                fi
+                if [[ "${EMAIL_NEW}" != "${EMAIL}" ]]; then
+                    echo -en "\e[1;33mEmail was changed\e[m"
+                    if [[ ${FORCE_FLAG} == "yes" ]]; then
+                        echo -e "\e[1;33m. Changing it back: \e[1;32m${EMAIL_NEW}\e[1;33m -> \e[1;32m${EMAIL}\e[m"
+                        if ! git -C "${DIR}" config user.email "${EMAIL}" &>/dev/null; then
+                            echo -e "\e[1;33mUnable to change email. Quitting...\e[m"
+                            return 1
+                        fi
+                    else
+                        echo -e "\e[1;33m (\e[1;32m${EMAIL}\e[1;33m -> \e[1;32m${EMAIL_NEW}\e[1;33m)\e[m"
+                    fi
+                fi
+                if [[ "${BRANCH_NEW}" != "${BRANCH}" ]]; then
+                    echo -en "\e[1;33mBranch was changed\e[m"
+                    if [[ ${FORCE_FLAG} == "yes" ]]; then
+                        echo -e "\e[1;33m. Changing it back: \e[1;32m${BRANCH_NEW}\e[1;33m -> \e[1;32m${BRANCH}\e[m"
+                        if ! git -C "${DIR}" switch "${BRANCH}" &>/dev/null; then
+                            echo -e "\e[1;33mUnable to change branch. Quitting...\e[m"
+                            return 1
+                        fi
+                    else
+                        echo -e "\e[1;33m (\e[1;32m${BRANCH}\e[1;33m -> \e[1;32m${BRANCH_NEW}\e[1;33m)\e[m"
+                    fi
+                fi
+                git -C "${DIR}" -c color.ui=always pull --progress --ff-only
+            }
+            update_repo &>>"${TMP}" &
             PID="$!"
             TMPFILES+=("$TMP")
             CLONEPID+=("$PID")
