@@ -12,7 +12,7 @@ function ask_user() {
     if ! grep -x 'LC_TIME="en_DK.UTF8"' /etc/locale.conf &>/dev/null; then
         echo -e "\e[1;37m/etc/locale.conf:\e[m"
         \cat /etc/locale.conf
-        if ask_user "Do you really want to set 24h time format (LC_TIME=en_DK.UTF-8)"; then
+        if ask_user "Do you really want to set 24h time format (LC_TIME=en_DK.UTF8)"; then
             if grep 'LC_TIME=' /etc/locale.conf &>/dev/null; then
                 sudo sed -i 's/LC_TIME=.*/LC_TIME="en_DK-UTF8"/' /etc/locale.conf &>/dev/null
             else
