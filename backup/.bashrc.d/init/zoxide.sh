@@ -1,3 +1,3 @@
 #!/bin/bash
 
-eval "$(zoxide init --cmd cd bash)"
+eval "$(zoxide init bash)"
