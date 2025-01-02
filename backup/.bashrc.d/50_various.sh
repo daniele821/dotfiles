@@ -60,5 +60,7 @@ alias lla='ls -lA'
 alias clear='printf "\033[2J\033[3J\033[1;1H"'
 
 unset command_not_found_handle
-for i in - {0..9}; do bind -r "\e$i"; done
-bind -x '"\C-l": clear'
+if [[ $- == *i* ]]; then
+    for i in - {0..9}; do bind -r "\e$i"; done
+    bind -x '"\C-l": clear'
+fi
