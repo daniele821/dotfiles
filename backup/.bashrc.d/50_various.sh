@@ -51,8 +51,12 @@ function preview() {
 function fpreview() {
     preview --scale-up "${@}"
 }
+function copy(){
+    cat "$@" | wl-copy
+}
 
 complete -c run
+complete -f copy
 
 alias la='ls -A'
 alias ll='ls -l'
