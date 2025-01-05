@@ -11,6 +11,8 @@ RememberWindowSize=false
 ToolBarsMovable=Disabled
 
 [Notification Messages]
+CloseAllEmptyTabs=true
+CloseSingleTab=true
 ShowPasteHugeTextWarning=false
 
 [TabBar]
