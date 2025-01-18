@@ -22,7 +22,7 @@ function ask_user() {
         if [[ "$pass_dirs" != 1 ]]; then
             answer=""
             while [[ "$answer" != "CONTINUE" ]]; do
-                echo -en "\x1b[1;37mWARNING: Password directory is missing, and no backup is found on any usb device. Insert a usb device and type CONTINUE to continue... \x1b[m"
+                echo -en "\x1b[1;31mWARNING: Insert a usb device with the passwords backup and type CONTINUE to continue... \x1b[m"
                 read -r answer </dev/tty
             done
         fi
