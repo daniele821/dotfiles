@@ -18,6 +18,14 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
+        pass_dirs="$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)"
+        if [[ "$pass_dirs" != 1 ]]; then
+            answer=""
+            while [[ "$answer" != "CONTINUE" ]]; do
+                echo -en "\x1b[1;37mWARNING: Password directory is missing, and no backup is found on any usb device. Insert a usb device and type CONTINUE to continue... \x1b[m"
+                read -r answer </dev/tty
+            done
+        fi
         if [[ "$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)" == 1 ]]; then
             usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
             new_location="/personal/data/passwords"
