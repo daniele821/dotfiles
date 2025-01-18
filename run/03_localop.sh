@@ -18,8 +18,11 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
-        if [[ -d "/run/media/$USER/*/passwords" ]] && ! [[ -e "/personal/data/passwords" ]]; then
-            cp "/run/media/$USER/*/passwords" "/personal/data/" -r
+        usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
+        new_location="/personal/data/passwords"
+        if [[ -d "$usb_passwords" ]] && ! [[ -e "$new_location" ]]; then
+            cp "$usb_passwords" "/personal/data/" -r
+            git -C "$new_location" restore "$new_location"
             echo "copied passwords from usb drive"
         fi
     fi
