@@ -33,9 +33,11 @@ function ask_user() {
     fi
 
     # create ssh keys for github
-    if ask_user 'Do you really want to create new ssh keys'; then
+    if ask_user 'Do you really want to create new ssh keys, and adding them to github via gh'; then
         for user in daniele821 danix1234; do
             ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
+            gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
+            gh ssh-key add "/home/daniele/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
         done
     fi
 
