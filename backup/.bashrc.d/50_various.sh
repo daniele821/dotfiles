@@ -53,7 +53,7 @@ function preview() {
             {
                 wl-paste --list-types 2>/dev/null | grep image -q &>/dev/null && echo clipboard-image
                 find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) 2>/dev/null | cut -b 3-
-            } | fzf --exit-0 --height=40% --layout=reverse --border
+            } | fzf --exit-0 --select-1 --height=40% --layout=reverse --border
         )"
     fi
     if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
