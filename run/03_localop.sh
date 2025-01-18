@@ -18,7 +18,7 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
-        if [[ -d "/run/media/$USER/*/passwords" ]]; then
+        if [[ -d "/run/media/$USER/*/passwords" ]] && ! [[ -e "/personal/data/passwords" ]]; then
             cp "/run/media/$USER/*/passwords" "/personal/data/" -r
             echo "copied passwords from usb drive"
         fi
