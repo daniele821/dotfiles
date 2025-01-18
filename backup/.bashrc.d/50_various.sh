@@ -45,13 +45,27 @@ function open() {
     done
 }
 function preview() {
-    kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${@}" | less -r
-    echo -ne "\e[1A\e[J"
+    [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
+    [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
+    FILE="${1}"
+    if [[ $# == 0 ]]; then
+        FILE="$(
+            {
+                wl-paste --list-types 2>/dev/null | grep image -q &>/dev/null && echo clipboard-image
+                find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) 2>/dev/null | cut -b 3-
+            } | fzf --exit-0 --height=40% --layout=reverse --border
+        )"
+    fi
+    if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
+        kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}" | less -r
+    elif [[ "$FILE" == "clipboard-image" ]]; then
+        wl-paste | kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" | less -r
+    fi
 }
 function fpreview() {
-    preview --scale-up "${@}"
+    FPREVIEW="true" preview "${@}"
 }
-function copy(){
+function copy() {
     cat "$@" | wl-copy
 }
 
