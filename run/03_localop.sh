@@ -8,12 +8,22 @@ function ask_user() {
 }
 
 {
-    # mandatory init operations
-    if ! [[ -d "/personal" ]]; then # create personal dirs
+    ### MANDATORY OPERATIONS ###
+    # create personal dirs
+    if ! [[ -d "/personal" ]]; then
         sudo mkdir -p /personal/{data,repos} || exit 1
         sudo chown "${USER}":"${USER}" /personal/{data,repos}
         echo "created personal directory in /personal"
     fi
+
+    # copy passwords from usb drive to this device
+    if ! [[ -d "/personal/data/passwords" ]]; then
+        if [[ -d "/run/media/$USER/*/passwords" ]]; then
+            cp "/run/media/$USER/*/passwords" "/personal/data/" -r
+            echo "copied passwords from usb drive"
+        fi
+    fi
+    ### END OF MANDATORY OPERATIONS ###
 
     # restore backup files
     if ask_user 'Do you want to restore all backup files'; then
