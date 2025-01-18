@@ -40,7 +40,7 @@ function ask_user() {
         for user in daniele821 danix1234; do
             ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
             gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
-            gh ssh-key add "/home/daniele/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
+            gh ssh-key add "$HOME/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
         done
     fi
 
