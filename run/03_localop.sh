@@ -18,12 +18,16 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
-        usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
-        new_location="/personal/data/passwords"
-        if [[ -d "$usb_passwords" ]] && ! [[ -e "$new_location" ]]; then
-            cp "$usb_passwords" "/personal/data/" -r
-            git -C "$new_location" restore "$new_location"
-            echo "copied passwords from usb drive"
+        if [[ "$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)" == 1 ]]; then
+            usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
+            new_location="/personal/data/passwords"
+            if [[ -d "$usb_passwords" ]] && ! [[ -e "$new_location" ]]; then
+                cp "$usb_passwords" "/personal/data/" -r
+                git -C "$new_location" restore "$new_location"
+                echo "copied passwords from usb drive"
+            fi
+        else
+            echo "WARNING: UNABLE TO COPY PASSWORDS: $(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l) passwords directories found!"
         fi
     fi
     ### END OF MANDATORY OPERATIONS ###
