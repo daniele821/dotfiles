@@ -83,17 +83,18 @@ def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
 
 
-def git_is_branch_uptodate():
+def git_is_branch_uptodate(allow_behind=False):
     remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
     branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
     remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
     branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
-    return remote_hash == branch_hash
+    is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
+    return remote_hash == branch_hash or (allow_behind and is_ancestor)
 
 
 def git_pull_and_check():
     subprocess.run(["git", "-C", SCRIPT_DIR, "pull", "--ff-only"])
-    return git_is_branch_uptodate()
+    return git_is_branch_uptodate(allow_behind=True)
 
 
 def git_push():
