@@ -511,8 +511,12 @@ def edit(flags):
             msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
+                    file_old_content = pathlib.Path(file).read_text()
                     if subprocess.run([editor, file]).returncode:
                         raise Exception()
+                    file_new_content = pathlib.Path(file).read_text()
+                    if file_old_content != file_new_content:
+                        dbg("\x1b[34m> MODIFIED FILE:     {}\x1b[m\n".format(file))
                 except Exception:
                     err_exit("unable to edit file!", True)
         else:
