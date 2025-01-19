@@ -725,6 +725,7 @@ if __name__ == "__main__":
         sys.stderr = open(os.devnull, "w")
     try:
         main()
-        dbg_final_report(None, True)
     except Exception as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
+
+    dbg_final_report(None, True)
