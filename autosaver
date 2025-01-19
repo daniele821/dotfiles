@@ -88,7 +88,8 @@ def git_is_branch_uptodate():
     branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
     remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
     branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
-    return remote_hash == branch_hash
+    is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
+    return remote_hash == branch_hash or is_ancestor
 
 
 def git_pull_and_check():
