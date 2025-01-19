@@ -67,6 +67,17 @@ function ask_user() {
         ln -s /personal/repos/daniele821/nvim-config "$HOME/.config/nvim"
     fi
 
+    # updates few kde settings
+    if ask_user 'Do you really want to update a few kde settings'; then
+        # kde settings
+        kwriteconfig6 --file "$HOME/.config/systemsettingsrc" --group systemsettings_sidebar_mode --key HighlightNonDefaultSettings true
+        kwriteconfig6 --file "/home/daniele/.config/kwinrc" --group Plugins --key shakecursorEnabled false
+
+        # konsole
+        kwriteconfig6 --file "$HOME/.local/state/konsolestaterc" --group MainWindow --key State AAAA/wAAAAD9AAAAAQAAAAAAAAFhAAAD+PwCAAAAAvsAAAAcAFMAUwBIAE0AYQBuAGEAZwBlAHIARABvAGMAawAAAAAAAAACeQAAASEA////+wAAACIAUQB1AGkAYwBrAEMAbwBtAG0AYQBuAGQAcwBEAG8AYwBrAAAAAAAAAAP4AAABfgD///8AAASUAAAD+AAAAAQAAAAEAAAACAAAAAj8AAAAAQAAAAIAAAACAAAAFgBtAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAAAAABwAcwBlAHMAcwBpAG8AbgBUAG8AbwBsAGIAYQByAAAAAAD/////AAAAAAAAAAA=
+
+    fi
+
 } </dev/tty
 
 exit 0
