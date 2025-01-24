@@ -11,7 +11,32 @@ TMPFILES=()
 CLONEPID=()
 MESSAGGES=()
 
-[[ "$*" == "-f" ]] && FORCE_FLAG="yes"
+while getopts "fhr" opt 2>/dev/null; do
+    case "$opt" in
+    f)
+        FORCE_FLAG="yes"
+        ;;
+    h)
+        echo "Script to update all tracked git repos
+
+Options:
+-f      force reset git branch and git email
+-h      print this help message
+-r      before updating repos, also restore those missing
+"
+        exit 0
+        ;;
+    r)
+        RESTORE_FLAG="yes"
+        ;;
+    *)
+        echo "Invalid option: -$OPTARG"
+        exit 1
+        ;;
+    esac
+done
+
+[[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
 
 # clone missing directories
 COUNTER=0
