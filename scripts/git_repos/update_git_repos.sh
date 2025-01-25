@@ -4,46 +4,68 @@ SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/git_repos"
 BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
 
-# early exit if no backup file is present
-[[ -f "${BACKUP_FILE}" ]] || exit 0
-
 TMPFILES=()
 CLONEPID=()
 MESSAGGES=()
 
-case "$*" in
-all)
-    BACKUP_FLAG="yes"
-    FORCE_FLAG="yes"
-    RESTORE_FLAG="yes"
-    ;;
-esac
+function help_msg() {
+    echo "Script to update all tracked git repos
 
-while getopts ":bfhr" opt 2>/dev/null; do
-    case "$opt" in
-    b) BACKUP_FLAG="yes" ;;
-    f) FORCE_FLAG="yes" ;;
-    r) RESTORE_FLAG="yes" ;;
-    h)
-        echo "Script to update all tracked git repos
+ Options:
+ -b     after updating all git repos, restore backup
+ -f     force reset git branch and git email
+ -h     print this help message
+ -r     before updating repos, also restore those missing
+ -n     autoanswer no
+ -y     autoanswer yes
 
-Options:
--b      after updating all git repos, restore backup
--f      force reset git branch and git email
--h      print this help message
--r      before updating repos, also restore those missing
+ Shortcuts:
+ all     run EVERY POSSIBLE UPDATE
+ "
+    exit 0
+}
 
-Shortcuts:
-all     run EVERY POSSIBLE UPDATE
-"
-        exit 0
+for word in "$@"; do
+    case "$word" in
+    --*)
+        echo "Invalid word option: $word"
+        exit 1
+        ;;
+    -*)
+        for char in $(echo "${word:1}" | fold -w1); do
+            case "$char" in
+            b) BACKUP_FLAG="yes" ;;
+            f) FORCE_FLAG="yes" ;;
+            r) RESTORE_FLAG="yes" ;;
+            n) YESNO="n" ;;
+            y) YESNO="y" ;;
+            h) help_msg ;;
+            *)
+                echo "Invalid option: $word"
+                exit 1
+                ;;
+            esac
+
+        done
         ;;
     *)
-        echo "Invalid option: -$OPTARG"
-        exit 1
+        case "$word" in
+        all)
+            BACKUP_FLAG="yes"
+            FORCE_FLAG="yes"
+            RESTORE_FLAG="yes"
+            ;;
+        *)
+            echo "Invalid option: $word"
+            exit 1
+            ;;
+        esac
         ;;
     esac
 done
+
+# early exit if no backup file is present
+[[ -f "${BACKUP_FILE}" ]] || exit 0
 
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
 
@@ -114,6 +136,6 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     rm "${TMPFILES[$i]}"
 done
 
-[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" -btd
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-btd${YESNO}"
 
 exit 0
