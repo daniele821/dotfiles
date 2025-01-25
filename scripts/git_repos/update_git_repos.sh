@@ -11,6 +11,14 @@ TMPFILES=()
 CLONEPID=()
 MESSAGGES=()
 
+case "$*" in
+all)
+    BACKUP_FLAG="yes"
+    FORCE_FLAG="yes"
+    RESTORE_FLAG="yes"
+    ;;
+esac
+
 while getopts ":bfhr" opt 2>/dev/null; do
     case "$opt" in
     b) BACKUP_FLAG="yes" ;;
@@ -24,6 +32,9 @@ Options:
 -f      force reset git branch and git email
 -h      print this help message
 -r      before updating repos, also restore those missing
+
+Shortcuts:
+all     run EVERY POSSIBLE UPDATE
 "
         exit 0
         ;;
@@ -103,6 +114,6 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     rm "${TMPFILES[$i]}"
 done
 
-[[ "${BACKUP_FLAG}" == "yes" ]] && "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" -btd
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" -btd
 
 exit 0
