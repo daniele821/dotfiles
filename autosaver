@@ -246,7 +246,8 @@ def purge_path(path, allow_force=False):
 def copy_file(src, dst, allow_force=False):
     __assert_valid__(src, ["sym", "file"])
     __assert_valid__(dst, ["sym"])
-    purge_path(dst, allow_force)
+    if isrealdir(dst):
+        delete_dir(dst, allow_force)
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
