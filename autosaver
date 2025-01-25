@@ -727,6 +727,7 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+        dbg_final_report(None, True)
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
 
     dbg_final_report(None, True)
