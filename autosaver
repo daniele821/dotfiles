@@ -246,7 +246,8 @@ def purge_path(path, allow_force=False):
 def copy_file(src, dst, allow_force=False):
     __assert_valid__(src, ["sym", "file"])
     __assert_valid__(dst, ["sym"])
-    purge_path(dst, allow_force)
+    if isrealdir(dst):
+        delete_dir(dst, allow_force)
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
@@ -726,6 +727,7 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+        dbg_final_report(None, True)
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
 
     dbg_final_report(None, True)
