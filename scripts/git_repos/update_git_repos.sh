@@ -11,23 +11,32 @@ TMPFILES=()
 CLONEPID=()
 MESSAGGES=()
 
-while getopts "fhr" opt 2>/dev/null; do
+case "$*" in
+all)
+    BACKUP_FLAG="yes"
+    FORCE_FLAG="yes"
+    RESTORE_FLAG="yes"
+    ;;
+esac
+
+while getopts ":bfhr" opt 2>/dev/null; do
     case "$opt" in
-    f)
-        FORCE_FLAG="yes"
-        ;;
+    b) BACKUP_FLAG="yes" ;;
+    f) FORCE_FLAG="yes" ;;
+    r) RESTORE_FLAG="yes" ;;
     h)
         echo "Script to update all tracked git repos
 
 Options:
+-b      after updating all git repos, restore backup
 -f      force reset git branch and git email
 -h      print this help message
 -r      before updating repos, also restore those missing
+
+Shortcuts:
+all     run EVERY POSSIBLE UPDATE
 "
         exit 0
-        ;;
-    r)
-        RESTORE_FLAG="yes"
         ;;
     *)
         echo "Invalid option: -$OPTARG"
@@ -104,5 +113,7 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
     rm "${TMPFILES[$i]}"
 done
+
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" -btd
 
 exit 0
