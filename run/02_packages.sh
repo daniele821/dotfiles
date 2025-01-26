@@ -19,7 +19,7 @@
     sudo dnf --assumeyes remove gnome-disk-utility setroubleshoot system-config-language
     sudo dnf --assumeyes install libreoffice-{calc,writer,langpack-it} firefox kcalc gwenview okular
     sudo dnf --assumeyes install mpv wireshark kitten
-    sudo dnf --assumeyes install zoxide bat ripgrep lsd neovim gcc tldr git golang htop gh
+    sudo dnf --assumeyes install zoxide direnv bat ripgrep lsd neovim gcc tldr git golang htop gh
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
