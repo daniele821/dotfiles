@@ -136,6 +136,6 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     rm "${TMPFILES[$i]}"
 done
 
-[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-btd${YESNO}"
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-bt${YESNO}"
 
 exit 0
