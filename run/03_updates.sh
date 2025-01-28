@@ -23,13 +23,13 @@ function report_fail() {
 
     # download fira code nerd font
     if ask_user 'Do you really want to download firacode nerd font'; then
-        FIRACODE_DIR="/usr/local/share/fonts/FiraCode"
-        [[ -f "${FIRACODE_DIR}" ]] && rm -rf "/usr/local/share/fonts/FiraCode" # rewritten manually: rm -rf is HUGELY dangerous!
-        sudo mkdir -p "${FIRACODE_DIR}"
+        FIRACODE_DIR="$HOME/.local/share/fonts/FiraCode"
+        [[ -f "${FIRACODE_DIR}" ]] && rm -rf "$HOME/.local/share/fonts/FiraCode" # rewritten manually: rm -rf is HUGELY dangerous!
+        mkdir -p "${FIRACODE_DIR}"
         cd "$(mktemp -d /tmp/firacode-fontXXXXXXXXXXXXXXXXXXX)" || exit 1
         wget https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -O Firacode.zip
         unzip ./Firacode.zip
-        sudo mv ./*.ttf "${FIRACODE_DIR}/"
+        mv ./*.ttf "${FIRACODE_DIR}/"
 
         # check installation worked
         rmdir "${FIRACODE_DIR}" &>/dev/null && report_fail 'installation of nerd fonts failed!'
