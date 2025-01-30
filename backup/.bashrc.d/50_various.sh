@@ -69,6 +69,7 @@ function copy() {
     cat "$@" | wl-copy
 }
 
+complete -W "save sa restore re saveall restoreall commit co uncommit un untracked init purge edit run help" autosaver
 complete -c run
 complete -f copy
 
