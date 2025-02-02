@@ -67,6 +67,11 @@ done
 # early exit if no backup file is present
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
+# force update this repo, to avoid needing running this script TWICE in rare cases
+echo "UPDATING THIS REPOSITORY:"
+git -C "$(dirname "${SCRIPT_PWD}")" pull --ff-only
+
+# restore missing repos
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
 
 # clone missing directories
