@@ -16,8 +16,6 @@ function help_msg() {
  -f     force reset git branch and git email
  -h     print this help message
  -r     before updating repos, also restore those missing
- -n     autoanswer no
- -y     autoanswer yes
 
  Shortcuts:
  all     run EVERY POSSIBLE UPDATE
@@ -37,8 +35,6 @@ for word in "$@"; do
             b) BACKUP_FLAG="yes" ;;
             f) FORCE_FLAG="yes" ;;
             r) RESTORE_FLAG="yes" ;;
-            n) YESNO="n" ;;
-            y) YESNO="y" ;;
             h) help_msg ;;
             *)
                 echo "Invalid option: $word"
@@ -141,6 +137,6 @@ for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     rm "${TMPFILES[$i]}"
 done
 
-[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-btd${YESNO}"
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-btd"
 
 exit 0
