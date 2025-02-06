@@ -68,6 +68,22 @@ function fpreview() {
 function copy() {
     cat "$@" | wl-copy
 }
+function safe-update() {
+    UPDATES="$(sudo dnf check-update 2>/dev/null)"
+    UPDATES_COUNT="$(echo "$UPDATES" | wc -l)"
+    if [[ "$UPDATES_COUNT" -ne "0" ]]; then
+        echo "there are $UPDATES_COUNT update available:"
+        echo "$UPDATES"
+        echo -n "Do you really want to proceed with the update? "
+        read -r answer
+        if [[ "${answer,,}" == "y" ]]; then
+            sudo dnf --assumeyes offline-upgrade download
+            sudo dnf --assumeyes offline-upgrade reboot
+        fi
+    else
+        echo 'no updates available'
+    fi
+}
 
 complete -W "save sa restore re saveall restoreall commit co uncommit un untracked init purge edit run help" autosaver
 complete -c run
