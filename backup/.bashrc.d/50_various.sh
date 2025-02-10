@@ -72,9 +72,9 @@ function safe-update() {
     UPDATES="$(sudo dnf check-update 2>/dev/null)"
     UPDATES_COUNT="$(echo "$UPDATES" | wc -l)"
     if [[ -n "$(echo "$UPDATES" | xargs)" ]]; then
-        echo "there are $UPDATES_COUNT update available:"
+        echo "the following packages can be updated:"
         echo "$UPDATES"
-        echo -n "Do you really want to proceed with the update? "
+        echo -n "Do you really want to proceed with the update ($UPDATES_COUNT packages)? "
         read -r answer
         if [[ "${answer,,}" == "y" ]]; then
             sudo dnf --assumeyes offline-upgrade download
