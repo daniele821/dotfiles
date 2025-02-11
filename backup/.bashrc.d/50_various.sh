@@ -69,7 +69,7 @@ function copy() {
     cat "$@" | wl-copy
 }
 function safe-update() {
-    UPDATES="$(sudo dnf check-update 2>/dev/null)"
+    UPDATES="$(sudo dnf check-update 2>/dev/tty)"
     UPDATES_COUNT="$(echo "$UPDATES" | wc -l)"
     if [[ -n "$(echo "$UPDATES" | xargs)" ]]; then
         echo "the following packages can be updated:"
