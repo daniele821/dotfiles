@@ -47,8 +47,10 @@ function open() {
 function preview() {
     [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
     [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
+    local -r oldPwd="$PWD"
     FILE="${1}"
-    if [[ $# == 0 ]]; then
+    [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
+    if [[ $# == 0 || -d "$FILE" ]]; then
         FILE="$(
             {
                 wl-paste --list-types 2>/dev/null | grep image -q &>/dev/null && echo clipboard-image
@@ -61,6 +63,7 @@ function preview() {
     elif [[ "$FILE" == "clipboard-image" ]]; then
         wl-paste | kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" | less -r
     fi
+    cd "${oldPwd}" &>/dev/null || return 1
 }
 function fpreview() {
     FPREVIEW="true" preview "${@}"
