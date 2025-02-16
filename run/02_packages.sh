@@ -18,7 +18,7 @@
     sudo dnf --assumeyes remove kcharselect kamoso
     sudo dnf --assumeyes remove gnome-disk-utility setroubleshoot system-config-language
     sudo dnf --assumeyes install libreoffice-{calc,writer,langpack-it} firefox kcalc gwenview okular
-    sudo dnf --assumeyes install mpv wireshark kitten
+    sudo dnf --assumeyes install mpv wireshark kitten okteta
     sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd neovim gcc tldr git golang htop gh
 
     # enable rpm-fusion and install multimedia codecs
