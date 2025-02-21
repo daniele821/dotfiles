@@ -75,6 +75,7 @@ rm "${TMPFILE}"
 
 # clone missing directories
 COUNTER=0
+REPOCOUNT=0
 while read -r line; do
     ((COUNTER += 1))
     case "$COUNTER" in
@@ -83,6 +84,7 @@ while read -r line; do
     3) BRANCH="${line}" ;;
     4) EMAIL="${line}" ;;
     5)
+        ((REPOCOUNT += 1))
         if [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
             function update_repo() {
@@ -136,8 +138,10 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     TMPFILE="$(mktemp)"
+    echo -n "$i/$REPOCOUNT: "
     echo -e "${MESSAGGES[i]}"
     tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}" | tee "$TMPFILE"
+    sleep 0.01
     [[ "$(cat "$TMPFILE")" == "Already up to date." ]] && printf "\033[2A\033[0J"
     rm "${TMPFILES[$i]}" "${TMPFILE}"
 done
