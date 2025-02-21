@@ -138,7 +138,7 @@ done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
     TMPFILE="$(mktemp)"
-    echo -n "$i/$REPOCOUNT: "
+    echo -n "$((i + 1))/$REPOCOUNT: "
     echo -e "${MESSAGGES[i]}"
     tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}" | tee "$TMPFILE"
     sleep 0.01
