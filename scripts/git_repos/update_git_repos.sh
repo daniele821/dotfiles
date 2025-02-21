@@ -64,8 +64,11 @@ done
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
 # force update this repo, to avoid needing running this script TWICE in rare cases
+TMPFILE="$(mktemp)"
 echo "UPDATING THIS REPOSITORY:"
-git -C "$(dirname "${SCRIPT_PWD}")" pull --ff-only
+git -C "$(dirname "${SCRIPT_PWD}")" pull --ff-only | tee "$TMPFILE"
+[[ "$(cat "$TMPFILE")" == "Already up to date." ]] && printf "\033[2A\033[0J"
+rm "${TMPFILE}"
 
 # restore missing repos
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
@@ -132,9 +135,11 @@ while read -r line; do
 done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
+    TMPFILE="$(mktemp)"
     echo -e "${MESSAGGES[i]}"
-    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
-    rm "${TMPFILES[$i]}"
+    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}" | tee "$TMPFILE"
+    [[ "$(cat "$TMPFILE")" == "Already up to date." ]] && printf "\033[2A\033[0J"
+    rm "${TMPFILES[$i]}" "${TMPFILE}"
 done
 
 [[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-bd"
