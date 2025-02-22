@@ -64,11 +64,8 @@ done
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
 # force update this repo, to avoid needing running this script TWICE in rare cases
-TMPFILE="$(mktemp)"
 echo "UPDATING THIS REPOSITORY:"
-git -C "$(dirname "${SCRIPT_PWD}")" pull --ff-only | tee "$TMPFILE"
-[[ "$(cat "$TMPFILE")" == "Already up to date." ]] && printf "\033[2A\033[0J"
-rm "${TMPFILE}"
+git -C "$(dirname "${SCRIPT_PWD}")" pull
 
 # restore missing repos
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
@@ -119,7 +116,7 @@ while read -r line; do
                         echo -e "\e[1;33m (\e[1;32m${BRANCH}\e[1;33m -> \e[1;32m${BRANCH_NEW}\e[1;33m)\e[m"
                     fi
                 fi
-                git -C "${DIR}" -c color.ui=always pull --progress --ff-only
+                git -C "${DIR}" -c color.ui=always pull --progress
             }
             update_repo &>>"${TMP}" &
             PID="$!"
@@ -137,13 +134,11 @@ while read -r line; do
 done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
-    TMPFILE="$(mktemp)"
     echo -n "$((i + 1))/$REPOCOUNT: "
     echo -e "${MESSAGGES[i]}"
-    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}" | tee "$TMPFILE"
+    tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
     sleep 0.01
-    [[ "$(cat "$TMPFILE")" == "Already up to date." ]] && printf "\033[2A\033[0J"
-    rm "${TMPFILES[$i]}" "${TMPFILE}"
+    rm "${TMPFILES[$i]}"
 done
 
 [[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-bd"
