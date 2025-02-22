@@ -16,3 +16,6 @@ HighlightScrolledLines=false
 HistorySize=1000
 ReflowLines=false
 ScrollBarPosition=2
+
+[Terminal Features]
+BellMode=3
