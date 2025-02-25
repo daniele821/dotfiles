@@ -45,6 +45,23 @@ function report_fail() {
         [[ -f /usr/local/bin/zig ]] && sudo rm /usr/local/bin/zig
         sudo ln -s /personal/data/zig/zig /usr/local/bin/zig
         rm "$TMPFILE"
+
+        [[ -f /usr/local/bin/zig && -d /personal/data/zig ]] || report_fail 'installation of zig failed!'
+    fi
+
+    # download kitten
+    if ask_user 'Do you really want to install kitten'; then
+        case "$(uname -m)" in
+        x86_64)
+            TMP_FILE="$(mktemp)"
+            wget https://github.com/kovidgoyal/kitty/releases/latest/download/kitten-linux-386 -O "${TMP_FILE}"
+            chmod +x "${TMP_FILE}"
+            sudo mv "${TMP_FILE}" /usr/local/bin/kitten
+            ;;
+        *) report_fail "not supported platform: $(uname -m)" ;;
+        esac
+
+        [[ -f /usr/local/bin/kitten ]] || report_fail 'installation of kitten failed!'
     fi
 
 } </dev/tty

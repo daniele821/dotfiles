@@ -69,6 +69,32 @@ function open() {
     done
 }
 
+# kitten image viewer in terminal
+function preview() {
+    [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
+    [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
+    local -r oldPwd="$PWD"
+    FILE="${1}"
+    [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
+    if [[ $# == 0 || -d "$FILE" ]]; then
+        FILE="$(
+            {
+                wl-paste --list-types 2>/dev/null | grep image -q &>/dev/null && echo clipboard-image
+                find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) 2>/dev/null | cut -b 3-
+            } | fzf --exit-0 --select-1 --height=40% --layout=reverse --border
+        )"
+    fi
+    if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
+        kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}" | less -r
+    elif [[ "$FILE" == "clipboard-image" ]]; then
+        wl-paste | kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" | less -r
+    fi
+    cd "${oldPwd}" &>/dev/null || return 1
+}
+function fpreview() {
+    FPREVIEW="true" preview "${@}"
+}
+
 # fix bash prompt
 function __cleanup_prompt__() {
     \builtin local -r retval="$?"
