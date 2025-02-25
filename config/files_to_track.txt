@@ -4,5 +4,5 @@
 .ssh/config
 .gitconfig
 .config/mpv
-// .bashrc.d -> .bash_aliases
+.bash_aliases
 
