@@ -3,6 +3,8 @@
 {
     # purge bloat
     sudo apt purge --auto-remove plasma-discover* fcitx5* info -y # GUI apps
+    sudo apt purge --auto-remove khelpcenter kcharselect -y       # GUI apps
+    sudo apt purge --auto-remove apport im-config ksystemlog -y   # GUI apps
 
     # add goodies
     sudo apt install curl gh -y                                           # requires to run these scripts
