@@ -14,6 +14,12 @@
     # sudo apt install zoxide direnv entr bat ripgrep lsd tldr htop
     #
     # flatpak
+
+    # cleanup
+    sudo apt update -y
+    sudo apt upgrade -y
+    sudo apt autopurge --auto-remove -y
+
 } </dev/tty
 
 exit 0
