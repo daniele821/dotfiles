@@ -11,6 +11,7 @@
     sudo apt install tree bat zoxide entr direnv ripgrep lsd tldr htop -y # cli tools
     sudo apt install build-essential golang nodejs npm python3.12-venv -y # for programming
     sudo apt install okular libreoffice-{calc,writer,l10n-it} -y          # GUI apps
+    sudo apt install mpv mpv-mpris -y                                     # GUI apps
 
     # install various ppa & cleanup
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
