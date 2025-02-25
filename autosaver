@@ -497,7 +497,7 @@ def run(flags):
             msg2 = color("file", relpath(file))
             if ask_user(msg1+msg2+msg3, flags):
                 try:
-                    if subprocess.run(["sh", file]).returncode:
+                    if subprocess.run(["bash", file]).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!", True)
