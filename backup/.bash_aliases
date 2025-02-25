@@ -30,6 +30,61 @@ function blastoff() {
     git status -s &>/dev/null
 }
 
+# runner and launcher functions
+function run() {
+    (: && nohup "$@" &>/dev/null &)
+}
+function open() {
+    [[ "${#@}" -eq "0" ]] && return 0
+    pdfs=()
+    dirs=()
+    videos=()
+    others=()
+    for file in "${@}"; do
+        type="$(xdg-mime query filetype "${file}" 2>/dev/null)"
+        case "$type" in
+        application/pdf) pdfs+=("$file") ;;
+        inode/directory) dirs+=("$file") ;;
+        video/*) videos+=("$file") ;;
+        *) others+=("$file") ;;
+        esac &>/dev/null
+    done
+    if command -v okular &>/dev/null; then
+        [[ "${#pdfs[@]}" -gt 0 ]] && run okular "${pdfs[@]}"
+    else
+        others+=("${pdfs[@]}")
+    fi
+    if command -v dolphin &>/dev/null; then
+        [[ "${#dirs[@]}" -gt 0 ]] && run dolphin "${dirs[@]}"
+    else
+        others+=("${dirs[@]}")
+    fi
+    if command -v mpv &>/dev/null; then
+        [[ "${#videos[@]}" -gt 0 ]] && run mpv "${videos[@]}"
+    else
+        others+=("${videos[@]}")
+    fi
+    for file in "${others[@]}"; do
+        run xdg-open "$file"
+    done
+}
+
+# fix bash prompt
+function __cleanup_prompt__() {
+    \builtin local -r retval="$?"
+    # force exit from not existing directories
+    if ! [[ -d "$PWD" ]]; then
+        NEWPWD="$PWD"
+        while ! [[ -d "$NEWPWD" ]]; do
+            NEWPWD=$(dirname "${NEWPWD}")
+        done
+        \cd "${NEWPWD}" || exit 1
+    fi
+
+    return "${retval}"
+}
+PROMPT_COMMAND="__cleanup_prompt__;"${PROMPT_COMMAND}
+
 # fix bash shortcuts
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
