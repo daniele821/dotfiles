@@ -16,8 +16,6 @@ function help_msg() {
  -f     force reset git branch and git email
  -h     print this help message
  -r     before updating repos, also restore those missing
- -n     autoanswer no
- -y     autoanswer yes
 
  Shortcuts:
  all     run EVERY POSSIBLE UPDATE
@@ -37,8 +35,6 @@ for word in "$@"; do
             b) BACKUP_FLAG="yes" ;;
             f) FORCE_FLAG="yes" ;;
             r) RESTORE_FLAG="yes" ;;
-            n) YESNO="n" ;;
-            y) YESNO="y" ;;
             h) help_msg ;;
             *)
                 echo "Invalid option: $word"
@@ -69,13 +65,14 @@ done
 
 # force update this repo, to avoid needing running this script TWICE in rare cases
 echo "UPDATING THIS REPOSITORY:"
-git -C "$(dirname "${SCRIPT_PWD}")" pull --ff-only
+git -C "$(dirname "${SCRIPT_PWD}")" pull
 
 # restore missing repos
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
 
 # clone missing directories
 COUNTER=0
+REPOCOUNT=0
 while read -r line; do
     ((COUNTER += 1))
     case "$COUNTER" in
@@ -84,6 +81,7 @@ while read -r line; do
     3) BRANCH="${line}" ;;
     4) EMAIL="${line}" ;;
     5)
+        ((REPOCOUNT += 1))
         if [[ -d ${DIR} ]]; then
             TMP="$(mktemp)"
             function update_repo() {
@@ -118,7 +116,7 @@ while read -r line; do
                         echo -e "\e[1;33m (\e[1;32m${BRANCH}\e[1;33m -> \e[1;32m${BRANCH_NEW}\e[1;33m)\e[m"
                     fi
                 fi
-                git -C "${DIR}" -c color.ui=always pull --progress --ff-only
+                git -C "${DIR}" -c color.ui=always pull --progress
             }
             update_repo &>>"${TMP}" &
             PID="$!"
@@ -136,11 +134,13 @@ while read -r line; do
 done <"$BACKUP_FILE"
 
 for ((i = 0; i < ${#CLONEPID[@]}; i++)); do
+    echo -n "$((i + 1))/$REPOCOUNT: "
     echo -e "${MESSAGGES[i]}"
     tail -n +0 -f "${TMPFILES[$i]}" --pid="${CLONEPID[$i]}"
+    sleep 0.01
     rm "${TMPFILES[$i]}"
 done
 
-[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-btd${YESNO}"
+[[ "${BACKUP_FLAG}" == "yes" ]] && DBG="" "$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/autosaver" "-bd"
 
 exit 0
