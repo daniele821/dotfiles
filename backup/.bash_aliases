@@ -22,7 +22,7 @@ function tree() {
 
 # init various
 eval "$(direnv hook bash)"
-eval "$(zoxide hook bash)"
+eval "$(zoxide init bash)"
 export STARSHIP_LOG=error
 export starship_precmd_user_func="blastoff"
 eval "$(starship init bash)"
