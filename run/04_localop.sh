@@ -18,7 +18,7 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
-        pass_dirs="$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)"
+        pass_dirs="$(find /media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)"
         if [[ "$pass_dirs" != 1 ]]; then
             answer=""
             while [[ "$answer" != "CONTINUE" ]]; do
@@ -26,8 +26,8 @@ function ask_user() {
                 read -r answer </dev/tty
             done
         fi
-        if [[ "$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)" == 1 ]]; then
-            usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
+        if [[ "$(find /media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)" == 1 ]]; then
+            usb_passwords=$(find /media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
             new_location="/personal/data/passwords"
             if [[ -d "$usb_passwords" ]] && ! [[ -e "$new_location" ]]; then
                 cp "$usb_passwords" "/personal/data/" -r
@@ -35,7 +35,7 @@ function ask_user() {
                 echo "copied passwords from usb drive"
             fi
         else
-            echo "WARNING: UNABLE TO COPY PASSWORDS: $(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l) passwords directories found!"
+            echo "WARNING: UNABLE TO COPY PASSWORDS: $(find /media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l) passwords directories found!"
         fi
     fi
     ### END OF MANDATORY OPERATIONS ###
