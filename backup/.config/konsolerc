@@ -8,6 +8,7 @@ ConfigVersion=1
 RememberWindowSize=false
 
 [MainWindow]
+State[$d]
 ToolBarsMovable=Disabled
 
 [Notification Messages]
