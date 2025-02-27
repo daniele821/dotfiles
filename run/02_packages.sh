@@ -14,8 +14,9 @@
     sudo apt install okular libreoffice-{calc,writer,l10n-it} mpv mpv-mpris -y # GUI apps
     sudo apt install flatpak -y                                                # software managers
 
-    # add flathub to flatpak
+    # add flathub to flatpak + various flatpak installs
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    flatpak install --assumeyes com.github.wwmm.easyeffects
 
     # install various ppa & cleanup
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
