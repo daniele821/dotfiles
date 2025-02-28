@@ -8,6 +8,7 @@ ConfigVersion=1
 RememberWindowSize=false
 
 [MainWindow]
+MenuBar=Disabled
 State[$d]
 ToolBarsMovable=Disabled
 

@@ -68,6 +68,7 @@ function open() {
         run xdg-open "$file"
     done
 }
+complete -c run
 
 # kitten image viewer in terminal
 function preview() {

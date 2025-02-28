@@ -3,7 +3,7 @@
 {
     # purge bloat
     sudo apt purge --auto-remove fcitx5* info khelpcenter kcharselect -y # GUI apps
-    sudo apt purge --auto-remove apport im-config ksystemlog -y          # GUI apps
+    sudo apt purge --auto-remove apport im-config ksystemlog kate -y     # GUI apps
     sudo apt purge --auto-remove plasma-discover* -y                     # software managers
 
     # add goodies
