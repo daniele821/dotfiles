@@ -17,13 +17,13 @@
     # add flathub to flatpak + various flatpak installs
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     flatpak install --assumeyes com.github.wwmm.easyeffects
+    flatpak install --assumeyes flathub org.mozilla.firefox
 
     # install various ppa & cleanup
     sudo add-apt-repository ppa:neovim-ppa/unstable -y
-    sudo sudo add-apt-repository ppa:mozillateam/ppa -y
     sudo apt update -y
     sudo apt upgrade -y
-    sudo apt install neovim firefox -y
+    sudo apt install neovim -y
     sudo apt autopurge --auto-remove -y
 
 } </dev/tty
