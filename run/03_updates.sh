@@ -13,14 +13,6 @@ function report_fail() {
 }
 
 {
-    # download starship
-    if ask_user 'Do you really want to download starship locally'; then
-        curl -sS https://starship.rs/install.sh | sh
-
-        # check installatin worked
-        [[ -f /usr/local/bin/starship ]] || report_fail 'installation of starship failed!'
-    fi
-
     # download fira code nerd font
     if ask_user 'Do you really want to download firacode nerd font'; then
         FIRACODE_DIR="$HOME/.local/share/fonts/FiraCode"
