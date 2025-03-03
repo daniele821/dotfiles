@@ -6,6 +6,3 @@
 .local/share/konsole/NerdProfile.profile
 .local/share/konsole/NerdProfileNoLigatures.profile
 .config/plasma-localerc
-.config/konsolerc
-.config/dolphinrc
-.config/okularpartrc
