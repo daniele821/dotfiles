@@ -1,6 +1,7 @@
 // vim:commentstring=//\ %s
 
 .config/htop/htoprc
+.local/share/fonts/FiraCode/
 
 // kde apps configs
 .local/share/konsole/NerdProfile.profile
