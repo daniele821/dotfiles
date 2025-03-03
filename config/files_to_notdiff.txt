@@ -6,4 +6,5 @@
 // kde apps configs
 .local/share/konsole/NerdProfile.profile
 .local/share/konsole/NerdProfileNoLigatures.profile
+.config/konsolerc
 .config/plasma-localerc
