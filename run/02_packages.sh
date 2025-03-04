@@ -16,7 +16,6 @@
 
     # add flathub to flatpak + various flatpak installs
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    flatpak install --assumeyes com.github.wwmm.easyeffects
     flatpak install --assumeyes flathub org.mozilla.firefox
 
     # install various ppa & cleanup
