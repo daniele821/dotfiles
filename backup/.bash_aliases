@@ -21,6 +21,7 @@ function tree() {
 }
 
 # init various
+export DIRENV_LOG_FORMAT=""
 eval "$(direnv hook bash)"
 eval "$(zoxide init bash)"
 export STARSHIP_LOG=error
