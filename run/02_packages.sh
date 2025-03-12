@@ -16,7 +16,7 @@
     # sudo dnf --assumeyes remove plasma-discover PackageKit PackageKit-glib
     sudo dnf --assumeyes remove firewall-config kolourpaint im-chooser
     sudo dnf --assumeyes remove kcharselect kamoso
-    sudo dnf --assumeyes install mpv kitten
+    sudo dnf --assumeyes install mpv kitten filelight
     sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd neovim
     sudo dnf --assumeyes install tldr htop gh gcc git golang zig
 
