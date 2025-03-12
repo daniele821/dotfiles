@@ -8,14 +8,10 @@ ConfigVersion=1
 RememberWindowSize=false
 
 [MainWindow]
-MenuBar=Disabled
 State[$d]
 ToolBarsMovable=Disabled
 
 [Notification Messages]
-CloseAllEmptyTabs=true
-CloseAllTabs=true
-CloseSingleTab=true
 ShowPasteHugeTextWarning=false
 
 [TabBar]
