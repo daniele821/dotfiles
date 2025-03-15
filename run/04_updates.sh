@@ -38,7 +38,10 @@ function report_fail() {
     # download zig binary
     if ask_user 'Do you really want to download zig'; then
         TMPFILE="$(mktemp)"
-        wget "$(curl https://ziglang.org/download/index.json | jq -r ".master.\"$(uname -m)-linux\".\"tarball\"")" -O "$TMPFILE"
+        VERSION="$(curl https://ziglang.org/download/index.json | jq -r 'keys_unsorted | map(select(. != "master")) | .[0]')"
+        echo -e "\e[1;33mINFO: downloading latest stable version: $VERSION\e[m" >/dev/tty
+        TARBALL="$(curl https://ziglang.org/download/index.json | jq -r --arg version "$VERSION" --arg arch "$(uname -m)" '.[$version].[$arch + "-linux"].tarball')"
+        wget "$TARBALL" -O "$TMPFILE"
         [[ -d /personal/data/zig ]] && sudo rm -rf /personal/data/zig/
         mkdir /personal/data/zig/
         tar xf "$TMPFILE" -C /personal/data/zig/ --strip-components=1
