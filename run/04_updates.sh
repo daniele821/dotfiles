@@ -42,14 +42,15 @@ function report_fail() {
         echo -e "\e[1;33mINFO: downloading latest stable version: $VERSION\e[m" >/dev/tty
         TARBALL="$(curl https://ziglang.org/download/index.json | jq -r --arg version "$VERSION" --arg arch "$(uname -m)" '.[$version].[$arch + "-linux"].tarball')"
         wget "$TARBALL" -O "$TMPFILE"
-        [[ -d /personal/data/zig ]] && sudo rm -rf /personal/data/zig/
-        mkdir /personal/data/zig/
-        tar xf "$TMPFILE" -C /personal/data/zig/ --strip-components=1
-        [[ -f /usr/local/bin/zig ]] && sudo rm /usr/local/bin/zig
-        sudo ln -s /personal/data/zig/zig /usr/local/bin/zig
+        [[ -d /usr/local/lib/zig ]] && sudo rm -rf /usr/local/lib/zig
+        sudo mkdir /usr/local/lib/zig
+        sudo tar xf "$TMPFILE" -C /usr/local/lib/zig --strip-components=1
+        sudo chown root:root /usr/local/lib/zig
+        [[ -e /usr/local/bin/zig ]] && sudo rm /usr/local/bin/zig
+        sudo ln -s /usr/local/lib/zig/zig /usr/local/bin/zig
         rm "$TMPFILE"
 
-        [[ -f /usr/local/bin/zig && -d /personal/data/zig ]] || report_fail 'installation of zig failed!'
+        [[ -f /usr/local/bin/zig && -d /usr/local/lib/zig ]] || report_fail 'installation of zig failed!'
     fi
 
 } </dev/tty
