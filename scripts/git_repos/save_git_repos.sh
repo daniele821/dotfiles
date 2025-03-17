@@ -5,6 +5,24 @@ CONFIG_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")/others/scripts/
 BACKUP_FILE="${CONFIG_DIR}/git_repos.txt"
 CONFIG_FILE="${CONFIG_DIR}/config.txt"
 
+### CHECK BRANCH IS CORRECT ###
+REPO_DIR="$(dirname "$(dirname "$(dirname "${SCRIPT_PWD}")")")"
+BRANCH_FILE="${REPO_DIR}/.branch"
+BRANCH_CURR="$(git -C "${REPO_DIR}" rev-parse --abbrev-ref HEAD)"
+BRANCH_WANT="$(cat "${BRANCH_FILE}" 2>/dev/null)"
+if [[ "${BRANCH_CURR}" != "${BRANCH_WANT}" ]]; then
+    if [[ -v BRANCH ]]; then
+        echo -e "\e[1;33mWARNING: '$BRANCH_CURR' is not the valid branch ($BRANCH_WANT)\e[m"
+    elif [[ -v SET_BRANCH ]]; then
+        echo -e "\e[1;33mWARNING: changing valid branch: from '${BRANCH_WANT}' to '${BRANCH_CURR}'\e[m"
+        echo "$BRANCH_CURR" >"$BRANCH_FILE"
+    else
+        echo -e "\e[1;31mERROR: '$BRANCH_CURR' is not the valid branch ($BRANCH_WANT)\e[m"
+        exit 0
+    fi
+fi
+### ------ END CHECK ------ ###
+
 if [[ "$1" == '-e' || "$1" == 'edit' || ! -f "${CONFIG_FILE}" ]]; then
     # create temporary files
     TMP_FILE1="$(mktemp)"
