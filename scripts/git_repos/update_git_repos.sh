@@ -20,10 +20,10 @@ function help_msg() {
  -d     dry-run: do not update repos
 
  Shortcuts:
- all     run EVERY POSSIBLE UPDATE
- status  show only git status
+ all        run EVERY POSSIBLE UPDATE
+ st[atus]   show only git status
+ help       print this help message
  "
-    exit 0
 }
 
 for word in "$@"; do
@@ -39,7 +39,10 @@ for word in "$@"; do
             d) DRY_RUN="yes" ;;
             f) FORCE_FLAG="yes" ;;
             r) RESTORE_FLAG="yes" ;;
-            h) help_msg ;;
+            h)
+                help_msg
+                exit 0
+                ;;
             s) GIT_STATUS="yes" ;;
             *)
                 echo "Invalid option: $word"
@@ -56,9 +59,13 @@ for word in "$@"; do
             FORCE_FLAG="yes"
             RESTORE_FLAG="yes"
             ;;
-        status)
+        status | st)
             DRY_RUN="yes"
             GIT_STATUS="yes"
+            ;;
+        help)
+            help_msg
+            exit 0
             ;;
         *)
             echo "Invalid option: $word"
