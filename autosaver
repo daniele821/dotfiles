@@ -14,10 +14,14 @@ import traceback
 # OUTPUT UTILITIES
 def color(clr, str, output=False):
     match clr:
-        case "err": result = "\033[1;31m" + str + "\033[m"
-        case "file": result = "\033[1;34m" + str + "\033[m"
-        case "msg": result = "\033[1;33m" + str + "\033[m"
-        case _: result = str
+        case "err":
+            result = "\033[1;31m" + str + "\033[m"
+        case "file":
+            result = "\033[1;34m" + str + "\033[m"
+        case "msg":
+            result = "\033[1;33m" + str + "\033[m"
+        case _:
+            result = str
     if output:
         print(result)
     return result
@@ -46,14 +50,14 @@ def dbg_exc():
 
 
 def dbg_final_report(msg, printAll=False):
-    if not hasattr(dbg_final_report, 'acc'):
+    if not hasattr(dbg_final_report, "acc"):
         dbg_final_report.acc = []
     if msg is not None:
         dbg_final_report.acc.append(msg)
 
     if printAll:
         if len(dbg_final_report.acc) > 0:
-            dbg('\nFINAL REPORT OF ALL OPERATIONS:\n')
+            dbg("\nFINAL REPORT OF ALL OPERATIONS:\n")
         for elem in dbg_final_report.acc:
             dbg(elem)
         dbg_final_report.acc = []
@@ -71,8 +75,10 @@ def ask_user(msg, flags=None):
         return True
     else:
         match input():
-            case "y": return True
-            case "n" | "": return False
+            case "y":
+                return True
+            case "n" | "":
+                return False
             case _:
                 print("Invalid answer, retry:")
                 return ask_user(msg, flags)
@@ -296,7 +302,7 @@ def all_files(dir, relpath):
 
 
 # DATA STRUCTURES
-class Flag():
+class Flag:
     def __init__(self, actions=set(), options=set()):
         self.actions = set()
         self.options = set()
@@ -325,8 +331,8 @@ class Flag():
         return option in self.options
 
     def __str__(self):
-        actStr = ', '.join([i.__str__() for i in self.actions])
-        optStr = ', '.join([i.__str__() for i in self.options])
+        actStr = ", ".join([i.__str__() for i in self.actions])
+        optStr = ", ".join([i.__str__() for i in self.options])
         return "Flags: Actions [{}], Options [{}]".format(actStr, optStr)
 
 
@@ -410,7 +416,7 @@ SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 # ACTIONS
 def help(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
-    help_msg = '''Program to backup dotfiles, with git integration
+    help_msg = """Program to backup dotfiles, with git integration
 
 \x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
 
@@ -449,10 +455,10 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
-  '''
+  """
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
-        print(re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])').sub('', help_msg))
+        print(re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])").sub("", help_msg))
     else:
         print(help_msg)
 
@@ -495,7 +501,7 @@ def run(flags):
         if isrealfile(file):
             make_executable(file)
             msg2 = color("file", relpath(file))
-            if ask_user(msg1+msg2+msg3, flags):
+            if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     if subprocess.run(["bash", file]).returncode:
                         raise Exception()
@@ -525,7 +531,7 @@ def edit(flags):
     for file in files:
         if isrealfile(file):
             msg2 = color("file", relpath(file))
-            if ask_user(msg1+msg2+msg3, flags):
+            if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     file_old_content = pathlib.Path(file).read_text()
                     if subprocess.run([editor, file]).returncode:
