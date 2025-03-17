@@ -763,7 +763,10 @@ if __name__ == "__main__":
     try:
         assert_branch()
         main()
-    except Exception as e:
+    except SystemExit as e:
+        pass
+    except BaseException as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
+    finally:
+        dbg_final_report(None, True)
 
-    dbg_final_report(None, True)
