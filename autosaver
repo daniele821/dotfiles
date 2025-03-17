@@ -356,6 +356,8 @@ FILES = {
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DBG = os.getenv("DBG")
+BRANCH_DBG = os.getenv("BRANCH")
+SET_BRANCH_DBG = os.getenv("SET_BRANCH")
 
 
 class Action(enum.Enum):
@@ -460,6 +462,8 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
+  \x1b[1mBRANCH\x1b[m                bypass branch check
+  \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
   """
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
@@ -683,13 +687,23 @@ def load_config(conf):
 
 
 # EXECUTION UTILITIES
-def assert_branch(flags : Flag):
-    branch_file = FILES["branch"] 
+def assert_branch():
+    branch_file = FILES["branch"]
     create_file(branch_file)
     curr_branch = git_current_branch()
-    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()[0]
+    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
+    if len(want_branch) == 0:
+        want_branch = ""
+    else:
+        want_branch = want_branch[0]
     if curr_branch != want_branch:
-        err_exit(f"current branch ({curr_branch}) is not the wanted branch ({want_branch})")
+        if BRANCH_DBG is not None:
+            warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
+        elif SET_BRANCH_DBG is not None:
+            warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
+            pathlib.Path(FILES["branch"]).write_text(curr_branch)
+        else:
+            err_exit(f"'{curr_branch}' is not the valid branch ({want_branch})")
 
 
 def parse(args):
@@ -735,9 +749,7 @@ def main():
     params = []
     for arg in args:
         if arg == "--":
-            parsed_params = parse(params)
-            assert_branch(parsed_params)
-            execute(parsed_params)
+            execute(parse(params))
             params.clear()
         else:
             params.append(arg)
@@ -747,6 +759,7 @@ if __name__ == "__main__":
     if ENV_DBG is None:
         sys.stderr = open(os.devnull, "w")
     try:
+        assert_branch()
         main()
     except Exception as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
