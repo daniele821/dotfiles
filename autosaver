@@ -89,6 +89,10 @@ def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
 
 
+def git_current_branch():
+    return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+
+
 def git_is_branch_uptodate(allow_behind=False):
     remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
     branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
@@ -347,6 +351,7 @@ DIRS = {
     "others": os.path.join(SCRIPT_DIR, "others"),
 }
 FILES = {
+    "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
@@ -678,6 +683,15 @@ def load_config(conf):
 
 
 # EXECUTION UTILITIES
+def assert_branch(flags : Flag):
+    branch_file = FILES["branch"] 
+    create_file(branch_file)
+    curr_branch = git_current_branch()
+    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()[0]
+    if curr_branch != want_branch:
+        err_exit(f"current branch ({curr_branch}) is not the wanted branch ({want_branch})")
+
+
 def parse(args):
     flag = Flag()
     for word in args:
@@ -721,7 +735,9 @@ def main():
     params = []
     for arg in args:
         if arg == "--":
-            execute(parse(params))
+            parsed_params = parse(params)
+            assert_branch(parsed_params)
+            execute(parsed_params)
             params.clear()
         else:
             params.append(arg)
