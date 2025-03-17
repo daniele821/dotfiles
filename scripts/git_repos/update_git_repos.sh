@@ -16,9 +16,12 @@ function help_msg() {
  -f     force reset git branch and git email
  -h     print this help message
  -r     before updating repos, also restore those missing
+ -s     print git status
+ -d     dry-run: do not update repos
 
  Shortcuts:
  all     run EVERY POSSIBLE UPDATE
+ status  show only git status
  "
     exit 0
 }
@@ -33,9 +36,11 @@ for word in "$@"; do
         for char in $(echo "${word:1}" | fold -w1); do
             case "$char" in
             b) BACKUP_FLAG="yes" ;;
+            d) DRY_RUN="yes" ;;
             f) FORCE_FLAG="yes" ;;
             r) RESTORE_FLAG="yes" ;;
             h) help_msg ;;
+            s) GIT_STATUS="yes" ;;
             *)
                 echo "Invalid option: $word"
                 exit 1
@@ -51,6 +56,10 @@ for word in "$@"; do
             FORCE_FLAG="yes"
             RESTORE_FLAG="yes"
             ;;
+        status)
+            DRY_RUN="yes"
+            GIT_STATUS="yes"
+            ;;
         *)
             echo "Invalid option: $word"
             exit 1
@@ -64,8 +73,10 @@ done
 [[ -f "${BACKUP_FILE}" ]] || exit 0
 
 # force update this repo, to avoid needing running this script TWICE in rare cases
-echo "UPDATING THIS REPOSITORY:"
-git -C "$(dirname "${SCRIPT_PWD}")" pull
+if [[ "${DRY_RUN}" != "yes" ]]; then
+    echo "UPDATING THIS REPOSITORY:"
+    git -C "$(dirname "${SCRIPT_PWD}")" pull
+fi
 
 # restore missing repos
 [[ "${RESTORE_FLAG}" == "yes" ]] && "$(dirname "$SCRIPT_PWD")/restore_git_repos.sh"
@@ -116,7 +127,8 @@ while read -r line; do
                         echo -e "\e[1;33m (\e[1;32m${BRANCH}\e[1;33m -> \e[1;32m${BRANCH_NEW}\e[1;33m)\e[m"
                     fi
                 fi
-                git -C "${DIR}" -c color.ui=always pull --progress
+                [[ "${DRY_RUN}" != "yes" ]] && git -C "${DIR}" -c color.ui=always pull --progress
+                [[ "${GIT_STATUS}" == "yes" ]] && git -C "${DIR}" status -s
             }
             update_repo &>>"${TMP}" &
             PID="$!"
