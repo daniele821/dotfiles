@@ -44,7 +44,7 @@ function ask_user() {
     if ask_user 'Do you want to restore all backup files'; then
         SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
         SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
-        "${SCRIPT_DIR}/../autosaver" restoreall
+        BRANCH="" "${SCRIPT_DIR}/../autosaver" restoreall
     fi
 
     # create ssh keys for github
