@@ -14,10 +14,14 @@ import traceback
 # OUTPUT UTILITIES
 def color(clr, str, output=False):
     match clr:
-        case "err": result = "\033[1;31m" + str + "\033[m"
-        case "file": result = "\033[1;34m" + str + "\033[m"
-        case "msg": result = "\033[1;33m" + str + "\033[m"
-        case _: result = str
+        case "err":
+            result = "\033[1;31m" + str + "\033[m"
+        case "file":
+            result = "\033[1;34m" + str + "\033[m"
+        case "msg":
+            result = "\033[1;33m" + str + "\033[m"
+        case _:
+            result = str
     if output:
         print(result)
     return result
@@ -46,14 +50,14 @@ def dbg_exc():
 
 
 def dbg_final_report(msg, printAll=False):
-    if not hasattr(dbg_final_report, 'acc'):
+    if not hasattr(dbg_final_report, "acc"):
         dbg_final_report.acc = []
     if msg is not None:
         dbg_final_report.acc.append(msg)
 
     if printAll:
         if len(dbg_final_report.acc) > 0:
-            dbg('\nFINAL REPORT OF ALL OPERATIONS:\n')
+            dbg("\nFINAL REPORT OF ALL OPERATIONS:\n")
         for elem in dbg_final_report.acc:
             dbg(elem)
         dbg_final_report.acc = []
@@ -71,8 +75,10 @@ def ask_user(msg, flags=None):
         return True
     else:
         match input():
-            case "y": return True
-            case "n" | "": return False
+            case "y":
+                return True
+            case "n" | "":
+                return False
             case _:
                 print("Invalid answer, retry:")
                 return ask_user(msg, flags)
@@ -81,6 +87,10 @@ def ask_user(msg, flags=None):
 # GIT UTILITIES
 def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
+
+
+def git_current_branch():
+    return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
 
 
 def git_is_branch_uptodate(allow_behind=False):
@@ -296,7 +306,7 @@ def all_files(dir, relpath):
 
 
 # DATA STRUCTURES
-class Flag():
+class Flag:
     def __init__(self, actions=set(), options=set()):
         self.actions = set()
         self.options = set()
@@ -325,8 +335,8 @@ class Flag():
         return option in self.options
 
     def __str__(self):
-        actStr = ', '.join([i.__str__() for i in self.actions])
-        optStr = ', '.join([i.__str__() for i in self.options])
+        actStr = ", ".join([i.__str__() for i in self.actions])
+        optStr = ", ".join([i.__str__() for i in self.options])
         return "Flags: Actions [{}], Options [{}]".format(actStr, optStr)
 
 
@@ -341,10 +351,13 @@ DIRS = {
     "others": os.path.join(SCRIPT_DIR, "others"),
 }
 FILES = {
+    "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DBG = os.getenv("DBG")
+BRANCH_DBG = os.getenv("BRANCH")
+SET_BRANCH_DBG = os.getenv("SET_BRANCH")
 
 
 class Action(enum.Enum):
@@ -410,7 +423,7 @@ SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 # ACTIONS
 def help(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
-    help_msg = '''Program to backup dotfiles, with git integration
+    help_msg = """Program to backup dotfiles, with git integration
 
 \x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
 
@@ -449,10 +462,12 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
-  '''
+  \x1b[1mBRANCH\x1b[m                bypass branch check
+  \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
+  """
     if opt_toggle:
         # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
-        print(re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])').sub('', help_msg))
+        print(re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])").sub("", help_msg))
     else:
         print(help_msg)
 
@@ -495,7 +510,7 @@ def run(flags):
         if isrealfile(file):
             make_executable(file)
             msg2 = color("file", relpath(file))
-            if ask_user(msg1+msg2+msg3, flags):
+            if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     if subprocess.run(["bash", file]).returncode:
                         raise Exception()
@@ -525,7 +540,7 @@ def edit(flags):
     for file in files:
         if isrealfile(file):
             msg2 = color("file", relpath(file))
-            if ask_user(msg1+msg2+msg3, flags):
+            if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     file_old_content = pathlib.Path(file).read_text()
                     if subprocess.run([editor, file]).returncode:
@@ -672,6 +687,27 @@ def load_config(conf):
 
 
 # EXECUTION UTILITIES
+def assert_branch():
+    branch_file = FILES["branch"]
+    create_file(branch_file)
+    curr_branch = git_current_branch()
+    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
+    if len(want_branch) == 0:
+        want_branch = ""
+    else:
+        want_branch = want_branch[0]
+    if curr_branch != want_branch:
+        dbg_final_report("\x1b[35m~ WRONG BRANCH: '{}' (valid: '{}')\x1b[m\n".format(curr_branch, want_branch))
+        if BRANCH_DBG is not None:
+            warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
+        elif SET_BRANCH_DBG is not None:
+            warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
+            pathlib.Path(FILES["branch"]).write_text(curr_branch)
+            dbg_final_report("\x1b[35m~ UPDATED BRANCH: '{}'\x1b[m\n".format(curr_branch))
+        else:
+            err_exit(f"'{curr_branch}' is not the valid branch ({want_branch})")
+
+
 def parse(args):
     flag = Flag()
     for word in args:
@@ -725,6 +761,7 @@ if __name__ == "__main__":
     if ENV_DBG is None:
         sys.stderr = open(os.devnull, "w")
     try:
+        assert_branch()
         main()
     except Exception as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
