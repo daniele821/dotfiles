@@ -45,7 +45,7 @@ function report_fail() {
         [[ -d /usr/local/lib/zig ]] && sudo rm -rf /usr/local/lib/zig
         sudo mkdir /usr/local/lib/zig
         sudo tar xf "$TMPFILE" -C /usr/local/lib/zig --strip-components=1
-        sudo chown root:root /usr/local/lib/zig
+        sudo chown root:root -R /usr/local/lib/zig
         [[ -e /usr/local/bin/zig ]] && sudo rm /usr/local/bin/zig
         sudo ln -s /usr/local/lib/zig/zig /usr/local/bin/zig
         rm "$TMPFILE"
