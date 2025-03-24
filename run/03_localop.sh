@@ -62,6 +62,11 @@ function ask_user() {
         ln -s /personal/repos/daniele821/nvim-config "$HOME/.config/nvim"
     fi
 
+    # install rust
+    if ask_user 'Do you really want to install rust'; then
+        rustup-init -y
+    fi
+
 } </dev/tty
 
 exit 0

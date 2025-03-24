@@ -18,7 +18,7 @@
     sudo dnf --assumeyes remove kcharselect kamoso
     sudo dnf --assumeyes install mpv kitten
     sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd neovim
-    sudo dnf --assumeyes install tldr htop gh gcc git golang
+    sudo dnf --assumeyes install tldr htop gh gcc git golang rustup
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
