@@ -35,24 +35,6 @@ function report_fail() {
         rmdir "${FIRACODE_DIR}" &>/dev/null && report_fail 'installation of nerd fonts failed!'
     fi
 
-    # download zig binary
-    if ask_user 'Do you really want to download zig'; then
-        TMPFILE="$(mktemp)"
-        VERSION="$(curl https://ziglang.org/download/index.json | jq -r 'keys_unsorted | map(select(. != "master")) | .[0]')"
-        echo -e "\e[1;33mINFO: downloading latest stable version: $VERSION\e[m" >/dev/tty
-        TARBALL="$(curl https://ziglang.org/download/index.json | jq -r --arg version "$VERSION" --arg arch "$(uname -m)" '.[$version].[$arch + "-linux"].tarball')"
-        wget "$TARBALL" -O "$TMPFILE"
-        [[ -d /usr/local/lib/zig ]] && sudo rm -rf /usr/local/lib/zig
-        sudo mkdir /usr/local/lib/zig
-        sudo tar xf "$TMPFILE" -C /usr/local/lib/zig --strip-components=1
-        sudo chown root:root -R /usr/local/lib/zig
-        [[ -e /usr/local/bin/zig ]] && sudo rm /usr/local/bin/zig
-        sudo ln -s /usr/local/lib/zig/zig /usr/local/bin/zig
-        rm "$TMPFILE"
-
-        [[ -f /usr/local/bin/zig && -d /usr/local/lib/zig ]] || report_fail 'installation of zig failed!'
-    fi
-
 } </dev/tty
 
 exit 0
