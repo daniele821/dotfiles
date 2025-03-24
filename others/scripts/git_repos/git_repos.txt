@@ -33,16 +33,6 @@ git@daniele821.github.com:daniele821/track-payments.git
 main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
-/personal/repos/daniele821/track-payments-zig
-git@daniele821.github.com:daniele821/track-payments-zig.git
-main
-danixgithub1@gmail.com
----------------------------------------------------------------------
-/personal/repos/daniele821/zig
-git@daniele821.github.com:daniele821/zig.git
-main
-danixgithub1@gmail.com
----------------------------------------------------------------------
 /personal/repos/danix1234/unibo-2a
 git@danix1234.github.com:danix1234/unibo-2a.git
 main
