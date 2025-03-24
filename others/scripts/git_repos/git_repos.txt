@@ -28,6 +28,11 @@ git@daniele821.github.com:daniele821/ricette.git
 main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
+/personal/repos/daniele821/rust
+git@daniele821.github.com:daniele821/rust.git
+main
+danixgithub1@gmail.com
+---------------------------------------------------------------------
 /personal/repos/daniele821/track-payments
 git@daniele821.github.com:daniele821/track-payments.git
 main
@@ -35,7 +40,7 @@ danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/daniele821/track-payments-rust
 git@daniele821.github.com:daniele821/track-payments-rust.git
-HEAD
+main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/danix1234/unibo-2a
