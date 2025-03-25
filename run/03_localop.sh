@@ -62,6 +62,11 @@ function ask_user() {
         ln -s /personal/repos/daniele821/nvim-config "$HOME/.config/nvim"
     fi
 
+    # install rustup toolchain
+    if ask_user 'Do you really want to install rustup toolchain'; then
+        rustup toolchain install stable
+    fi
+
 } </dev/tty
 
 exit 0
