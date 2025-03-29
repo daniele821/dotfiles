@@ -44,6 +44,14 @@ function open() {
         __exec_nohupped__ xdg-open "$file"
     done
 }
+function custom_pager() {
+    printf '\e[?1049h'
+    "$@"
+    printf '\e[?25l'
+    read -rn 1
+    clear
+    printf '\e[?1049l\e[?25h'
+}
 function preview() {
     [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
     [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
@@ -59,9 +67,9 @@ function preview() {
         )"
     fi
     if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
-        kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}" | less -r
+        custom_pager kitten icat --align=center --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}"
     elif [[ "$FILE" == "clipboard-image" ]]; then
-        wl-paste | kitten icat --align=left --background=#232627 --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" | less -r
+        custom_pager wl-paste | kitten icat --align=left --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}"
     fi
     cd "${oldPwd}" &>/dev/null || return 1
 }
