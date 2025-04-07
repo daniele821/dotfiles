@@ -46,7 +46,7 @@ while read -r line; do
         if ! [[ -d ${DIR} ]]; then
             ((REPOCOUNT += 1))
             TMP="$(mktemp)"
-            git clone -c color.ui=always --progress "${URL}" "${DIR}" &>>"${TMP}" &
+            git clone -c color.ui=always --progress --recurse-submodules "${URL}" "${DIR}" &>>"${TMP}" &
             CLONEPID+=("$!")
             TMPFILES+=("$TMP")
             MESSAGGES+=("Cloning \e[33m$URL\e[m in \e[32m$DIR\e[m (branch:\e[34m$BRANCH\e[m, email:\e[31m$EMAIL\e[m):")

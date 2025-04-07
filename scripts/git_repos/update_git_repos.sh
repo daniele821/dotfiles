@@ -152,7 +152,7 @@ while read -r line; do
                         echo -e "\e[1;33m (\e[1;32m${BRANCH}\e[1;33m -> \e[1;32m${BRANCH_NEW}\e[1;33m)\e[m"
                     fi
                 fi
-                [[ "${DRY_RUN}" != "yes" ]] && git -C "${DIR}" -c color.ui=always pull --progress
+                [[ "${DRY_RUN}" != "yes" ]] && git -C "${DIR}" -c color.ui=always pull --progress --recurse-submodules
                 [[ "${GIT_STATUS}" == "yes" ]] && git -C "${DIR}" status -s
             }
             update_repo &>>"${TMP}" &
