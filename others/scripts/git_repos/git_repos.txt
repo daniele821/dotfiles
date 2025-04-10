@@ -38,11 +38,6 @@ git@daniele821.github.com:daniele821/track-payments-data.git
 main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
-/personal/repos/daniele821/track-payments-golang
-git@daniele821.github.com:daniele821/track-payments-golang.git
-main
-danixgithub1@gmail.com
----------------------------------------------------------------------
 /personal/repos/daniele821/track-payments-rust
 git@daniele821.github.com:daniele821/track-payments-rust.git
 main
