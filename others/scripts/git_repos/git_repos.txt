@@ -39,7 +39,7 @@ main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
 /personal/repos/daniele821/track-payments-rust
-git@daniele821.github.com:daniele821/track-payments-rust.git
+git@daniele821.github.com:daniele821/track-payments-rust-old.git
 main
 danixgithub1@gmail.com
 ---------------------------------------------------------------------
