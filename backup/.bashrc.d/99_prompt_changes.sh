@@ -18,6 +18,13 @@ function __cleanup_prompt__() {
         \cd "${NEWPWD}"
     fi
 
+    # change PS1
+    \builtin local color=31
+    if [[ $retval == 0 ]]; then
+        color=32
+    fi
+    PS1="\[\e[0;1;36m\]\w \[\e[1;${color}m\]❯ \[\e[0m\]"
+
     return "${retval}"
 }
 
