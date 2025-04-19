@@ -56,11 +56,6 @@ function ask_user() {
         done
     fi
 
-    # create symlinks
-    [[ -d "$HOME/.config/nvim" ]] || if ask_user 'Do you really want to create symlink for neovim'; then
-        ln -s /personal/repos/daniele821/nvim-config "$HOME/.config/nvim"
-    fi
-
     # install rust
     command -v rustup-init &>/dev/null && if ask_user 'Do you really want to install rust'; then
         rustup-init -y
