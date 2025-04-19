@@ -3,8 +3,8 @@
 export STARSHIP_LOG=error
 export starship_precmd_user_func="blastoff"
 
-eval "$(starship init bash)"
-
 function blastoff() {
     git status -s &>/dev/null
 }
+
+eval "$(starship init bash)"

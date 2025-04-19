@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function __tree__() {
+function tree() {
     timeout 0.2 lsd --group-dirs first --tree "$@" &>/dev/null
     if [[ $? -ne "124" ]]; then
         lsd --group-dirs first --tree "$@"
@@ -10,4 +10,3 @@ function __tree__() {
 }
 
 alias ls='lsd --group-dirs first'
-alias tree='__tree__'
