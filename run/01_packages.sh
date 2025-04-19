@@ -4,7 +4,7 @@
     ### upgrade everything ###
     sudo dnf --assumeyes upgrade
 
-    # basic stuff
+    # remove bloat
     sudo dnf --assumeyes remove kpat kmines kmahjongg
     sudo dnf --assumeyes remove dragon elisa-player neochat
     sudo dnf --assumeyes remove mediawriter akregator khelpcenter
@@ -15,6 +15,8 @@
     sudo dnf --assumeyes remove krdc krfb krdp
     sudo dnf --assumeyes remove firewall-config kolourpaint im-chooser
     sudo dnf --assumeyes remove kcharselect kamoso
+
+    # install needed programs
     sudo dnf --assumeyes install mpv kitten docker
     sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd neovim
     sudo dnf --assumeyes install tldr htop gh gcc git golang rustup
