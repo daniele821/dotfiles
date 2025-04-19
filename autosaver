@@ -356,8 +356,8 @@ FILES = {
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DBG = os.getenv("DBG")
-BRANCH_DBG = os.getenv("BRANCH")
-SET_BRANCH_DBG = os.getenv("SET_BRANCH")
+ENV_BRANCH = os.getenv("BRANCH")
+ENV_SET_BRANCH = os.getenv("SET_BRANCH")
 
 
 class Action(enum.Enum):
@@ -698,9 +698,9 @@ def assert_branch():
         want_branch = want_branch[0]
     if curr_branch != want_branch:
         dbg_final_report("\x1b[35m~ WRONG BRANCH: '{}' (valid: '{}')\x1b[m\n".format(curr_branch, want_branch))
-        if BRANCH_DBG is not None:
+        if ENV_BRANCH is not None:
             warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
-        elif SET_BRANCH_DBG is not None:
+        elif ENV_SET_BRANCH is not None:
             warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
             pathlib.Path(FILES["branch"]).write_text(curr_branch)
             dbg_final_report("\x1b[35m~ UPDATED BRANCH: '{}'\x1b[m\n".format(curr_branch))
