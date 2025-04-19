@@ -688,6 +688,11 @@ def load_config(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
+    # skip checks for when git cmd is missing
+    if shutil.which("git") is None:
+        warn_msg("git command is missing: some operations might fail!")
+        return 
+
     branch_file = FILES["branch"]
     create_file(branch_file)
     curr_branch = git_current_branch()
