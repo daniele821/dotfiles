@@ -12,9 +12,8 @@
     sudo dnf --assumeyes remove kaddressbook kmail kfind
     sudo dnf --assumeyes remove kjournald skanpage plasma-drkonqi
     sudo dnf --assumeyes remove abrt akonadi-server kmouth
-    sudo dnf --assumeyes remove krdc krfb krdp
-    sudo dnf --assumeyes remove firewall-config kolourpaint im-chooser
-    sudo dnf --assumeyes remove kcharselect kamoso
+    sudo dnf --assumeyes remove krdc krfb krdp kcharselect
+    sudo dnf --assumeyes remove kolourpaint im-chooser kamoso
 
     # install needed programs
     sudo dnf --assumeyes install mpv kitten docker
