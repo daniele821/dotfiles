@@ -21,20 +21,6 @@ function report_fail() {
         [[ -f /usr/local/bin/starship ]] || report_fail 'installation of starship failed!'
     fi
 
-    # download fira code nerd font
-    if ask_user 'Do you really want to download firacode nerd font'; then
-        FIRACODE_DIR="$HOME/.local/share/fonts/FiraCode"
-        [[ -f "${FIRACODE_DIR}" ]] && rm -rf "$HOME/.local/share/fonts/FiraCode" # rewritten manually: rm -rf is HUGELY dangerous!
-        mkdir -p "${FIRACODE_DIR}"
-        cd "$(mktemp -d /tmp/firacode-fontXXXXXXXXXXXXXXXXXXX)" || exit 1
-        wget https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -O Firacode.zip
-        unzip ./Firacode.zip
-        mv ./*.ttf "${FIRACODE_DIR}/"
-
-        # check installation worked
-        rmdir "${FIRACODE_DIR}" &>/dev/null && report_fail 'installation of nerd fonts failed!'
-    fi
-
 } </dev/tty
 
 exit 0
