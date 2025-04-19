@@ -18,24 +18,49 @@ function ask_user() {
 
     # copy passwords from usb drive to this device
     if ! [[ -d "/personal/data/passwords" ]]; then
-        pass_dirs="$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)"
-        if [[ "$pass_dirs" != 1 ]]; then
-            answer=""
-            while [[ "$answer" != "CONTINUE" ]]; do
-                echo -en "\x1b[1;31mWARNING: Insert a usb device with the passwords backup and type CONTINUE to continue... \x1b[m"
-                read -r answer </dev/tty
-            done
-        fi
-        if [[ "$(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l)" == 1 ]]; then
-            usb_passwords=$(find /run/media/"${USER}" -type d -name "passwords" -print -quit 2>/dev/null)
-            new_location="/personal/data/passwords"
-            if [[ -d "$usb_passwords" ]] && ! [[ -e "$new_location" ]]; then
-                cp "$usb_passwords" "/personal/data/" -r
-                git -C "$new_location" restore "$new_location"
-                echo "copied passwords from usb drive"
+        function get_usb() {
+            USB_PATH="$(lsblk -o NAME,TRAN,MOUNTPOINT -J | jq -r '
+                .blockdevices[] 
+                | select(.tran == "usb") 
+                | recurse(.children[])? 
+                | select(.mountpoint != null) 
+                | .mountpoint ')"
+            if [[ "$(echo "$USB_PATH" | wc -w)" -eq 0 ]]; then
+                echo 'no usb devices connected'
+                return 1
+            elif [[ "$(echo "$USB_PATH" | wc -l)" -gt 1 ]]; then
+                echo 'more then one usb device connected'
+                return 1
+            else
+                pass_dir="$(find "$USB_PATH" -type d -name "passwords" 2>/dev/null)"
+                if [[ "$(echo "$pass_dir" | wc -w)" -eq 0 ]]; then
+                    echo "no password directory found in $USB_PATH"
+                    return 1
+                elif [[ "$(echo "$pass_dir" | wc -l)" -gt 1 ]]; then
+                    echo "more then one password directory found in $USB_PATH"
+                    return 1
+                else
+                    echo "$pass_dir"
+                    return 0
+                fi
             fi
-        else
-            echo "WARNING: UNABLE TO COPY PASSWORDS: $(find /run/media/"${USER}" -type d -name "passwords" 2>/dev/null | wc -l) passwords directories found!"
+        }
+        answer=""
+        while [[ "$answer" != "SKIP" ]]; do
+            if USB_PASSWORD_DIR="$(get_usb)"; then
+                break
+            else
+                echo "WARNING: $USB_PASSWORD_DIR"
+                echo -en "\x1b[1;31mWARNING: Insert a usb device with the passwords backup or type SKIP to skip... \x1b[m"
+                read -r answer </dev/tty
+            fi
+        done
+        usb_passwords="$USB_PASSWORD_DIR"
+        new_location="/personal/data/passwords"
+        if [[ -d "$usb_passwords" ]] && [[ ! -e "$new_location" ]]; then
+            cp "$usb_passwords" "$new_location" -r
+            git -C "$new_location" restore "$new_location"
+            echo "copied passwords from usb drive"
         fi
     fi
     ### END OF MANDATORY OPERATIONS ###
