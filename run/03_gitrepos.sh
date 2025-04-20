@@ -53,14 +53,20 @@ GIT_EMAIL=(
 )
 
 # download the first repo serially, to avoid eventual ssh prompt being ignored
+function download_repo() {
+    git_url="$1"
+    git_repo="$2"
+    git_email="$3"
+    echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
+    git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
+    git -C "$git_repo" config user.email "$git_email"
+}
 for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     git_repo="${GIT_REPO[$i]}"
     git_url="${GIT_URL[$i]}"
     git_email="${GIT_EMAIL[$i]}"
     if [[ ! -e "$git_repo" ]]; then
-        echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
-        git clone --recurse-submodules "$git_url" "$git_repo"
-        git -C "$git_repo" config user.email "$git_email"
+        download_repo "$git_url" "$git_repo" "$git_email"
         break
     fi
 done
@@ -74,10 +80,8 @@ for ((i = i + 1; i < "${#GIT_REPO[@]}"; i++)); do
     git_email="${GIT_EMAIL[$i]}"
     TMP_FILE="$(mktemp)"
     if [[ ! -e "$git_repo" ]]; then
-        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING -- $git_url -- $git_repo -- $git_email\e[m" >/dev/tty
-        echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
-        git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
-        git -C "$git_repo" config user.email "$git_email"
+        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING -- $git_url\e[m" >/dev/tty
+        download_repo "$git_url" "$git_repo" "$git_email"
     fi &>"$TMP_FILE" &
     CLONEPIDS+=("$!")
     TMP_FILES+=("$TMP_FILE")
