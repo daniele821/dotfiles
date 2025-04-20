@@ -52,7 +52,7 @@ GIT_EMAIL=(
     "daniele.muffato@studio.unibo.it"
 )
 
-# download the first repo serially, to avoid eventual ssh prompt being ignored
+# downloading repo and running operations on it
 function download_repo() {
     git_url="$1"
     git_repo="$2"
@@ -60,7 +60,27 @@ function download_repo() {
     echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
     git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
     git -C "$git_repo" config user.email "$git_email"
+
+    # additional operations done ONLY when repo gets downloaded
+    case "$git_repo" in
+    "${GIT_REPO[0]}")
+        OLD_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+        NEW_BRANCH="fedora-kde"
+        echo -e "\e[1;33mswitching git branch from ${OLD_BRANCH} to ${NEW_BRANCH}\e[m"
+        git -C "$git_repo" switch fedora-kde
+        ;;
+    "${GIT_REPO[3]}")
+        FROM_DIR="$git_repo"
+        TO_DIR="$HOME/.config/nvim"
+        if [[ ! -e "$TO_DIR" ]]; then
+            echo -e "\e[1;33mlinking $TO_DIR to $FROM_DIR\e[m"
+            ln -s "$FROM_DIR" "$TO_DIR"
+        fi
+        ;;
+    esac
 }
+
+# download the first repo serially, to avoid eventual ssh prompt being ignored
 for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     git_repo="${GIT_REPO[$i]}"
     git_url="${GIT_URL[$i]}"
@@ -90,11 +110,3 @@ for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
     tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
     rm "${TMP_FILES[$i]}"
 done
-
-# create missing symlinks
-FROM_DIR="/personal/repos/daniele821/nvim-config"
-TO_DIR="$HOME/.config/nvim"
-if [[ ! -e "$TO_DIR" ]]; then
-    echo -e "linking \e[34m$TO_DIR\e[m to \e[35m$FROM_DIR\e[m"
-    ln -s "$FROM_DIR" "$TO_DIR"
-fi
