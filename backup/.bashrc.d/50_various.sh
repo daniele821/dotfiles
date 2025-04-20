@@ -44,7 +44,10 @@ function fpreview() {
 }
 
 complete -c run
-complete -f copy
+complete -c custom_pager
+complete -f open
+complete -f preview
+complete -f fpreview
 
 alias la='ls -A'
 alias ll='ls -l'
