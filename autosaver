@@ -89,6 +89,15 @@ def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
 
 
+def assert_git_toplevel_dir():
+    cmd = ["git", "-C", SCRIPT_DIR, "rev-parse", "--show-toplevel"]
+    runned = subprocess.run(cmd, capture_output=True, text=True)
+    if runned.returncode != 0:
+        err_exit("git top level directory was not found!")
+    if runned.stdout.strip() != SCRIPT_DIR:
+        err_exit("git top level directory is not the script directory!")
+
+
 def git_current_branch():
     return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
 
@@ -688,10 +697,8 @@ def load_config(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
-    # skip checks for when git cmd is missing
-    if ENV_BRANCH is not None and shutil.which("git") is None:
-        warn_msg("git command is missing: some operations might fail!")
-        return 
+    # assert script in git repo with toplevel the same as the script dir
+    assert_git_toplevel_dir()
 
     branch_file = FILES["branch"]
     create_file(branch_file)
@@ -774,4 +781,3 @@ if __name__ == "__main__":
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
     finally:
         dbg_final_report(None, True)
-
