@@ -51,34 +51,46 @@ GIT_EMAIL=(
     "daniele.muffato@studio.unibo.it"
     "daniele.muffato@studio.unibo.it"
 )
+
+# download the first repo serially, to avoid eventual ssh prompt being ignored
 for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     git_repo="${GIT_REPO[$i]}"
     git_url="${GIT_URL[$i]}"
     git_email="${GIT_EMAIL[$i]}"
     if [[ ! -e "$git_repo" ]]; then
-        # download git repo
-        echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
+        echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
         git clone --recurse-submodules "$git_url" "$git_repo"
-
-        # set email
-        echo -e "setting user email to \e[31m$git_email\e[m"
         git -C "$git_repo" config user.email "$git_email"
+        break
     fi
+done
+
+# speed up the remaining downloads, by running them in parallel
+TMP_FILES=()
+CLONEPIDS=()
+for ((i = i + 1; i < "${#GIT_REPO[@]}"; i++)); do
+    git_repo="${GIT_REPO[$i]}"
+    git_url="${GIT_URL[$i]}"
+    git_email="${GIT_EMAIL[$i]}"
+    TMP_FILE="$(mktemp)"
+    if [[ ! -e "$git_repo" ]]; then
+        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING -- $git_url -- $git_repo -- $git_email\e[m" >/dev/tty
+        echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
+        git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
+        git -C "$git_repo" config user.email "$git_email"
+    fi &>"$TMP_FILE" &
+    CLONEPIDS+=("$!")
+    TMP_FILES+=("$TMP_FILE")
+done
+for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
+    tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
+    rm "${TMP_FILES[$i]}"
 done
 
 # create missing symlinks
-FROM_DIR=(
-    "/personal/repos/daniele821/nvim-config"
-)
-TO_DIR=(
-    "$HOME/.config/nvim"
-)
-for ((i = 0; i < "${#FROM_DIR[@]}"; i++)); do
-    from_dir="${FROM_DIR[$i]}"
-    to_dir="${TO_DIR[$i]}"
-    if [[ ! -e "$to_dir" ]]; then
-        # create symlink
-        echo -e "cloning \e[34m$from_dir\e[m into \e[35m$to_dir\e[m"
-        ln -s "$from_dir" "$to_dir"
-    fi
-done
+FROM_DIR="/personal/repos/daniele821/nvim-config"
+TO_DIR="$HOME/.config/nvim"
+if [[ ! -e "$TO_DIR" ]]; then
+    echo -e "linking \e[34m$TO_DIR\e[m to \e[35m$FROM_DIR\e[m"
+    ln -s "$FROM_DIR" "$TO_DIR"
+fi
