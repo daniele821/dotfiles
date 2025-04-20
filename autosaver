@@ -697,7 +697,9 @@ def load_config(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
-    # assert script in git repo with toplevel the same as the script dir
+    if ENV_BRANCH is not None and shutil.which("git") is None:
+        return
+
     assert_git_toplevel_dir()
 
     branch_file = FILES["branch"]
