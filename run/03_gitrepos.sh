@@ -52,11 +52,21 @@ GIT_EMAIL=(
     "daniele.muffato@studio.unibo.it"
 )
 
+# assert all arrays are of same length
+urls="${#GIT_URL[@]}"
+repos="${#GIT_REPO[@]}"
+emails="${#GIT_EMAIL[@]}"
+if [[ "$urls" -ne "$repos" || "$repos" -ne "$emails" ]]; then
+    echo "amount of url, repos and emails differ"
+    exit 1
+fi
+
+# clone missing git repos
 for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     git_repo="${GIT_REPO[$i]}"
     git_url="${GIT_URL[$i]}"
     git_email="${GIT_EMAIL[$i]}"
-    if [[ ! -d "$git_repo" ]]; then
+    if [[ ! -e "$git_repo" ]]; then
         # download git repo
         echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
         git clone --recurse-submodules "$git_url" "$git_repo"
@@ -66,3 +76,11 @@ for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
         git -C "$git_repo" config user.email "$git_email"
     fi
 done
+
+# symlink neovim
+FROM_DIR="/personal/repos/daniele821/nvim-config"
+TO_DIR="$HOME/.config/nvim"
+if [[ ! -e "$TO_DIR" ]]; then
+    echo -e "symlinked neovim"
+    ln -s "$FROM_DIR" "$TO_DIR"
+fi
