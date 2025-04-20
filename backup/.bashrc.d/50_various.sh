@@ -28,8 +28,8 @@ function preview() {
     [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
     local -r oldPwd="$PWD"
     FILE="${1}"
-    [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
     if [[ $# == 0 || -d "$FILE" ]]; then
+        [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
         FILE="$(find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) 2>/dev/null |
             cut -b 3- |
             fzf --exit-0 --select-1 --height=40% --layout=reverse --border)"
