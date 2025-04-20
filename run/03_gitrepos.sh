@@ -87,9 +87,6 @@ for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
     rm "${TMP_FILES[$i]}"
 done
 
-# manual fixes
-git -C "/personal/repos/daniele821/dotfiles/" switch fedora-kde
-
 # create missing symlinks
 FROM_DIR="/personal/repos/daniele821/nvim-config"
 TO_DIR="$HOME/.config/nvim"
@@ -97,3 +94,6 @@ if [[ ! -e "$TO_DIR" ]]; then
     echo -e "linking \e[34m$TO_DIR\e[m to \e[35m$FROM_DIR\e[m"
     ln -s "$FROM_DIR" "$TO_DIR"
 fi
+
+# manual fixes
+git -C "/personal/repos/daniele821/dotfiles/" switch fedora-kde
