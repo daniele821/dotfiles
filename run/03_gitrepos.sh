@@ -2,6 +2,7 @@
 
 set -e
 
+# clone missing git repos and set the email
 GIT_URL=(
     "git@daniele821.github.com:daniele821/dotfiles.git"
     "git@daniele821.github.com:daniele821/daniele821.github.io.git"
@@ -17,7 +18,6 @@ GIT_URL=(
     "git@danix1234.github.com:danix1234/unibo-3a.git"
     "git@danix1234.github.com:danix1234/unibo-3b.git"
     "git@danix1234.github.com:danix1234/unibo.git"
-
 )
 GIT_REPO=(
     "/personal/repos/daniele821/dotfiles"
@@ -51,17 +51,6 @@ GIT_EMAIL=(
     "daniele.muffato@studio.unibo.it"
     "daniele.muffato@studio.unibo.it"
 )
-
-# assert all arrays are of same length
-urls="${#GIT_URL[@]}"
-repos="${#GIT_REPO[@]}"
-emails="${#GIT_EMAIL[@]}"
-if [[ "$urls" -ne "$repos" || "$repos" -ne "$emails" ]]; then
-    echo "amount of url, repos and emails differ"
-    exit 1
-fi
-
-# clone missing git repos
 for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     git_repo="${GIT_REPO[$i]}"
     git_url="${GIT_URL[$i]}"
@@ -77,10 +66,18 @@ for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
     fi
 done
 
-# symlink neovim
-FROM_DIR="/personal/repos/daniele821/nvim-config"
-TO_DIR="$HOME/.config/nvim"
-if [[ ! -e "$TO_DIR" ]]; then
-    echo -e "symlinked neovim"
-    ln -s "$FROM_DIR" "$TO_DIR"
-fi
+# create missing symlinks
+FROM_DIR=(
+    "/personal/repos/daniele821/nvim-config"
+)
+TO_DIR=(
+    "$HOME/.config/nvim"
+)
+for ((i = 0; i < "${#FROM_DIR[@]}"; i++)); do
+    from_dir="${FROM_DIR[$i]}"
+    to_dir="${TO_DIR[$i]}"
+    if [[ ! -e "$to_dir" ]]; then
+        echo -e "cloning \e[34m$from_dir\e[m into \e[35m$to_dir\e[m"
+        ln -s "$from_dir" "$to_dir"
+    fi
+done
