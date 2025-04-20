@@ -77,6 +77,7 @@ for ((i = 0; i < "${#FROM_DIR[@]}"; i++)); do
     from_dir="${FROM_DIR[$i]}"
     to_dir="${TO_DIR[$i]}"
     if [[ ! -e "$to_dir" ]]; then
+        # create symlink
         echo -e "cloning \e[34m$from_dir\e[m into \e[35m$to_dir\e[m"
         ln -s "$from_dir" "$to_dir"
     fi
