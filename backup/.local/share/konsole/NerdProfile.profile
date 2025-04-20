@@ -13,7 +13,7 @@ ColorFilterEnabled=false
 
 [Scrolling]
 HighlightScrolledLines=false
-HistorySize=1000
+HistorySize=10000
 ReflowLines=false
 ScrollBarPosition=2
 
