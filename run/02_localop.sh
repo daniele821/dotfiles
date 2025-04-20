@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+set -e
+
 # utility functions
 function ask_user() {
     echo -en "\x1b[1;37m${*}? \x1b[m"
@@ -75,7 +77,7 @@ function ask_user() {
     # create ssh keys for github
     if ask_user 'Do you really want to create new ssh keys, and adding them to github via gh'; then
         for user in daniele821 danix1234; do
-            ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}"
+            ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" || true
             gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
             gh ssh-key add "$HOME/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
         done
