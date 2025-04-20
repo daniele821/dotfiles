@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+set -e
+
 {
     ### upgrade everything ###
     sudo dnf --assumeyes upgrade

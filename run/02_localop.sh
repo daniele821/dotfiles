@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+set -e
+
 # utility functions
 function ask_user() {
     echo -en "\x1b[1;37m${*}? \x1b[m"
