@@ -54,6 +54,10 @@ GIT_EMAIL=(
 
 # downloading repo and running operations on it
 function download_repo() {
+    function info_extra_op() {
+        echo -e "\e[1;33m${*}\e[m"
+    }
+
     git_url="$1"
     git_repo="$2"
     git_email="$3"
@@ -64,16 +68,15 @@ function download_repo() {
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
     "${GIT_REPO[0]}")
-        OLD_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
         NEW_BRANCH="fedora-kde"
-        echo -e "\e[1;33mswitching git branch from ${OLD_BRANCH} to ${NEW_BRANCH}\e[m"
-        git -C "$git_repo" switch fedora-kde
+        info_extra_op "switching git branch to ${NEW_BRANCH}"
+        git -C "$git_repo" switch "${NEW_BRANCH}"
         ;;
     "${GIT_REPO[3]}")
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
         if [[ ! -e "$TO_DIR" ]]; then
-            echo -e "\e[1;33mlinking $TO_DIR to $FROM_DIR\e[m"
+            info_extra_op "linking $TO_DIR to $FROM_DIR"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
         ;;
@@ -100,7 +103,7 @@ for ((i = i + 1; i < "${#GIT_REPO[@]}"; i++)); do
     git_email="${GIT_EMAIL[$i]}"
     TMP_FILE="$(mktemp)"
     if [[ ! -e "$git_repo" ]]; then
-        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING -- $git_url\e[m" >/dev/tty
+        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING --> $git_url\e[m" >/dev/tty
         download_repo "$git_url" "$git_repo" "$git_email"
     fi &>"$TMP_FILE" &
     CLONEPIDS+=("$!")
