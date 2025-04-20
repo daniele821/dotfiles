@@ -20,9 +20,10 @@ set -e
     sudo dnf --assumeyes remove setroubleshoot-server hplip*
 
     # install needed programs
-    sudo dnf --assumeyes install mpv kitten docker
-    sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd neovim
-    sudo dnf --assumeyes install tldr htop gh gcc git golang rustup
+    sudo dnf --assumeyes install jq git gh rustup # NECESSARY for following scripts!!!
+    sudo dnf --assumeyes install mpv kitten docker neovim
+    sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd
+    sudo dnf --assumeyes install tldr htop gcc golang
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"

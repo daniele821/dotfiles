@@ -82,7 +82,7 @@ function ask_user() {
     fi
 
     # install rust
-    command -v rustup-init &>/dev/null && if ask_user 'Do you really want to install rust'; then
+    if ask_user 'Do you really want to install rust'; then
         rustup-init -y
     fi
 
