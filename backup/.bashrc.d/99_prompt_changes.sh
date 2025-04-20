@@ -23,7 +23,11 @@ function __cleanup_prompt__() {
     if [[ $retval == 0 ]]; then
         color=32
     fi
-    PS1="\[\e[0;1;36m\]\w \[\e[1;${color}m\]❯ \[\e[0m\]"
+    \builtin local branch=""
+    branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    [[ "$branch" == "HEAD" ]] && branch="$(git rev-parse --short=8 HEAD)"
+    [[ -n "$branch" ]] && branch="\[\e[1;35m\] ($branch)\[\e[0m\]"
+    PS1="\[\e[0;1;36m\]\w$branch \[\e[1;${color}m\]❯ \[\e[0m\]"
 
     return "${retval}"
 }
