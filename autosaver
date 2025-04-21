@@ -93,9 +93,9 @@ def assert_git_toplevel_dir():
     cmd = ["git", "-C", SCRIPT_DIR, "rev-parse", "--show-toplevel"]
     runned = subprocess.run(cmd, capture_output=True, text=True)
     if runned.returncode != 0:
-        err_exit("git top level directory was not found!")
+        return "git top level directory was not found"
     if runned.stdout.strip() != SCRIPT_DIR:
-        err_exit("git top level directory is not the script directory!")
+        return "git top level directory is not the script directory"
 
 
 def git_current_branch():
@@ -698,10 +698,14 @@ def load_config(conf):
 # EXECUTION UTILITIES
 def assert_branch():
     if ENV_BRANCH is not None and shutil.which("git") is None:
-        warn_msg("git command was not found, proceeding anyway in hope it's not needed...")
+        warn_msg("git command was not found, proceeding anyway in hope it's not a problem...")
         return
 
-    assert_git_toplevel_dir()
+    ERR_MSG = assert_git_toplevel_dir()
+    if ENV_BRANCH is not None and ERR_MSG is not None:
+        warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
+    if ERR_MSG is not None:
+        err_exit(ERR_MSG)
 
     branch_file = FILES["branch"]
     create_file(branch_file)
