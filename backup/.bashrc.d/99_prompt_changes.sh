@@ -19,18 +19,21 @@ function __cleanup_prompt__() {
     fi
 
     # change PS1
-    \builtin local color=31
-    if [[ $retval == 0 ]]; then
-        color=32
-    fi
+    \builtin local -r red="\[\e[1;31m\]"
+    \builtin local -r lgreen="\[\e[1;32m\]"
+    \builtin local -r yellow="\[\e[1;33m\]"
+    \builtin local -r lblue="\[\e[1;34m\]"
+    \builtin local -r purple="\[\e[1;35m\]"
+    \builtin local -r green="\[\e[1;36m\]"
+    \builtin local -r wipe="\[\e[0m\]"
+    \builtin local color="$red"
+    [[ $retval == 0 ]] && color="$lgreen"
     \builtin local gitst=""
-    gitst="$(git status -s 2>/dev/null)"
-    [[ "$(echo "$gitst" | wc -w)" != 0 ]] && gitst="\[\e[1;31m\]*"
-    \builtin local branch=""
-    branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    [[ "$(git status -s 2>/dev/null | wc -w)" != 0 ]] && gitst="${red}*"
+    \builtin local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
     [[ "$branch" == "HEAD" ]] && branch="$(git rev-parse --short=8 HEAD)"
-    [[ -n "$branch" ]] && branch="\[\e[1;35m\] ($branch)"
-    PS1="\[\e[0;1;36m\]\w$branch$gitst \[\e[1;${color}m\]❯ \[\e[0m\]"
+    [[ -n "$branch" ]] && branch="${purple} ($branch)"
+    PS1="${green}\w${branch}${gitst} ${color}❯ ${wipe}"
 
     return "${retval}"
 }
