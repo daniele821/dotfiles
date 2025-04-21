@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC2164,SC2034
+# shellcheck disable=SC2164,SC2034,SC2155
 function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
@@ -9,7 +9,7 @@ function __cleanup_prompt__() {
     # IFS='[;' read -p $'\e[6n' -d R -rs _ COLUMN LINE _
     # [[ "$LINE" -ne "1" ]] && echo
 
-    # force exit from not existing directories
+    # force exit from not existing directories ##########################
     if ! [[ -d "$PWD" ]]; then
         NEWPWD="$PWD"
         while ! [[ -d "$NEWPWD" ]]; do
@@ -18,7 +18,7 @@ function __cleanup_prompt__() {
         \cd "${NEWPWD}"
     fi
 
-    # change PS1
+    # change PS1 ########################################################
     \builtin local -r red="\[\e[1;31m\]"
     \builtin local -r lgreen="\[\e[1;32m\]"
     \builtin local -r yellow="\[\e[1;33m\]"
@@ -26,15 +26,36 @@ function __cleanup_prompt__() {
     \builtin local -r purple="\[\e[1;35m\]"
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
-    \builtin local color="$red"
-    [[ $retval == 0 ]] && color="$lgreen"
+    #####################################################################
+    \builtin local workdir=""
+    workdir="${green}\w "
+    #####################################################################
     \builtin local gitst=""
     [[ "$(git status -s 2>/dev/null | wc -w)" != 0 ]] && gitst="${red}*"
     \builtin local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    [[ "$branch" == "HEAD" ]] && branch="$(git rev-parse --short=8 HEAD)"
-    [[ -n "$branch" ]] && branch="${purple} ($branch)"
-    PS1="${green}\w${branch}${gitst} ${color}❯ ${wipe}"
+    case "$branch" in
+    "") ;;
+    "HEAD") branch="${purple}($(git rev-parse --short=8 HEAD))$gitst " ;;
+    *) branch="${purple}($branch)$gitst " ;;
+    esac
+    #####################################################################
+    \builtin local -r amount_jobs="$(jobs -p | wc -l)"
+    \builtin local jobs=""
+    case "$amount_jobs" in
+    0) jobs="" ;;
+    1) jobs="${lblue}✦ " ;;
+    *) jobs="${lblue}${amount_jobs}✦ " ;;
+    esac
+    #####################################################################
+    \builtin local symbol=""
+    case "$retval" in
+    0) symbol="${lgreen}❯ " ;;
+    *) symbol="${red}❯ " ;;
+    esac
+    #####################################################################
+    PS1="${wipe}${workdir}${branch}${jobs}${symbol}${wipe}"
 
+    # exit ##############################################################
     return "${retval}"
 }
 
