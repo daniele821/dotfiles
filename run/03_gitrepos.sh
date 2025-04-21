@@ -11,8 +11,6 @@ GIT_URL=(
     "git@daniele821.github.com:daniele821/python.git"
     "git@daniele821.github.com:daniele821/ricette.git"
     "git@daniele821.github.com:daniele821/rust.git"
-    "git@daniele821.github.com:daniele821/track-payments-data.git"
-    "git@daniele821.github.com:daniele821/track-payments"
     "git@danix1234.github.com:danix1234/unibo-2a.git"
     "git@danix1234.github.com:danix1234/unibo-2b.git"
     "git@danix1234.github.com:danix1234/unibo-3a.git"
@@ -27,8 +25,6 @@ GIT_REPO=(
     "/personal/repos/daniele821/python"
     "/personal/repos/daniele821/ricette"
     "/personal/repos/daniele821/rust"
-    "/personal/repos/daniele821/track-payments-data"
-    "/personal/repos/daniele821/track-payments"
     "/personal/repos/danix1234/unibo-2a"
     "/personal/repos/danix1234/unibo-2b"
     "/personal/repos/danix1234/unibo-3a"
@@ -36,8 +32,6 @@ GIT_REPO=(
     "/personal/repos/danix1234/unibo"
 )
 GIT_EMAIL=(
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
     "danixgithub1@gmail.com"
     "danixgithub1@gmail.com"
     "danixgithub1@gmail.com"
