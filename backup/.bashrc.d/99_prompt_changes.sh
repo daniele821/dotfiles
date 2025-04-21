@@ -24,7 +24,7 @@ function __cleanup_prompt__() {
         color=32
     fi
     \builtin local gitst=""
-    gitst="$(git st 2>/dev/null)"
+    gitst="$(git status -s 2>/dev/null)"
     [[ "$(echo "$gitst" | wc -w)" != 0 ]] && gitst="\[\e[1;31m\]*"
     \builtin local branch=""
     branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
