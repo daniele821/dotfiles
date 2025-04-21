@@ -3,46 +3,53 @@
 set -e
 
 # clone missing git repos and set the email
-GIT_URL=(
+GIT_DATA=(
     "git@daniele821.github.com:daniele821/dotfiles.git"
-    "git@daniele821.github.com:daniele821/daniele821.github.io.git"
-    "git@daniele821.github.com:daniele821/golang.git"
-    "git@daniele821.github.com:daniele821/nvim-config.git"
-    "git@daniele821.github.com:daniele821/python.git"
-    "git@daniele821.github.com:daniele821/ricette.git"
-    "git@daniele821.github.com:daniele821/rust.git"
-    "git@danix1234.github.com:danix1234/unibo-2a.git"
-    "git@danix1234.github.com:danix1234/unibo-2b.git"
-    "git@danix1234.github.com:danix1234/unibo-3a.git"
-    "git@danix1234.github.com:danix1234/unibo-3b.git"
-    "git@danix1234.github.com:danix1234/unibo.git"
-)
-GIT_REPO=(
     "/personal/repos/daniele821/dotfiles"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/daniele821.github.io.git"
     "/personal/repos/daniele821/github-website"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/golang.git"
     "/personal/repos/daniele821/golang"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/nvim-config.git"
     "/personal/repos/daniele821/nvim-config"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/python.git"
     "/personal/repos/daniele821/python"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
+    "danixgithub1@gmail.com"
+
+    "git@daniele821.github.com:daniele821/rust.git"
     "/personal/repos/daniele821/rust"
+    "danixgithub1@gmail.com"
+
+    "git@danix1234.github.com:danix1234/unibo-2a.git"
     "/personal/repos/danix1234/unibo-2a"
+    "daniele.muffato@studio.unibo.it"
+
+    "git@danix1234.github.com:danix1234/unibo-2b.git"
     "/personal/repos/danix1234/unibo-2b"
+    "daniele.muffato@studio.unibo.it"
+
+    "git@danix1234.github.com:danix1234/unibo-3a.git"
     "/personal/repos/danix1234/unibo-3a"
+    "daniele.muffato@studio.unibo.it"
+
+    "git@danix1234.github.com:danix1234/unibo-3b.git"
     "/personal/repos/danix1234/unibo-3b"
+    "daniele.muffato@studio.unibo.it"
+
+    "git@danix1234.github.com:danix1234/unibo.git"
     "/personal/repos/danix1234/unibo"
-)
-GIT_EMAIL=(
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "danixgithub1@gmail.com"
-    "daniele.muffato@studio.unibo.it"
-    "daniele.muffato@studio.unibo.it"
-    "daniele.muffato@studio.unibo.it"
-    "daniele.muffato@studio.unibo.it"
     "daniele.muffato@studio.unibo.it"
 )
 
@@ -61,12 +68,12 @@ function download_repo() {
 
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
-    "${GIT_REPO[0]}")
+    "/personal/repos/daniele821/dotfiles")
         NEW_BRANCH="fedora-kde"
         info_extra_op "switching git branch to ${NEW_BRANCH}"
         git -C "$git_repo" switch "${NEW_BRANCH}"
         ;;
-    "${GIT_REPO[3]}")
+    "/personal/repos/daniele821/nvim-config")
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
         if [[ ! -e "$TO_DIR" ]]; then
@@ -78,10 +85,10 @@ function download_repo() {
 }
 
 # download the first repo serially, to avoid eventual ssh prompt being ignored
-for ((i = 0; i < "${#GIT_REPO[@]}"; i++)); do
-    git_repo="${GIT_REPO[$i]}"
-    git_url="${GIT_URL[$i]}"
-    git_email="${GIT_EMAIL[$i]}"
+for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
+    git_url="${GIT_DATA[$i]}"
+    git_repo="${GIT_DATA[$((i + 1))]}"
+    git_email="${GIT_DATA[$((i + 2))]}"
     if [[ ! -e "$git_repo" ]]; then
         download_repo "$git_url" "$git_repo" "$git_email"
         break
@@ -91,10 +98,10 @@ done
 # speed up the remaining downloads, by running them in parallel
 TMP_FILES=()
 CLONEPIDS=()
-for ((i = i + 1; i < "${#GIT_REPO[@]}"; i++)); do
-    git_repo="${GIT_REPO[$i]}"
-    git_url="${GIT_URL[$i]}"
-    git_email="${GIT_EMAIL[$i]}"
+for ((i = i + 3; i < "${#GIT_DATA[@]}"; i += 3)); do
+    git_url="${GIT_DATA[$i]}"
+    git_repo="${GIT_DATA[$((i + 1))]}"
+    git_email="${GIT_DATA[$((i + 2))]}"
     TMP_FILE="$(mktemp)"
     if [[ ! -e "$git_repo" ]]; then
         echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING --> $git_url\e[m" >/dev/tty
