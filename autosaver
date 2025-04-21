@@ -702,9 +702,10 @@ def assert_branch():
         return
 
     ERR_MSG = assert_git_toplevel_dir()
-    if ENV_BRANCH is not None and ERR_MSG is not None:
-        warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
     if ERR_MSG is not None:
+        if ENV_BRANCH is not None:
+            warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
+            return
         err_exit(ERR_MSG)
 
     branch_file = FILES["branch"]
