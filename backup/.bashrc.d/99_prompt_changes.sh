@@ -26,19 +26,25 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     #####################################################################
-    \builtin local workdir=""
-    workdir="${green}\w "
+    \builtin local workdir="${green}\w "
     #####################################################################
     \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
+    \builtin local -r behind="$(git rev-list --count '@{u}..HEAD' 2>/dev/null)"
+    \builtin local -r ahead="$(git rev-list --count 'HEAD..@{u}' 2>/dev/null)"
     \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
     \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
     \builtin local gitst=""
-    [[ "$hasdiff" != 0 ]] && gitst="${red}*"
+    [[ "$hasdiff" != 0 ]] && gitst="*"
+    \builtin local remote=""
+    [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="↓"
+    [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↑"
+    [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↕"
     \builtin local gitbranch=""
+    \builtin local -r info="${red}${gitst}${remote}"
     case "$branch" in
     "") ;;
-    "HEAD") gitbranch="${purple}(${hash})${gitst} " ;;
-    *) gitbranch="${purple}(${branch})${gitst} " ;;
+    "HEAD") gitbranch="${purple}(${hash})${info} " ;;
+    *) gitbranch="${purple}(${branch})${info} " ;;
     esac
     #####################################################################
     \builtin local -r amount_jobs="$(jobs -p | wc -l)"
