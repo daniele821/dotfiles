@@ -698,6 +698,7 @@ def load_config(conf):
 # EXECUTION UTILITIES
 def assert_branch():
     if ENV_BRANCH is not None and shutil.which("git") is None:
+        warn_msg("git command was not found, proceeding anyway in hope it's not needed...")
         return
 
     assert_git_toplevel_dir()
