@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC2164,SC2034,SC2155
 function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
@@ -15,7 +14,7 @@ function __cleanup_prompt__() {
         while ! [[ -d "$NEWPWD" ]]; do
             NEWPWD=$(dirname "${NEWPWD}")
         done
-        \cd "${NEWPWD}"
+        \cd "${NEWPWD}" || exit 1
     fi
 
     # change PS1 ########################################################
@@ -30,13 +29,16 @@ function __cleanup_prompt__() {
     \builtin local workdir=""
     workdir="${green}\w "
     #####################################################################
+    \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
+    \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
+    \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
     \builtin local gitst=""
-    [[ "$(git status -s 2>/dev/null | wc -w)" != 0 ]] && gitst="${red}*"
-    \builtin local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    [[ "$hasdiff" != 0 ]] && gitst="${red}*"
+    \builtin local gitbranch=""
     case "$branch" in
     "") ;;
-    "HEAD") branch="${purple}($(git rev-parse --short=8 HEAD))$gitst " ;;
-    *) branch="${purple}($branch)$gitst " ;;
+    "HEAD") gitbranch="${purple}(${hash})${gitst} " ;;
+    *) gitbranch="${purple}(${branch})${gitst} " ;;
     esac
     #####################################################################
     \builtin local -r amount_jobs="$(jobs -p | wc -l)"
@@ -53,7 +55,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     #####################################################################
-    PS1="${wipe}${workdir}${branch}${jobs}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
 
     # exit ##############################################################
     return "${retval}"
