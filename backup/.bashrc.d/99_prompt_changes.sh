@@ -37,7 +37,7 @@ function __cleanup_prompt__() {
     [[ "$hasdiff" != 0 ]] && gitst="*"
     \builtin local remote=""
     [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="↓"
-    [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↑"
+    [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="↑"
     [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↕"
     \builtin local gitbranch=""
     \builtin local -r info="${red}${gitst}${remote}"
