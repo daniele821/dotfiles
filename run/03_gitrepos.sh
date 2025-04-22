@@ -106,7 +106,6 @@ for ((i = i + 3; i < "${#GIT_DATA[@]}"; i += 3)); do
     git_email="${GIT_DATA[$((i + 2))]}"
     TMP_FILE="$(mktemp)"
     if [[ ! -e "$git_repo" ]]; then
-        echo -e "\e[1;33mNOTE: LAUNCHED BACKGROUND CLONING --> $git_url\e[m" >/dev/tty
         download_repo "$git_url" "$git_repo" "$git_email"
     fi &>"$TMP_FILE" &
     CLONEPIDS+=("$!")
