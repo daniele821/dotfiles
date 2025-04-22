@@ -72,6 +72,8 @@ function download_repo() {
         NEW_BRANCH="fedora-kde"
         info_extra_op "switching git branch to ${NEW_BRANCH}"
         git -C "$git_repo" switch "${NEW_BRANCH}"
+        info_extra_op "setting ${NEW_BRANCH} as the valid branch"
+        echo "$NEW_BRANCH" >"${git_repo}/.branch"
         ;;
     "/personal/repos/daniele821/nvim-config")
         FROM_DIR="$git_repo"
