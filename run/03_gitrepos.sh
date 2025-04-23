@@ -97,19 +97,28 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
     fi
 done
 
-# speed up the remaining downloads, by running them in parallel
+# if interrupted, clean up anyway
 TMP_FILES=()
 CLONEPIDS=()
+function cleanup() {
+    for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
+        tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
+        rm "${TMP_FILES[$i]}"
+    done
+}
+trap cleanup SIGINT
+
+# speed up the remaining downloads, by running them in parallel
 for ((i = i + 3; i < "${#GIT_DATA[@]}"; i += 3)); do
     git_url="${GIT_DATA[$i]}"
     git_repo="${GIT_DATA[$((i + 1))]}"
     git_email="${GIT_DATA[$((i + 2))]}"
-    TMP_FILE="$(mktemp)"
     if [[ ! -e "$git_repo" ]]; then
-        download_repo "$git_url" "$git_repo" "$git_email"
-    fi &>"$TMP_FILE" &
-    CLONEPIDS+=("$!")
-    TMP_FILES+=("$TMP_FILE")
+        TMP_FILE="$(mktemp)"
+        download_repo "$git_url" "$git_repo" "$git_email" &>"$TMP_FILE" &
+        CLONEPIDS+=("$!")
+        TMP_FILES+=("$TMP_FILE")
+    fi
 done
 for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
     tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
