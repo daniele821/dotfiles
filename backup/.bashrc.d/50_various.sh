@@ -42,12 +42,28 @@ function preview() {
 function fpreview() {
     FPREVIEW="true" preview "${@}"
 }
+function gitall() {
+    [[ ! -d "$1" ]] && echo "'$1' is not a directory" && return 1
+    find "$1" -iname .git 2>/dev/null | while read -r dir; do
+        dir="$(dirname "$dir")"
+        if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
+            GITST="$(git -C "$dir" status -s)"
+            if [[ "$(echo "$GITST" | wc -w)" -eq 0 ]]; then
+                echo -e "\e[32m$dir\e[m"
+            else
+                echo -e "\e[31m$dir\e[m"
+                echo "$GITST"
+            fi
+        fi
+    done
+}
 
 complete -c run
 complete -c custom_pager
 complete -f open
 complete -f preview
 complete -f fpreview
+complete -d gitall
 
 alias la='ls -A'
 alias ll='ls -l'
