@@ -43,8 +43,10 @@ function fpreview() {
     FPREVIEW="true" preview "${@}"
 }
 function gitall() {
-    [[ ! -d "$1" ]] && echo "'$1' is not a directory" && return 1
-    find "$1" -iname .git 2>/dev/null | while read -r dir; do
+    DIR="$1"
+    [[ "$#" -eq 0 ]] && DIR="$PWD"
+    [[ ! -d "$DIR" ]] && echo "'$DIR' is not a directory" && return 1
+    find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
         dir="$(dirname "$dir")"
         if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
             GITST="$(git -C "$dir" status -s)"
