@@ -12,4 +12,4 @@
     lo = !git --no-pager log --oneline --graph -20
     st = status -s
     mi = merge --no-commit --no-ff
-    nuke = "!git reset --hard HEAD && git clean -fdq"
+    nuke = "!git reset --hard -q HEAD && git clean -fdq"
