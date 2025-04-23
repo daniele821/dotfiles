@@ -44,7 +44,7 @@ function fpreview() {
 }
 function gitall() {
     DIR="$1"
-    [[ "$#" -eq 0 ]] && DIR="$PWD"
+    [[ "$#" -eq 0 ]] && DIR="."
     [[ ! -d "$DIR" ]] && echo "'$DIR' is not a directory" && return 1
     find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
         dir="$(dirname "$dir")"
