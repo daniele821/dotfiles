@@ -86,17 +86,6 @@ function download_repo() {
     esac
 }
 
-# download the first repo serially, to avoid eventual ssh prompt being ignored
-for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
-    git_url="${GIT_DATA[$i]}"
-    git_repo="${GIT_DATA[$((i + 1))]}"
-    git_email="${GIT_DATA[$((i + 2))]}"
-    if [[ ! -e "$git_repo" ]]; then
-        download_repo "$git_url" "$git_repo" "$git_email"
-        break
-    fi
-done
-
 # if interrupted, clean up anyway
 TMP_FILES=()
 CLONEPIDS=()
@@ -108,8 +97,9 @@ function cleanup() {
 }
 trap cleanup SIGINT
 
-# speed up the remaining downloads, by running them in parallel
-for ((i = i + 3; i < "${#GIT_DATA[@]}"; i += 3)); do
+# speed up the downloads, by running them in parallel
+# NOTE: this require ssh to not prompt to accept new key (can be set in .ssh/config)
+for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
     git_url="${GIT_DATA[$i]}"
     git_repo="${GIT_DATA[$((i + 1))]}"
     git_email="${GIT_DATA[$((i + 2))]}"
@@ -120,7 +110,4 @@ for ((i = i + 3; i < "${#GIT_DATA[@]}"; i += 3)); do
         TMP_FILES+=("$TMP_FILE")
     fi
 done
-for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
-    tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
-    rm "${TMP_FILES[$i]}"
-done
+cleanup
