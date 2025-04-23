@@ -53,12 +53,13 @@ GIT_DATA=(
     "daniele.muffato@studio.unibo.it"
 )
 
+# utility functions
+function info_extra_op() {
+    echo -e "\e[1;33m${*}\e[m"
+}
+
 # downloading repo and running operations on it
 function download_repo() {
-    function info_extra_op() {
-        echo -e "\e[1;33m${*}\e[m"
-    }
-
     git_url="$1"
     git_repo="$2"
     git_email="$3"
@@ -104,6 +105,7 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
     git_repo="${GIT_DATA[$((i + 1))]}"
     git_email="${GIT_DATA[$((i + 2))]}"
     if [[ ! -e "$git_repo" ]]; then
+        info_extra_op "launching background download for '$git_url'" >/dev/tty
         TMP_FILE="$(mktemp)"
         download_repo "$git_url" "$git_repo" "$git_email" &>"$TMP_FILE" &
         CLONEPIDS+=("$!")
