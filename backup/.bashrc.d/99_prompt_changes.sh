@@ -47,7 +47,7 @@ function __cleanup_prompt__() {
     *) gitbranch="${purple}(${branch})${info} " ;;
     esac
     #####################################################################
-    \builtin local -r amount_jobs="$(jobs -p | wc -l)"
+    \builtin local -r amount_jobs="$(jobs &>/dev/null && jobs -p | wc -l)"
     \builtin local jobs=""
     case "$amount_jobs" in
     0) jobs="" ;;
