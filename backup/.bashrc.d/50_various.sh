@@ -57,18 +57,21 @@ function gitstatusall() {
     find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
         dir="$(dirname "$dir")"
         if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
-            [[ "$GITFETCH" == "true" ]] && git -C "$dir" fetch
+            [[ "$GITFETCH" == "true" ]] && GIT_OUT="$(git -C "$dir" fetch --progress --recurse-submodules 2>&1)"
+            [[ -n "$GIT_OUT" ]] && GIT_OUT="- git fetch:\n${GIT_OUT}\n"
             ahead="$(git -C "$dir" rev-list --count '@{u}..HEAD' 2>/dev/null)"
             behind="$(git -C "$dir" rev-list --count 'HEAD..@{u}' 2>/dev/null)"
             GITST="$(git -C "$dir" status -s)"
             gitst="$(echo "$GITST" | wc -w)"
             if [[ "$gitst" -gt 0 || $behind -gt 0 || $ahead -gt 0 ]]; then
                 color "31" "$dir" "$dir" "\n"
+                echo -ne "$GIT_OUT"
                 [[ "$gitst" -gt 0 ]] && color "" "- repository changes:\n$GITST\n" ""
                 [[ "$ahead" -gt 0 ]] && color "" "- git repo is ${ahead} commits aheads\n"
                 [[ "$behind" -gt 0 ]] && color "" "- git repo is ${behind} commits behind\n"
             else
                 color "32" "$dir" "$dir" "\n"
+                echo -ne "$GIT_OUT"
             fi
         fi
     done
