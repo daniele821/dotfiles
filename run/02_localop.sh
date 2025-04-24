@@ -88,6 +88,11 @@ function ask_user() {
         rustup-init -y
     fi
 
+    # allow running docker without sudo
+    if ask_user 'Do you really want to add user to docker group'; then
+        sudo usermod -aG docker "$USER"
+    fi
+
 } </dev/tty
 
 exit 0
