@@ -48,19 +48,20 @@ function gitall() {
     [[ ! -d "$DIR" ]] && echo "'$DIR' is not a directory" && return 1
     function color() {
         if [[ -t 1 ]]; then
-            echo -en "\e[${1}m${2}\e[m"
+            echo -en "\e[${1}m${2}\e[0m"
         else
             echo -en "${3}"
         fi
+        echo -en "${4}"
     }
     find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
         dir="$(dirname "$dir")"
         if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
             GITST="$(git -C "$dir" status -s)"
             if [[ "$(echo "$GITST" | wc -w)" -eq 0 ]]; then
-                color "32" "$dir\n" "$dir\n"
+                color "32" "$dir" "$dir" "\n"
             else
-                color "31" "$dir\n" "$dir\n"
+                color "31" "$dir" "$dir" "\n"
                 color "" "$GITST\n" ""
             fi
         fi
