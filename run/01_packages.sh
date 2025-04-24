@@ -29,9 +29,9 @@ set -e
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
     sudo dnf --assumeyes install ffmpeg --allowerasing
-    sudo dnf --assumeyes install libva-intel-driver intel-media-driver                                       # intel
-    sudo dnf --assumeyes install libavcodec-freeworld mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld # amd
-    sudo dnf --assumeyes install mpv-mpris
+    sudo dnf --assumeyes install libva-intel-driver intel-media-driver                                       # intel codecs
+    sudo dnf --assumeyes install libavcodec-freeworld mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld # amd codecs
+    sudo dnf --assumeyes install libheif-freeworld mpv-mpris                                                 # heic support + mpv mpris protocol
 
     ### remove unnecessary packages ###
     sudo dnf --assumeyes autoremove
