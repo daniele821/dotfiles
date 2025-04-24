@@ -66,7 +66,7 @@ function gitstatusall() {
             if [[ "$gitst" -gt 0 || $behind -gt 0 || $ahead -gt 0 ]]; then
                 color "31" "$dir" "$dir" "\n"
                 echo -ne "$GIT_OUT"
-                [[ "$gitst" -gt 0 ]] && color "" "- repository changes:\n$GITST\n" ""
+                [[ "$gitst" -gt 0 ]] && color "" "- git repo changes:\n$GITST\n" ""
                 [[ "$ahead" -gt 0 ]] && color "" "- git repo is ${ahead} commits aheads\n"
                 [[ "$behind" -gt 0 ]] && color "" "- git repo is ${behind} commits behind\n"
             else
