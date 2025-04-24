@@ -26,6 +26,10 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     #####################################################################
+    \builtin local -r ssh_ip="$(echo "$SSH_CONNECTION" | awk '{print $3}')"
+    \builtin local ssh_conn=""
+    [[ -n "$SSH_CONNECTION" ]] && ssh_conn="${red}󰖟 ${ssh_ip} "
+    #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
     \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
@@ -63,7 +67,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     #####################################################################
-    PS1="${wipe}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
+    PS1="${wipe}${ssh_conn}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
 
     # exit ##############################################################
     return "${retval}"
