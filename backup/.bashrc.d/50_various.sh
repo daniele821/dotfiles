@@ -42,7 +42,7 @@ function preview() {
 function fpreview() {
     FPREVIEW="true" preview "${@}"
 }
-function gitall() {
+function gitstatusall() {
     DIR="$1"
     [[ "$#" -eq 0 ]] && DIR="."
     [[ ! -d "$DIR" ]] && echo "'$DIR' is not a directory" && return 1
@@ -57,15 +57,24 @@ function gitall() {
     find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
         dir="$(dirname "$dir")"
         if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
+            [[ "$GITFETCH" == "true" ]] && git -C "$dir" fetch
+            ahead="$(git -C "$dir" rev-list --count '@{u}..HEAD' 2>/dev/null)"
+            behind="$(git -C "$dir" rev-list --count 'HEAD..@{u}' 2>/dev/null)"
             GITST="$(git -C "$dir" status -s)"
-            if [[ "$(echo "$GITST" | wc -w)" -eq 0 ]]; then
-                color "32" "$dir" "$dir" "\n"
-            else
+            gitst="$(echo "$GITST" | wc -w)"
+            if [[ "$gitst" -gt 0 || $behind -gt 0 || $ahead -gt 0 ]]; then
                 color "31" "$dir" "$dir" "\n"
-                color "" "$GITST\n" ""
+                [[ "$gitst" -gt 0 ]] && color "" "- repository changes:\n$GITST\n" ""
+                [[ "$ahead" -gt 0 ]] && color "" "- git repo is ${ahead} commits aheads\n"
+                [[ "$behind" -gt 0 ]] && color "" "- git repo is ${behind} commits behind\n"
+            else
+                color "32" "$dir" "$dir" "\n"
             fi
         fi
     done
+}
+function gitfetchall() {
+    GITFETCH="true" gitstatusall "$@"
 }
 
 complete -c run
