@@ -26,9 +26,12 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     #####################################################################
-    \builtin local -r ssh_ip="$(echo "$SSH_CONNECTION" | awk '{print $3}')"
     \builtin local ssh_conn=""
-    [[ -n "$SSH_CONNECTION" ]] && ssh_conn="${red}󰖟 ${ssh_ip} "
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        \builtin local -r ssh_ip="$(echo "$SSH_CONNECTION" | awk '{print $3}')"
+        \builtin local -r ssh_server="$(dig -x "$ssh_ip" +short | head -1 | sed 's/\.$//')"
+        ssh_conn="${red}󰖟 ${ssh_server} "
+    fi
     #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
