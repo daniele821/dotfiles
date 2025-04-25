@@ -84,12 +84,12 @@ function ask_user() {
     fi
 
     # install rust
-    if ask_user 'Do you really want to install rust'; then
+    command -v rustc &>/dev/null || if ask_user 'Do you really want to install rust'; then
         rustup-init -y
     fi
 
     # allow running docker without sudo
-    if ask_user 'Do you really want to add user to docker group'; then
+    id -nG | grep -qw docker || if ask_user 'Do you really want to add user to docker group'; then
         sudo usermod -aG docker "$USER"
     fi
 
