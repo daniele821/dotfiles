@@ -83,6 +83,13 @@ function ask_user() {
         done
     fi
 
+    # flatpak use flathub instead of fedora-flatpak repo
+    flatpak remotes | grep fedora &>/dev/null && if ask_user 'Do you really want to replace fedora flatpaks with flathub'; then
+        sudo flatpak remote-delete fedora
+        sudo flatpak remote-delete fedora-testing
+        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    fi
+
     # install rust
     command -v rustc &>/dev/null || if ask_user 'Do you really want to install rust'; then
         rustup-init -y
