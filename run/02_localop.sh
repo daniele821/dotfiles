@@ -88,6 +88,12 @@ function ask_user() {
         sudo flatpak remote-delete fedora
         sudo flatpak remote-delete fedora-testing
         sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        if ask_user 'Do you really want to install tor browser as flatpak'; then
+            flatpak install flathub org.torproject.torbrowser-launcher -y
+        fi
+        if ask_user 'Do you really want to install proton vpn as flatpak'; then
+            flatpak install flathub com.protonvpn.www -y
+        fi
     fi
 
     # install rust
