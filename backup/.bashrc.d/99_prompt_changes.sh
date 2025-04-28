@@ -50,7 +50,12 @@ function __cleanup_prompt__() {
     \builtin local -r info="${red}${gitst}${remote}"
     case "$branch" in
     "") ;;
-    "HEAD") gitbranch="${purple}(${hash})${info} " ;;
+    "HEAD")
+        case "$hash" in
+        "") gitbranch="${purple}(..)${info} " ;; # empty repo (ie: no commits, yet!)
+        *) gitbranch="${purple}(${hash})${info} " ;;
+        esac
+        ;;
     *) gitbranch="${purple}(${branch})${info} " ;;
     esac
     #####################################################################
