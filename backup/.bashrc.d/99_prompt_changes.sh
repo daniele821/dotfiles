@@ -52,7 +52,7 @@ function __cleanup_prompt__() {
     "") ;;
     "HEAD")
         case "$hash" in
-        "") gitbranch="${purple}(..)${info} " ;; # empty repo (ie: no commits, yet!)
+        "") gitbranch="${purple}(...)${info} " ;; # empty repo (ie: no commits, yet!)
         *) gitbranch="${purple}(${hash})${info} " ;;
         esac
         ;;
