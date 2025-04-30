@@ -17,7 +17,7 @@ set -e
     sudo dnf --assumeyes remove krdc krfb krdp
     sudo dnf --assumeyes remove kolourpaint im-chooser kamoso
     sudo dnf --assumeyes remove kcharselect firewall-config qrca
-    sudo dnf --assumeyes remove setroubleshoot-server hplip*
+    sudo dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
     # install needed programs
     sudo dnf --assumeyes install jq git gh rustup # NECESSARY for following scripts!!!
