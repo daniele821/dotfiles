@@ -222,7 +222,7 @@ RunClipboard=Alt+Shift+F2
 _launch=Alt+Space; Search; Alt+F2
 
 [org.kde.kscreen.desktop][Global Shortcuts]
-ShowOSD=Display
+ShowOSD=Meta+P; Display
 
 [org.kde.plasma-systemmonitor.desktop][Global Shortcuts]
 _launch=Meta+Esc
