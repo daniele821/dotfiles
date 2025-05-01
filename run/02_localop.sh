@@ -36,9 +36,12 @@ set -e
     done
 
     # adding user to groups
-    if id -nG | grep -qw docker &>/dev/null; then
-        sudo usermod -aG docker "$USER"
-    fi
+    for group in docker; do
+        if ! id -nG | grep -qw "$group" &>/dev/null; then
+            echo "adding user to '$group' group"
+            sudo usermod -aG "$group" "$USER"
+        fi
+    done
 
 } </dev/tty
 
