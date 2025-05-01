@@ -2,23 +2,7 @@
 
 set -e
 
-# utility functions
-function ask_user() {
-    echo -en "\x1b[1;37m${*}? \x1b[m"
-    read -r answer </dev/tty
-    if [[ "${answer,,}" == 'y' ]]; then
-        return 0
-    elif [[ "${answer,,}" == 'n' || "$answer" == '' ]]; then
-        return 1
-    else
-        echo 'invalid answer, retry:'
-        ask_user "$@"
-        return
-    fi
-}
-
 {
-    ### MANDATORY OPERATIONS ###
     # create personal dirs
     if ! [[ -d "/personal" ]]; then
         sudo mkdir -p /personal/{data,repos} || exit 1
@@ -26,63 +10,24 @@ function ask_user() {
         echo "created personal directory in /personal"
     fi
 
-    # copy passwords from usb drive to this device
-    if ! [[ -d "/personal/data/passwords" ]]; then
-        function get_usb() {
-            USB_PATH="$(lsblk -o NAME,TRAN,MOUNTPOINT -J | jq -r '
-                .blockdevices[] 
-                | select(.tran == "usb") 
-                | recurse(.children[])? 
-                | select(.mountpoint != null) 
-                | .mountpoint ')"
-            if [[ "$(echo "$USB_PATH" | wc -w)" -eq 0 ]]; then
-                echo 'no usb devices connected'
-                return 1
-            elif [[ "$(echo "$USB_PATH" | wc -l)" -gt 1 ]]; then
-                echo 'more then one usb device connected'
-                return 1
-            else
-                pass_dir="$(find "$USB_PATH" -type d -name "passwords" 2>/dev/null)"
-                if [[ "$(echo "$pass_dir" | wc -w)" -eq 0 ]]; then
-                    echo "no password directory found in $USB_PATH"
-                    return 1
-                elif [[ "$(echo "$pass_dir" | wc -l)" -gt 1 ]]; then
-                    echo "more then one password directory found in $USB_PATH"
-                    return 1
-                else
-                    echo "$pass_dir"
-                    return 0
-                fi
-            fi
-        }
-        answer=""
-        while [[ "$answer" != "SKIP" ]]; do
-            if USB_PASSWORD_DIR="$(get_usb)"; then
-                break
-            else
-                echo "WARNING: $USB_PASSWORD_DIR"
-                echo -en "\x1b[1;31mWARNING: Insert a usb device with the passwords backup or type SKIP to skip... \x1b[m"
-                read -r answer </dev/tty
-            fi
-        done
-        usb_passwords="$USB_PASSWORD_DIR"
-        new_location="/personal/data/passwords"
-        if [[ -d "$usb_passwords" ]] && [[ ! -e "$new_location" ]]; then
-            cp "$usb_passwords" "$new_location" -r
-            git -C "$new_location" restore "$new_location"
-            echo "copied passwords from usb drive"
+    # copy passwords from usb drive
+    while ! [[ -d "/personal/data/passwords" ]]; do
+        PASSWORD_DIRS="$(find "/run/media/$USER" -name passwords)"
+        if [[ "$(echo "$PASSWORD_DIRS" | wc -w)" -gt 0 && "$(echo "$PASSWORD_DIRS" | wc -l)" -eq 1 ]]; then
+            cp -r "$PASSWORD_DIRS" /personal/data/passwords
+            git -C /personal/data/passwords/ restore /personal/data/passwords/
+            break
+        elif [[ "$(echo "$PASSWORD_DIRS" | wc -l)" -gt 1 ]]; then
+            echo -en "\e[1;31mMultiple password directories found in usb drive. Fix it or type SKIP... \e[m"
+        else
+            echo -en "\e[1;31mPasswords missing, mount a usb drive to copy them. Otherwise type SKIP... \e[m"
         fi
-    fi
-    ### END OF MANDATORY OPERATIONS ###
-
-    # restore backup files
-    SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-    [[ -n "$(BRANCH="" "${SCRIPT_DIR}/../autosaver")" ]] && if ask_user 'Do you want to restore all backup files'; then
-        BRANCH="" "${SCRIPT_DIR}/../autosaver" restoreall
-    fi
+        read -r answer </dev/tty
+        [[ "$answer" == "SKIP" ]] && break
+    done
 
     # create ssh keys for github
-    if ask_user 'Do you really want to create new ssh keys, and adding them to github via gh'; then
+    if ! gh auth status | grep daniele821 &>/dev/null; then
         for user in daniele821 danix1234; do
             ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" || true
             gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
