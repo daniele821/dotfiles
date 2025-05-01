@@ -28,7 +28,7 @@ set -e
 
     # create ssh keys for github and wait until gh successfully propagates ssh keys
     USERS=(daniele821 danix1234)
-    STATUS="$(gh auth status)"
+    STATUS="$(gh auth status 2>/dev/null)" || true
     ADDED_USERS=()
     for user in "${USERS[@]}"; do
         if ! echo "$STATUS" | grep "$user" &>/dev/null; then
