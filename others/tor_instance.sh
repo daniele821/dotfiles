@@ -19,6 +19,7 @@ cd "$(mktemp -d /tmp/tor-browser-temporary-instance/XXXXXXXXXXXXXXXXXX)" || exit
 wget -O tor.tar.xz "$(echo "$json_api" | jq -r ".binary")"
 
 # unpack and run tor browser
+echo "unpacking tor browser..."
 tar xf tor.tar.xz
 cd tor-browser || exit
-./start-tor-browser.desktop
+MOZ_ENABLE_WAYLAND=1 ./start-tor-browser.desktop
