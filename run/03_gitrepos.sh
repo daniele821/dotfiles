@@ -54,16 +54,16 @@ function download_repo() {
     case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
         NEW_BRANCH="fedora-kde"
-        echo -e "\e[1;33mswitching git branch to ${NEW_BRANCH}\e[m"
+        echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
         git -C "$git_repo" switch "${NEW_BRANCH}" -q
-        echo -e "\e[1;33msetting ${NEW_BRANCH} as the valid branch\e[m"
+        echo -e "\e[1;34msetting ${NEW_BRANCH} as the valid branch\e[m"
         echo "$NEW_BRANCH" >"${git_repo}/.branch"
         ;;
     "/personal/repos/daniele821/nvim-config")
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
         if [[ ! -e "$TO_DIR" ]]; then
-            echo -e "\e[1;33mlinking $TO_DIR to $FROM_DIR\e[m"
+            echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
         ;;
@@ -75,6 +75,7 @@ TMP_FILES=()
 CLONEPIDS=()
 function cleanup() {
     for ((i = 0; i < ${#CLONEPIDS[@]}; i++)); do
+        echo -n "$((i + 1))/${#CLONEPIDS[@]}: "
         tail -n +0 -f "${TMP_FILES[$i]}" --pid="${CLONEPIDS[$i]}"
         rm "${TMP_FILES[$i]}"
     done
@@ -88,7 +89,6 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
     git_repo="${GIT_DATA[$((i + 1))]}"
     git_email="${GIT_DATA[$((i + 2))]}"
     if [[ ! -e "$git_repo" ]]; then
-        echo -e "\e[1;33mlaunching background download for '$git_url'\e[m" >/dev/tty
         TMP_FILE="$(mktemp)"
         download_repo "$git_url" "$git_repo" "$git_email" &>"$TMP_FILE" &
         CLONEPIDS+=("$!")
