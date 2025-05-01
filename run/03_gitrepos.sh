@@ -12,24 +12,12 @@ GIT_DATA=(
     "/personal/repos/daniele821/github-website"
     "danixgithub1@gmail.com"
 
-    "git@daniele821.github.com:daniele821/golang.git"
-    "/personal/repos/daniele821/golang"
-    "danixgithub1@gmail.com"
-
     "git@daniele821.github.com:daniele821/nvim-config.git"
     "/personal/repos/daniele821/nvim-config"
     "danixgithub1@gmail.com"
 
-    "git@daniele821.github.com:daniele821/python.git"
-    "/personal/repos/daniele821/python"
-    "danixgithub1@gmail.com"
-
     "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
-    "danixgithub1@gmail.com"
-
-    "git@daniele821.github.com:daniele821/rust.git"
-    "/personal/repos/daniele821/rust"
     "danixgithub1@gmail.com"
 
     "git@danix1234.github.com:danix1234/unibo-2a.git"

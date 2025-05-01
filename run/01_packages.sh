@@ -3,7 +3,7 @@
 set -e
 
 {
-    ### upgrade everything ###
+    # upgrade everything
     sudo dnf --assumeyes upgrade
 
     # remove bloat
@@ -20,7 +20,7 @@ set -e
     sudo dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
     # install needed programs
-    sudo dnf --assumeyes install jq git gh rustup # NECESSARY for following scripts!!!
+    sudo dnf --assumeyes install jq git gh # NECESSARY for following scripts!!!
     sudo dnf --assumeyes install mpv kitten docker neovim
     sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd
     sudo dnf --assumeyes install tldr htop gcc golang
@@ -31,9 +31,9 @@ set -e
     sudo dnf --assumeyes install ffmpeg --allowerasing
     sudo dnf --assumeyes install libva-intel-driver intel-media-driver                                       # intel codecs
     sudo dnf --assumeyes install libavcodec-freeworld mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld # amd codecs
-    sudo dnf --assumeyes install libheif-freeworld mpv-mpris                                                 # heic support + mpv mpris protocol
+    sudo dnf --assumeyes install mpv-mpris                                                                   # heic support + mpv mpris protocol
 
-    ### remove unnecessary packages ###
+    # remove unnecessary packages
     sudo dnf --assumeyes autoremove
 
 } </dev/tty

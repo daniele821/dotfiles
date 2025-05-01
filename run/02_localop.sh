@@ -76,9 +76,8 @@ function ask_user() {
     ### END OF MANDATORY OPERATIONS ###
 
     # restore backup files
-    if ask_user 'Do you want to restore all backup files'; then
-        SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
-        SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
+    SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+    [[ -n "$(BRANCH="" "${SCRIPT_DIR}/../autosaver")" ]] && if ask_user 'Do you want to restore all backup files'; then
         BRANCH="" "${SCRIPT_DIR}/../autosaver" restoreall
     fi
 
@@ -89,25 +88,6 @@ function ask_user() {
             gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
             gh ssh-key add "$HOME/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
         done
-    fi
-
-    # flatpak use flathub instead of fedora-flatpak repo
-    flatpak remotes | grep fedora &>/dev/null && if ask_user 'Do you really want to replace fedora flatpaks with flathub'; then
-        sudo flatpak remote-delete fedora
-        sudo flatpak remote-delete fedora-testing
-        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        ask_user 'Do you really want to install tor browser as flatpak' && flatpak install flathub org.torproject.torbrowser-launcher -y
-        ask_user 'Do you really want to install proton vpn as flatpak' && flatpak install flathub com.protonvpn.www -y
-    fi
-
-    # install rust
-    command -v rustc &>/dev/null || if ask_user 'Do you really want to install rust'; then
-        rustup-init -y
-    fi
-
-    # allow running docker without sudo
-    id -nG | grep -qw docker || if ask_user 'Do you really want to add user to docker group'; then
-        sudo usermod -aG docker "$USER"
     fi
 
 } </dev/tty
