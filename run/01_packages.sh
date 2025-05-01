@@ -21,9 +21,9 @@ set -e
 
     # install needed programs
     sudo dnf --assumeyes install jq git gh # NECESSARY for following scripts!!!
-    sudo dnf --assumeyes install mpv kitten docker neovim
-    sudo dnf --assumeyes install zoxide direnv entr bat ripgrep lsd
-    sudo dnf --assumeyes install tldr htop gcc golang
+    sudo dnf --assumeyes install mpv docker kitten neovim
+    sudo dnf --assumeyes install zoxide bat ripgrep lsd tldr
+    sudo dnf --assumeyes install htop gcc
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
