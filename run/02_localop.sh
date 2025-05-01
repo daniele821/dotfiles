@@ -36,7 +36,7 @@ set -e
     done
 
     # adding user to groups
-    for group in docker; do
+    for group in docker wireshark; do
         if ! id -nG | grep -qw "$group" &>/dev/null; then
             echo "adding user to '$group' group"
             sudo usermod -aG "$group" "$USER"

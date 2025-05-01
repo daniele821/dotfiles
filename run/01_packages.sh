@@ -21,7 +21,7 @@ set -e
 
     # install needed programs
     sudo dnf --assumeyes install git gh # NECESSARY for following scripts!!!
-    sudo dnf --assumeyes install mpv docker kitten neovim htop
+    sudo dnf --assumeyes install mpv docker kitten neovim htop wireshark
     sudo dnf --assumeyes install zoxide bat ripgrep lsd tldr gcc jq
 
     # enable rpm-fusion and install multimedia codecs
