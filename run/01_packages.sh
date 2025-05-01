@@ -31,7 +31,7 @@ sudo sh -c '
     dnf --assumeyes install ffmpeg --allowerasing
     dnf --assumeyes install libva-intel-driver intel-media-driver                                       # intel codecs
     dnf --assumeyes install libavcodec-freeworld mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld # amd codecs
-    dnf --assumeyes install mpv-mpris
+    dnf --assumeyes install mpv-mpris libheif-freeworld
 
     # remove unnecessary packages
     dnf --assumeyes autoremove
