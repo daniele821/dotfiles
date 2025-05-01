@@ -8,3 +8,4 @@
 .local/share/konsole/NerdProfileNoLigatures.profile
 .config/konsolerc
 .config/plasma-localerc
+.config/dolphinrc
