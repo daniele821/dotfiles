@@ -27,12 +27,17 @@ set -e
     done
 
     # create ssh keys for github
-    if ! gh auth status | grep daniele821 &>/dev/null; then
-        for user in daniele821 danix1234; do
+    for user in daniele821 danix1234; do
+        if ! gh auth status | grep "$user" &>/dev/null; then
             ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" || true
             gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
             gh ssh-key add "$HOME/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
-        done
+        fi
+    done
+
+    # adding user to groups
+    if id -nG | grep -qw docker &>/dev/null; then
+        sudo usermod -aG docker "$USER"
     fi
 
 } </dev/tty

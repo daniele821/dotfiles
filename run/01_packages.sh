@@ -20,9 +20,9 @@ set -e
     sudo dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
     # install needed programs
-    sudo dnf --assumeyes install jq git gh # NECESSARY for following scripts!!!
+    sudo dnf --assumeyes install git gh # NECESSARY for following scripts!!!
     sudo dnf --assumeyes install mpv docker kitten neovim htop
-    sudo dnf --assumeyes install zoxide bat ripgrep lsd tldr gcc
+    sudo dnf --assumeyes install zoxide bat ripgrep lsd tldr gcc jq
 
     # enable rpm-fusion and install multimedia codecs
     sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
