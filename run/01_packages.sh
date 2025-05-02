@@ -19,6 +19,7 @@ sudo sh -c '
     dnf --assumeyes remove kolourpaint im-chooser kamoso
     dnf --assumeyes remove kcharselect firewall-config qrca
     dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
+    dnf --assumeyes remove flatpak
 
     # install needed programs
     dnf --assumeyes install git gh # NECESSARY for following scripts!!!
