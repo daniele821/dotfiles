@@ -96,3 +96,5 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
     fi
 done
 cleanup
+
+exit 0
