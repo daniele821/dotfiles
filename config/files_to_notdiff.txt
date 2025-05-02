@@ -10,3 +10,4 @@
 .config/plasma-localerc
 .config/dolphinrc
 .config/spectaclerc
+.local/state/konsolestaterc
