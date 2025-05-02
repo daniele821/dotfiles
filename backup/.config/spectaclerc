@@ -1,0 +1,12 @@
+[GuiConfig]
+captureMode=0
+
+[ImageSave]
+imageSaveLocation=file:///home/daniele/Pictures/
+lastImageSaveLocation=file:///home/daniele/Pictures/Screenshots/Screenshot_20250502_014452.png
+translatedScreenshotsFolder=Screenshots
+
+[VideoSave]
+preferredVideoFormat=2
+translatedScreencastsFolder=Screencasts
+videoSaveLocation=file:///home/daniele/Videos/

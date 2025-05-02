@@ -1,6 +1,5 @@
 // vim:commentstring=//\ %s
 
-.config/starship.toml
 .ssh/config
 .gitconfig
 .config/mpv

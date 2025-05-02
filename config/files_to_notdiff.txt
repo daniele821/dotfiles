@@ -9,3 +9,4 @@
 .config/konsolerc
 .config/plasma-localerc
 .config/dolphinrc
+.config/spectaclerc
