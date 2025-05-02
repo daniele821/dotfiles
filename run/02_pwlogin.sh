@@ -2,6 +2,8 @@
 
 set -e
 
+[[ "$(id -u)" -eq 0 ]] && echo 'do not run this script as root!' && exit 1
+
 {
     # copy passwords from usb drive
     while ! [[ -d "/personal/data/passwords" ]]; do

@@ -2,6 +2,8 @@
 
 set -e
 
+[[ "$(id -u)" -eq 0 ]] && echo 'do not run this script as root!' && exit 1
+
 # clone missing git repos and set the email
 GIT_DATA=(
     "git@daniele821.github.com:daniele821/dotfiles.git"
