@@ -40,7 +40,7 @@ dnf --assumeyes autoremove
 # create personal dirs
 if ! [[ -d "/personal" ]]; then
     mkdir -p /personal/{data,repos}
-    chown '"$USER"':'"$USER"' /personal/{data,repos}
+    chown "$SUDO_USER":"$SUDO_USER" /personal/{data,repos}
     echo "created personal directory in /personal"
 fi
 
@@ -48,7 +48,7 @@ fi
 for group in docker wireshark; do
     if getent group "$group" &>/dev/null && ! id -nG | grep -qw "$group" &>/dev/null; then
         echo "adding user to $group group"
-        usermod -aG "$group" '"$USER"'
+        usermod -aG "$group" "$SUDO_USER"
     fi
 done
 '
