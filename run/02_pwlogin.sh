@@ -3,13 +3,6 @@
 set -e
 
 {
-    # create personal dirs
-    if ! [[ -d "/personal" ]]; then
-        sudo mkdir -p /personal/{data,repos} || exit 1
-        sudo chown "${USER}":"${USER}" /personal/{data,repos}
-        echo "created personal directory in /personal"
-    fi
-
     # copy passwords from usb drive
     while ! [[ -d "/personal/data/passwords" ]]; do
         PASSWORD_DIRS="$(find "/run/media/$USER" -name passwords 2>/dev/null)" || true
@@ -43,14 +36,6 @@ set -e
             echo "Waiting for ${user} SSH key to propagate..."
             sleep 1
         done
-    done
-
-    # adding user to groups
-    for group in docker wireshark; do
-        if getent group "$group" &>/dev/null && ! id -nG | grep -qw "$group" &>/dev/null; then
-            echo "adding user to '$group' group"
-            sudo usermod -aG "$group" "$USER"
-        fi
     done
 
 } </dev/tty
