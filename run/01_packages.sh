@@ -2,8 +2,10 @@
 
 set -e
 
-sudo sh -c '
+sudo bash -c '
 {
+    set -e
+
     # upgrade everything
     dnf --assumeyes upgrade
 
