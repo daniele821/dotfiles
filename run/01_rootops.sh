@@ -26,7 +26,8 @@ dnf --assumeyes remove flatpak
 # install needed programs
 dnf --assumeyes install git gh # NECESSARY for following scripts!!!
 dnf --assumeyes install mpv docker kitten neovim htop wireshark
-dnf --assumeyes install zoxide bat ripgrep lsd tldr gcc jq
+dnf --assumeyes install zoxide bat ripgrep lsd tldr jq
+dnf --assumeyes install gcc golang rustup
 
 # enable rpm-fusion and install multimedia codecs
 dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
