@@ -61,7 +61,7 @@ if ! command -v cargo &>/dev/null; then
 fi
 
 # install flathub after removing fedora flatpak repos
-flatpak remote-delete fedora-testing
+flatpak remote-delete fedora fedora-testing
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo --user
 
 exit 0
