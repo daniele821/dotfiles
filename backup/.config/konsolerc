@@ -3,9 +3,15 @@ MenuBar=Disabled
 [Desktop Entry]
 DefaultProfile=NerdProfile.profile
 
+[General]
+ConfigVersion=1
+
 [KonsoleWindow]
 RememberWindowSize=false
 
 [TabBar]
 ExpandTabWidth=true
 SearchTabsButton=HideSearchTabsButton
+
+[UiSettings]
+ColorScheme=
