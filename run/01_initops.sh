@@ -53,15 +53,16 @@ for group in docker wireshark; do
         usermod -aG "$group" "$SUDO_USER"
     fi
 done
+
+# install flathub after removing fedora flatpak repos
+flatpak remote-delete fedora 
+flatpak remote-delete fedora-testing
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
 
 # install rust toolchain
 if ! command -v cargo &>/dev/null; then
     RUSTUP_HOME="$HOME/.local/share/rustup" CARGO_HOME="$HOME/.local/share/cargo" rustup-init -y
 fi
-
-# install flathub after removing fedora flatpak repos
-flatpak remote-delete fedora fedora-testing
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo --user
 
 exit 0
