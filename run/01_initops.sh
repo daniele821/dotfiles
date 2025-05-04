@@ -23,10 +23,8 @@ dnf --assumeyes remove kcharselect firewall-config qrca
 dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
 # install needed programs
-dnf --assumeyes install git gh # NECESSARY for following scripts!!!
 dnf --assumeyes install mpv docker{,-compose} kitten neovim htop wireshark
-dnf --assumeyes install zoxide bat ripgrep lsd tldr jq
-dnf --assumeyes install gcc golang rustup
+dnf --assumeyes install zoxide bat ripgrep lsd tldr jq git gh gcc golang rustup
 
 # enable rpm-fusion and install multimedia codecs
 dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
