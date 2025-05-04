@@ -31,7 +31,7 @@ def err_exit(msg, exc=False):
     color("err", "ERROR: " + msg, True)
     if exc:
         dbg_exc()
-    exit(0)
+    exit(1)
 
 
 def warn_msg(msg, exc=False):
@@ -784,7 +784,7 @@ if __name__ == "__main__":
         assert_branch()
         main()
     except SystemExit as e:
-        pass
+        raise
     except BaseException as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
     finally:
