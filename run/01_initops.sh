@@ -55,8 +55,8 @@ for group in docker wireshark; do
 done
 
 # install flathub after removing fedora flatpak repos
-flatpak remote-delete fedora 
-flatpak remote-delete fedora-testing
+flatpak remote-delete fedora || true
+flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # change default firewall zone for extreme safety (use logging to fix broken services)
