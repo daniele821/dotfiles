@@ -24,7 +24,7 @@ dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
 # install needed programs
 dnf --assumeyes install git gh # NECESSARY for following scripts!!!
-dnf --assumeyes install mpv docker kitten neovim htop wireshark
+dnf --assumeyes install mpv docker{,-compose} kitten neovim htop wireshark
 dnf --assumeyes install zoxide bat ripgrep lsd tldr jq
 dnf --assumeyes install gcc golang rustup
 
