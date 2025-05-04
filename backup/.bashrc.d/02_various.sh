@@ -6,16 +6,11 @@ export GOPATH="$HOME/.local/share/go"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
-function __exec_nohupped__() {
+function run() {
     (: && nohup "$@" &>/dev/null &)
 }
-function run() {
-    __exec_nohupped__ "$@"
-}
 function open() {
-    for file in "$@"; do
-        __exec_nohupped__ xdg-open "$file"
-    done
+    for file in "$@"; do run xdg-open "$file"; done
 }
 function custom_pager() {
     printf '\e[?1049h'
@@ -44,50 +39,9 @@ function preview() {
 function fpreview() {
     FPREVIEW="true" preview "${@}"
 }
-function gitstatusall() {
-    DIR="$1"
-    [[ "$#" -eq 0 ]] && DIR="."
-    [[ ! -d "$DIR" ]] && echo "'$DIR' is not a directory" && return 1
-    function color() {
-        if [[ -t 1 ]]; then
-            echo -en "\e[${1}m${2}\e[0m"
-        else
-            echo -en "${3}"
-        fi
-        echo -en "${4}"
-    }
-    find "$DIR" -iname .git 2>/dev/null | while read -r dir; do
-        dir="$(dirname "$dir")"
-        if git -C "$dir" rev-parse --is-inside-work-tree &>/dev/null; then
-            [[ "$GITFETCH" == "true" ]] && GIT_OUT="$(git -C "$dir" fetch --progress --recurse-submodules 2>&1)"
-            [[ -n "$GIT_OUT" ]] && GIT_OUT="- GIT FETCH:\n${GIT_OUT}\n"
-            ahead="$(git -C "$dir" rev-list --count '@{u}..HEAD' 2>/dev/null)"
-            behind="$(git -C "$dir" rev-list --count 'HEAD..@{u}' 2>/dev/null)"
-            GITST="$(git -C "$dir" status -s)"
-            gitst="$(echo "$GITST" | wc -w)"
-            if [[ "$gitst" -gt 0 || $behind -gt 0 || $ahead -gt 0 ]]; then
-                color "31" "$dir" "$dir" "\n"
-                echo -ne "$GIT_OUT"
-                [[ "$gitst" -gt 0 ]] && color "" "- GIT REPO CHANGES:\n$GITST\n" ""
-                [[ "$ahead" -gt 0 ]] && color "" "- GIT REPO IS ${ahead} COMMITS AHEADS\n"
-                [[ "$behind" -gt 0 ]] && color "" "- GIT REPO IS ${behind} COMMITS BEHIND\n"
-            else
-                color "32" "$dir" "$dir" "\n"
-                echo -ne "$GIT_OUT"
-            fi
-        fi
-    done
-}
-function gitfetchall() {
-    GITFETCH="true" gitstatusall "$@"
-}
 
 complete -c run
 complete -c custom_pager
-complete -f open
-complete -f preview
-complete -f fpreview
-complete -d gitall
 
 alias la='ls -A'
 alias ll='ls -l'
