@@ -11,3 +11,4 @@
 .config/dolphinrc
 .config/spectaclerc
 .local/state/konsolestaterc
+.config/okularpartrc
