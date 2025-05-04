@@ -21,6 +21,7 @@ dnf --assumeyes remove krdc krfb krdp
 dnf --assumeyes remove kolourpaint im-chooser kamoso
 dnf --assumeyes remove kcharselect firewall-config qrca
 dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
+dnf --assumeyes remove flatpak
 
 # install needed programs
 dnf --assumeyes install git gh # NECESSARY for following scripts!!!
@@ -55,13 +56,9 @@ for group in docker wireshark; do
 done
 '
 
-# install rust toolchain
+# install rust tools
 if ! command -v cargo &>/dev/null; then
     RUSTUP_HOME="$HOME/.local/share/rustup" CARGO_HOME="$HOME/.local/share/cargo" rustup-init -y
 fi
-
-# install flathub after removing fedora flatpak repos
-flatpak remote-delete fedora-testing
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo --user
 
 exit 0
