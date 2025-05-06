@@ -37,8 +37,6 @@ Shut Down=
 
 [kwin][Global Shortcuts]
 Activate Window Demanding Attention=
-ClearLastMouseMark=Meta+Shift+F12
-ClearMouseMarks=Meta+Shift+F11
 Cycle Overview=
 Cycle Overview Opposite=
 Decrease Opacity=
@@ -219,7 +217,7 @@ _launch=Meta+T
 
 [org.kde.krunner.desktop][Global Shortcuts]
 RunClipboard=Alt+Shift+F2
-_launch=Alt+Space; Search; Alt+F2
+_launch=Alt+F2; Search; Meta+A; Alt+Space
 
 [org.kde.kscreen.desktop][Global Shortcuts]
 ShowOSD=Meta+P; Display
@@ -264,7 +262,7 @@ Turn Off Screen=
 powerProfile=Battery; Meta+Shift+B
 
 [plasmashell][Global Shortcuts]
-activate application launcher=Meta+A
+activate application launcher=Alt+F1
 activate task manager entry 1=Meta+1
 activate task manager entry 10=
 activate task manager entry 2=Meta+2
@@ -275,6 +273,13 @@ activate task manager entry 6=Meta+6
 activate task manager entry 7=Meta+7
 activate task manager entry 8=Meta+8
 activate task manager entry 9=Meta+9
+activate widget 29=
+activate widget 38=Meta+Shift+D
+activate widget 42=Meta+Shift+N
+activate widget 45=Meta+Shift+A
+activate widget 48=Meta+Shift+C
+activate widget 49=Meta+Shift+P
+activate widget 51=Meta+Shift+W
 clear-history=Meta+Shift+V
 clipboard_action=
 cycle-panels=
