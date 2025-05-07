@@ -12,3 +12,4 @@
 .config/spectaclerc
 .local/state/konsolestaterc
 .config/okularpartrc
+.local/share/kxmlgui5/konsole
