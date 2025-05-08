@@ -41,6 +41,10 @@ GIT_DATA=(
     "git@danix1234.github.com:danix1234/unibo.git"
     "/personal/repos/danix1234/unibo"
     "daniele.muffato@studio.unibo.it"
+
+    "git@danix1234.github.com:danix1234/tesi_CRYPTO_2025.git"
+    "/personal/repos/danix1234/tesi_CRYPTO_2025"
+    "daniele.muffato@studio.unibo.it"
 )
 
 # downloading repo and running operations on it
