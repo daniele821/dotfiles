@@ -54,21 +54,18 @@ function __cleanup_prompt__() {
         ###############################################
         IFS="" \builtin local -r status="$(git status --porcelain 2>/dev/null)"
         while IFS= read -r line; do
-            IFS="" line_xy="${line:0:2}"
-            case "$line_xy" in
+            case "${line:0:2}" in
             "") continue ;;
             "??") \builtin local untracked='?' ;;
             "DD" | "AA" | *U*) \builtin local conflicted='=' ;;
             *)
-                line_x="${line:0:1}"
-                line_y="${line:1:1}"
-                case "$line_x" in
+                case "${line:0:1}" in
                 " ") ;;
                 M | T | A | D) \builtin local staged='+' ;;
                 R) \builtin local renamed='»' ;;
                 *) \builtin local others='*' ;;
                 esac
-                case "$line_y" in
+                case "${line:1:1}" in
                 " ") ;;
                 M | T) \builtin local modified='!' ;;
                 D) \builtin local removed='✘' ;;
@@ -84,13 +81,21 @@ function __cleanup_prompt__() {
         [[ -n "$allstat" ]] && \builtin local -r gitstatus="${red}[${allstat}] "
     fi
     ###############################################
+    \builtin local -r all_jobs="$(jobs | grep -vc Done)"
+    \builtin local jobs=
+    case "$all_jobs" in
+    0) ;;
+    1) jobs="${lblue}✦ " ;;
+    *) jobs="${lblue}${all_jobs}✦ " ;;
+    esac
+    ###############################################
     \builtin local symbol=""
     case "$retval" in
     0) symbol="${lgreen}❯ " ;;
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${jobs}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
