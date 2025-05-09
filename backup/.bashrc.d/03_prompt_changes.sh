@@ -31,7 +31,22 @@ function __cleanup_prompt__() {
     0) symbol="${lgreen}❯ " ;;
     *) symbol="${red}❯ " ;;
     esac
-    PS1="${wipe}${workdir}${gitbranch}${symbol}${wipe}"
+    \builtin local state=""
+    if [[ -f "$GITDIR/.git/MERGE_HEAD" ]]; then
+        state="MERGING"
+    elif [[ -f "$GITDIR/.git/CHERRY_PICK_HEAD" ]]; then
+        state="CHERRY-PICKING"
+    elif [[ -f "$GITDIR/.git/REVERT_HEAD" ]]; then
+        state="REVERTING"
+    elif [[ -f "$GITDIR/.git/BISECT_START" ]]; then
+        state="BISECTING"
+    elif [[ -d "$GITDIR/.git/rebase-merge" ]]; then
+        state="REBASING"
+    elif [[ -d "$GITDIR/.git/rebase-apply" ]]; then
+        state="AM"
+    fi
+    [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
