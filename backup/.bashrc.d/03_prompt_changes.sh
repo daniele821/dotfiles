@@ -42,9 +42,9 @@ function __cleanup_prompt__() {
         \builtin local -r hash="$(git rev-parse --short=8 HEAD)"
         \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD)"
         \builtin local remote=""
-        [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="↓"
-        [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="↑"
-        [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↕"
+        [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="⇣"
+        [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="⇡"
+        [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
         \builtin local info=""
         if [[ "$hasdiff" != 0 || -n "$stashed" || -n "$remote" ]]; then
             info="${red} [${stashed}${deleted}${modified}${staged}${untracked}${remote}]"
