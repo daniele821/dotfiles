@@ -75,9 +75,14 @@ function __cleanup_prompt__() {
             esac
         done <<<"$status"
         [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
-        ### TODO: remote [⇡⇕⇣]
-        ### \builtin local -r allstat="${conflicted}${stashed}${renamed}${staged}${removed}${modified}${others}${untracked}${remote}"
-        \builtin local -r allstat="${conflicted}${stashed}${renamed}${staged}${removed}${modified}${others}${untracked}"
+        \builtin local -r diff="$(git rev-list --left-right --count '@{u}...HEAD' 2>/dev/null)"
+        \builtin local -r ahead="${diff%%$'\t'*}"
+        \builtin local -r behind="${diff##*$'\t'}"
+        \builtin local remote=""
+        [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="⇣"
+        [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="⇡"
+        [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
+        \builtin local -r allstat="${conflicted}${stashed}${renamed}${staged}${removed}${modified}${others}${untracked}${remote}"
         [[ -n "$allstat" ]] && \builtin local -r gitstatus="${red}[${allstat}] "
     fi
     ###############################################
