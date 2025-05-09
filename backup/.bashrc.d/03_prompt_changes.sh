@@ -27,23 +27,42 @@ function __cleanup_prompt__() {
         *) branch="${file:0:8}" ;;
         esac
         \builtin local -r gitbranch="${purple}(${branch}) "
+        ###############################################
+        \builtin local state=""
+        if [[ -f "$GITDIR/.git/MERGE_HEAD" ]]; then
+            state="MERGING"
+        elif [[ -f "$GITDIR/.git/CHERRY_PICK_HEAD" ]]; then
+            state="CHERRY-PICKING"
+        elif [[ -f "$GITDIR/.git/REVERT_HEAD" ]]; then
+            state="REVERTING"
+        elif [[ -f "$GITDIR/.git/BISECT_START" ]]; then
+            state="BISECTING"
+        elif [[ -d "$GITDIR/.git/rebase-merge" ]]; then
+            state="REBASING"
+        elif [[ -d "$GITDIR/.git/rebase-apply" ]]; then
+            state="AM"
+        fi
+        [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
+        ###############################################
+        IFS="" \builtin local -r status="$(git status --porcelain 2>/dev/null)"
+        while IFS= read -r line; do
+            IFS="" line="${line:0:2}"
+            [[ "$line" == "" ]] && continue
+            \builtin local -r have_changed=true
+            # TODO: slowly fix small cases
+            [[ "$line" == '??' ]] && \builtin local untracked='?'
+            [[ "$line" == M* || "$line" == A* || "$line" == D* ]] && \builtin local staged='+'
+            [[ "$line" == *M ]] && \builtin local modified='!'
+            [[ "$line" == *D ]] && \builtin local removed='✘'
+            [[ "$line" == *U ]] && \builtin local conflicted='='
+            [[ "$line" == R* ]] && \builtin local renamed='»'
+        done <<<"$status"
+        [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
+        # TODO: remote ⇡⇕⇣
+        \builtin local -r allstat="${conflicted}${stashed}${removed}${renamed}${modified}${staged}${untracked}${remote}"
+        [[ -n "$allstat" ]] && \builtin local -r gitstatus="${red}[${allstat}] "
+        [[ "$have_changed" == "true" && -z "$allstat" ]] && \builtin local -r gitstatus="${red}[*] "
     fi
-    ###############################################
-    \builtin local state=""
-    if [[ -f "$GITDIR/.git/MERGE_HEAD" ]]; then
-        state="MERGING"
-    elif [[ -f "$GITDIR/.git/CHERRY_PICK_HEAD" ]]; then
-        state="CHERRY-PICKING"
-    elif [[ -f "$GITDIR/.git/REVERT_HEAD" ]]; then
-        state="REVERTING"
-    elif [[ -f "$GITDIR/.git/BISECT_START" ]]; then
-        state="BISECTING"
-    elif [[ -d "$GITDIR/.git/rebase-merge" ]]; then
-        state="REBASING"
-    elif [[ -d "$GITDIR/.git/rebase-apply" ]]; then
-        state="AM"
-    fi
-    [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
     ###############################################
     \builtin local symbol=""
     case "$retval" in
@@ -51,7 +70,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
