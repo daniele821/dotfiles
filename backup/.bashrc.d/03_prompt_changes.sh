@@ -17,7 +17,7 @@ function __cleanup_prompt__() {
     \builtin local workdir="${green}\w "
     \builtin local branch=""
     GITDIR="$PWD"
-    until [[ "$GITDIR" == "/" || -d "$GITDIR/.git" ]]; do GITDIR="$(dirname "$GITDIR")"; done
+    until [[ -z "$GITDIR" || -d "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
     if [[ -d "$GITDIR/.git" ]]; then
         read -r file <"$GITDIR/.git/HEAD"
         case "$file" in
