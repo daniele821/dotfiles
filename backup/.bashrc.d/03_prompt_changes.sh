@@ -4,10 +4,10 @@ function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
     # force new line in terminal (if stdin is empty) ####################
-    if ! read -t 0 -N 0; then
-        IFS='[;' read -p $'\e[6n' -d R -rs _ COLUMN LINE _
-        [[ "$LINE" -ne "1" ]] && echo
-    fi
+    # if ! read -t 0 -N 0; then
+    #     IFS='[;' read -p $'\e[6n' -d R -rs _ COLUMN LINE _
+    #     [[ "$LINE" -ne "1" ]] && echo
+    # fi
 
     # force exit from not existing directories ##########################
     if ! [[ -d "$PWD" ]]; then
