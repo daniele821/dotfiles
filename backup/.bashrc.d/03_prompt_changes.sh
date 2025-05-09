@@ -4,7 +4,7 @@ function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
     # force new line in terminal if previous output doesn't end with a newline
-    ## UNCOMMENT: FLUSHES STDIN -> DOES NOT ALLOW TO WRITE WHILE PREVIOUS COMMAND IS STILL RUNNING
+    # UNCOMMENT: FLUSHES STDIN -> DOES NOT ALLOW TO WRITE WHILE PREVIOUS COMMAND IS STILL RUNNING
     # IFS='[;' read -p $'\e[6n' -d R -rs _ COLUMN LINE _
     # [[ "$LINE" -ne "1" ]] && echo
 

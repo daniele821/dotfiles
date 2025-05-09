@@ -6,19 +6,8 @@ export GOPATH="$HOME/.local/share/go"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
-function run() {
-    (: && nohup "$@" &>/dev/null &)
-}
 function open() {
-    for file in "$@"; do run xdg-open "$file"; done
-}
-function custom_pager() {
-    printf '\e[?1049h'
-    "$@"
-    printf '\e[?25l'
-    read -rn 1
-    clear
-    printf '\e[?1049l\e[?25h'
+    for file in "$@"; do xdg-open "$file" & done
 }
 function preview() {
     [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
@@ -27,21 +16,26 @@ function preview() {
     FILE="${1}"
     if [[ $# == 0 || -d "$FILE" ]]; then
         [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
-        FILE="$(find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) 2>/dev/null |
-            cut -b 3- |
-            fzf --exit-0 --select-1 --height=40% --layout=reverse --border)"
+        FILE="$(
+            find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \
+                -o -iname '*.webp' -o -iname '*.bmp' -o -iname '*.tiff' \) 2>/dev/null |
+                cut -b 3- |
+                fzf --exit-0 --select-1 --height=40% --layout=reverse --border
+        )"
     fi
     if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
-        custom_pager kitten icat --align=center --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}"
+        printf '\e[?1049h'
+        kitten icat --align=center --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}"
+        printf '\e[?25l'
+        read -rn 1
+        clear
+        printf '\e[?1049l\e[?25h'
     fi
     cd "${oldPwd}" &>/dev/null || return 1
 }
 function fpreview() {
     FPREVIEW="true" preview "${@}"
 }
-
-complete -c run
-complete -c custom_pager
 
 alias la='ls -A'
 alias ll='ls -l'
