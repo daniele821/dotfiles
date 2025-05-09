@@ -17,12 +17,11 @@ function __cleanup_prompt__() {
     #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
-    \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
     \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
     \builtin local gitbranch=""
     case "$branch" in
     "") ;;
-    "HEAD") gitbranch="${purple}(${hash}) " ;;
+    "HEAD") gitbranch="${purple}($(git rev-parse --short=8 HEAD 2>/dev/null)) " ;;
     *) gitbranch="${purple}(${branch}) " ;;
     esac
     #####################################################################
