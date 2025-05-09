@@ -22,19 +22,12 @@ function __cleanup_prompt__() {
     "HEAD") gitbranch="${purple}($(git rev-parse --short=8 HEAD 2>/dev/null)) " ;;
     *) gitbranch="${purple}(${branch}) " ;;
     esac
-    \builtin local -r amount_jobs="$(jobs | grep -vc Done)"
-    \builtin local jobs=""
-    case "$amount_jobs" in
-    0) jobs="" ;;
-    1) jobs="${lblue}✦ " ;;
-    *) jobs="${lblue}${amount_jobs}✦ " ;;
-    esac
     \builtin local symbol=""
     case "$retval" in
     0) symbol="${lgreen}❯ " ;;
     *) symbol="${red}❯ " ;;
     esac
-    PS1="${wipe}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
