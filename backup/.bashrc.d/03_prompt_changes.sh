@@ -21,13 +21,6 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     #####################################################################
-    \builtin local ssh_conn=""
-    if [[ -n "$SSH_CONNECTION" ]]; then
-        \builtin local -r ssh_ip="$(echo "$SSH_CONNECTION" | awk '{print $3}')"
-        # \builtin local -r ssh_server="$(dig -x "$ssh_ip" +short | head -1 | sed 's/\.$//')"
-        ssh_conn="${red}󰖟 ${ssh_ip} "
-    fi
-    #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
     if git rev-parse --is-inside-work-tree &>/dev/null; then
@@ -97,7 +90,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     #####################################################################
-    PS1="${wipe}${ssh_conn}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${jobs}${symbol}${wipe}"
 
     # exit ##############################################################
     return "${retval}"
