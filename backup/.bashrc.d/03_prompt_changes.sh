@@ -47,15 +47,20 @@ function __cleanup_prompt__() {
         IFS="" \builtin local -r status="$(git status --porcelain 2>/dev/null)"
         while IFS= read -r line; do
             IFS="" line="${line:0:2}"
-            [[ "$line" == "" ]] && continue
-            \builtin local -r have_changed=true
+            case "$line" in
+            "") continue ;;
+            "??") \builtin local untracked='?' ;;
+            M[MTD\ ] | A[MTD\ ] | D[MTD\ ]) \builtin local staged='+' ;;
+            ?M) \builtin local modified='!' ;;
+            ?D) \builtin local removed='✘' ;;
+            ?U) \builtin local conflicted='=' ;;
+            R?) \builtin local renamed='»' ;;
+            *) echo "[WARNING] unknow git status: '$line'" ;;
+            esac
+            \builtin local have_changed=true
             # TODO: slowly fix small cases
             [[ "$line" == '??' ]] && \builtin local untracked='?'
             [[ "$line" == M* || "$line" == A* || "$line" == D* ]] && \builtin local staged='+'
-            [[ "$line" == *M ]] && \builtin local modified='!'
-            [[ "$line" == *D ]] && \builtin local removed='✘'
-            [[ "$line" == *U ]] && \builtin local conflicted='='
-            [[ "$line" == R* ]] && \builtin local renamed='»'
         done <<<"$status"
         [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
         # TODO: remote ⇡⇕⇣
