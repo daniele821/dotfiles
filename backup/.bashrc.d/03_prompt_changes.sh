@@ -36,6 +36,7 @@ function __cleanup_prompt__() {
         \builtin local -r staged="$(git diff --cached --quiet || echo '+')"
         \builtin local -r modified="$(git diff --quiet --diff-filter=M || echo '!')"
         \builtin local -r deleted="$(git diff --quiet --diff-filter=D || echo '✘')"
+        \builtin local -r conflicts="$(git diff --quiet --diff-filter=U || echo '=')"
         \builtin local -r stashed="$(git rev-parse --verify --quiet refs/stash &>/dev/null && echo '$')"
         \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD')"
         \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}')"
@@ -47,7 +48,7 @@ function __cleanup_prompt__() {
         [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
         \builtin local info=""
         if [[ "$hasdiff" != 0 || -n "$stashed" || -n "$remote" ]]; then
-            info="${red} [${stashed}${deleted}${modified}${staged}${untracked}${remote}]"
+            info="${red} [${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}]"
         fi
         \builtin local gitbranch=""
         case "$branch" in
