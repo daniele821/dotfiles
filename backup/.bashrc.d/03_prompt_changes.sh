@@ -4,13 +4,7 @@ function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
     # force exit from not existing directories ##########################
-    if ! [[ -d "$PWD" ]]; then
-        NEWPWD="$PWD"
-        while ! [[ -d "$NEWPWD" ]]; do
-            NEWPWD=$(dirname "${NEWPWD}")
-        done
-        \cd "${NEWPWD}" || exit 1
-    fi
+    while ! [[ -d "$PWD" ]]; do PWD="$(dirname "$PWD")"; done && cd "$PWD"
 
     # change PS1 ########################################################
     \builtin local -r red="\[\e[1;31m\]"
@@ -32,9 +26,7 @@ function __cleanup_prompt__() {
     *) gitbranch="${purple}(${branch}) " ;;
     esac
     #####################################################################
-    \builtin local -r running_jobs="$(jobs -rp | wc -l)"
-    \builtin local -r stopped_jobs="$(jobs -sp | wc -l)"
-    \builtin local -r amount_jobs="$((running_jobs + stopped_jobs))"
+    \builtin local -r amount_jobs="$(jobs | grep -vc Done)"
     \builtin local jobs=""
     case "$amount_jobs" in
     0) jobs="" ;;
