@@ -48,7 +48,7 @@ function __cleanup_prompt__() {
         [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
         \builtin local info=""
         if [[ "$hasdiff" != 0 || -n "$stashed" || -n "$remote" ]]; then
-            info="${red} [${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}]"
+            info="${red}[${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}] "
         fi
         \builtin local commit=""
         case "$branch" in
@@ -60,7 +60,28 @@ function __cleanup_prompt__() {
             ;;
         *) commit="${purple}(${branch})" ;;
         esac
-        \builtin local -r gitbranch="${commit}${info} "
+        [[ -n "$commit" ]] && commit+=" "
+        \builtin local state=""
+        local state=""
+        if [ -d ".git/rebase-merge" ]; then
+            if [ -d ".git/rebase-apply" ]; then
+                state="AM/REBASE"
+            else
+                state="REBASING"
+            fi
+        elif [ -d ".git/rebase-apply" ]; then
+            state="AM"
+        elif git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+            state="MERGING"
+        elif git rev-parse -q --verify CHERRY_PICK_HEAD >/dev/null; then
+            state="CHERRY-PICKING"
+        elif git rev-parse -q --verify REVERT_HEAD >/dev/null; then
+            state="REVERTING"
+        elif git rev-parse -q --verify BISECT_START >/dev/null; then
+            state="BISECTING"
+        fi
+        [[ -n "$state" ]] && state="${yellow}($state) "
+        \builtin local -r gitbranch="${commit}${state}${info}"
     fi
     #####################################################################
     \builtin local -r running_jobs="$(jobs -rp | wc -l)"
