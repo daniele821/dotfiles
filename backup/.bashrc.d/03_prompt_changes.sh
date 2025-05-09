@@ -31,13 +31,15 @@ function __cleanup_prompt__() {
     \builtin local workdir="${green}\w "
     #####################################################################
     if git rev-parse --is-inside-work-tree &>/dev/null; then
-        \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
-        \builtin local -r untracked="$([[ -n "$(git ls-files --others --exclude-standard)" ]] && echo '?')"
-        \builtin local -r staged="$(git diff --cached --quiet || echo '+')"
-        \builtin local -r modified="$(git diff --quiet --diff-filter=M || echo '!')"
-        \builtin local -r deleted="$(git diff --quiet --diff-filter=D || echo '✘')"
-        \builtin local -r conflicts="$(git diff --quiet --diff-filter=U || echo '=')"
-        \builtin local -r stashed="$(git rev-parse --verify --quiet refs/stash &>/dev/null && echo \\\$)"
+        \builtin local -r gitdir="$(git rev-parse --show-toplevel)"
+        \builtin local -r git_status="$(git status --porcelain 2>/dev/null)"
+        \builtin local -r hasdiff="$([[ -n "$git_status" ]] && echo "${#git_status}" | xargs)"
+        \builtin local -r untracked="$([[ "$git_status" =~ \?\? ]] && echo '?')"
+        \builtin local -r staged="$([[ "$git_status" =~ ^[ADMR] ]] && echo '+')"
+        \builtin local -r modified="$([[ "$git_status" =~ ^.M ]] && echo '!')"
+        \builtin local -r deleted="$([[ "$git_status" =~ ^.D ]] && echo '✘')"
+        \builtin local -r conflicts="$([[ "$git_status" =~ ^.U ]] && echo '=')"
+        \builtin local -r stashed=$([[ -f "${gitdir}/.git/refs/stash" ]] && echo '\$')
         \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD' 2>/dev/null)"
         \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}' 2>/dev/null)"
         \builtin local -r hash="$(git rev-parse --short=8 HEAD)"
@@ -47,7 +49,7 @@ function __cleanup_prompt__() {
         [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="⇡"
         [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
         \builtin local info=""
-        if [[ "$hasdiff" != 0 || -n "$stashed" || -n "$remote" ]]; then
+        if [[ -n "$hasdiff" || -n "$stashed" || -n "$remote" ]]; then
             info="${red}[${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}] "
         fi
         \builtin local commit=""
@@ -62,23 +64,18 @@ function __cleanup_prompt__() {
         esac
         [[ -n "$commit" ]] && commit+=" "
         \builtin local state=""
-        local state=""
-        if [ -d ".git/rebase-merge" ]; then
-            if [ -d ".git/rebase-apply" ]; then
-                state="AM/REBASE"
-            else
-                state="REBASING"
-            fi
-        elif [ -d ".git/rebase-apply" ]; then
-            state="AM"
-        elif git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+        if [[ -f "$gitdir/.git/MERGE_HEAD" ]]; then
             state="MERGING"
-        elif git rev-parse -q --verify CHERRY_PICK_HEAD >/dev/null; then
+        elif [[ -f "$gitdir/.git/CHERRY_PICK_HEAD" ]]; then
             state="CHERRY-PICKING"
-        elif git rev-parse -q --verify REVERT_HEAD >/dev/null; then
+        elif [[ -f "$gitdir/.git/REVERT_HEAD" ]]; then
             state="REVERTING"
-        elif git rev-parse -q --verify BISECT_START >/dev/null; then
+        elif [[ -f "$gitdir/.git/BISECT_START" ]]; then
             state="BISECTING"
+        elif [[ -d "$gitdir/.git/rebase-merge" ]]; then
+            state="REBASING"
+        elif [[ -d "$gitdir/.git/rebase-apply" ]]; then
+            state="AM"
         fi
         [[ -n "$state" ]] && state="${yellow}($state) "
         \builtin local -r gitbranch="${commit}${state}${info}"
