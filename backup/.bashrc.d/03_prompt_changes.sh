@@ -30,29 +30,31 @@ function __cleanup_prompt__() {
     #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
-    \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
-    \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD' 2>/dev/null)"
-    \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}' 2>/dev/null)"
-    \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
-    \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    \builtin local gitst=""
-    [[ "$hasdiff" != 0 ]] && gitst="*"
-    \builtin local remote=""
-    [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="↓"
-    [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="↑"
-    [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↕"
-    \builtin local gitbranch=""
-    \builtin local -r info="${red}${gitst}${remote}"
-    case "$branch" in
-    "") ;;
-    "HEAD")
-        case "$hash" in
-        "") gitbranch="${purple}(...)${info} " ;; # empty repo (ie: no commits, yet!)
-        *) gitbranch="${purple}(${hash})${info} " ;;
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+        \builtin local -r hasdiff="$(git status -s 2>/dev/null | wc -w)"
+        \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD' 2>/dev/null)"
+        \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}' 2>/dev/null)"
+        \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
+        \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+        \builtin local gitst=""
+        [[ "$hasdiff" != 0 ]] && gitst="*"
+        \builtin local remote=""
+        [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="↓"
+        [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="↑"
+        [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="↕"
+        \builtin local gitbranch=""
+        \builtin local -r info="${red}${gitst}${remote}"
+        case "$branch" in
+        "") ;;
+        "HEAD")
+            case "$hash" in
+            "") gitbranch="${purple}(...)${info} " ;; # empty repo (ie: no commits, yet!)
+            *) gitbranch="${purple}(${hash})${info} " ;;
+            esac
+            ;;
+        *) gitbranch="${purple}(${branch})${info} " ;;
         esac
-        ;;
-    *) gitbranch="${purple}(${branch})${info} " ;;
-    esac
+    fi
     #####################################################################
     \builtin local -r running_jobs="$(jobs -rp | wc -l)"
     \builtin local -r stopped_jobs="$(jobs -sp | wc -l)"
