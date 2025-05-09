@@ -48,6 +48,7 @@ function __cleanup_prompt__() {
         while IFS= read -r line; do
             IFS="" line="${line:0:2}"
             case "$line" in
+            # TODO: slowly fix small cases
             "") continue ;;
             "??") \builtin local untracked='?' ;;
             M[MTD\ ] | A[MTD\ ] | D[MTD\ ]) \builtin local staged='+' ;;
@@ -58,9 +59,6 @@ function __cleanup_prompt__() {
             *) echo "[WARNING] unknow git status: '$line'" ;;
             esac
             \builtin local have_changed=true
-            # TODO: slowly fix small cases
-            [[ "$line" == '??' ]] && \builtin local untracked='?'
-            [[ "$line" == M* || "$line" == A* || "$line" == D* ]] && \builtin local staged='+'
         done <<<"$status"
         [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
         # TODO: remote ⇡⇕⇣
