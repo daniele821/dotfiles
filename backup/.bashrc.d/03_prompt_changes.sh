@@ -14,7 +14,9 @@ function __cleanup_prompt__() {
     \builtin local -r purple="\[\e[1;35m\]"
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
+    ###############################################
     \builtin local workdir="${green}\w "
+    ###############################################
     \builtin local branch=""
     GITDIR="$PWD"
     until [[ -z "$GITDIR" || -d "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
@@ -26,11 +28,7 @@ function __cleanup_prompt__() {
         esac
         \builtin local -r gitbranch="${purple}(${branch}) "
     fi
-    \builtin local symbol=""
-    case "$retval" in
-    0) symbol="${lgreen}❯ " ;;
-    *) symbol="${red}❯ " ;;
-    esac
+    ###############################################
     \builtin local state=""
     if [[ -f "$GITDIR/.git/MERGE_HEAD" ]]; then
         state="MERGING"
@@ -46,6 +44,13 @@ function __cleanup_prompt__() {
         state="AM"
     fi
     [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
+    ###############################################
+    \builtin local symbol=""
+    case "$retval" in
+    0) symbol="${lgreen}❯ " ;;
+    *) symbol="${red}❯ " ;;
+    esac
+    ###############################################
     PS1="${wipe}${workdir}${gitbranch}${gitstate}${symbol}${wipe}"
 
     # exit with correct status code
