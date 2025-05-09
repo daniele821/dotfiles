@@ -15,13 +15,17 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     \builtin local workdir="${green}\w "
-    \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    \builtin local gitbranch=""
-    case "$branch" in
-    "") ;;
-    "HEAD") gitbranch="${purple}($(git rev-parse --short=8 HEAD 2>/dev/null)) " ;;
-    *) gitbranch="${purple}(${branch}) " ;;
-    esac
+    \builtin local branch=""
+    GITDIR="$PWD"
+    until [[ "$GITDIR" == "/" || -d "$GITDIR/.git" ]]; do GITDIR="$(dirname "$GITDIR")"; done
+    if [[ -d "$GITDIR/.git" ]]; then
+        read -r file <"$GITDIR/.git/HEAD"
+        case "$file" in
+        ref:*) branch="${file##*/}" ;;
+        *) branch="${file:0:8}" ;;
+        esac
+        \builtin local -r gitbranch="${purple}(${branch}) "
+    fi
     \builtin local symbol=""
     case "$retval" in
     0) symbol="${lgreen}❯ " ;;
