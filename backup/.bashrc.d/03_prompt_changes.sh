@@ -23,56 +23,14 @@ function __cleanup_prompt__() {
     #####################################################################
     \builtin local workdir="${green}\w "
     #####################################################################
-    if git rev-parse --is-inside-work-tree &>/dev/null; then
-        \builtin local -r gitdir="$(git rev-parse --show-toplevel)"
-        \builtin local -r git_status="$(git status --porcelain 2>/dev/null)"
-        \builtin local -r hasdiff="$([[ -n "$git_status" ]] && echo "${#git_status}" | xargs)"
-        \builtin local -r untracked="$([[ "$git_status" =~ \?\? ]] && echo '?')"
-        \builtin local -r staged="$([[ "$git_status" =~ ^[ADMR] ]] && echo '+')"
-        \builtin local -r modified="$([[ "$git_status" =~ ^.M ]] && echo '!')"
-        \builtin local -r deleted="$([[ "$git_status" =~ ^.D ]] && echo '✘')"
-        \builtin local -r conflicts="$([[ "$git_status" =~ ^.U ]] && echo '=')"
-        \builtin local -r stashed=$([[ -f "${gitdir}/.git/refs/stash" ]] && echo '\$')
-        \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD' 2>/dev/null)"
-        \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}' 2>/dev/null)"
-        \builtin local -r hash="$(git rev-parse --short=8 HEAD)"
-        \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD)"
-        \builtin local remote=""
-        [[ "$ahead" -eq 0 && "$behind" -gt 0 ]] && remote="⇣"
-        [[ "$ahead" -gt 0 && "$behind" -eq 0 ]] && remote="⇡"
-        [[ "$ahead" -gt 0 && "$behind" -gt 0 ]] && remote="⇕"
-        \builtin local info=""
-        if [[ -n "$hasdiff" || -n "$stashed" || -n "$remote" ]]; then
-            info="${red}[${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}] "
-        fi
-        \builtin local commit=""
-        case "$branch" in
-        "HEAD")
-            case "$hash" in
-            "") commit="${purple}(...)" ;; # empty repo (ie: no commits, yet!)
-            *) commit="${purple}(${hash})" ;;
-            esac
-            ;;
-        *) commit="${purple}(${branch})" ;;
-        esac
-        [[ -n "$commit" ]] && commit+=" "
-        \builtin local state=""
-        if [[ -f "$gitdir/.git/MERGE_HEAD" ]]; then
-            state="MERGING"
-        elif [[ -f "$gitdir/.git/CHERRY_PICK_HEAD" ]]; then
-            state="CHERRY-PICKING"
-        elif [[ -f "$gitdir/.git/REVERT_HEAD" ]]; then
-            state="REVERTING"
-        elif [[ -f "$gitdir/.git/BISECT_START" ]]; then
-            state="BISECTING"
-        elif [[ -d "$gitdir/.git/rebase-merge" ]]; then
-            state="REBASING"
-        elif [[ -d "$gitdir/.git/rebase-apply" ]]; then
-            state="AM"
-        fi
-        [[ -n "$state" ]] && state="${yellow}($state) "
-        \builtin local -r gitbranch="${commit}${state}${info}"
-    fi
+    \builtin local -r hash="$(git rev-parse --short=8 HEAD 2>/dev/null)"
+    \builtin local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    \builtin local gitbranch=""
+    case "$branch" in
+    "") ;;
+    "HEAD") gitbranch="${purple}(${hash}) " ;;
+    *) gitbranch="${purple}(${branch}) " ;;
+    esac
     #####################################################################
     \builtin local -r running_jobs="$(jobs -rp | wc -l)"
     \builtin local -r stopped_jobs="$(jobs -sp | wc -l)"
