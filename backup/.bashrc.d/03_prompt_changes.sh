@@ -37,7 +37,7 @@ function __cleanup_prompt__() {
         \builtin local -r modified="$(git diff --quiet --diff-filter=M || echo '!')"
         \builtin local -r deleted="$(git diff --quiet --diff-filter=D || echo '✘')"
         \builtin local -r conflicts="$(git diff --quiet --diff-filter=U || echo '=')"
-        \builtin local -r stashed="$(git rev-parse --verify --quiet refs/stash &>/dev/null && echo '$')"
+        \builtin local -r stashed="$(git rev-parse --verify --quiet refs/stash &>/dev/null && echo \\\$)"
         \builtin local -r ahead="$(git rev-list --count '@{u}..HEAD')"
         \builtin local -r behind="$(git rev-list --count 'HEAD..@{u}')"
         \builtin local -r hash="$(git rev-parse --short=8 HEAD)"
@@ -50,17 +50,17 @@ function __cleanup_prompt__() {
         if [[ "$hasdiff" != 0 || -n "$stashed" || -n "$remote" ]]; then
             info="${red} [${conflicts}${stashed}${deleted}${modified}${staged}${untracked}${remote}]"
         fi
-        \builtin local gitbranch=""
+        \builtin local commit=""
         case "$branch" in
-        "") ;;
         "HEAD")
             case "$hash" in
-            "") gitbranch="${purple}(...)${info} " ;; # empty repo (ie: no commits, yet!)
-            *) gitbranch="${purple}(${hash})${info} " ;;
+            "") commit="${purple}(...)" ;; # empty repo (ie: no commits, yet!)
+            *) commit="${purple}(${hash})" ;;
             esac
             ;;
-        *) gitbranch="${purple}(${branch})${info} " ;;
+        *) commit="${purple}(${branch})" ;;
         esac
+        \builtin local -r gitbranch="${commit}${info} "
     fi
     #####################################################################
     \builtin local -r running_jobs="$(jobs -rp | wc -l)"
