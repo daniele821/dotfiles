@@ -40,31 +40,48 @@ function __cleanup_prompt__() {
         elif [[ -d "$GITDIR/.git/rebase-merge" ]]; then
             state="REBASING"
         elif [[ -d "$GITDIR/.git/rebase-apply" ]]; then
+            if [[ -f "$GITDIR/.git/AM_HEAD" ]]; then
+                state="AM"
+            else
+                state="AM/REBASE"
+            fi
+        elif [[ -f "$GITDIR/.git/REBASE_HEAD" ]]; then
+            state="REBASING"
+        elif [[ -f "$GITDIR/.git/AM_HEAD" ]]; then
             state="AM"
         fi
         [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
         ###############################################
         IFS="" \builtin local -r status="$(git status --porcelain 2>/dev/null)"
         while IFS= read -r line; do
-            IFS="" line="${line:0:2}"
-            case "$line" in
-            # TODO: slowly fix small cases
+            IFS="" line_xy="${line:0:2}"
+            case "$line_xy" in
             "") continue ;;
             "??") \builtin local untracked='?' ;;
-            M[MTD\ ] | A[MTD\ ] | D[MTD\ ]) \builtin local staged='+' ;;
-            ?M) \builtin local modified='!' ;;
-            ?D) \builtin local removed='✘' ;;
-            ?U) \builtin local conflicted='=' ;;
-            R?) \builtin local renamed='»' ;;
-            *) echo "[WARNING] unknow git status: '$line'" ;;
+            "DD" | "AA" | *U*) \builtin local conflicted='=' ;;
+            *)
+                line_x="${line:0:1}"
+                line_y="${line:1:1}"
+                case "$line_x" in
+                " ") ;;
+                M | T | A | D) \builtin local staged='+' ;;
+                R) \builtin local renamed='»' ;;
+                *) \builtin local others='*' ;;
+                esac
+                case "$line_y" in
+                " ") ;;
+                M | T) \builtin local modified='!' ;;
+                D) \builtin local removed='✘' ;;
+                *) \builtin local others='*' ;;
+                esac
+                ;;
             esac
-            \builtin local have_changed=true
         done <<<"$status"
         [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
-        # TODO: remote ⇡⇕⇣
-        \builtin local -r allstat="${conflicted}${stashed}${removed}${renamed}${modified}${staged}${untracked}${remote}"
+        ### TODO: remote [⇡⇕⇣]
+        ### \builtin local -r allstat="${conflicted}${stashed}${renamed}${staged}${removed}${modified}${others}${untracked}${remote}"
+        \builtin local -r allstat="${conflicted}${stashed}${renamed}${staged}${removed}${modified}${others}${untracked}"
         [[ -n "$allstat" ]] && \builtin local -r gitstatus="${red}[${allstat}] "
-        [[ "$have_changed" == "true" && -z "$allstat" ]] && \builtin local -r gitstatus="${red}[*] "
     fi
     ###############################################
     \builtin local symbol=""
