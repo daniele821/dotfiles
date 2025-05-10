@@ -7,7 +7,7 @@ export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
 function open() {
-    for file in "$@"; do xdg-open "$file" &>/dev/null & done
+    (for file in "$@"; do xdg-open "$file" &>/dev/null & done)
 }
 function preview() {
     [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
