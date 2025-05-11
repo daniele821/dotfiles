@@ -64,11 +64,11 @@ function download_repo() {
     git_email="$3"
     git_branch="$4"
     echo -en "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
-    [[ -n "$git_branch" ]] && echo -en ", branch: \e[34m$git_branch\e[m"
+    [[ -n "$git_branch" ]] && echo -en ", branch: \e[35m$git_branch\e[m"
     echo
     git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
     git -C "$git_repo" config user.email "$git_email"
-    [[ -n "$git_branch" ]] && git -C "$git_repo" switch "${NEW_BRANCH}" -q
+    [[ -n "$git_branch" ]] && git -C "$git_repo" switch "$git_branch" -q
 
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
