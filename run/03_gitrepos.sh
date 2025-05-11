@@ -9,42 +9,52 @@ GIT_DATA=(
     "git@daniele821.github.com:daniele821/dotfiles.git"
     "/personal/repos/daniele821/dotfiles"
     "danixgithub1@gmail.com"
+    "fedora-kde"
 
     "git@daniele821.github.com:daniele821/daniele821.github.io.git"
     "/personal/repos/daniele821/github-website"
     "danixgithub1@gmail.com"
+    ""
 
     "git@daniele821.github.com:daniele821/nvim-config.git"
     "/personal/repos/daniele821/nvim-config"
     "danixgithub1@gmail.com"
+    ""
 
     "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
     "danixgithub1@gmail.com"
+    ""
 
     "git@danix1234.github.com:danix1234/unibo-2a.git"
     "/personal/repos/danix1234/unibo-2a"
     "daniele.muffato@studio.unibo.it"
+    ""
 
     "git@danix1234.github.com:danix1234/unibo-2b.git"
     "/personal/repos/danix1234/unibo-2b"
     "daniele.muffato@studio.unibo.it"
+    ""
 
     "git@danix1234.github.com:danix1234/unibo-3a.git"
     "/personal/repos/danix1234/unibo-3a"
     "daniele.muffato@studio.unibo.it"
+    ""
 
     "git@danix1234.github.com:danix1234/unibo-3b.git"
     "/personal/repos/danix1234/unibo-3b"
     "daniele.muffato@studio.unibo.it"
+    ""
 
     "git@danix1234.github.com:danix1234/unibo.git"
     "/personal/repos/danix1234/unibo"
     "daniele.muffato@studio.unibo.it"
+    ""
 
     "git@danix1234.github.com:danix1234/tesi_CRYPTO_2025.git"
     "/personal/repos/danix1234/tesi_CRYPTO_2025"
     "daniele.muffato@studio.unibo.it"
+    ""
 )
 
 # downloading repo and running operations on it
@@ -52,29 +62,24 @@ function download_repo() {
     git_url="$1"
     git_repo="$2"
     git_email="$3"
-    echo -e "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
+    git_branch="$4"
+    echo -en "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
+    [[ -n "$git_branch" ]] && echo -en ", branch: \e[34m$git_branch\e[m"
+    echo
     git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
     git -C "$git_repo" config user.email "$git_email"
+    [[ -n "$git_branch" ]] && git -C "$git_repo" switch "${NEW_BRANCH}" -q
 
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
         NEW_BRANCH="fedora-kde"
-        if [[ "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" != "$NEW_BRANCH" ]]; then
-            echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
-            git -C "$git_repo" switch "${NEW_BRANCH}" -q
-        fi
         echo -e "\e[1;34msetting ${NEW_BRANCH} as the valid branch\e[m"
         SET_BRANCH= "${git_repo}/autosaver" help &>/dev/null
         ;;
     "/personal/repos/daniele821/nvim-config")
-        NEW_BRANCH="main"
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
-        if [[ "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" != "$NEW_BRANCH" ]]; then
-            echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
-            git -C "$git_repo" switch "${NEW_BRANCH}" -q
-        fi
         if [[ "$(readlink "$TO_DIR")" != "$FROM_DIR" ]]; then
             echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
             rm -rf "$TO_DIR"
@@ -98,13 +103,14 @@ trap cleanup SIGINT
 
 # speed up the downloads, by running them in parallel
 # NOTE: this require ssh to not prompt to accept new key (can be set in .ssh/config)
-for ((i = 0; i < "${#GIT_DATA[@]}"; i += 3)); do
+for ((i = 0; i < "${#GIT_DATA[@]}"; i += 4)); do
     git_url="${GIT_DATA[$i]}"
     git_repo="${GIT_DATA[$((i + 1))]}"
     git_email="${GIT_DATA[$((i + 2))]}"
+    git_branch="${GIT_DATA[$((i + 3))]}"
     if [[ ! -e "$git_repo" ]]; then
         TMP_FILE="$(mktemp)"
-        download_repo "$git_url" "$git_repo" "$git_email" &>"$TMP_FILE" &
+        download_repo "$git_url" "$git_repo" "$git_email" "$git_branch" &>"$TMP_FILE" &
         CLONEPIDS+=("$!")
         TMP_FILES+=("$TMP_FILE")
     fi
