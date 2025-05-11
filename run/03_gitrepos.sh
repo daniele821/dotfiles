@@ -75,6 +75,9 @@ function download_repo() {
             echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
+        echo -e "\e[1;34minitializing neovim\e[m"
+        rm -rf ~/.local/{state,share}/nvim ~/.cache/nvim
+        nvim --headless +qa
         ;;
     esac
 }
