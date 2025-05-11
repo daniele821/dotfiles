@@ -66,9 +66,12 @@ function download_repo() {
         echo "$NEW_BRANCH" >"${git_repo}/.branch"
         ;;
     "/personal/repos/daniele821/nvim-config")
+        NEW_BRANCH="legacy"
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
         if [[ ! -e "$TO_DIR" ]]; then
+            echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
+            git -C "$git_repo" switch "${NEW_BRANCH}" -q
             echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
