@@ -60,24 +60,26 @@ function download_repo() {
     case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
         NEW_BRANCH="fedora-kde"
-        echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
-        git -C "$git_repo" switch "${NEW_BRANCH}" -q
+        if [[ "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" != "$NEW_BRANCH" ]]; then
+            echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
+            git -C "$git_repo" switch "${NEW_BRANCH}" -q
+        fi
         echo -e "\e[1;34msetting ${NEW_BRANCH} as the valid branch\e[m"
-        echo "$NEW_BRANCH" >"${git_repo}/.branch"
+        SET_BRANCH= "${git_repo}/autosaver" help &>/dev/null
         ;;
     "/personal/repos/daniele821/nvim-config")
-        NEW_BRANCH="legacy"
+        NEW_BRANCH="main"
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
-        echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
-        git -C "$git_repo" switch "${NEW_BRANCH}" -q
-        if [[ ! -e "$TO_DIR" ]]; then
+        if [[ "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" != "$NEW_BRANCH" ]]; then
+            echo -e "\e[1;34mswitching git branch to ${NEW_BRANCH}\e[m"
+            git -C "$git_repo" switch "${NEW_BRANCH}" -q
+        fi
+        if [[ "$(readlink "$TO_DIR")" != "$FROM_DIR" ]]; then
             echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
+            rm -rf "$TO_DIR"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
-        echo -e "\e[1;34minitializing neovim\e[m"
-        rm -rf ~/.local/{state,share}/nvim ~/.cache/nvim
-        nvim --headless +qa
         ;;
     esac
 }
