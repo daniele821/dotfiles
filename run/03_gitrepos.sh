@@ -73,7 +73,7 @@ function download_repo() {
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
-        echo -e "\e[1;34msetting ${git_email} as the valid branch\e[m"
+        echo -e "\e[1;34msetting ${git_branch} as the valid branch\e[m"
         SET_BRANCH= "${git_repo}/autosaver" help &>/dev/null
         ;;
     "/personal/repos/daniele821/nvim-config")
