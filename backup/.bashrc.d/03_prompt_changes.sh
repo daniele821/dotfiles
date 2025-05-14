@@ -52,7 +52,7 @@ function __cleanup_prompt__() {
         fi
         [[ -n "$state" ]] && \builtin local -r gitstate="${yellow}($state) "
         ###############################################
-        IFS="" \builtin local -r status="$(git status --porcelain 2>/dev/null)"
+        IFS="" \builtin local -r _status="$(git status --porcelain 2>/dev/null)"
         while IFS= read -r line; do
             case "${line:0:2}" in
             "") continue ;;
@@ -73,7 +73,7 @@ function __cleanup_prompt__() {
                 esac
                 ;;
             esac
-        done <<<"$status"
+        done <<<"$_status"
         [[ -f "${GITDIR}/.git/refs/stash" ]] && \builtin local -r stashed='\$'
         \builtin local -r diff="$(git rev-list --left-right --count '@{u}...HEAD' 2>/dev/null)"
         \builtin local -r ahead="${diff##*$'\t'}"
@@ -94,13 +94,16 @@ function __cleanup_prompt__() {
     *) jobs="${lblue}${all_jobs}✦ " ;;
     esac
     ###############################################
+    \builtin local status=
+    [[ "$retval" -ne 0 ]] && status="${red}❌${retval} "
+    ###############################################
     \builtin local symbol=""
     case "$retval" in
     0) symbol="${lgreen}❯ " ;;
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${jobs}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${jobs}${status}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
