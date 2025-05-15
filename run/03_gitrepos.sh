@@ -88,7 +88,7 @@ function download_repo() {
     esac
 }
 
-# if interrupted, clean up anyway
+# if interrupted, end execution and clean up anyway
 TMP_FILES=()
 CLONEPIDS=()
 function cleanup() {
@@ -98,7 +98,14 @@ function cleanup() {
         rm "${TMP_FILES[$i]}"
     done
 }
-trap cleanup SIGINT SIGTERM EXIT
+trap cleanup SIGINT
+
+# if early exit, only clean up
+TMP_DIR="$(mktemp -d)"
+function cleanup_on_exit(){
+    rm -rf "$TMP_DIR"
+}
+trap cleanup_on_exit EXIT
 
 # speed up the downloads, by running them in parallel
 # NOTE: this require ssh to not prompt to accept new key (can be set in .ssh/config)
@@ -108,7 +115,7 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 4)); do
     git_email="${GIT_DATA[$((i + 2))]}"
     git_branch="${GIT_DATA[$((i + 3))]}"
     if [[ ! -e "$git_repo" ]]; then
-        TMP_FILE="$(mktemp)"
+        TMP_FILE="$(mktemp "${TMP_DIR}/XXXXXXXXXXXX.out")"
         download_repo "$git_url" "$git_repo" "$git_email" "$git_branch" &>"$TMP_FILE" &
         CLONEPIDS+=("$!")
         TMP_FILES+=("$TMP_FILE")
