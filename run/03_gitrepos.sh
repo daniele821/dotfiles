@@ -98,7 +98,7 @@ function cleanup() {
         rm "${TMP_FILES[$i]}"
     done
 }
-trap cleanup SIGINT
+trap cleanup SIGINT SIGTERM EXIT
 
 # speed up the downloads, by running them in parallel
 # NOTE: this require ssh to not prompt to accept new key (can be set in .ssh/config)
