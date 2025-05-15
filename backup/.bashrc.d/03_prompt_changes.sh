@@ -86,14 +86,6 @@ function __cleanup_prompt__() {
         [[ -n "$allstat" ]] && \builtin local -r gitstatus="${red}[${allstat}] "
     fi
     ###############################################
-    \builtin local -r all_jobs="$(jobs | grep -vc Done)"
-    \builtin local jobs=
-    case "$all_jobs" in
-    0) ;;
-    1) jobs="${lblue}✦ " ;;
-    *) jobs="${lblue}${all_jobs}✦ " ;;
-    esac
-    ###############################################
     \builtin local status=
     [[ "$retval" -ne 0 ]] && status="${red}❌${retval} "
     ###############################################
@@ -103,7 +95,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${jobs}${status}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
