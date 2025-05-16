@@ -59,9 +59,10 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 firewall-cmd --set-default-zone=public
 '
 
-# install rust toolchain
+# install rust toolchain + rust_analyzer for neovim
 if ! command -v cargo &>/dev/null; then
     RUSTUP_HOME="$HOME/.local/share/rustup" CARGO_HOME="$HOME/.local/share/cargo" rustup-init -y
+    rustup component add rust-analyzer 
 fi
 
 exit 0
