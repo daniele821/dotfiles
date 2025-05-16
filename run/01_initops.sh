@@ -30,8 +30,6 @@ dnf --assumeyes install zoxide bat ripgrep lsd tldr jq git gh gcc golang rustup
 dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 dnf --assumeyes install ffmpeg --allowerasing
-dnf --assumeyes install libva-intel-driver intel-media-driver                                       # intel codecs
-dnf --assumeyes install libavcodec-freeworld mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld # amd codecs
 dnf --assumeyes install mpv-mpris libheif-freeworld
 
 # remove unnecessary packages
