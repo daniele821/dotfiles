@@ -73,16 +73,24 @@ function download_repo() {
     # additional operations done ONLY when repo gets downloaded
     case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
+        # set valid branch for script
         echo -e "\e[1;34msetting ${git_branch} as the valid branch\e[m"
-        SET_BRANCH= "${git_repo}/autosaver" help &>/dev/null
+        SET_BRANCH="" "${git_repo}/autosaver" help &>/dev/null
         ;;
     "/personal/repos/daniele821/nvim-config")
+        # link nvim config repo to ~/.config/nvim
         FROM_DIR="$git_repo"
         TO_DIR="$HOME/.config/nvim"
         if [[ "$(readlink "$TO_DIR")" != "$FROM_DIR" ]]; then
             echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
             rm -rf "$TO_DIR"
             ln -s "$FROM_DIR" "$TO_DIR"
+        fi
+        # run refresh script, if present
+        REFRESH_SCRIPT="$git_repo/refresh.sh"
+        if [[ -f "$REFRESH_SCRIPT" && -x "$REFRESH_SCRIPT" ]]; then
+            echo -e "\e[1;34mrunning refresh script\e[m"
+            "$REFRESH_SCRIPT"
         fi
         ;;
     esac
