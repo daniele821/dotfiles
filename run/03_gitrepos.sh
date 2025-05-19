@@ -86,12 +86,6 @@ function download_repo() {
             rm -rf "$TO_DIR"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
-        # run refresh script, if present
-        REFRESH_SCRIPT="$git_repo/refresh.sh"
-        if [[ -f "$REFRESH_SCRIPT" && -x "$REFRESH_SCRIPT" ]]; then
-            echo -e "\e[1;34mrunning refresh script\e[m"
-            "$REFRESH_SCRIPT"
-        fi
         ;;
     esac
 }
