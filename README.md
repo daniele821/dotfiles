@@ -2,8 +2,10 @@
 
 for some reasons, it is a little tricky on fedora:
 - create the connection
-    - set the most permessive zone (use kde GUI to set zone to `trusted`)
 - immediately stop the connection
+- make firewall-cmd less restrictive:
+    - set the most permessive zone (use kde GUI to set zone to `trusted`)
+    - or `firewall-cmd --add-service=dns,radius,dhcp`
 - disable MAC address randomization: 
     - `nmcli connection modify <wifi_name> wifi.cloned-mac-address stable`
         - it might need root permissions (rerun with sudo)
