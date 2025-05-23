@@ -61,8 +61,10 @@ firewall-cmd --set-default-zone=public
 
 # install rust toolchain + rust_analyzer for neovim
 if ! command -v cargo &>/dev/null; then
-    RUSTUP_HOME="$HOME/.local/share/rustup" CARGO_HOME="$HOME/.local/share/cargo" rustup-init -y
-    rustup component add rust-analyzer 
+    export RUSTUP_HOME="$HOME/.local/share/rustup" 
+    export CARGO_HOME="$HOME/.local/share/cargo" 
+    rustup-init -y
+    "$CARGO_HOME/bin/rustup" component add rust-analyzer 
 fi
 
 exit 0
