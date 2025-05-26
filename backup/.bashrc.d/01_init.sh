@@ -31,5 +31,5 @@ fi
 
 # neovim multi configs aliases
 function qnvim() {
-    NVIM_APPNAME="nvim/database" nvim
+    NVIM_APPNAME="nvim/config-db" nvim
 }
