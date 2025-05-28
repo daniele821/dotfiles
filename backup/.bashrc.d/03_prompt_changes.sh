@@ -4,7 +4,9 @@ function __cleanup_prompt__() {
     \builtin local -r retval="$?"
 
     # force exit from not existing directories
-    until [[ -d "$PWD" ]]; do PWD="$(dirname "$PWD")"; done
+    TMPPWD="$PWD"
+    until [[ -d "$TMPPWD" ]]; do TMPPWD="$(dirname "$TMPPWD")"; done
+    cd "$TMPPWD"
 
     # change PS1
     \builtin local -r red="\[\e[1;31m\]"
