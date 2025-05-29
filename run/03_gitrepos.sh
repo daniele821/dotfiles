@@ -80,7 +80,7 @@ function download_repo() {
     "/personal/repos/daniele821/dotfiles")
         # set valid branch for script
         echo -e "\e[1;34msetting ${git_branch} as the valid branch\e[m"
-        SET_BRANCH="" "${git_repo}/autosaver" help &>/dev/null
+        echo "$git_branch" >"${git_repo}/.branch"
         ;;
     "/personal/repos/daniele821/nvim-config")
         # link nvim config repo to ~/.config/nvim
@@ -109,7 +109,7 @@ trap cleanup SIGINT
 
 # if early exit, only clean up
 TMP_DIR="$(mktemp -d)"
-function cleanup_on_exit(){
+function cleanup_on_exit() {
     rm -rf "$TMP_DIR"
 }
 trap cleanup_on_exit EXIT
