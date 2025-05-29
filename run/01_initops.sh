@@ -23,7 +23,7 @@ dnf --assumeyes remove kcharselect firewall-config qrca
 dnf --assumeyes remove setroubleshoot-server hplip* kde-partitionmanager
 
 # install needed programs
-dnf --assumeyes install mpv docker{,-compose} distrobox kitten neovim htop wireshark
+dnf --assumeyes install mpv podman distrobox kitten neovim htop
 dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh gcc golang rustup
 
 # enable rpm-fusion and install multimedia codecs
@@ -41,14 +41,6 @@ if ! [[ -d "/personal" ]]; then
     chown "$SUDO_USER":"$SUDO_USER" /personal/{data,repos}
     echo "created personal directory in /personal"
 fi
-
-# adding user to groups
-for group in docker wireshark; do
-    if getent group "$group" &>/dev/null && ! id -nG | grep -qw "$group" &>/dev/null; then
-        echo "adding user to $group group"
-        usermod -aG "$group" "$SUDO_USER"
-    fi
-done
 
 # install flathub after removing fedora flatpak repos
 flatpak remote-delete fedora || true
