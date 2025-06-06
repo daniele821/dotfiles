@@ -1,0 +1,12 @@
+// vim:commentstring=//\ %s
+
+.config/dolphinrc
+.config/htop/htoprc
+.config/konsolerc
+.config/okularpartrc
+.config/plasma-localerc
+.config/spectaclerc
+.local/share/konsole/NerdProfile.profile
+.local/share/konsole/NerdProfileNoLigatures.profile
+.local/share/kxmlgui5/konsole
+.local/state/konsolestaterc

@@ -1,0 +1,6 @@
+// vim:commentstring=//\ %s
+
+.bashrc.d
+.config/mpv
+.gitconfig
+.ssh/config
