@@ -1,0 +1,791 @@
+#!/bin/python3
+
+import enum
+import os
+import sys
+import re
+import shutil
+import subprocess
+import pathlib
+import filecmp
+import traceback
+
+
+# OUTPUT UTILITIES
+def color(clr, str, output=False):
+    match clr:
+        case "err":
+            result = "\033[1;31m" + str + "\033[m"
+        case "file":
+            result = "\033[1;34m" + str + "\033[m"
+        case "msg":
+            result = "\033[1;33m" + str + "\033[m"
+        case _:
+            result = str
+    if output:
+        print(result)
+    return result
+
+
+def err_exit(msg, exc=False):
+    color("err", "ERROR: " + msg, True)
+    if exc:
+        dbg_exc()
+    exit(1)
+
+
+def warn_msg(msg, exc=False):
+    color("msg", "WARNING: " + msg, True)
+    if exc:
+        dbg_exc()
+
+
+def dbg(msg):
+    sys.stderr.write(msg)
+
+
+def dbg_exc():
+    dbg(traceback.format_exc())
+    dbg("\n")
+
+
+def dbg_final_report(msg, printAll=False):
+    if not hasattr(dbg_final_report, "acc"):
+        dbg_final_report.acc = []
+    if msg is not None:
+        dbg_final_report.acc.append(msg)
+
+    if printAll:
+        if len(dbg_final_report.acc) > 0:
+            dbg("\nFINAL REPORT OF ALL OPERATIONS:\n")
+        for elem in dbg_final_report.acc:
+            dbg(elem)
+        dbg_final_report.acc = []
+
+
+def ask_user(msg, flags=None):
+    print(msg, end="")
+    opt_yes = flags is not None and flags.has_option(Option.YES)
+    opt_no = flags is not None and flags.has_option(Option.NO)
+    if opt_no:
+        print("n")
+        return False
+    elif opt_yes:
+        print("y")
+        return True
+    else:
+        match input():
+            case "y":
+                return True
+            case "n" | "":
+                return False
+            case _:
+                print("Invalid answer, retry:")
+                return ask_user(msg, flags)
+
+
+# GIT UTILITIES
+def __cmd_output__(*cmd):
+    return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
+
+
+def assert_git_toplevel_dir():
+    cmd = ["git", "-C", SCRIPT_DIR, "rev-parse", "--show-toplevel"]
+    runned = subprocess.run(cmd, capture_output=True, text=True)
+    if runned.returncode != 0:
+        return "git top level directory was not found"
+    if runned.stdout.strip() != SCRIPT_DIR:
+        return "git top level directory is not the script directory"
+
+
+def git_current_branch():
+    return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+
+
+def git_is_branch_uptodate(allow_behind=False):
+    remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+    remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
+    branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
+    is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
+    return remote_hash == branch_hash or (allow_behind and is_ancestor)
+
+
+def git_pull_and_check():
+    subprocess.run(["git", "-C", SCRIPT_DIR, "pull", "--ff-only"])
+    return git_is_branch_uptodate(allow_behind=True)
+
+
+def git_push():
+    if not git_is_branch_uptodate():
+        subprocess.run(["git", "-C", SCRIPT_DIR, "push"])
+
+
+def git_has_changes():
+    return __cmd_output__("git", "-C", SCRIPT_DIR, "status", "-s") != ""
+
+
+def git_diff(reverse=False):
+    cmd = ["git", "-C", SCRIPT_DIR, "diff", "HEAD", "--diff-filter=adcr"]
+    subprocess.run(cmd + ["-R"] if reverse else cmd)
+
+
+def git_status():
+    subprocess.run(["git", "-C", SCRIPT_DIR, "status", "-su"])
+
+
+def git_restore_all():
+    subprocess.run(["git", "-C", SCRIPT_DIR, "reset", "HEAD"])
+    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", "--staged", SCRIPT_DIR])
+    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", SCRIPT_DIR])
+    subprocess.run(["git", "-C", SCRIPT_DIR, "clean", "-fdq"])
+
+
+def git_commit_all(commit_msg):
+    subprocess.run(["git", "-C", SCRIPT_DIR, "add", SCRIPT_DIR])
+    subprocess.run(["git", "-C", SCRIPT_DIR, "commit", "-m", commit_msg])
+
+
+# FILESYSTEM OPERATIONS
+def __is_original__(path):
+    path = os.path.normpath(path)
+    return path == os.path.realpath(path)
+
+
+def __exists__(path):
+    return os.path.exists(path) or os.path.islink(path)
+
+
+def __is_file__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isfile(path)
+
+
+def __is_dir__(path):
+    return os.path.exists(path) and not os.path.islink(path) and os.path.isdir(path)
+
+
+def __assert_valid__(path, checks=[]):
+    if checks:
+        if not os.path.isabs(path):
+            raise Exception("relative paths are not supported: {}".format(path))
+        if "sym" in checks:
+            if not __is_original__(path):
+                raise Exception("symlinked locations are not supported: {}".format(path))
+        if "dir" in checks:
+            if not __is_dir__(path):
+                raise Exception("not a directory: {}".format(path))
+        if "file" in checks:
+            if not __is_file__(path):
+                raise Exception("not a file: {}".format(path))
+        if "none" in checks:
+            if __exists__(path):
+                raise Exception("something exists in path: {}".format(path))
+        if "exist" in checks:
+            if not __exists__(path):
+                raise Exception("nothing exists in path: {}".format(path))
+
+
+def isoriginal(path):
+    __assert_valid__(path)
+    return __is_original__(path)
+
+
+def exist(path):
+    __assert_valid__(path)
+    return __exists__(path)
+
+
+def isrealfile(path):
+    __assert_valid__(path)
+    return __is_file__(path) and __is_original__(path)
+
+
+def isrealdir(path):
+    __assert_valid__(path)
+    return __is_dir__(path) and __is_original__(path)
+
+
+def create_dir(path):
+    if isrealdir(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
+    os.makedirs(path, exist_ok=True)
+    __assert_valid__(path, ["sym", "dir"])
+    dbg_final_report("\x1b[32m+ CREATED DIRECTORY: {}\x1b[m\n".format(path))
+
+
+def create_file(path):
+    if isrealfile(path):
+        return
+    __assert_valid__(path, ["sym", "none"])
+    create_dir(os.path.dirname(os.path.normpath(path)))
+    with open(path, "w"):
+        pass
+    __assert_valid__(path, ["sym", "file"])
+    dbg_final_report("\x1b[32m+ CREATED FILE:      {}\x1b[m\n".format(path))
+
+
+def delete_dir(path, allow_force=False):
+    if not exist(path):
+        return
+    purge = False
+    __assert_valid__(path, ["sym", "dir"])
+    if not os.listdir(path):
+        os.rmdir(path)
+    elif allow_force:
+        shutil.rmtree(path)
+        purge = True
+    __assert_valid__(path, ["sym", "none"])
+    if purge:
+        dbg_final_report("\x1b[31m- \x1b[4mPURGED DIRECTORY:  {}\x1b[m\n".format(path))
+    else:
+        dbg_final_report("\x1b[31m- DELETED DIRECTORY: {}\x1b[m\n".format(path))
+
+
+def delete_file(path):
+    if not exist(path):
+        return
+    __assert_valid__(path, ["sym", "file"])
+    os.remove(path)
+    __assert_valid__(path, ["sym", "none"])
+    dbg_final_report("\x1b[31m+ CREATED FILE:      {}\x1b[m\n".format(path))
+
+
+def purge_path(path, allow_force=False):
+    if not exist(path):
+        return
+    __assert_valid__(path, ["sym", "exist"])
+    if isrealdir(path):
+        delete_dir(path, allow_force)
+    elif isrealfile(path):
+        delete_file(path)
+    __assert_valid__(path, ["sym", "none"])
+
+
+def copy_file(src, dst, allow_force=False):
+    __assert_valid__(src, ["sym", "file"])
+    __assert_valid__(dst, ["sym"])
+    if isrealdir(dst):
+        delete_dir(dst, allow_force)
+    create_dir(os.path.dirname(os.path.normpath(dst)))
+    shutil.copyfile(src, dst)
+    __assert_valid__(dst, ["sym", "file"])
+    dbg_final_report("\x1b[34m> COPIED FILE:       {} -> {}\x1b[m\n".format(src, dst))
+
+
+def relpath(path):
+    __assert_valid__(path, [])
+    return os.path.relpath(path, SCRIPT_DIR)
+
+
+def make_executable(path):
+    __assert_valid__(path, ["sym", "file"])
+    if os.stat(path).st_mode & 0o111 == 0o111:
+        return
+    os.chmod(path, os.stat(path).st_mode | 0o111)
+    dbg_final_report("\x1b[34m* MADE EXECUTABLE:   {}\x1b[m\n".format(path))
+
+
+def list_files(dir):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return []
+    elif not exist(dir):
+        return []
+    __assert_valid__(dir, ["sym", "dir"])
+    return [os.path.join(dir, i) for i in os.listdir(dir)]
+
+
+def all_files(dir, relpath):
+    if exist(dir) and not isrealdir(dir):
+        warn_msg("not a directory: {}".format(relpath(dir)))
+        return set()
+    elif not exist(dir):
+        return set()
+    __assert_valid__(dir, ["sym", "dir"])
+    __assert_valid__(relpath, ["sym", "dir"])
+    files = set()
+    for root, _, dirfiles in os.walk(dir):
+        for fname in dirfiles:
+            fname = os.path.join(root, fname)
+            if isrealfile(fname):
+                fname = os.path.relpath(fname, relpath)
+                files.add(fname)
+    return files
+
+
+# DATA STRUCTURES
+class Flag:
+    def __init__(self, actions=set(), options=set()):
+        self.actions = set()
+        self.options = set()
+        self.add_flags(actions, options)
+
+    def add_flags(self, actions, options):
+        self.actions.update(actions)
+        self.options.update(options)
+        return self
+
+    def add_all_flags(self, flag):
+        self.add_flags(flag.actions, flag.options)
+        return self
+
+    def validate(self):
+        if len(self.actions) > 1:
+            err_exit("multiple actions are not supported!")
+        elif len(self.actions) == 0:
+            self.actions = set([Action.DEFAULT])
+        return self
+
+    def get_action(self):
+        return next(iter(self.actions))
+
+    def has_option(self, option):
+        return option in self.options
+
+    def __str__(self):
+        actStr = ", ".join([i.__str__() for i in self.actions])
+        optStr = ", ".join([i.__str__() for i in self.options])
+        return "Flags: Actions [{}], Options [{}]".format(actStr, optStr)
+
+
+# CONFIGURABLE VARIABLES
+HOME = os.getenv("HOME")
+SCRIPT_PATH = os.path.realpath(__file__)
+SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
+DIRS = {
+    "backup": os.path.join(SCRIPT_DIR, "backup"),
+    "config": os.path.join(SCRIPT_DIR, "config"),
+    "run": os.path.join(SCRIPT_DIR, "run"),
+    "others": os.path.join(SCRIPT_DIR, "others"),
+}
+FILES = {
+    "branch": os.path.join(SCRIPT_DIR, ".branch"),
+    "track": os.path.join(DIRS["config"], "files_to_track.txt"),
+    "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+}
+ENV_DBG = os.getenv("DBG")
+ENV_BRANCH = os.getenv("BRANCH")
+ENV_SET_BRANCH = os.getenv("SET_BRANCH")
+
+
+class Action(enum.Enum):
+    LIST = enum.auto()
+    UNTRACKED = enum.auto()
+    SAVE = enum.auto()
+    BACKUP = enum.auto()
+    COMMIT = enum.auto()
+    EDIT = enum.auto()
+    INIT = enum.auto()
+    RUN = enum.auto()
+    HELP = enum.auto()
+    DEFAULT = LIST
+
+
+class Option(enum.Enum):
+    DIFF = enum.auto()
+    FORCE = enum.auto()
+    NO = enum.auto()
+    YES = enum.auto()
+    TOGGLE = enum.auto()
+    VERBOSE = enum.auto()
+
+
+ACTIONS = {
+    "b": Action.BACKUP,
+    "c": Action.COMMIT,
+    "e": Action.EDIT,
+    "h": Action.HELP,
+    "i": Action.INIT,
+    "r": Action.RUN,
+    "s": Action.SAVE,
+    "u": Action.UNTRACKED,
+}
+OPTIONS = {
+    "d": Option.DIFF,
+    "f": Option.FORCE,
+    "n": Option.NO,
+    "t": Option.TOGGLE,
+    "v": Option.VERBOSE,
+    "y": Option.YES,
+}
+SHORTCUTS = {
+    "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
+    "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
+    "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "commit": Flag([Action.COMMIT], [Option.YES]),
+    "uncommit": Flag([Action.COMMIT], [Option.YES, Option.TOGGLE]),
+    "untracked": Flag([Action.UNTRACKED], []),
+    "init": Flag([Action.INIT], [Option.YES]),
+    "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
+    "run": Flag([Action.RUN], [Option.YES]),
+    "edit": Flag([Action.EDIT], []),
+    "help": Flag([Action.HELP], []),
+}
+SHORTCUTS |= {"sa": SHORTCUTS["save"]}
+SHORTCUTS |= {"re": SHORTCUTS["restore"]}
+SHORTCUTS |= {"co": SHORTCUTS["commit"]}
+SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
+
+
+# ACTIONS
+def help(flags):
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    help_msg = """Program to backup dotfiles, with git integration
+
+\x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
+
+\x1b[1;4mAction flags:\x1b[m
+  \x1b[1m- \x1b[m                    list all tracked files, which are to be copied backup
+  \x1b[1m-b\x1b[m                    list all tracked files, and for each one allows to restore from backup
+  \x1b[1m-s\x1b[m                    list all tracked files, and for each one allows to save to backup
+  \x1b[1m-u\x1b[m                    list all untracked files, and can allows to delete them
+  \x1b[1m-c\x1b[m                    allows to commit or restore all git changes
+  \x1b[1m-e\x1b[m                    allows to edit files
+  \x1b[1m-i\x1b[m                    creates necessary directories and files
+  \x1b[1m-r\x1b[m                    runs init scripts
+  \x1b[1m-h\x1b[m                    show this help message
+
+\x1b[1;4mOption flags:\x1b[m
+  \x1b[1m-d\x1b[m                    show diffs
+  \x1b[1m-f\x1b[m                    allow dangerous operations
+  \x1b[1m-y\x1b[m                    auto answer yes to all questions
+  \x1b[1m-n\x1b[m                    auto answer no to all questions
+  \x1b[1m-t\x1b[m                    toggle secondary mode of the action
+  \x1b[1m-v\x1b[m                    show verbose output
+
+\x1b[1;4mShortcuts:\x1b[m
+  \x1b[1msave          sa\x1b[m      save all files to backup
+  \x1b[1msaveall         \x1b[m      save all files to backup (even the `notdiff` ones)
+  \x1b[1mrestore       re\x1b[m      restore all files from backup
+  \x1b[1mrestoreall      \x1b[m      restore all files from backup (even the `notdiff` ones)
+  \x1b[1mcommit        co\x1b[m      commit and push all changes in git repo
+  \x1b[1muncommit      un\x1b[m      delete all changes in git repo
+  \x1b[1muntracked       \x1b[m      list untracked files
+  \x1b[1minit            \x1b[m      initialize needed directories and config files
+  \x1b[1mpurge           \x1b[m      delete all config file and directories managed by the script
+  \x1b[1medit            \x1b[m      allow to edit all files
+  \x1b[1mrun             \x1b[m      run all init scripts
+  \x1b[1mhelp            \x1b[m      show this help message
+
+\x1b[1;4mEnvironment variables:\x1b[m
+  \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
+  \x1b[1mBRANCH\x1b[m                bypass branch check
+  \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
+  """
+    if opt_toggle:
+        # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
+        print(re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])").sub("", help_msg))
+    else:
+        print(help_msg)
+
+
+def init(flags):
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    if not opt_toggle:
+        for path in DIRS.values():
+            try:
+                if not isrealdir(path):
+                    purge_path(path, True)
+                create_dir(path)
+            except Exception:
+                warn_msg("unable to create directory: {}".format(relpath(path)), True)
+        for path in FILES.values():
+            try:
+                if not isrealfile(path):
+                    purge_path(path, True)
+                create_file(path)
+            except Exception:
+                warn_msg("unable to create file: {}".format(relpath(path)), True)
+    else:
+        for path in FILES.values():
+            try:
+                purge_path(path, True)
+            except Exception:
+                warn_msg("unable to delete file: {}".format(relpath(path)), True)
+        for path in DIRS.values():
+            try:
+                purge_path(path, True)
+            except Exception:
+                warn_msg("unable to delete directory: {}".format(relpath(path)), True)
+
+
+def run(flags):
+    rundir = DIRS["run"]
+    msg1 = color("msg", "Do you really want to execute ")
+    msg3 = color("msg", " ? ")
+    for file in sorted(list_files(rundir)):
+        if isrealfile(file):
+            make_executable(file)
+            msg2 = color("file", relpath(file))
+            if ask_user(msg1 + msg2 + msg3, flags):
+                try:
+                    if subprocess.run(["bash", file]).returncode:
+                        raise Exception()
+                except Exception:
+                    err_exit("init script failed!", True)
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
+
+
+def edit(flags):
+    editor = None
+    for edit_prog in ["nvim", "vim", "nano"]:
+        if shutil.which(edit_prog):
+            editor = edit_prog
+            break
+    if editor is None:
+        err_exit("no terminal editor could be found!")
+
+    msg1 = color("msg", "Do you really want to edit ")
+    msg3 = color("msg", " ? ")
+    files = [SCRIPT_PATH]
+    for file in FILES.values():
+        if exist(file):
+            files += [file]
+    if isrealdir(DIRS["run"]):
+        files += sorted(list_files(DIRS["run"]))
+    for file in files:
+        if isrealfile(file):
+            msg2 = color("file", relpath(file))
+            if ask_user(msg1 + msg2 + msg3, flags):
+                try:
+                    file_old_content = pathlib.Path(file).read_text()
+                    if subprocess.run([editor, file]).returncode:
+                        raise Exception()
+                    file_new_content = pathlib.Path(file).read_text()
+                    if file_old_content != file_new_content:
+                        dbg_final_report("\x1b[34m> MODIFIED FILE:     {}\x1b[m\n".format(file))
+                except Exception:
+                    err_exit("unable to edit file!", True)
+        else:
+            warn_msg("not a file: {}".format(relpath(file)))
+
+
+def backup(flags):
+    odir = HOME
+    bdir = DIRS["backup"]
+    act_save = flags.get_action() == Action.SAVE
+    act_backup = flags.get_action() == Action.BACKUP
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    opt_diff = flags.has_option(Option.DIFF)
+    opt_force = flags.has_option(Option.FORCE)
+    opt_verbose = flags.has_option(Option.VERBOSE)
+    tracked = load_config(FILES["track"])
+    notdiff = load_config(FILES["notdiff"])
+    all = sorted(tracked | notdiff)
+
+    def fout(file, on=None, stat=None):
+        msg_file = color("file", file)
+        if opt_verbose and on and stat:
+            print(msg_file + " : " + on + " " + stat)
+        else:
+            print(msg_file)
+
+    for file in all:
+        try:
+            ofile = os.path.join(odir, file)
+            bfile = os.path.join(bdir, file)
+            match isrealfile(ofile), isrealfile(bfile):
+                case True, False:
+                    fout(ofile, "backup file", "is missing")
+                    if act_save:
+                        if ask_user(color("msg", "Do you really want to create backup file? "), flags):
+                            copy_file(ofile, bfile, True)
+                    if act_backup and opt_force:
+                        if ask_user(color("msg", "[DANGER] Do you really want to delete original file? "), flags):
+                            purge_path(ofile)
+                case False, True:
+                    fout(ofile, "original file", "is missing")
+                    if act_save:
+                        if ask_user(color("msg", "Do you really want to delete backup file? "), flags):
+                            purge_path(bfile, True)
+                    if act_backup:
+                        if ask_user(color("msg", "Do you really want to create original file? "), flags):
+                            copy_file(bfile, ofile)
+                case True, True:
+                    if opt_toggle or file not in notdiff:
+                        if not filecmp.cmp(ofile, bfile):
+                            fout(ofile, "original and backup files", "differ")
+                            if opt_diff:
+                                old = ofile if act_backup else bfile
+                                new = bfile if act_backup else ofile
+                                subprocess.run(["diff", "--color", "-u", old, new])
+                            if act_save:
+                                if ask_user(color("msg", "Do you really want to update backup file? "), flags):
+                                    copy_file(ofile, bfile, True)
+                            if act_backup:
+                                if ask_user(color("msg", "Do you really want to update original file? "), flags):
+                                    copy_file(bfile, ofile)
+        except Exception:
+            warn_msg("operation failed!", True)
+
+
+def untracked(flags):
+    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
+    backup = all_files(DIRS["backup"], DIRS["backup"])
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    opt_force = flags.has_option(Option.FORCE)
+    bmsg = "Do you really want to delete backup file ? "
+    bmsg = color("msg", bmsg)
+    omsg = "[DANGER] Do you really want to delete original file ? "
+    omsg = color("msg", omsg)
+    for file in sorted(backup - tracked):
+        try:
+            ofile = os.path.join(HOME, file)
+            bfile = os.path.join(DIRS["backup"], file)
+            print(color("file", ofile))
+            if opt_toggle:
+                if ask_user(bmsg, flags):
+                    delete_file(bfile)
+                if opt_force and isrealfile(ofile):
+                    if ask_user(omsg, flags):
+                        delete_file(ofile)
+        except Exception:
+            warn_msg("operation failed!", True)
+
+
+def commit(flags):
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    opt_diff = flags.has_option(Option.DIFF)
+    msg_commit = color("msg", "Do you really want to commit all? ")
+    msg_restore = color("msg", "Do you really want to restore all? ")
+    if not opt_toggle:
+        if not git_pull_and_check():
+            err_exit("could not make current branch up to date with upstream!")
+    if git_has_changes():
+        if opt_diff:
+            git_diff(reverse=opt_toggle)
+        git_status()
+        if opt_toggle:
+            if ask_user(msg_restore, flags):
+                git_restore_all()
+        else:
+            if ask_user(msg_commit, flags):
+                if commit_msg := input(color("msg", "Write commit message: ")):
+                    git_commit_all(commit_msg)
+    elif opt_toggle:
+        git_restore_all()
+
+    if not opt_toggle:
+        git_push()
+
+
+# ACTION UTILITIES
+def load_config(conf):
+    if exist(conf) and not isrealfile(conf):
+        warn_msg("not a file: {}".format(relpath(conf)))
+        return set()
+    elif not exist(conf):
+        return set()
+
+    odir = HOME
+    bdir = DIRS["backup"]
+    files = set()
+    for line in pathlib.Path(conf).read_text().splitlines():
+        if not line.startswith("/") and line.strip():
+            ofile = os.path.join(odir, line)
+            bfile = os.path.join(bdir, line)
+            for file, dir in ((ofile, odir), (bfile, bdir)):
+                if isrealfile(file):
+                    files.add(line)
+                elif isrealdir(file):
+                    files.update(all_files(file, dir))
+    return files
+
+
+# EXECUTION UTILITIES
+def assert_branch():
+    if ENV_BRANCH is not None and shutil.which("git") is None:
+        warn_msg("git command was not found, proceeding anyway in hope it's not a problem...")
+        return
+
+    ERR_MSG = assert_git_toplevel_dir()
+    if ERR_MSG is not None:
+        if ENV_BRANCH is not None:
+            warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
+            return
+        err_exit(ERR_MSG)
+
+    branch_file = FILES["branch"]
+    create_file(branch_file)
+    curr_branch = git_current_branch()
+    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
+    if len(want_branch) == 0:
+        want_branch = ""
+    else:
+        want_branch = want_branch[0]
+    if curr_branch != want_branch:
+        dbg_final_report("\x1b[35m~ WRONG BRANCH: '{}' (valid: '{}')\x1b[m\n".format(curr_branch, want_branch))
+        if ENV_BRANCH is not None:
+            warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
+        elif ENV_SET_BRANCH is not None:
+            warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
+            pathlib.Path(FILES["branch"]).write_text(curr_branch)
+            dbg_final_report("\x1b[35m~ UPDATED BRANCH: '{}'\x1b[m\n".format(curr_branch))
+        else:
+            err_exit(f"'{curr_branch}' is not the valid branch ({want_branch})")
+
+
+def parse(args):
+    flag = Flag()
+    for word in args:
+        if word.startswith("-"):
+            for char in word[1:]:
+                if char in ACTIONS:
+                    flag.add_flags([ACTIONS[char]], [])
+                elif char in OPTIONS:
+                    flag.add_flags([], [OPTIONS[char]])
+                else:
+                    err_exit("invalid flag: {}".format(char))
+        else:
+            if word in SHORTCUTS:
+                flag.add_all_flags(SHORTCUTS[word])
+            else:
+                err_exit("invalid shortcut: {}".format(word))
+    return flag.validate()
+
+
+def execute(flags):
+    match flags.get_action():
+        case Action.BACKUP | Action.LIST | Action.SAVE:
+            backup(flags)
+        case Action.COMMIT:
+            commit(flags)
+        case Action.EDIT:
+            edit(flags)
+        case Action.HELP:
+            help(flags)
+        case Action.INIT:
+            init(flags)
+        case Action.RUN:
+            run(flags)
+        case Action.UNTRACKED:
+            untracked(flags)
+
+
+# EXECUTION
+def main():
+    args = sys.argv[1:] + ["--"]
+    params = []
+    for arg in args:
+        if arg == "--":
+            execute(parse(params))
+            params.clear()
+        else:
+            params.append(arg)
+
+
+if __name__ == "__main__":
+    if ENV_DBG is None:
+        sys.stderr = open(os.devnull, "w")
+    try:
+        assert_branch()
+        main()
+    except SystemExit:
+        raise
+    except BaseException as e:
+        err_exit(str(e.__class__.__name__) + ": " + str(e), True)
+    finally:
+        dbg_final_report(None, True)
