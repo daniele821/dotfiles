@@ -94,8 +94,6 @@ function download_repo() {
         # automagically minitialize neovim with all goodies
         echo -e "\e[1;34minitializing neovim...\e[m"
         tput rmam
-        echo -n "cleaning up neovim data..."
-        rm -rf ~/.{local/{share,state},cache}/nvim
         nvim --headless '+StarterPackLsp' '+StarterPackParsers' +qa 2>&1 | while read -r line; do
             echo -ne "\r\e[2K"
             echo -n "$line"
