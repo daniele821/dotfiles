@@ -92,9 +92,13 @@ function download_repo() {
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
         # automagically minitialize neovim with all goodies
-        echo -e "\e[1;34minitializing neovim...\e[m"
         tput rmam
+        OUTPUT=false
         nvim --headless '+StarterPackLsp' '+StarterPackParsers' +qa 2>&1 | while read -r line; do
+            if [[ "$OUTPUT" == "false" ]]; then
+                echo -e "\e[1;34minitializing neovim...\e[m"
+                OUTPUT=true
+            fi
             echo -ne "\r\e[2K"
             echo -n "$line"
         done
