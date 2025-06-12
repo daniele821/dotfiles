@@ -9,6 +9,7 @@ set -e
     while ! [[ -d "/personal/data/passwords" ]]; do
         PASSWORD_DIRS="$(find "/run/media/$USER" -name passwords 2>/dev/null)" || true
         if [[ "$(echo "$PASSWORD_DIRS" | wc -w)" -gt 0 && "$(echo "$PASSWORD_DIRS" | wc -l)" -eq 1 ]]; then
+            echo "copying passwords from usb..."
             cp -r "$PASSWORD_DIRS" /personal/data/passwords
             git -C /personal/data/passwords/ restore /personal/data/passwords/
             break
