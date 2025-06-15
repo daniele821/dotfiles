@@ -94,7 +94,7 @@ function download_repo() {
         # automagically minitialize neovim with all goodies
         tput rmam
         OUTPUT=false
-        nvim --headless '+StarterPackLsp' '+StarterPackParsers' +qa 2>&1 | while read -r line; do
+        nvim --headless '+StarterPack' +qa 2>&1 | while read -r line; do
             if [[ "$OUTPUT" == "false" ]]; then
                 echo -e "\e[1;34minitializing neovim...\e[m"
                 OUTPUT=true
