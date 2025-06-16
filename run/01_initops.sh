@@ -56,7 +56,6 @@ if ! command -v cargo &>/dev/null; then
     export RUSTUP_HOME="$HOME/.local/share/rustup"
     export CARGO_HOME="$HOME/.local/share/cargo"
     rustup-init -y
-    "$CARGO_HOME/bin/rustup" component add rust-analyzer
 fi
 
 # install Firacode font
