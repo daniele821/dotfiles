@@ -31,6 +31,8 @@ dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-f
 dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 dnf --assumeyes install ffmpeg --allowerasing
 dnf --assumeyes install mpv-mpris libheif-freeworld
+dnf --assumeyes install mesa-va-drivers-freeworld libavcodec-freeworld # amd
+dnf --assumeyes install intel-media-driver                             # intel
 
 # remove unnecessary packages
 dnf --assumeyes autoremove
