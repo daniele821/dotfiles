@@ -23,7 +23,7 @@ dnf --assumeyes remove kcharselect firewall-config qrca
 dnf --assumeyes remove setroubleshoot-server hplip* toolbox
 
 # install needed programs
-dnf --assumeyes install mpv podman kitten neovim htop
+dnf --assumeyes install mpv podman distrobox kitten neovim htop
 dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh gcc golang rustup
 
 # enable rpm-fusion and install multimedia codecs
