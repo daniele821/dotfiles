@@ -54,11 +54,7 @@ firewall-cmd --set-default-zone=public
 '
 
 # install rust toolchain + rust_analyzer for neovim
-if ! command -v cargo &>/dev/null; then
-    export RUSTUP_HOME="$HOME/.local/share/rustup"
-    export CARGO_HOME="$HOME/.local/share/cargo"
-    rustup-init -y
-fi
+! command -v cargo &>/dev/null && rustup-init -y
 
 # install Firacode font
 if ! [[ -d "$HOME/.local/share/fonts/FiraCode" ]]; then
