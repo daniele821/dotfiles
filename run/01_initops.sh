@@ -48,9 +48,6 @@ fi
 flatpak remote-delete fedora || true
 flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# change default firewall zone for extreme safety (use logging to fix broken services)
-firewall-cmd --set-default-zone=public
 '
 
 # install rust toolchain + rust_analyzer for neovim
