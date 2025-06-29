@@ -7,7 +7,11 @@ export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
 function open() {
-    (for file in "$@"; do xdg-open "$file" &>/dev/null & done)
+    case "$#" in
+    0) xdg-open "$PWD" ;;
+    1) xdg-open "$1" ;;
+    *) for file in "$@"; do xdg-open "$file"; done ;;
+    esac
 }
 
 alias la='ls -A'
