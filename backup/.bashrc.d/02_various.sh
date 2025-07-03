@@ -2,6 +2,8 @@
 
 export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
+export PYTHON_HISTORY="/dev/null"
+export NODE_REPL_HISTORY="/dev/null"
 export GOPATH="$HOME/.local/share/go"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
