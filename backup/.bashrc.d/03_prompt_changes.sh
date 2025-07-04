@@ -19,7 +19,10 @@ function __cleanup_prompt__() {
     \builtin local -r green="\[\e[1;36m\]"
     \builtin local -r wipe="\[\e[0m\]"
     ###############################################
-    \builtin local workdir="${green}\w "
+    \builtin local -r workdir="${green}\w "
+    ###############################################
+    \builtin local pyvenv=""
+    [[ -n "$VIRTUAL_ENV" ]] && pyvenv="${yellow}(venv) "
     ###############################################
     \builtin local branch=""
     GITDIR="$PWD"
@@ -99,7 +102,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${pyvenv}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
