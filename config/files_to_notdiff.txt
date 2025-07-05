@@ -6,6 +6,7 @@
 .config/okularpartrc
 .config/plasma-localerc
 .config/spectaclerc
+.config/krunnerrc
 .local/share/konsole/NerdProfile.profile
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/kxmlgui5/konsole
