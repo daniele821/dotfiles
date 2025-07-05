@@ -21,6 +21,7 @@ dnf --assumeyes remove krdc krfb krdp
 dnf --assumeyes remove kolourpaint im-chooser kamoso
 dnf --assumeyes remove kcharselect firewall-config qrca
 dnf --assumeyes remove setroubleshoot* hplip* toolbox
+dnf --assumeyes remove firefox
 
 # install needed programs
 dnf --assumeyes install mpv podman distrobox kitten neovim htop
@@ -53,6 +54,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 # install flatpak apps
 flatpak install flathub com.protonvpn.www -y
 flatpak install flathub com.github.wwmm.easyeffects -y
+flatpak install flathub org.mozilla.firefox -y
 
 # install rust toolchain + rust_analyzer for neovim
 ! command -v cargo &>/dev/null && rustup-init -y
