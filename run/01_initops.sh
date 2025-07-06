@@ -6,9 +6,6 @@ set -e
 
 sudo bash -c ' set -e
 
-# upgrade everything
-dnf --assumeyes upgrade
-
 # remove bloat
 dnf --assumeyes remove kpat kmines kmahjongg
 dnf --assumeyes remove dragon elisa-player neochat
@@ -24,7 +21,7 @@ dnf --assumeyes remove setroubleshoot* hplip* toolbox
 
 # install needed programs
 dnf --assumeyes install mpv podman distrobox kitten neovim htop
-dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh gcc golang rustup
+dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh gcc
 
 # enable rpm-fusion and install multimedia codecs
 dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
@@ -33,6 +30,9 @@ dnf --assumeyes install ffmpeg --allowerasing
 dnf --assumeyes install mpv-mpris libheif-freeworld
 dnf --assumeyes install mesa-va-drivers-freeworld libavcodec-freeworld # amd
 dnf --assumeyes install intel-media-driver                             # intel
+
+# upgrade everything
+dnf --assumeyes upgrade
 
 # remove unnecessary packages
 dnf --assumeyes autoremove
@@ -53,9 +53,6 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 # install flatpak apps
 flatpak install flathub com.protonvpn.www -y
 flatpak install flathub com.github.wwmm.easyeffects -y
-
-# install rust toolchain + rust_analyzer for neovim
-! command -v cargo &>/dev/null && rustup-init -y
 
 # install Firacode font
 if ! [[ -d "$HOME/.local/share/fonts/FiraCode" ]]; then
