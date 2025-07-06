@@ -21,7 +21,7 @@ dnf --assumeyes remove setroubleshoot* hplip* toolbox
 
 # install needed programs
 dnf --assumeyes install mpv podman distrobox kitten neovim htop
-dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh gcc
+dnf --assumeyes install zoxide bat ripgrep lsd tldr entr jq git gh
 
 # enable rpm-fusion and install multimedia codecs
 dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
