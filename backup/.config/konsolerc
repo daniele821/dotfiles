@@ -9,6 +9,9 @@ ConfigVersion=1
 [KonsoleWindow]
 RememberWindowSize=false
 
+[MainWindow]
+MenuBar=Disabled
+
 [TabBar]
 ExpandTabWidth=true
 SearchTabsButton=HideSearchTabsButton
