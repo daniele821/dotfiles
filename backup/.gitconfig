@@ -1,7 +1,6 @@
 [user]
     useConfigOnly = true
 	name = Daniele Muffato
-	email = danixgithub1@gmail.com
 [init]
     defaultBranch = main
 [core]
