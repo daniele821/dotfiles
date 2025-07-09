@@ -21,11 +21,6 @@ GIT_DATA=(
     "danixgithub1@gmail.com"
     ""
 
-    "https://github.com/daniele821/nvim-config.git"
-    "$HOME/.config/nvim"
-    "danixgithub1@gmail.com"
-    ""
-
     "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
     "danixgithub1@gmail.com"
@@ -86,6 +81,16 @@ function download_repo() {
         # set valid branch for script
         echo -e "\e[1;34msetting ${git_branch} as the valid branch\e[m"
         echo "$git_branch" >"${git_repo}/.branch"
+        ;;
+    "/personal/repos/daniele821/nvim-config")
+        # link nvim config repo to ~/.config/nvim
+        FROM_DIR="$git_repo"
+        TO_DIR="$HOME/.config/nvim"
+        if [[ "$(readlink "$TO_DIR")" != "$FROM_DIR" ]]; then
+            echo -e "\e[1;34mlinking $TO_DIR to $FROM_DIR\e[m"
+            rm -rf "$TO_DIR"
+            ln -s "$FROM_DIR" "$TO_DIR"
+        fi
         ;;
     esac
 }
