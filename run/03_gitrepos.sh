@@ -91,6 +91,19 @@ function download_repo() {
             rm -rf "$TO_DIR"
             ln -s "$FROM_DIR" "$TO_DIR"
         fi
+        # automatically initialize neovim
+        tput rmam
+        OUTPUT=false
+        nvim --headless +qa 2>&1 | while read -r line; do
+            if [[ "$OUTPUT" == "false" ]]; then
+                echo -e "\e[1;34minitializing neovim...\e[m"
+                OUTPUT=true
+            fi
+            echo -ne "\r\e[2K"
+            echo -n "$line"
+        done
+        tput smam
+        echo -ne "\r\e[2K"
         ;;
     esac
 }
