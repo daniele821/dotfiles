@@ -26,11 +26,6 @@ GIT_DATA=(
     "danixgithub1@gmail.com"
     ""
 
-    "git@daniele821.github.com:daniele821/scripts.git"
-    "/personal/repos/daniele821/scripts"
-    "danixgithub1@gmail.com"
-    ""
-
     "git@danix1234.github.com:danix1234/unibo-2a.git"
     "/personal/repos/danix1234/unibo-2a"
     "daniele.muffato@studio.unibo.it"
