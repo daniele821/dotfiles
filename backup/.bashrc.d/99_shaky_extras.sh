@@ -16,5 +16,5 @@ function ide() {
     fi
     DIRNAME="$(basename "$(realpath .)")"
     [[ "$DIRNAME" == "/" ]] && DIRNAME="host"
-    podman run --rm -it --security-opt label=type:container_runtime_t -v ".:/app/$DIRNAME" -w "/app/$DIRNAME" localhost/neovim
+    podman run --rm -it --security-opt label=type:container_runtime_t -v ".:/host/$DIRNAME" -w "/host/$DIRNAME" localhost/neovim
 }
