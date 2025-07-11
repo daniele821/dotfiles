@@ -19,6 +19,7 @@ function open() {
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
+alias time='/usr/bin/time -f "time elapsed: %es"'
 
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
