@@ -15,6 +15,9 @@ function open() {
     *) for file in "$@"; do xdg-open "$file"; done ;;
     esac
 }
+function run() {
+    (: && nohup "$@" &>/dev/null &)
+}
 
 alias la='ls -A'
 alias ll='ls -l'
