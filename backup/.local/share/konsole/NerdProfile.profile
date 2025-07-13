@@ -17,7 +17,7 @@ ColorFilterEnabled=false
 [Scrolling]
 HighlightScrolledLines=false
 HistorySize=10000
-ReflowLines=false
+ReflowLines=true
 ScrollBarPosition=2
 
 [Terminal Features]
