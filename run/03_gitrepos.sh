@@ -21,6 +21,11 @@ GIT_DATA=(
     "danixgithub1@gmail.com"
     ""
 
+    "git@daniele821.github.com:daniele821/nvim-full.git"
+    "/personal/repos/daniele821/nvim-full"
+    "danixgithub1@gmail.com"
+    ""
+
     "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
     "danixgithub1@gmail.com"
