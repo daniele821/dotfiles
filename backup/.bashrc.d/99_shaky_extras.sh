@@ -2,14 +2,6 @@
 
 # run neovim dev container in current directory
 function edit() {
-    if ! podman image exists ghcr.io/daniele821/neovim; then
-        podman pull ghcr.io/daniele821/neovim
-    else
-        created=$(podman inspect --format '{{ .Created.Unix }}' neovim:latest)
-        now=$(date +%s)
-        time_diff="$((now - created))"
-        [[ "$time_diff" -gt 86400 ]] && podman pull ghcr.io/daniele821/neovim && podman image prune -f
-    fi
     case "$#" in
     0) # mount NOTHING
         podman run --rm -it -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
@@ -25,13 +17,11 @@ function edit() {
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
-        MULTI_MOUNT_LIMIT=25
         declare -A tmp_arr
         for arg in "$@"; do
             tmp_arr["$(realpath -- "$arg")"]=1
         done
         FULLPATHS=("${!tmp_arr[@]}")
-        [[ "${#FULLPATHS[@]}" -gt "$MULTI_MOUNT_LIMIT" ]] && echo "cannot mount more then $MULTI_MOUNT_LIMIT files at once" && return 1
         MOUNTS=()
         ARGS=()
         for arg in "${FULLPATHS[@]}"; do
