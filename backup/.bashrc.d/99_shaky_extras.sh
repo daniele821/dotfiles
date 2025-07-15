@@ -1,33 +1,24 @@
 #!/bin/bash
 
-# build neovim image
-function build_neovim() {
-    TMP_DIR="$(mktemp -d)"
-    git clone --branch complete --depth 1 https://github.com/daniele821/nvim-config "$TMP_DIR"
-    podman build --rm -t neovim "$TMP_DIR/image"
-    podman image prune -f
-    rm -rf "$TMP_DIR"
-}
-
 # run neovim dev container in current directory
 function edit() {
-    if ! podman image exists localhost/neovim; then
-        build_neovim
+    if ! podman image exists ghcr.io/daniele821/neovim; then
+        podman pull ghcr.io/daniele821/neovim
     fi
     case "$#" in
     0) # mount NOTHING
         DIRNAME="$(basename "$(realpath .)")"
         [[ "$DIRNAME" == "/" ]] && DIRNAME="host"
-        podman run --rm -it -w /root localhost/neovim bash -ic 'nvim'
+        podman run --rm -it -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(realpath -- "$1")"
         ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" && return 1
         PATHNAME="$(basename "$FULLPATH")"
         if [[ -d "$1" ]]; then
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/$PATHNAME" localhost/neovim bash -ic 'nvim'
+            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/$PATHNAME" ghcr.io/daniele821/neovim bash -ic 'nvim'
         else
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/" localhost/neovim bash -ic 'nvim "$@"' _ "/host/$PATHNAME"
+            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$PATHNAME"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
@@ -46,7 +37,7 @@ function edit() {
             MOUNTS+=(-v "$arg:/host/$arg")
             ARGS+=("/host$arg")
         done
-        podman run --rm -it --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host localhost/neovim bash -ic 'nvim "$@"' _ "${ARGS[@]}"
+        podman run --rm -it --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "${ARGS[@]}"
         ;;
     esac
 }
