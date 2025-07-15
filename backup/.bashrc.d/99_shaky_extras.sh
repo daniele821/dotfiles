@@ -7,18 +7,16 @@ function edit() {
     fi
     case "$#" in
     0) # mount NOTHING
-        DIRNAME="$(basename "$(realpath .)")"
-        [[ "$DIRNAME" == "/" ]] && DIRNAME="host"
         podman run --rm -it -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(realpath -- "$1")"
         ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" && return 1
-        PATHNAME="$(basename "$FULLPATH")"
+        DIRNAME="$(dirname "$FULLPATH")"
         if [[ -d "$1" ]]; then
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/$PATHNAME" ghcr.io/daniele821/neovim bash -ic 'nvim'
+            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$FULLPATH" ghcr.io/daniele821/neovim bash -ic 'nvim'
         else
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$PATHNAME" -w "/host/" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$PATHNAME"
+            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$DIRNAME" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
