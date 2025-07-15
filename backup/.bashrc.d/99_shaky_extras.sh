@@ -11,15 +11,15 @@ function edit() {
     }
     case "$#" in
     0) # mount NOTHING
-        podman run --rm -it -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
+        podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(fix_file "$1")" || return 1
         DIRNAME="$(dirname "$FULLPATH")"
         if [[ -d "$1" ]]; then
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$FULLPATH" ghcr.io/daniele821/neovim bash -ic 'nvim'
+            podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$FULLPATH" ghcr.io/daniele821/neovim bash -ic 'nvim'
         else
-            podman run --rm -it --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$DIRNAME" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
+            podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$DIRNAME" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
@@ -35,7 +35,7 @@ function edit() {
             MOUNTS+=(-v "$arg:/host$arg")
             [[ -f "$arg" ]] && ARGS+=("/host$arg")
         done
-        podman run --rm -it --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "${ARGS[@]}"
+        podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "${ARGS[@]}"
         ;;
     esac
 }
