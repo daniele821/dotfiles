@@ -8,7 +8,7 @@ function edit() {
         created=$(podman inspect --format '{{ .Created.Unix }}' neovim:latest)
         now=$(date +%s)
         time_diff="$((now - created))"
-        [[ "$time_diff" -gt 86400 ]] && podman pull ghcr.io/daniele821/neovim
+        [[ "$time_diff" -gt 86400 ]] && podman pull ghcr.io/daniele821/neovim && podman image prune -f
     fi
     case "$#" in
     0) # mount NOTHING
