@@ -4,6 +4,11 @@
 function edit() {
     if ! podman image exists ghcr.io/daniele821/neovim; then
         podman pull ghcr.io/daniele821/neovim
+    else
+        created=$(podman inspect --format '{{ .Created.Unix }}' neovim:latest)
+        now=$(date +%s)
+        time_diff="$((now - created))"
+        [[ "$time_diff" -gt 86400 ]] && podman pull ghcr.io/daniele821/neovim
     fi
     case "$#" in
     0) # mount NOTHING
