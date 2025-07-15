@@ -34,3 +34,20 @@ function edit() {
         ;;
     esac
 }
+
+# update all git repos
+function gup() {
+    find /personal/repos -iname '.git' | while read -r path; do
+        path="$(dirname "$(realpath "$path")")"
+        echo -ne "\e[1;37m$path ...\e[m"
+        if ! OUTPUT="$(git -C "$path" pull --all --ff-only 2>&1)"; then
+            echo -e "\r\e[1;31m$path [ERROR]:\e[m"
+            echo "$OUTPUT"
+        elif [[ "$OUTPUT" == "Already up to date." ]]; then
+            echo -e "\r\e[1;32m$path [OK]\e[m"
+        else
+            echo -e "\r\e[1;33m$path [CHANGED]:\e[m"
+            echo "$OUTPUT"
+        fi
+    done
+}
