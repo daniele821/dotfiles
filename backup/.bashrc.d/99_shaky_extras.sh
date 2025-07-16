@@ -36,6 +36,7 @@ function edit() {
                 echo 'UNREACHABLE (2)' && return 1
             fi
         done
+        [[ -z "$WORKDIR" ]] && WORKDIR="$(dirname "${ARGS[0]}")"
         ;;
     esac
 
