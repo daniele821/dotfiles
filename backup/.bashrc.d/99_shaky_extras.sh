@@ -4,9 +4,15 @@
 function edit() {
     function fix_file() {
         FULLPATH="$(realpath -- "$1")"
-        ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" >&2 && return 1
-        ! [[ -O "$FULLPATH" ]] && echo "'$1' is not owned by current user" >&2 && return 1
-        [[ -L "${1%/}" ]] && echo "'$1' is a symlink" >&2 && return 1
+        case "$FULLPATH" in
+        /tmp|/var/tmp) ;; # exceptions
+        *)
+            ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" >&2 && return 1
+            ! [[ -O "$FULLPATH" ]] && echo "'$1' is not owned by current user" >&2 && return 1
+            ! [[ -w "$FULLPATH" ]] && echo "'$1' is not writable by current user" >&2 && return 1
+            [[ -L "${1%/}" ]] && echo "'$1' is a symlink" >&2 && return 1
+            ;;
+        esac
         echo "$FULLPATH" && return 0
     }
     TZVAR="TZ=$(timedatectl show --property=Timezone --value)"
@@ -22,7 +28,8 @@ function edit() {
         if [[ -d "$1" ]]; then
             podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
         else
-            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
+            fix_file "$DIRNAME" >/dev/null || return 1
+            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$DIRNAME:/host$DIRNAME" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
