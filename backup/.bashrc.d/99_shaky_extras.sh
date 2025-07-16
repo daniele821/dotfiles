@@ -5,7 +5,6 @@ function edit() {
     function fix_file() {
         local -r FULLPATH="$(realpath -- "$1")"
         case "$FULLPATH" in
-        /tmp) ;; # exceptions
         *)
             ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" >&2 && return 1
             ! [[ -O "$FULLPATH" ]] && echo "'$1' is not owned by current user" >&2 && return 1
@@ -27,8 +26,7 @@ function edit() {
         if [[ -d "$1" ]]; then
             podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim "$@"' _ "/host$FULLPATH"
         else
-            DIRNAME="$(dirname "$FULLPATH")"
-            fix_file "$DIRNAME" >/dev/null || return 1
+            DIRNAME="$(fix_file "$(dirname "$FULLPATH")")" || return 1
             podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$DIRNAME:/host$DIRNAME" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host$FULLPATH"
         fi
         ;;
