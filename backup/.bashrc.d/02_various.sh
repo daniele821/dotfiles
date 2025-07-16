@@ -9,6 +9,7 @@ export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
 function open() {
+    local file=
     case "$#" in
     0) xdg-open "$PWD" ;;
     1) xdg-open "$1" ;;

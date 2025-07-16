@@ -32,10 +32,10 @@ fi
 # kitten init
 if exist kitten; then
     function preview() {
-        [[ "$FPREVIEW" == "true" ]] && FULLSCREEN="--scale-up"
-        [[ "$FPREVIEW" == "true" ]] || FULLSCREEN=""
+        [[ "$FPREVIEW" == "true" ]] && local -r FULLSCREEN="--scale-up"
+        [[ "$FPREVIEW" == "true" ]] || local -r FULLSCREEN=""
         local -r oldPwd="$PWD"
-        FILE="${1}"
+        local FILE="${1}"
         if [[ $# == 0 || -d "$FILE" ]]; then
             [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
             FILE="$(

@@ -2,11 +2,14 @@
 
 # run neovim dev container in current directory
 function edit() {
-    TZVAR="TZ=$(timedatectl show --property=Timezone --value)"
-    SECOP="label=type:container_runtime_t"
-    IMAGE="ghcr.io/daniele821/neovim"
-    WORKDIR=""
-    ARGS=()
+    local -r TZVAR="TZ=$(timedatectl show --property=Timezone --value)"
+    local -r SECOP="label=type:container_runtime_t"
+    local -r IMAGE="ghcr.io/daniele821/neovim"
+    local FULLPATH=""
+    local WORKDIR=""
+    local ARGS=()
+    local arg=""
+
     case "$#" in
     0 | 1)
         FULLPATH="$(realpath -- "${1:-.}")"
