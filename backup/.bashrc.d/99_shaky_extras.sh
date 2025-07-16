@@ -20,12 +20,12 @@ function edit() {
     case "$#" in
     0) # mount NOTHING
         FULLPATH="$(fix_file .)" || return 1
-        podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
+        podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim "$@"' _ "/host$FULLPATH"
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(fix_file "$1")" || return 1
         if [[ -d "$1" ]]; then
-            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
+            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim "$@"' _ "/host$FULLPATH"
         else
             DIRNAME="$(dirname "$FULLPATH")"
             fix_file "$DIRNAME" >/dev/null || return 1
