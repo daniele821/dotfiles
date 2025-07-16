@@ -40,5 +40,5 @@ function edit() {
         ;;
     esac
 
-    podman run --rm -it -e "$TZVAR" --security-opt "$SECOP" -v "/:/host" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
+    podman run --rm -it --read-only -e "$TZVAR" --security-opt "$SECOP" -v "neovim-state:/root" -v "/:/host" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
 }
