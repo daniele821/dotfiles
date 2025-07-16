@@ -5,7 +5,7 @@ function edit() {
     function fix_file() {
         FULLPATH="$(realpath -- "$1")"
         case "$FULLPATH" in
-        /tmp|/var/tmp) ;; # exceptions
+        /tmp | /var/tmp) ;; # exceptions
         *)
             ! [[ -e "$FULLPATH" ]] && echo "'$1' does not exists" >&2 && return 1
             ! [[ -O "$FULLPATH" ]] && echo "'$1' is not owned by current user" >&2 && return 1
@@ -24,28 +24,29 @@ function edit() {
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(fix_file "$1")" || return 1
-        DIRNAME="$(dirname "$FULLPATH")"
         if [[ -d "$1" ]]; then
             podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
         else
+            DIRNAME="$(dirname "$FULLPATH")"
             fix_file "$DIRNAME" >/dev/null || return 1
             podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$DIRNAME:/host$DIRNAME" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
-        declare -A tmp_arr
-        for arg in "$@"; do
-            path="$(fix_file "$arg")" || return 1
-            tmp_arr["$path"]=1
-        done
-        FULLPATHS=("${!tmp_arr[@]}")
-        MOUNTS=()
-        ARGS=()
-        for arg in "${FULLPATHS[@]}"; do
-            MOUNTS+=(-v "$arg:/host$arg")
-            [[ -f "$arg" ]] && ARGS+=("/host$arg")
-        done
-        podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host "$IMAGE" bash -ic 'nvim "$@"' _ "${ARGS[@]}"
+        echo "TODO" && return 1
+        # declare -A tmp_arr
+        # for arg in "$@"; do
+        #     path="$(fix_file "$arg")" || return 1
+        #     tmp_arr["$path"]=1
+        # done
+        # FULLPATHS=("${!tmp_arr[@]}")
+        # MOUNTS=()
+        # ARGS=()
+        # for arg in "${FULLPATHS[@]}"; do
+        #     MOUNTS+=(-v "$arg:/host$arg")
+        #     [[ -f "$arg" ]] && ARGS+=("/host$arg")
+        # done
+        # podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host "$IMAGE" bash -ic 'nvim "$@"' _ "${ARGS[@]}"
         ;;
     esac
 }
