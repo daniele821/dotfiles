@@ -9,17 +9,20 @@ function edit() {
         [[ -L "${1%/}" ]] && echo "'$1' is a symlink" >&2 && return 1
         echo "$FULLPATH" && return 0
     }
+    TZVAR="TZ=$(timedatectl show --property=Timezone --value)"
+    IMAGE="ghcr.io/daniele821/neovim"
     case "$#" in
     0) # mount NOTHING
-        podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" -w /root ghcr.io/daniele821/neovim bash -ic 'nvim'
+        FULLPATH="$(fix_file .)" || return 1
+        podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
         ;;
     1) # mount file or directory, and set workdir to that mount location
         FULLPATH="$(fix_file "$1")" || return 1
         DIRNAME="$(dirname "$FULLPATH")"
         if [[ -d "$1" ]]; then
-            podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$FULLPATH" ghcr.io/daniele821/neovim bash -ic 'nvim'
+            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$FULLPATH" "$IMAGE" bash -ic 'nvim'
         else
-            podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host/$FULLPATH" -w "/host/$DIRNAME" ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
+            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$FULLPATH:/host$FULLPATH" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
@@ -35,7 +38,7 @@ function edit() {
             MOUNTS+=(-v "$arg:/host$arg")
             [[ -f "$arg" ]] && ARGS+=("/host$arg")
         done
-        podman run --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host ghcr.io/daniele821/neovim bash -ic 'nvim "$@"' _ "${ARGS[@]}"
+        podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t "${MOUNTS[@]}" -w /host "$IMAGE" bash -ic 'nvim "$@"' _ "${ARGS[@]}"
         ;;
     esac
 }
