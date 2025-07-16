@@ -3,7 +3,7 @@
 # run neovim dev container in current directory
 function edit() {
     function fix_file() {
-        FULLPATH="$(realpath -- "$1")"
+        local -r FULLPATH="$(realpath -- "$1")"
         case "$FULLPATH" in
         /tmp | /var/tmp) ;; # exceptions
         *)
@@ -29,7 +29,7 @@ function edit() {
         else
             DIRNAME="$(dirname "$FULLPATH")"
             fix_file "$DIRNAME" >/dev/null || return 1
-            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$DIRNAME:/host$DIRNAME" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host/$FULLPATH"
+            podman run --rm -it -e "$TZVAR" --security-opt label=type:container_runtime_t -v "$DIRNAME:/host$DIRNAME" -w "/host$DIRNAME" "$IMAGE" bash -ic 'nvim "$@"' _ "/host$FULLPATH"
         fi
         ;;
     *) # mount multiple files at once, in their fullpath, as to easily avoid conflicts
