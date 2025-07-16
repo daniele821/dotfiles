@@ -39,6 +39,7 @@ function edit() {
         [[ -z "$WORKDIR" ]] && WORKDIR="$(dirname "${ARGS[0]}")"
         ;;
     esac
+    [[ "${#ARGS[@]}" == 0 ]] && ARGS=("$WORKDIR")
 
-    podman run --rm -it --read-only -e "$TZVAR" --security-opt "$SECOP" -v "neovim-state:/root" -v "/:/host" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
+    podman run --rm -it -e "$TZVAR" --security-opt "$SECOP" -v "/:/host" -v "neovim-state:/root" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
 }
