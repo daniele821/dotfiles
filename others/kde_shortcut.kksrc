@@ -1,4 +1,5 @@
 [ActivityManager][Global Shortcuts]
+switch-to-activity-08a9450a-090c-4762-b7d4-cc6f80fca548=
 switch-to-activity-180d7f87-21f4-44c3-873b-e47054c65d21=
 
 [KDE Keyboard Layout Switcher][Global Shortcuts]
@@ -27,7 +28,7 @@ mute=Volume Mute
 
 [ksmserver][Global Shortcuts]
 Halt Without Confirmation=
-Lock Session=Screensaver; Meta+L
+Lock Session=Meta+L; Screensaver
 Log Out=Ctrl+Alt+Del
 Log Out Without Confirmation=
 LogOut=
@@ -58,7 +59,7 @@ MoveZoomUp=
 Overview=Meta+W
 Setup Window Shortcut=
 Show Desktop=Meta+D
-Switch One Desktop Down=Meta+Down; Meta+Ctrl+Down
+Switch One Desktop Down=Meta+Ctrl+Down; Meta+Down
 Switch One Desktop Up=Meta+Up; Meta+Ctrl+Up
 Switch One Desktop to the Left=Meta+Left; Meta+Ctrl+Left
 Switch One Desktop to the Right=Meta+Ctrl+Right; Meta+Right
@@ -119,10 +120,6 @@ Window Custom Quick Tile Bottom=Meta+Shift+J
 Window Custom Quick Tile Left=Meta+Shift+H
 Window Custom Quick Tile Right=Meta+Shift+L
 Window Custom Quick Tile Top=Meta+Shift+K
-Window Custom Quick Tile Bottom=
-Window Custom Quick Tile Left=
-Window Custom Quick Tile Right=
-Window Custom Quick Tile Top=
 Window Fullscreen=Meta+F
 Window Grow Horizontal=
 Window Grow Vertical=
@@ -135,10 +132,10 @@ Window Move=
 Window Move Center=Meta+C
 Window No Border=
 Window On All Desktops=
-Window One Desktop Down=Meta+Ctrl+Shift+Down; Meta+Shift+Down
-Window One Desktop Up=Meta+Shift+Up; Meta+Ctrl+Shift+Up
-Window One Desktop to the Left=Meta+Shift+Left; Meta+Ctrl+Shift+Left
-Window One Desktop to the Right=Meta+Shift+Right; Meta+Ctrl+Shift+Right
+Window One Desktop Down=Meta+Shift+Down; Meta+Ctrl+Shift+Down
+Window One Desktop Up=Meta+Ctrl+Shift+Up; Meta+Shift+Up
+Window One Desktop to the Left=Meta+Ctrl+Shift+Left; Meta+Shift+Left
+Window One Desktop to the Right=Meta+Ctrl+Shift+Right; Meta+Shift+Right
 Window One Screen Down=
 Window One Screen Up=
 Window One Screen to the Left=
@@ -195,7 +192,7 @@ Window to Screen 6=
 Window to Screen 7=
 disableInputCapture=Meta+Shift+Esc
 view_actual_size=Meta+0
-view_zoom_in=Meta++; Meta+=
+view_zoom_in=Meta+=; Meta++
 view_zoom_out=Meta+-
 
 [mediacontrol][Global Shortcuts]
@@ -221,7 +218,7 @@ _launch=Meta+T
 
 [org.kde.krunner.desktop][Global Shortcuts]
 RunClipboard=Alt+Shift+F2
-_launch=Alt+F2; Search; Meta+A; Alt+Space
+_launch=Search; Alt+F2; Alt+Space; Meta+A
 
 [org.kde.kscreen.desktop][Global Shortcuts]
 ShowOSD=Meta+P; Display
@@ -237,12 +234,17 @@ ActiveWindowScreenShot=Meta+Print
 CurrentMonitorScreenShot=
 FullScreenScreenShot=Shift+Print
 OpenWithoutScreenshot=
-RecordRegion=Meta+R; Meta+Shift+R
+RecordRegion=Meta+Shift+R; Meta+R
 RecordScreen=Meta+Alt+R
 RecordWindow=Meta+Ctrl+R
 RectangularRegionScreenShot=Meta+Shift+Print
 WindowUnderCursorScreenShot=Meta+Ctrl+Print
-_launch=Print; Meta+Shift+S
+_launch=Meta+Shift+S; Print
+
+[org.kde.touchpadshortcuts.desktop][Global Shortcuts]
+DisableTouchpad=Touchpad Off
+EnableTouchpad=Touchpad On
+ToggleTouchpad=Meta+Ctrl+Zenkaku Hankaku; Touchpad Toggle; Meta+Ctrl+Touchpad Toggle
 
 [org.mozilla.firefox.desktop][Global Shortcuts]
 _launch=Meta+B
@@ -263,7 +265,7 @@ PowerOff=Power Off
 Sleep=Sleep
 Toggle Keyboard Backlight=Keyboard Light On/Off
 Turn Off Screen=
-powerProfile=Battery; Meta+Shift+B
+powerProfile=Meta+Shift+B; Battery
 
 [plasmashell][Global Shortcuts]
 activate application launcher=Alt+F1
@@ -282,6 +284,7 @@ clipboard_action=
 cycle-panels=
 cycleNextAction=
 cyclePrevAction=
+edit_clipboard=
 manage activities=
 next activity=
 previous activity=
@@ -295,7 +298,7 @@ switch to previous activity=
 toggle do not disturb=
 
 [systemsettings.desktop][Global Shortcuts]
-_launch=Meta+I; Tools
+_launch=Tools; Meta+I
 kcm-kscreen=
 kcm-lookandfeel=
 kcm-powerdevilprofilesconfig=
