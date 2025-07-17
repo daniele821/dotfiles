@@ -19,12 +19,12 @@ GIT_DATA=(
     "git@daniele821.github.com:daniele821/nvim-config.git"
     "/personal/repos/daniele821/nvim-config"
     "danixgithub1@gmail.com"
-    ""
+    "main"
 
     "git@daniele821.github.com:daniele821/nvim-full.git"
     "/personal/repos/daniele821/nvim-full"
     "danixgithub1@gmail.com"
-    ""
+    "main"
 
     "git@daniele821.github.com:daniele821/ricette.git"
     "/personal/repos/daniele821/ricette"
@@ -81,7 +81,7 @@ function download_repo() {
     fi
 
     # additional operations done ONLY when repo gets downloaded
-    case "$git_repo" in
+    [[ "$git_branch" == "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" ]] && case "$git_repo" in
     "/personal/repos/daniele821/dotfiles")
         # set valid branch for script
         if ! [[ -e "${git_repo}/.branch" ]]; then
