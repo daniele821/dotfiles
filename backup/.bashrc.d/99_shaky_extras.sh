@@ -10,8 +10,10 @@ function edit() {
     local arg=""
 
     function valid_path() {
-        [[ "$(realpath -- "$1")/" != /personal/repos/* ]] && echo "'$1' is not an allowed path" && return 1
-        return 0
+        local -r fullpath="$(realpath -- "$1")/"
+        [[ "$fullpath" == /personal/repos/* ]] && return 0 
+        [[ "$fullpath" == /tmp/* ]] && return 0 
+        echo "'$1' is not an allowed path" && return 1
     }
 
     case "$#" in
