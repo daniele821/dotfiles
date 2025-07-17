@@ -12,7 +12,6 @@ function edit() {
     function valid_path() {
         local -r fullpath="$(realpath -- "$1")/"
         [[ "$fullpath" == /personal/repos/* ]] && return 0 
-        [[ "$fullpath" == /tmp/* ]] && return 0 
         echo "'$1' is not an allowed path" && return 1
     }
 
