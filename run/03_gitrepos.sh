@@ -77,7 +77,8 @@ function download_repo() {
         [[ -n "$git_branch" ]] && git -C "$git_repo" switch "$git_branch" -q
     else
         echo -e "pulling \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
-        git -C "$git_repo" pull --ff-only --progress --recurse-submodules
+        OUTPUT="$(git -C "$git_repo" pull --ff-only --progress --recurse-submodules)"
+        [[ "$OUTPUT" != "Already up to date." ]] && echo "$OUTPUT"
     fi
 
     # additional operations done ONLY when repo gets downloaded
