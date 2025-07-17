@@ -10,8 +10,9 @@ function edit() {
     local arg=""
 
     function valid_path() {
+        [[ ! -e "$FULLPATH" ]] && echo "'$arg' is not a valid path" && return 1
         local -r fullpath="$(realpath -- "$1")/"
-        [[ "$fullpath" == /personal/repos/* ]] && return 0 
+        [[ "$fullpath" == /personal/repos/* ]] && return 0
         echo "'$1' is not an allowed path" && return 1
     }
 
@@ -20,7 +21,6 @@ function edit() {
         FULLPATH="$(realpath -- "${1:-.}")"
         DIRNAME="$(dirname -- "$FULLPATH")"
         valid_path "$FULLPATH" || return 1
-        [[ ! -e "$FULLPATH" ]] && echo "'$1' is not a valid path" && return 1
         if [[ -d "$FULLPATH" ]]; then
             WORKDIR="$FULLPATH"
         elif [[ -f "$FULLPATH" ]]; then
@@ -35,7 +35,6 @@ function edit() {
         for arg in "$@"; do
             FULLPATH="$(realpath -- "${arg}")"
             valid_path "$FULLPATH"
-            [[ ! -e "$FULLPATH" ]] && echo "'$arg' is not a valid path" && return 1
             if [[ -d "$FULLPATH" ]]; then
                 [[ -n "$WORKDIR" ]] && echo "'$arg' is the second directory found" && return 1
                 WORKDIR="$FULLPATH"
