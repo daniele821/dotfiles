@@ -68,18 +68,6 @@ function download_repo() {
     git_repo="$2"
     git_email="$3"
     git_branch="$4"
-    if ! [[ -e "$git_repo" ]]; then
-        echo -en "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
-        [[ -n "$git_branch" ]] && echo -en ", branch: \e[35m$git_branch\e[m"
-        echo
-        git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
-        git -C "$git_repo" config user.email "$git_email"
-        [[ -n "$git_branch" ]] && git -C "$git_repo" switch "$git_branch" -q
-    else
-        echo -e "pulling \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
-        OUTPUT="$(git -C "$git_repo" pull --ff-only --progress --recurse-submodules)"
-        [[ "$OUTPUT" != "Already up to date." ]] && echo "$OUTPUT"
-    fi
 
     # additional operations done ONLY when repo gets downloaded
     [[ "$git_branch" == "$(git -C "$git_repo" rev-parse --abbrev-ref HEAD)" ]] && case "$git_repo" in
@@ -144,7 +132,20 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 4)); do
     git_email="${GIT_DATA[$((i + 2))]}"
     git_branch="${GIT_DATA[$((i + 3))]}"
     TMP_FILE="$(mktemp "${TMP_DIR}/XXXXXXXXXXXX.out")"
-    download_repo "$git_url" "$git_repo" "$git_email" "$git_branch" &>"$TMP_FILE" &
+    {
+        if ! [[ -e "$git_repo" ]]; then
+            echo -en "cloning \e[32m$git_url\e[m into \e[33m$git_repo\e[m, email: \e[34m$git_email\e[m"
+            [[ -n "$git_branch" ]] && echo -en ", branch: \e[35m$git_branch\e[m"
+            echo
+            git clone -c color.ui=always --progress --recurse-submodules "$git_url" "$git_repo"
+            git -C "$git_repo" config user.email "$git_email"
+            [[ -n "$git_branch" ]] && git -C "$git_repo" switch "$git_branch" -q
+        else
+            echo -e "pulling \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
+            git -C "$git_repo" pull --ff-only --progress --recurse-submodules
+        fi
+        download_repo "$git_url" "$git_repo" "$git_email" "$git_branch"
+    } &>"$TMP_FILE" &
     CLONEPIDS+=("$!")
     TMP_FILES+=("$TMP_FILE")
 done
