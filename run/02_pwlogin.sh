@@ -5,13 +5,16 @@ set -e
 [[ "$(id -u)" -eq 0 ]] && echo 'do not run this script as root!' && exit 1
 
 {
+    # global variables often reused
+    PASSWD_DIR="/personal/secrets/passwords"
+
     # copy passwords from usb drive
-    while ! [[ -d "/personal/data/passwords" ]]; do
+    while ! [[ -d "$PASSWD_DIR" ]]; do
         PASSWORD_DIRS="$(find "/run/media/$USER" -name passwords 2>/dev/null)" || true
         if [[ "$(echo "$PASSWORD_DIRS" | wc -w)" -gt 0 && "$(echo "$PASSWORD_DIRS" | wc -l)" -eq 1 ]]; then
             echo "copying passwords from usb..."
-            cp -r "$PASSWORD_DIRS" /personal/data/passwords
-            git -C /personal/data/passwords/ restore /personal/data/passwords/
+            cp -r "$PASSWORD_DIRS" "$PASSWD_DIR"
+            git -C "$PASSWD_DIR" restore "$PASSWD_DIR"
             break
         elif [[ "$(echo "$PASSWORD_DIRS" | wc -l)" -gt 1 ]]; then
             echo -en "\e[1;34mMultiple password directories found in usb drive. Fix it or type SKIP... \e[m"
@@ -30,7 +33,7 @@ set -e
         if ! echo "$STATUS" | grep "$user" &>/dev/null; then
             ADDED_USERS+=("$user")
             ssh-keygen -t ed25519 -f ~/.ssh/id_"${user}" -N "" || true
-            gh auth login --with-token <"/personal/data/passwords/github/tokens/token-${user}.txt"
+            gh auth login --with-token <"$PASSWD_DIR/github/tokens/token-${user}.txt"
             gh ssh-key add "$HOME/.ssh/id_${user}.pub" --title "auto-generated on $(cat /sys/devices/virtual/dmi/id/product_name)"
         fi
     done

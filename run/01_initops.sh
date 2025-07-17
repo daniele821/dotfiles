@@ -39,8 +39,9 @@ dnf --assumeyes autoremove
 
 # create personal dirs
 if ! [[ -d "/personal" ]]; then
-    mkdir -p /personal/{data,repos}
-    chown "$SUDO_USER":"$SUDO_USER" /personal/{data,repos}
+    mkdir -p /personal/{secrets,repos}
+    chown "$SUDO_USER":"$SUDO_USER" /personal/{secrets,repos}
+    chmod 0700 /personal/secrets
     echo "created personal directory in /personal"
 fi
 
