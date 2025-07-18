@@ -141,7 +141,7 @@ for ((i = 0; i < "${#GIT_DATA[@]}"; i += 4)); do
             git -C "$git_repo" config user.email "$git_email"
             [[ -n "$git_branch" ]] && git -C "$git_repo" switch "$git_branch" -q
         else
-            echo -e "pulling \e[32m$git_url\e[m into \e[33m$git_repo\e[m"
+            echo -e "pulling \e[33m$git_repo\e[m"
             git -C "$git_repo" pull --ff-only --progress --recurse-submodules
         fi
         download_repo "$git_url" "$git_repo" "$git_email" "$git_branch"
