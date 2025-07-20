@@ -3,7 +3,6 @@
 import enum
 import os
 import sys
-import re
 import shutil
 import subprocess
 import pathlib
@@ -435,8 +434,7 @@ SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 
 # ACTIONS
 def help(flags):
-    opt_toggle = flags.has_option(Option.TOGGLE)
-    help_msg = """Program to backup dotfiles, with git integration
+    print("""Program to backup dotfiles, with git integration
 
 \x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
 
@@ -479,12 +477,7 @@ def help(flags):
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
   \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
-  """
-    if opt_toggle:
-        # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
-        print(re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])").sub("", help_msg))
-    else:
-        print(help_msg)
+  """)
 
 
 def init(flags):
