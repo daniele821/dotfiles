@@ -363,6 +363,7 @@ FILES = {
     "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+    "gitrepos": os.path.join(DIRS["config"], "git_repos.txt"),
 }
 ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
@@ -379,6 +380,7 @@ class Action(enum.Enum):
     INIT = enum.auto()
     RUN = enum.auto()
     HELP = enum.auto()
+    GIT = enum.auto()
     DEFAULT = LIST
 
 
@@ -397,6 +399,7 @@ ACTIONS = {
     "e": Action.EDIT,
     "h": Action.HELP,
     "i": Action.INIT,
+    "g": Action.GIT,
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
@@ -422,6 +425,7 @@ SHORTCUTS = {
     "run": Flag([Action.RUN], [Option.YES]),
     "edit": Flag([Action.EDIT], []),
     "help": Flag([Action.HELP], []),
+    "git": Flag([Action.GIT], []),
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
@@ -446,6 +450,7 @@ def help(flags):
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
   \x1b[1m-h\x1b[m                    show this help message
+  \x1b[1m-g\x1b[m                    update or download tracked git repos
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -468,6 +473,7 @@ def help(flags):
   \x1b[1medit            \x1b[m      allow to edit all files
   \x1b[1mrun             \x1b[m      run all init scripts
   \x1b[1mhelp            \x1b[m      show this help message
+  \x1b[1mgit             \x1b[m      update or download tracked git repos
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
@@ -672,6 +678,10 @@ def commit(flags):
         git_push()
 
 
+def git_repos(flags):
+    ...
+
+
 # ACTION UTILITIES
 def load_config(conf):
     if exist(conf) and not isrealfile(conf):
@@ -759,6 +769,8 @@ def execute(flags):
             help(flags)
         case Action.INIT:
             init(flags)
+        case Action.GIT:
+            git_repos(flags)
         case Action.RUN:
             run(flags)
         case Action.UNTRACKED:
