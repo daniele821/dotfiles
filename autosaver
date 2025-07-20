@@ -8,7 +8,6 @@ import subprocess
 import pathlib
 import filecmp
 import traceback
-import tomllib
 
 
 # OUTPUT UTILITIES
@@ -367,7 +366,7 @@ FILES = {
     "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "gitrepos": os.path.join(DIRS["config"], "git_repos.toml"),
+    "gitrepos": os.path.join(DIRS["config"], "git_repos.txt"),
 }
 ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
@@ -683,39 +682,6 @@ def gitrepos(flags):
         return
     elif not exist(conf):
         return
-    data = pathlib.Path(conf).read_text(encoding='utf-8')
-    dataToml = tomllib.loads(data)
-    opt_force = flags.has_option(Option.FORCE)
-    opt_toggle = flags.has_option(Option.TOGGLE)
-
-    if opt_toggle:
-        topdirs = dataToml["topdirs"]
-        repos = set()
-        for topdir in topdirs:
-            if not isrealdir(topdir):
-                err_exit(f"not a valid directory: {topdir}")
-            for root, dirs, files in os.walk(topdir):
-                if '.git' in dirs:
-                    repos.add(os.path.dirname(os.path.join(root, '.git')))
-                    dirs.remove('.git')
-        err_exit("TODO: save git repos")
-        return
-
-    for key in dataToml:
-        value = dataToml[key]
-        if not isinstance(value, dict):
-            continue
-        dir = key
-        url = value["url"]
-        if not isoriginal(dir):
-            warn_msg(f"not a valid path: {dir}")
-            continue
-        if not exist(dir):
-            err_exit("TODO: clone repo")
-        elif isrealdir(dir):
-            err_exit("TODO: pull repo")
-        else:
-            warn_msg(f"exists but is not a directory: {dir}")
 
 
 # ACTION UTILITIES
