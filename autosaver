@@ -686,6 +686,14 @@ def gitrepos(flags):
 
     if opt_toggle:
         topdirs = dataToml["topdirs"]
+        repos = set()
+        for topdir in topdirs:
+            if not isrealdir(topdir):
+                err_exit(f"not a valid directory: {topdir}")
+            for root, dirs, files in os.walk(topdir):
+                if '.git' in dirs:
+                    repos.add(os.path.dirname(os.path.join(root, '.git')))
+                    dirs.remove('.git')
         err_exit("TODO: save git repos")
         return
 
