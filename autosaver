@@ -89,61 +89,65 @@ def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
 
 
-def assert_git_toplevel_dir():
-    cmd = ["git", "-C", SCRIPT_DIR, "rev-parse", "--show-toplevel"]
+def assert_git_toplevel_dir(dir):
+    cmd = ["git", "-C", dir, "rev-parse", "--show-toplevel"]
     runned = subprocess.run(cmd, capture_output=True, text=True)
     if runned.returncode != 0:
         return "git top level directory was not found"
-    if runned.stdout.strip() != SCRIPT_DIR:
+    if runned.stdout.strip() != dir:
         return "git top level directory is not the script directory"
 
 
-def git_current_branch():
-    return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+def git_current_branch(dir):
+    return __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
 
 
-def git_is_branch_uptodate(allow_behind=False):
-    remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-    branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
-    remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
-    branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
+def git_email(dir):
+    return __cmd_output__("git", "-C", dir, "config", "user.email")
+
+
+def git_is_branch_uptodate(dir, allow_behind=False):
+    remote = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    branch = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
+    remote_hash = __cmd_output__("git", "-C", dir, "rev-parse", remote)
+    branch_hash = __cmd_output__("git", "-C", dir, "rev-parse", branch)
     is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
     return remote_hash == branch_hash or (allow_behind and is_ancestor)
 
 
-def git_pull_and_check():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "pull", "--ff-only"])
+def git_pull_and_check(dir):
+    subprocess.run(["git", "-C", dir, "pull", "--ff-only"])
     return git_is_branch_uptodate(allow_behind=True)
 
 
-def git_push():
+def git_push(dir):
     if not git_is_branch_uptodate():
-        subprocess.run(["git", "-C", SCRIPT_DIR, "push"])
+        subprocess.run(["git", "-C", dir, "push"])
 
 
-def git_has_changes():
-    return __cmd_output__("git", "-C", SCRIPT_DIR, "status", "-s") != ""
+def git_has_changes(dir):
+    return __cmd_output__("git", "-C", dir, "status", "-s") != ""
 
 
-def git_diff(reverse=False):
-    cmd = ["git", "-C", SCRIPT_DIR, "diff", "HEAD", "--diff-filter=adcr"]
+def git_diff(dir, reverse=False):
+    cmd = ["git", "-C", dir, "diff", "HEAD", "--diff-filter=adcr"]
     subprocess.run(cmd + ["-R"] if reverse else cmd)
 
 
-def git_status():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "status", "-su"])
+def git_status(dir):
+    subprocess.run(["git", "-C", dir, "status", "-su"])
 
 
 def git_restore_all():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "reset", "HEAD"])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", "--staged", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "clean", "-fdq"])
+    subprocess.run(["git", "-C", dir, "reset", "HEAD"])
+    subprocess.run(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "restore", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "clean", "-fdq"])
 
 
-def git_commit_all(commit_msg):
-    subprocess.run(["git", "-C", SCRIPT_DIR, "add", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "commit", "-m", commit_msg])
+def git_commit_all(dir, commit_msg):
+    subprocess.run(["git", "-C", dir, "add", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "commit", "-m", commit_msg])
 
 
 # FILESYSTEM OPERATIONS
@@ -652,24 +656,24 @@ def commit(flags):
     msg_commit = color("msg", "Do you really want to commit all? ")
     msg_restore = color("msg", "Do you really want to restore all? ")
     if not opt_toggle:
-        if not git_pull_and_check():
+        if not git_pull_and_check(SCRIPT_DIR):
             err_exit("could not make current branch up to date with upstream!")
-    if git_has_changes():
+    if git_has_changes(SCRIPT_DIR):
         if opt_diff:
-            git_diff(reverse=opt_toggle)
-        git_status()
+            git_diff(SCRIPT_DIR, reverse=opt_toggle)
+        git_status(SCRIPT_DIR)
         if opt_toggle:
             if ask_user(msg_restore, flags):
-                git_restore_all()
+                git_restore_all(SCRIPT_DIR)
         else:
             if ask_user(msg_commit, flags):
                 if commit_msg := input(color("msg", "Write commit message: ")):
-                    git_commit_all(commit_msg)
+                    git_commit_all(SCRIPT_DIR, commit_msg)
     elif opt_toggle:
-        git_restore_all()
+        git_restore_all(SCRIPT_DIR)
 
     if not opt_toggle:
-        git_push()
+        git_push(SCRIPT_DIR)
 
 
 def gitrepos(flags):
@@ -743,7 +747,7 @@ def assert_branch():
         warn_msg("git command was not found, proceeding anyway in hope it's not a problem...")
         return
 
-    ERR_MSG = assert_git_toplevel_dir()
+    ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
     if ERR_MSG is not None:
         if ENV_BRANCH is not None:
             warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
@@ -752,7 +756,7 @@ def assert_branch():
 
     branch_file = FILES["branch"]
     create_file(branch_file)
-    curr_branch = git_current_branch()
+    curr_branch = git_current_branch(SCRIPT_DIR)
     want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
     if len(want_branch) == 0:
         want_branch = ""
