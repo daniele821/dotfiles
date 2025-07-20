@@ -677,21 +677,21 @@ def commit(flags):
 
 def gitrepos(flags):
     conf = FILES["gitrepos"]
-    if exist(conf) and not isrealfile(conf):
-        warn_msg("not a file: {}".format(relpath(conf)))
-        return
-    elif not exist(conf):
+    if not conf_file_exists(conf):
         return
 
 
 # ACTION UTILITIES
-def load_config(conf):
+def conf_file_exists(conf):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: {}".format(relpath(conf)))
-        return set()
-    elif not exist(conf):
-        return set()
+        return False
+    return exist(conf)
 
+
+def load_config(conf):
+    if not conf_file_exists(conf):
+        return set()
     odir = HOME
     bdir = DIRS["backup"]
     files = set()
