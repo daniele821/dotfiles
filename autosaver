@@ -671,7 +671,7 @@ def commit(flags):
         git_push()
 
 
-def git_repos(flags):
+def gitrepos(flags):
     ...
 
 
@@ -763,7 +763,7 @@ def execute(flags):
         case Action.INIT:
             init(flags)
         case Action.GIT:
-            git_repos(flags)
+            gitrepos(flags)
         case Action.RUN:
             run(flags)
         case Action.UNTRACKED:
