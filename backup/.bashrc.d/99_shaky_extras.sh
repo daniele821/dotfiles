@@ -54,5 +54,6 @@ function edit() {
     esac
     [[ "${#ARGS[@]}" == 0 ]] && ARGS=("$WORKDIR")
 
-    podman run --rm -it -e "$TZVAR" -v "/personal/repos:/personal/repos:z" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
+    # NOTE: detach-keys is necessary, otherwise ctrl+p gets stuck waiting for ctrl+q (or any other input)
+    podman run --detach-keys "" --rm -it -e "$TZVAR" -v "/personal/repos:/personal/repos:z" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
 }
