@@ -97,6 +97,10 @@ def assert_git_toplevel_dir(dir):
         return "git top level directory is not the script directory"
 
 
+def git_remote_url(dir):
+    return __cmd_output__("git", "-C", dir, "remote", "get-url", "origin")
+
+
 def git_current_branch(dir):
     return __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
 
@@ -680,7 +684,21 @@ def gitrepos(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     if opt_toggle:
-        gitrepos = find_gitrepos(FILES["gittopdirs"])
+        start = True
+        create_file(FILES["gitrepos"])
+        with open(FILES["gitrepos"], "w") as repoconf:
+            for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
+                if not start:
+                    repoconf.write("\n")
+                start = False
+                repoconf.write(repo)
+                repoconf.write("\n")
+                repoconf.write(git_remote_url(repo))
+                repoconf.write("\n")
+                repoconf.write(git_email(repo))
+                repoconf.write("\n")
+                repoconf.write(git_current_branch(repo))
+                repoconf.write("\n")
         return
     repos = load_gitconf(FILES["gitrepos"])
 
@@ -690,7 +708,7 @@ def conf_file_exists(conf):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: '{}'".format(relpath(conf)))
         return False
-    return os.path.getsize(conf) > 0 and exist(conf)
+    return exist(conf) and os.path.getsize(conf) > 0
 
 
 def load_config(conf):
@@ -725,8 +743,8 @@ def load_gitconf(conf):
         match pos:
             case 0: repos[index]["dir"] = os.path.normpath(line) if line else line
             case 1: repos[index]["url"] = line
-            case 2: repos[index]["branch"] = line
-            case 3: repos[index]["email"] = line
+            case 2: repos[index]["email"] = line
+            case 3: repos[index]["branch"] = line
             case 4:
                 if not isoriginal(repos[index]["dir"]):
                     warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
