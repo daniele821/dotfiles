@@ -717,7 +717,7 @@ def load_gitconf(conf):
             index = len(repos)
             repos.append({})
         match pos:
-            case 0: repos[index]["dir"] = line
+            case 0: repos[index]["dir"] = os.path.normpath(line)
             case 1: repos[index]["url"] = line
             case 2: repos[index]["branch"] = line
             case 3: repos[index]["email"] = line
