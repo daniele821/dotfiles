@@ -690,7 +690,7 @@ def conf_file_exists(conf):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: '{}'".format(relpath(conf)))
         return False
-    return exist(conf)
+    return os.path.getsize(conf) > 0 and exist(conf)
 
 
 def load_config(conf):
