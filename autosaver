@@ -676,30 +676,7 @@ def commit(flags):
 
 
 def gitrepos(flags):
-    conf = FILES["gitrepos"]
-    if not conf_file_exists(conf):
-        return
-    pos = 0
-    repos = []
-    lines = pathlib.Path(conf).read_text().splitlines()
-    lines.extend([""] * (5 - (len(lines) % 5) % 5))
-    for line in lines:
-        if pos == 0:
-            index = len(repos)
-            repos.append({})
-        match pos:
-            case 0: repos[index]["dir"] = line
-            case 1: repos[index]["url"] = line
-            case 2: repos[index]["branch"] = line
-            case 3: repos[index]["email"] = line
-            case 4:
-                if not isoriginal(repos[index]["dir"]):
-                    warn_msg(f"invalid directory {repos[index]["dir"]}")
-                    del repos[index]
-                elif repos[index]["url"].strip() == "":
-                    warn_msg(f"missing url for {repos[index]["dir"]}")
-                    del repos[index]
-        pos = (pos + 1) % 5
+    repos = load_gitconf(FILES["gitrepos"])
 
 
 # ACTION UTILITIES
@@ -726,6 +703,33 @@ def load_config(conf):
                 elif isrealdir(file):
                     files.update(all_files(file, dir))
     return files
+
+
+def load_gitconf(conf):
+    if not conf_file_exists(conf):
+        return []
+    pos = 0
+    repos = []
+    lines = pathlib.Path(conf).read_text().splitlines()
+    lines.extend([""] * (5 - (len(lines) % 5) % 5))
+    for line in lines:
+        if pos == 0:
+            index = len(repos)
+            repos.append({})
+        match pos:
+            case 0: repos[index]["dir"] = line
+            case 1: repos[index]["url"] = line
+            case 2: repos[index]["branch"] = line
+            case 3: repos[index]["email"] = line
+            case 4:
+                if not isoriginal(repos[index]["dir"]):
+                    warn_msg(f"invalid directory {repos[index]["dir"]}")
+                    del repos[index]
+                elif repos[index]["url"].strip() == "":
+                    warn_msg(f"missing url for {repos[index]["dir"]}")
+                    del repos[index]
+        pos = (pos + 1) % 5
+    return repos
 
 
 # EXECUTION UTILITIES
