@@ -684,22 +684,25 @@ def gitrepos(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     if opt_toggle:
-        create_file(FILES["gitrepos"])
         modified = False
-        with open(FILES["gitrepos"], "w") as repoconf:
-            for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
-                url = git_remote_url(repo)
-                branch = git_current_branch(repo)
-                email = git_email(repo)
-                if not url:
-                    warn_msg(f"no origin remote found for: '{repo}'")
-                    continue
-                if branch == "HEAD":
-                    branch = ""
-                if modified:
-                    repoconf.write("\n")
-                repoconf.write(f"{repo}\n{url}\n{email}\n{branch}\n")
-                modified = True
+        repoconf = ""
+        for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
+            url = git_remote_url(repo)
+            branch = git_current_branch(repo)
+            email = git_email(repo)
+            if not url:
+                warn_msg(f"no origin remote found for: '{repo}'")
+                continue
+            if branch == "HEAD":
+                branch = ""
+            if modified:
+                repoconf += "\n"
+            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n"
+            modified = True
+        if repoconf:
+            create_file(FILES["gitrepos"])
+            with open(FILES["gitrepos"], "w") as f:
+                f.write(repoconf)
         return
     repos = load_gitconf(FILES["gitrepos"])
 
