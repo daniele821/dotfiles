@@ -698,6 +698,10 @@ def gitrepos(flags):
             if modified:
                 repoconf += "\n"
             repoconf += f"{repo}\n{url}\n{email}\n{branch}\n"
+            print(color("msg", "saving repository ") + color("file", repo) +
+                  color("msg", " ( ") + color("file", url) +
+                  color("msg", ", ") + color("file", email) +
+                  color("msg", ", ") + color("file", branch) + color("msg", ")"))
             modified = True
         if repoconf:
             create_file(FILES["gitrepos"])
