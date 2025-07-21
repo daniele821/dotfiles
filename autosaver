@@ -101,11 +101,15 @@ def git_remote_url(dir):
     return __cmd_output__("git", "-C", dir, "remote", "get-url", "origin")
 
 
-def git_current_branch(dir):
+def git_current_branch(dir, setBranch=None):
+    if setBranch is not None:
+        return __cmd_output__("git", "-C", dir, "checkout", setBranch)
     return __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
 
 
-def git_email(dir):
+def git_email(dir, setEmail=None):
+    if setEmail is not None:
+        return __cmd_output__("git", "-C", dir, "config", "user.email", setEmail)
     return __cmd_output__("git", "-C", dir, "config", "user.email")
 
 
