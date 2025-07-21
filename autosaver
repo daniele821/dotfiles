@@ -723,10 +723,13 @@ def load_gitconf(conf):
             case 3: repos[index]["email"] = line
             case 4:
                 if not isoriginal(repos[index]["dir"]):
-                    warn_msg(f"invalid directory {repos[index]["dir"]}")
+                    warn_msg(f"invalid directory: {repos[index]["dir"]}")
                     del repos[index]
                 elif repos[index]["url"].strip() == "":
-                    warn_msg(f"missing url for {repos[index]["dir"]}")
+                    warn_msg(f"missing url: {repos[index]["dir"]}")
+                    del repos[index]
+                elif len(list(filter(lambda x: x["dir"] == repos[index]["dir"], repos))) > 1:
+                    warn_msg(f"duplicated repo: {repos[index]["dir"]}")
                     del repos[index]
         pos = (pos + 1) % 5
     return repos
