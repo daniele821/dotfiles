@@ -157,6 +157,15 @@ def git_commit_all(dir, commit_msg):
     subprocess.run(["git", "-C", dir, "commit", "-m", commit_msg])
 
 
+def git_clone_pull_interactive(dir, url=None):
+    env = os.environ.copy()
+    args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
+    if url is not None:
+        args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
+        env.update({'GIT_TERMINAL_PROMPT': '0'})
+    return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, env=env)
+
+
 # FILESYSTEM OPERATIONS
 def __is_original__(path):
     path = os.path.normpath(path)
@@ -719,14 +728,20 @@ def gitrepos(flags):
         if isrealdir(repo["dir"]):
             procs.append({})
             procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
+            procs[index]["proc"] = git_clone_pull_interactive(repo["dir"])
         elif not exist(repo["dir"]):
             procs.append({})
             procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
                 color("msg", " into ") + color("file", repo["dir"]) + \
                 color("msg", " ( ") + color("file", repo["email"]) + \
                 color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
+            procs[index]["proc"] = git_clone_pull_interactive(repo["dir"], repo["url"])
         else:
             warn_msg(f"path exists but is not a directory: {repo["dir"]}")
+    for proc in procs:
+        # NOTICE: THIS IS ONLY TEMPORARY TO TEST IF IT WORKS CORRECTLY!
+        proc["proc"].wait()
+        print(proc["proc"].stdout.read().decode("utf-8"), end="")
 
 
 # ACTION UTILITIES
