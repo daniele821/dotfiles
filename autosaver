@@ -729,10 +729,14 @@ def gitrepos(flags):
             if not opt_force:
                 continue
             procs.append({})
+            procs[index]["clone"] = False
+            procs[index]["repo"] = repo
             procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
             procs[index]["ps"] = git_clone_pull_interactive(repo["dir"])
         elif not exist(repo["dir"]):
             procs.append({})
+            procs[index]["clone"] = True
+            procs[index]["repo"] = repo
             procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
                 color("msg", " into ") + color("file", repo["dir"]) + \
                 color("msg", " ( ") + color("file", repo["email"]) + \
@@ -755,6 +759,9 @@ def gitrepos(flags):
             proc["ps"].wait()
             if proc["ps"].returncode != 0:
                 warn_msg(f"git process failed with {proc["ps"].returncode}")
+            if proc["clone"]:
+                git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
+                git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
 
 
 # ACTION UTILITIES
