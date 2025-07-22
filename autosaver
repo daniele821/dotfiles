@@ -726,22 +726,35 @@ def gitrepos(flags):
     for repo in repos:
         index = len(procs)
         if isrealdir(repo["dir"]):
+            if not opt_force:
+                continue
             procs.append({})
             procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
-            procs[index]["proc"] = git_clone_pull_interactive(repo["dir"])
+            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"])
         elif not exist(repo["dir"]):
             procs.append({})
             procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
                 color("msg", " into ") + color("file", repo["dir"]) + \
                 color("msg", " ( ") + color("file", repo["email"]) + \
                 color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
-            procs[index]["proc"] = git_clone_pull_interactive(repo["dir"], repo["url"])
+            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"], repo["url"])
         else:
             warn_msg(f"path exists but is not a directory: {repo["dir"]}")
     for proc in procs:
-        # NOTICE: THIS IS ONLY TEMPORARY TO TEST IF IT WORKS CORRECTLY!
-        proc["proc"].wait()
-        print(proc["proc"].stdout.read().decode("utf-8"), end="")
+        try:
+            print(proc["msg"])
+            while True:
+                byte = proc["ps"].stdout.read(1)
+                if not byte:
+                    break
+                sys.stdout.buffer.write(byte)
+                sys.stdout.buffer.flush()
+        except KeyboardInterrupt:
+            proc["ps"].terminate()
+        finally:
+            proc["ps"].wait()
+            if proc["ps"].returncode != 0:
+                warn_msg(f"git process failed with {proc["ps"].returncode}")
 
 
 # ACTION UTILITIES
