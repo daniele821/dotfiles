@@ -128,7 +128,7 @@ def git_pull_and_check(dir):
 
 
 def git_push(dir):
-    if not git_is_branch_uptodate():
+    if not git_is_branch_uptodate(dir):
         subprocess.run(["git", "-C", dir, "push"])
 
 
