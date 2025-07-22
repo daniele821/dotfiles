@@ -3,7 +3,6 @@
 import enum
 import os
 import sys
-import re
 import shutil
 import subprocess
 import pathlib
@@ -89,61 +88,82 @@ def __cmd_output__(*cmd):
     return subprocess.run(list(cmd), capture_output=True, text=True).stdout.strip()
 
 
-def assert_git_toplevel_dir():
-    cmd = ["git", "-C", SCRIPT_DIR, "rev-parse", "--show-toplevel"]
+def assert_git_toplevel_dir(dir):
+    cmd = ["git", "-C", dir, "rev-parse", "--show-toplevel"]
     runned = subprocess.run(cmd, capture_output=True, text=True)
     if runned.returncode != 0:
         return "git top level directory was not found"
-    if runned.stdout.strip() != SCRIPT_DIR:
+    if runned.stdout.strip() != dir:
         return "git top level directory is not the script directory"
 
 
-def git_current_branch():
-    return __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
+def git_remote_url(dir):
+    return __cmd_output__("git", "-C", dir, "remote", "get-url", "origin")
 
 
-def git_is_branch_uptodate(allow_behind=False):
-    remote = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-    branch = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", "--abbrev-ref", "HEAD")
-    remote_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", remote)
-    branch_hash = __cmd_output__("git", "-C", SCRIPT_DIR, "rev-parse", branch)
+def git_current_branch(dir, setBranch=None):
+    if setBranch is not None:
+        return __cmd_output__("git", "-C", dir, "checkout", setBranch)
+    return __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
+
+
+def git_email(dir, setEmail=None):
+    if setEmail is not None:
+        return __cmd_output__("git", "-C", dir, "config", "user.email", setEmail)
+    return __cmd_output__("git", "-C", dir, "config", "user.email")
+
+
+def git_is_branch_uptodate(dir, allow_behind=False):
+    remote = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    branch = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
+    remote_hash = __cmd_output__("git", "-C", dir, "rev-parse", remote)
+    branch_hash = __cmd_output__("git", "-C", dir, "rev-parse", branch)
     is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
     return remote_hash == branch_hash or (allow_behind and is_ancestor)
 
 
-def git_pull_and_check():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "pull", "--ff-only"])
-    return git_is_branch_uptodate(allow_behind=True)
+def git_pull_and_check(dir):
+    subprocess.run(["git", "-C", dir, "pull", "--ff-only"])
+    return git_is_branch_uptodate(dir, allow_behind=True)
 
 
-def git_push():
-    if not git_is_branch_uptodate():
-        subprocess.run(["git", "-C", SCRIPT_DIR, "push"])
+def git_push(dir):
+    if not git_is_branch_uptodate(dir):
+        subprocess.run(["git", "-C", dir, "push"])
 
 
-def git_has_changes():
-    return __cmd_output__("git", "-C", SCRIPT_DIR, "status", "-s") != ""
+def git_has_changes(dir):
+    return __cmd_output__("git", "-C", dir, "status", "-s") != ""
 
 
-def git_diff(reverse=False):
-    cmd = ["git", "-C", SCRIPT_DIR, "diff", "HEAD", "--diff-filter=adcr"]
+def git_diff(dir, reverse=False):
+    cmd = ["git", "-C", dir, "diff", "HEAD", "--diff-filter=adcr"]
     subprocess.run(cmd + ["-R"] if reverse else cmd)
 
 
-def git_status():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "status", "-su"])
+def git_status(dir):
+    subprocess.run(["git", "-C", dir, "status", "-su"])
 
 
 def git_restore_all():
-    subprocess.run(["git", "-C", SCRIPT_DIR, "reset", "HEAD"])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", "--staged", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "restore", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "clean", "-fdq"])
+    subprocess.run(["git", "-C", dir, "reset", "HEAD"])
+    subprocess.run(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "restore", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "clean", "-fdq"])
 
 
-def git_commit_all(commit_msg):
-    subprocess.run(["git", "-C", SCRIPT_DIR, "add", SCRIPT_DIR])
-    subprocess.run(["git", "-C", SCRIPT_DIR, "commit", "-m", commit_msg])
+def git_commit_all(dir, commit_msg):
+    subprocess.run(["git", "-C", dir, "add", SCRIPT_DIR])
+    subprocess.run(["git", "-C", dir, "commit", "-m", commit_msg])
+
+
+def git_clone_pull_interactive(dir, url=None):
+    env = os.environ.copy()
+    args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
+    if url is not None:
+        args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
+        env.update({'GIT_TERMINAL_PROMPT': '0'})
+    return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, env=env)
 
 
 # FILESYSTEM OPERATIONS
@@ -363,6 +383,8 @@ FILES = {
     "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+    "gitrepos": os.path.join(DIRS["config"], "git_repos.txt"),
+    "gittopdirs": os.path.join(DIRS["config"], "git_topdirs.txt"),
 }
 ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
@@ -379,6 +401,7 @@ class Action(enum.Enum):
     INIT = enum.auto()
     RUN = enum.auto()
     HELP = enum.auto()
+    GIT = enum.auto()
     DEFAULT = LIST
 
 
@@ -397,6 +420,7 @@ ACTIONS = {
     "e": Action.EDIT,
     "h": Action.HELP,
     "i": Action.INIT,
+    "g": Action.GIT,
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
@@ -422,6 +446,7 @@ SHORTCUTS = {
     "run": Flag([Action.RUN], [Option.YES]),
     "edit": Flag([Action.EDIT], []),
     "help": Flag([Action.HELP], []),
+    "git": Flag([Action.GIT], []),
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
@@ -431,8 +456,7 @@ SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
 
 # ACTIONS
 def help(flags):
-    opt_toggle = flags.has_option(Option.TOGGLE)
-    help_msg = """Program to backup dotfiles, with git integration
+    print("""Program to backup dotfiles, with git integration
 
 \x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
 
@@ -446,6 +470,7 @@ def help(flags):
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
   \x1b[1m-h\x1b[m                    show this help message
+  \x1b[1m-g\x1b[m                    update or download tracked git repos
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -468,17 +493,13 @@ def help(flags):
   \x1b[1medit            \x1b[m      allow to edit all files
   \x1b[1mrun             \x1b[m      run all init scripts
   \x1b[1mhelp            \x1b[m      show this help message
+  \x1b[1mgit             \x1b[m      update or download tracked git repos
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
   \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
-  """
-    if opt_toggle:
-        # we do some regex magic (DON'T TOUCH! IT JUST WORKS! KING CRIMSOOOON!)
-        print(re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])").sub("", help_msg))
-    else:
-        print(help_msg)
+  """)
 
 
 def init(flags):
@@ -652,34 +673,108 @@ def commit(flags):
     msg_commit = color("msg", "Do you really want to commit all? ")
     msg_restore = color("msg", "Do you really want to restore all? ")
     if not opt_toggle:
-        if not git_pull_and_check():
+        if not git_pull_and_check(SCRIPT_DIR):
             err_exit("could not make current branch up to date with upstream!")
-    if git_has_changes():
+    if git_has_changes(SCRIPT_DIR):
         if opt_diff:
-            git_diff(reverse=opt_toggle)
-        git_status()
+            git_diff(SCRIPT_DIR, reverse=opt_toggle)
+        git_status(SCRIPT_DIR)
         if opt_toggle:
             if ask_user(msg_restore, flags):
-                git_restore_all()
+                git_restore_all(SCRIPT_DIR)
         else:
             if ask_user(msg_commit, flags):
                 if commit_msg := input(color("msg", "Write commit message: ")):
-                    git_commit_all(commit_msg)
+                    git_commit_all(SCRIPT_DIR, commit_msg)
     elif opt_toggle:
-        git_restore_all()
+        git_restore_all(SCRIPT_DIR)
 
     if not opt_toggle:
-        git_push()
+        git_push(SCRIPT_DIR)
+
+
+def gitrepos(flags):
+    opt_toggle = flags.has_option(Option.TOGGLE)
+    opt_force = flags.has_option(Option.FORCE)
+    if opt_toggle:
+        modified = False
+        repoconf = ""
+        for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
+            url = git_remote_url(repo)
+            branch = git_current_branch(repo)
+            email = git_email(repo)
+            if not url:
+                warn_msg(f"no origin remote found for: '{repo}'")
+                continue
+            if branch == "HEAD":
+                branch = ""
+            if modified:
+                repoconf += "\n"
+            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n"
+            print(color("msg", "saving repository ") + color("file", repo) +
+                  color("msg", " ( ") + color("file", url) +
+                  color("msg", ", ") + color("file", email) +
+                  color("msg", ", ") + color("file", branch) + color("msg", ")"))
+            modified = True
+        if repoconf:
+            create_file(FILES["gitrepos"])
+            with open(FILES["gitrepos"], "w") as f:
+                f.write(repoconf)
+        return
+    repos = load_gitconf(FILES["gitrepos"])
+    procs = []
+    for repo in repos:
+        index = len(procs)
+        if isrealdir(repo["dir"]):
+            if not opt_force:
+                continue
+            procs.append({})
+            procs[index]["clone"] = False
+            procs[index]["repo"] = repo
+            procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
+            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"])
+        elif not exist(repo["dir"]):
+            procs.append({})
+            procs[index]["clone"] = True
+            procs[index]["repo"] = repo
+            procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
+                color("msg", " into ") + color("file", repo["dir"]) + \
+                color("msg", " ( ") + color("file", repo["email"]) + \
+                color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
+            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"], repo["url"])
+        else:
+            warn_msg(f"path exists but is not a directory: {repo["dir"]}")
+    for proc in procs:
+        try:
+            print(proc["msg"])
+            while True:
+                byte = proc["ps"].stdout.read(1)
+                if not byte:
+                    break
+                sys.stdout.buffer.write(byte)
+                sys.stdout.buffer.flush()
+        except KeyboardInterrupt:
+            proc["ps"].terminate()
+        finally:
+            proc["ps"].wait()
+            if proc["ps"].returncode != 0:
+                warn_msg(f"git process failed with {proc["ps"].returncode}")
+            if proc["clone"]:
+                git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
+                git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
 
 
 # ACTION UTILITIES
-def load_config(conf):
+def conf_file_exists(conf):
     if exist(conf) and not isrealfile(conf):
-        warn_msg("not a file: {}".format(relpath(conf)))
-        return set()
-    elif not exist(conf):
-        return set()
+        warn_msg("not a file: '{}'".format(relpath(conf)))
+        return False
+    return exist(conf) and os.path.getsize(conf) > 0
 
+
+def load_config(conf):
+    if not conf_file_exists(conf):
+        return set()
     odir = HOME
     bdir = DIRS["backup"]
     files = set()
@@ -695,13 +790,58 @@ def load_config(conf):
     return files
 
 
+def load_gitconf(conf):
+    if not conf_file_exists(conf):
+        return []
+    pos = 0
+    repos = []
+    lines = pathlib.Path(conf).read_text().splitlines()
+    lines.extend([""] * (5 - (len(lines) % 5) % 5))
+    for line in lines:
+        if pos == 0:
+            index = len(repos)
+            repos.append({})
+        match pos:
+            case 0: repos[index]["dir"] = os.path.normpath(line) if line else line
+            case 1: repos[index]["url"] = line
+            case 2: repos[index]["email"] = line
+            case 3: repos[index]["branch"] = line
+            case 4:
+                if not isoriginal(repos[index]["dir"]):
+                    warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
+                    del repos[index]
+                elif repos[index]["url"].strip() == "":
+                    warn_msg(f"missing url: '{repos[index]["dir"]}'")
+                    del repos[index]
+                elif len(list(filter(lambda x: x["dir"] == repos[index]["dir"], repos))) > 1:
+                    warn_msg(f"duplicated repo: '{repos[index]["dir"]}'")
+                    del repos[index]
+        pos = (pos + 1) % 5
+    return repos
+
+
+def find_gitrepos(conf):
+    if not conf_file_exists(FILES["gittopdirs"]):
+        return []
+    git_dirs = []
+    for topdir in pathlib.Path(FILES["gittopdirs"]).read_text().splitlines():
+        if not isoriginal(topdir):
+            warn_msg(f"invalid path: '{topdir}'")
+            continue
+        for root, dirs, files in os.walk(topdir):
+            if '.git' in dirs:
+                git_dirs.append(root)
+                dirs.remove('.git')
+    return git_dirs
+
+
 # EXECUTION UTILITIES
 def assert_branch():
     if ENV_BRANCH is not None and shutil.which("git") is None:
         warn_msg("git command was not found, proceeding anyway in hope it's not a problem...")
         return
 
-    ERR_MSG = assert_git_toplevel_dir()
+    ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
     if ERR_MSG is not None:
         if ENV_BRANCH is not None:
             warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
@@ -710,7 +850,7 @@ def assert_branch():
 
     branch_file = FILES["branch"]
     create_file(branch_file)
-    curr_branch = git_current_branch()
+    curr_branch = git_current_branch(SCRIPT_DIR)
     want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
     if len(want_branch) == 0:
         want_branch = ""
@@ -759,6 +899,8 @@ def execute(flags):
             help(flags)
         case Action.INIT:
             init(flags)
+        case Action.GIT:
+            gitrepos(flags)
         case Action.RUN:
             run(flags)
         case Action.UNTRACKED:
