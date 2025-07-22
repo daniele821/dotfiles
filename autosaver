@@ -370,7 +370,7 @@ class Flag:
 
 
 # CONFIGURABLE VARIABLES
-HOME = os.getenv("HOME")
+HOME = os.path.realpath(os.getenv("HOME"))
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 DIRS = {
