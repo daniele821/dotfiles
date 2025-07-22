@@ -124,7 +124,7 @@ def git_is_branch_uptodate(dir, allow_behind=False):
 
 def git_pull_and_check(dir):
     subprocess.run(["git", "-C", dir, "pull", "--ff-only"])
-    return git_is_branch_uptodate(allow_behind=True)
+    return git_is_branch_uptodate(dir, allow_behind=True)
 
 
 def git_push(dir):
