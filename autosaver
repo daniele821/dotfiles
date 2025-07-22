@@ -713,6 +713,20 @@ def gitrepos(flags):
                 f.write(repoconf)
         return
     repos = load_gitconf(FILES["gitrepos"])
+    procs = []
+    for repo in repos:
+        index = len(procs)
+        if isrealdir(repo["dir"]):
+            procs.append({})
+            procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
+        elif not exist(repo["dir"]):
+            procs.append({})
+            procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
+                color("msg", " into ") + color("file", repo["dir"]) + \
+                color("msg", " ( ") + color("file", repo["email"]) + \
+                color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
+        else:
+            warn_msg(f"path exists but is not a directory: {repo["dir"]}")
 
 
 # ACTION UTILITIES
