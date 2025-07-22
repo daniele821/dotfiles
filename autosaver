@@ -145,7 +145,7 @@ def git_status(dir):
     subprocess.run(["git", "-C", dir, "status", "-su"])
 
 
-def git_restore_all():
+def git_restore_all(dir):
     subprocess.run(["git", "-C", dir, "reset", "HEAD"])
     subprocess.run(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR])
     subprocess.run(["git", "-C", dir, "restore", SCRIPT_DIR])
