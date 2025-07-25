@@ -29,12 +29,6 @@ dnf --assumeyes install mpv-mpris libheif-freeworld
 dnf --assumeyes install mesa-va-drivers-freeworld libavcodec-freeworld # amd
 dnf --assumeyes install intel-media-driver                             # intel
 
-# upgrade everything
-dnf --assumeyes upgrade
-
-# remove unnecessary packages
-dnf --assumeyes autoremove
-
 # create personal dirs
 if ! [[ -d "/personal" ]]; then
     mkdir -p /personal/{secrets,repos}
