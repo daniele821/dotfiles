@@ -2,8 +2,6 @@
 
 set -e
 
-tuned-adm profile throughput-performance
-
 sudo bash -c ' set -e
 
 # remove bloat
