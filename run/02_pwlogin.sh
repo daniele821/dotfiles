@@ -46,7 +46,7 @@ set -e
     # restore firefox backup
     if ! [[ -f "$FIREFOX_INIT" ]]; then
         rm -rf "$HOME/.mozilla"
-        killall firefox
+        killall firefox || true
         firefox --headless --no-remote --safe-mode about:blank &
         sleep 1 && kill $!
 
@@ -57,7 +57,8 @@ set -e
             cd "$TMP_DIR"
             cp -r "$PASSWD_DIR/firefox.zip" ./firefox.zip
             unzip firefox.zip >/dev/null
-            mv firefox "$profile"
+            rm firefox.zip
+            mv ./* "$profile"
             cd
             rm -rf "$TMP_DIR"
         done
