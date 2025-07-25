@@ -46,8 +46,9 @@ set -e
     # restore firefox backup
     if ! [[ -f "$FIREFOX_INIT" ]]; then
         rm -rf "$HOME/.mozilla"
+        killall firefox
         firefox --headless --no-remote --safe-mode about:blank &
-        sleep 1 && killall firefox
+        sleep 1 && kill $!
 
         find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
             echo "initializing '$profile'..."
