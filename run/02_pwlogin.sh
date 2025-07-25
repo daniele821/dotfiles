@@ -5,6 +5,7 @@ set -e
 {
     # global variables often reused
     PASSWD_DIR="/personal/secrets/passwords"
+    FIREFOX_INIT="$HOME/.mozilla/firefox/.init_mozilla_profiles"
 
     # copy passwords from usb drive
     while ! [[ -d "$PASSWD_DIR" ]]; do
@@ -41,6 +42,27 @@ set -e
             sleep 1
         done
     done
+
+    # restore firefox backup
+    if ! [[ -f "$FIREFOX_INIT" ]]; then
+        rm -rf "$HOME/.mozilla"
+        firefox --headless --no-remote --safe-mode about:blank &
+        sleep 1 && kill $!
+
+        find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
+            echo "initializing '$profile'..."
+            TMP_DIR="$(mktemp -d)"
+            rm -rf "$profile"
+            cd "$TMP_DIR"
+            cp -r "$PASSWD_DIR/firefox.zip" ./firefox.zip
+            unzip firefox.zip >/dev/null
+            mv firefox "$profile"
+            cd
+            rm -rf "$TMP_DIR"
+        done
+
+        touch "$FIREFOX_INIT"
+    fi
 
 } </dev/tty
 
