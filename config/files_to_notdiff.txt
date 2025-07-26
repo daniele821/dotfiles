@@ -1,12 +1,29 @@
 // vim:commentstring=//\ %s
 
+.config/PlasmaDiscoverUpdates
 .config/dolphinrc
 .config/htop/htoprc
+.config/kactivitymanagerd-statsrc
+.config/kactivitymanagerdrc
+.config/kcminputrc
+.config/kded5rc
+.config/kdedefaults
+.config/kdeglobals
+.config/kglobalshortcutsrc
 .config/konsolerc
+.config/krunnerrc
+.config/kwinrc
+.config/kxkbrc
+.config/networkmanagement.notifyrc
 .config/okularpartrc
 .config/plasma-localerc
+.config/plasma-org.kde.plasma.desktop-appletsrc
+.config/plasmaparc
+.config/plasmarc
+.config/plasmashellrc
+.config/powerdevilrc
 .config/spectaclerc
-.config/krunnerrc
+.config/systemsettingsrc
 .local/share/konsole/NerdProfile.profile
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/kxmlgui5/konsole
