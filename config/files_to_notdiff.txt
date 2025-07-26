@@ -23,7 +23,6 @@
 .config/plasmarc
 .config/plasmashellrc
 .config/powerdevilrc
-.config/spectaclerc
 .config/systemsettingsrc
 .config/Trolltech.conf
 .local/share/konsole/NerdProfileNoLigatures.profile

@@ -1,9 +1,0 @@
-[GuiConfig]
-captureMode=0
-
-[ImageSave]
-imageSaveLocation=file:///home/daniele/Pictures/
-
-[VideoSave]
-preferredVideoFormat=2
-videoSaveLocation=file:///home/daniele/Videos/
