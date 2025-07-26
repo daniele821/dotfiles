@@ -1,5 +1,6 @@
 // vim:commentstring=//\ %s
 
+.config/bluedevilglobalrc
 .config/dolphinrc
 .config/htop/htoprc
 .config/kactivitymanagerdrc
