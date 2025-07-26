@@ -47,10 +47,6 @@ flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
 
-# install flatpak apps
-flatpak install flathub com.protonvpn.www -y
-flatpak install flathub com.github.wwmm.easyeffects -y
-
 # install Firacode font
 if ! [[ -d "$HOME/.local/share/fonts/FiraCode" ]]; then
     mkdir -p "$HOME/.local/share/fonts/FiraCode"
