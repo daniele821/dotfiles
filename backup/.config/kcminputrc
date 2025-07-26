@@ -4,5 +4,8 @@ NumLock=1
 [Libinput][1267][12448][ELAN0703:01 04F3:30A0 Touchpad]
 NaturalScroll=true
 
+[Libinput][1739][52759][SYNA32C1:00 06CB:CE17 Touchpad]
+NaturalScroll=true
+
 [Mouse]
 cursorSize=30
