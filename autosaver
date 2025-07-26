@@ -446,7 +446,7 @@ SHORTCUTS = {
     "run": Flag([Action.RUN], [Option.YES]),
     "edit": Flag([Action.EDIT], []),
     "help": Flag([Action.HELP], []),
-    "git": Flag([Action.GIT], []),
+    "git": Flag([Action.GIT], [Option.FORCE]),
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
