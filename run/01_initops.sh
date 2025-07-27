@@ -47,13 +47,4 @@ flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
 
-# install Firacode font
-if ! [[ -d "$HOME/.local/share/fonts/FiraCode" ]]; then
-    mkdir -p "$HOME/.local/share/fonts/FiraCode"
-    cd "$HOME/.local/share/fonts/FiraCode"
-    wget -O Firacode.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip
-    unzip Firacode.zip
-    rm Firacode.zip LICENSE README.md
-fi
-
 exit 0
