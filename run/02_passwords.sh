@@ -5,7 +5,7 @@ set -e
 {
     # global variables often reused
     PASSWD_DIR="/personal/secrets/passwords"
-    FIREFOX_INIT="$HOME/.mozilla/firefox/.init_mozilla_profiles"
+    USERS=(daniele821 danix1234)
 
     # copy passwords from usb drive
     while ! [[ -d "$PASSWD_DIR" ]]; do
@@ -31,7 +31,6 @@ set -e
         dnf download gh
         rpm2cpio ./gh*.rpm | cpio -idm
         GH="$TMP_DIR/usr/bin/gh"
-        USERS=(daniele821 danix1234)
         STATUS="$("$GH" auth status 2>/dev/null)" || true
         ADDED_USERS=()
         for user in "${USERS[@]}"; do
@@ -51,36 +50,4 @@ set -e
         rm -rf "$TMP_DIR"
     fi
 
-    # restore firefox backup
-    if ! [[ -f "$FIREFOX_INIT" ]]; then
-        rm -rf "$HOME/.mozilla"
-        killall firefox || true
-        firefox --headless --no-remote --safe-mode about:blank &
-        sleep 1 && kill $!
-        find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
-            echo "initializing '$profile'..."
-            TMP_DIR="$(mktemp -d)"
-            rm -rf "$profile"
-            cd "$TMP_DIR"
-            cp -r "$PASSWD_DIR/firefox.zip" ./firefox.zip
-            unzip firefox.zip >/dev/null
-            rm firefox.zip
-            mv ./* "$profile"
-            cd
-            rm -rf "$TMP_DIR"
-        done
-        touch "$FIREFOX_INIT"
-    fi
-
-    # install Firacode font
-    if ! [[ -d "$HOME/.local/share/fonts/FiraCode" ]]; then
-        mkdir -p "$HOME/.local/share/fonts/FiraCode"
-        cd "$HOME/.local/share/fonts/FiraCode"
-        wget -O Firacode.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip
-        unzip Firacode.zip
-        rm Firacode.zip LICENSE README.md
-    fi
-
 } </dev/tty
-
-exit 0

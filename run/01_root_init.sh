@@ -46,5 +46,3 @@ flatpak remote-delete fedora || true
 flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
-
-exit 0
