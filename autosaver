@@ -700,18 +700,19 @@ def gitrepos(flags):
         modified = False
         repoconf = ""
         for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
-            url = git_remote_url(repo)
-            branch = git_current_branch(repo)
-            email = git_email(repo)
+            repo_home = os.path.join(HOME, repo)
+            url = git_remote_url(repo_home)
+            branch = git_current_branch(repo_home)
+            email = git_email(repo_home)
             if not url:
-                warn_msg(f"no origin remote found for: '{repo}'")
+                warn_msg(f"no origin remote found for: '{repo_home}'")
                 continue
             if branch == "HEAD":
                 branch = ""
             if modified:
                 repoconf += "\n"
             repoconf += f"{repo}\n{url}\n{email}\n{branch}\n"
-            print(color("msg", "saving repository ") + color("file", repo) +
+            print(color("msg", "saving repository ") + color("file", repo_home) +
                   color("msg", " ( ") + color("file", url) +
                   color("msg", ", ") + color("file", email) +
                   color("msg", ", ") + color("file", branch) + color("msg", ")"))
@@ -725,6 +726,7 @@ def gitrepos(flags):
     procs = []
     for repo in repos:
         index = len(procs)
+        repo["dir"] = os.path.join(HOME, repo["dir"])
         if isrealdir(repo["dir"]):
             if not opt_force:
                 continue
@@ -807,7 +809,7 @@ def load_gitconf(conf):
             case 2: repos[index]["email"] = line
             case 3: repos[index]["branch"] = line
             case 4:
-                if not isoriginal(repos[index]["dir"]):
+                if isoriginal(repos[index]["dir"]):
                     warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
                     del repos[index]
                 elif repos[index]["url"].strip() == "":
@@ -816,6 +818,8 @@ def load_gitconf(conf):
                 elif len(list(filter(lambda x: x["dir"] == repos[index]["dir"], repos))) > 1:
                     warn_msg(f"duplicated repo: '{repos[index]["dir"]}'")
                     del repos[index]
+                else:
+                    repos[index]["dir"] = os.path.join(HOME, repos[index]["dir"])
         pos = (pos + 1) % 5
     return repos
 
@@ -825,12 +829,13 @@ def find_gitrepos(conf):
         return []
     git_dirs = []
     for topdir in pathlib.Path(FILES["gittopdirs"]).read_text().splitlines():
-        if not isoriginal(topdir):
-            warn_msg(f"invalid path: '{topdir}'")
+        if topdir.startswith("/") or topdir.strip() == "":
             continue
-        for root, dirs, files in os.walk(topdir):
+        topdir = os.path.normpath(topdir)
+        home_path = os.path.join(HOME, topdir)
+        for root, dirs, files in os.walk(home_path):
             if '.git' in dirs:
-                git_dirs.append(root)
+                git_dirs.append(os.path.relpath(root, HOME))
                 dirs.remove('.git')
     return git_dirs
 
