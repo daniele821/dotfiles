@@ -33,16 +33,11 @@ dnf --assumeyes install intel-media-driver                             # intel
 dnf --assumeyes upgrade
 dnf --assumeyes autoremove
 
-# create personal dirs
-if ! [[ -d "/personal" ]]; then
-    mkdir -p /personal/{secrets,repos}
-    chown "$SUDO_USER":"$SUDO_USER" /personal/{secrets,repos}
-    chmod 0700 /personal/secrets
-    echo "created personal directory in /personal"
-fi
-
 # install flathub after removing fedora flatpak repos
 flatpak remote-delete fedora || true
 flatpak remote-delete fedora-testing || true
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
+
+flatpak install flathub com.protonvpn.www -y
+flatpak install flathub com.github.wwmm.easyeffects -y
