@@ -1,54 +1,54 @@
-/personal/repos/daniele821/dotfiles
+.personal/repos/daniele821/dotfiles
 git@daniele821.github.com:daniele821/dotfiles.git
 danixgithub1@gmail.com
 fedora-kde
 
-/personal/repos/daniele821/github-website
+.personal/repos/daniele821/github-website
 git@daniele821.github.com:daniele821/daniele821.github.io.git
 danixgithub1@gmail.com
 main
 
-/personal/repos/daniele821/nvim-config
+.personal/repos/daniele821/nvim-config
 git@daniele821.github.com:daniele821/nvim-config.git
 danixgithub1@gmail.com
 main
 
-/personal/repos/daniele821/nvim-full
+.personal/repos/daniele821/nvim-full
 git@daniele821.github.com:daniele821/nvim-full.git
 danixgithub1@gmail.com
 main
 
-/personal/repos/daniele821/ricette
+.personal/repos/daniele821/ricette
 git@daniele821.github.com:daniele821/ricette.git
 danixgithub1@gmail.com
 main
 
-/personal/repos/danix1234/tesi_CRYPTO_2025
+.personal/repos/danix1234/tesi_CRYPTO_2025
 git@danix1234.github.com:danix1234/tesi_CRYPTO_2025.git
 danixgithub1@gmail.com
 main
 
-/personal/repos/danix1234/unibo
+.personal/repos/danix1234/unibo
 git@danix1234.github.com:danix1234/unibo.git
 daniele.muffato@studio.unibo.it
 main
 
-/personal/repos/danix1234/unibo-2a
+.personal/repos/danix1234/unibo-2a
 git@danix1234.github.com:danix1234/unibo-2a.git
 daniele.muffato@studio.unibo.it
 main
 
-/personal/repos/danix1234/unibo-2b
+.personal/repos/danix1234/unibo-2b
 git@danix1234.github.com:danix1234/unibo-2b.git
 daniele.muffato@studio.unibo.it
 main
 
-/personal/repos/danix1234/unibo-3a
+.personal/repos/danix1234/unibo-3a
 git@danix1234.github.com:danix1234/unibo-3a.git
 daniele.muffato@studio.unibo.it
 main
 
-/personal/repos/danix1234/unibo-3b
+.personal/repos/danix1234/unibo-3b
 git@danix1234.github.com:danix1234/unibo-3b.git
 daniele.muffato@studio.unibo.it
 main
