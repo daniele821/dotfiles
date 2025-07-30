@@ -170,8 +170,11 @@ def git_clone_pull_interactive(dir, url=None):
     env = os.environ.copy()
     args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
     if url is not None:
-        args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
-        env.update({'GIT_TERMINAL_PROMPT': '0'})
+        if ENV_GIT_PROMPT is None:
+            args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
+            env.update({'GIT_TERMINAL_PROMPT': '0'})
+        else:
+            args = ["git", "-c", "color.ui=always", "clone", "--progress", url, dir]
     return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, env=env)
 
 
@@ -398,6 +401,7 @@ FILES = {
 ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
+ENV_GIT_PROMPT = os.getenv("GIT_PROMPT")
 
 
 class Action(enum.Enum):
@@ -508,6 +512,7 @@ def help(flags):
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
   \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
+  \x1b[1mGIT_PROMPT\x1b[m            allow getting prompt asking for git passwords
   """)
 
 
