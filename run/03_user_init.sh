@@ -4,28 +4,29 @@ set -e
 
 {
     # global variables often reused
-    PASSWD_DIR="/personal/secrets/passwords"
-    FIREFOX_INIT="$HOME/.mozilla/firefox/.init_mozilla_profiles"
+    FIREFOX_INIT="$HOME/.mozilla/firefox/.init_firefox_profile"
     FIRACODE_DIR="$HOME/.local/share/fonts/FiraCode"
     AUTOSAVER_INIT="$HOME/.local/share/.init_autosaver_restorer"
 
     # restore firefox backup
     if ! [[ -f "$FIREFOX_INIT" ]]; then
-        rm -rf "$HOME/.mozilla"
-        killall firefox || true
-        firefox --headless --no-remote --safe-mode about:blank &
-        sleep 1 && kill $!
-        find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
+        killall firefox 2>/dev/null || true
+        echo "initializing firefox..."
+        rm -rf ~/.mozilla
+        firefox --headless --no-remote --safe-mode about:blank &>/dev/null &
+        sleep 2 && kill $!
+        find ~/.mozilla/firefox -maxdepth 1 -name '*.default-release' | while read -r profile; do
             echo "initializing '$profile'..."
-            TMP_DIR="$(mktemp -d)"
             rm -rf "$profile"
-            cd "$TMP_DIR"
-            cp -r "$PASSWD_DIR/firefox.zip" ./firefox.zip
-            unzip firefox.zip >/dev/null
-            rm firefox.zip
-            mv ./* "$profile"
-            cd
-            rm -rf "$TMP_DIR"
+            cp -r "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../others/firefox-init/" "$profile"
+            mkdir -p "$profile/extensions/"
+            cd "$profile/extensions/"
+            echo "downloading darkreader extension..."
+            curl -s -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
+            echo "downloading sponsorblock extension..."
+            curl -s -L "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/addon-406847-latest.xpi" -o sponsorBlocker@ajay.app.xpi
+            echo "downloading ublock origin extension..."
+            curl -s -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
         done
         touch "$FIREFOX_INIT"
     fi
