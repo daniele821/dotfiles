@@ -165,12 +165,10 @@ def git_commit_all(dir, commit_msg):
 
 
 def git_clone_pull_interactive(dir, url=None):
-    env = os.environ.copy()
     args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
     if url is not None:
-        args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
-        env.update({'GIT_TERMINAL_PROMPT': '0'})
-    return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, env=env)
+        args = ["git", "-c", "color.ui=always", "clone", "--progress", url, dir]
+    return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
 
 
 # FILESYSTEM OPERATIONS
