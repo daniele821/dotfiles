@@ -43,7 +43,7 @@ fi
 
 # restore files and download git repos
 if ! [[ -f "$DOTFILES_INIT" ]]; then
-    echo "restoring all dotfiles"
+    echo "restoring all dotfiles..."
     "$DOTFILES_ROOT/autosaver" restoreall >/dev/null
     mkdir -p "$INIT_DIR" && touch "$DOTFILES_INIT"
 fi
