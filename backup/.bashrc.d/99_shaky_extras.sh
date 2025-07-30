@@ -13,7 +13,7 @@ function edit() {
     function __valid_path_() {
         [[ ! -e "$FULLPATH" ]] && echo "'$arg' is not a valid path" && return 1
         local -r fullpath="$(realpath -- "$1")/"
-        [[ "$fullpath" == /personal/repos/* ]] && return 0
+        [[ "$fullpath" == "$HOME/.personal/repos/"* ]] && return 0
         echo "'$1' is not an allowed path" && return 1
     }
 
@@ -55,5 +55,5 @@ function edit() {
     [[ "${#ARGS[@]}" == 0 ]] && ARGS=("$WORKDIR")
 
     # NOTE: detach-keys is necessary, otherwise ctrl+p gets stuck waiting for ctrl+q (or any other input)
-    podman run --detach-keys "" --rm -it -e "$TZVAR" -v "/personal/repos:/personal/repos:z" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
+    podman run --detach-keys "" --rm -it -e "$TZVAR" -v "$HOME/.personal/repos:$HOME/.personal/repos:z" -w "$WORKDIR" "$IMAGE" bash -ilc 'nvim "$@"' _ "${ARGS[@]}"
 }
