@@ -18,7 +18,7 @@ if ! [[ -f "$FIREFOX_INIT" ]]; then
     sleep 2 && kill $!
     find ~/.mozilla/firefox -maxdepth 1 -name '*.default-release' | while read -r profile; do
         rm -rf "$profile"
-        cp -r "$DOTFILES_ROOT/others/firefox-init/" "$profile"
+        cp -r "$DOTFILES_ROOT/others/firefox/init/" "$profile"
         mkdir -p "$profile/extensions/"
         cd "$profile/extensions/"
         curl -s -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
