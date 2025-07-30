@@ -84,16 +84,20 @@ def ask_user(msg, flags=None):
 
 
 # GIT UTILITIES
-def __cmd_output__(*cmd):
-    res = subprocess.run(list(cmd), capture_output=True, text=True)
-    if res.stderr.strip():
-        dbg(f"command '{str(list(cmd))}' failed:\n {res.stderr.strip()}")
-    return res.stdout.strip()
+def run_cmd(*cmd, capture_output=True, return_stdout=True):
+    if type(cmd) is tuple and type(cmd[0]) is list:
+        cmd = cmd[0]
+    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output)
+    if res.returncode != 0:
+        dbg(f"command '{str(list(cmd))}' failed:\n {res.stderr}")
+    if capture_output and return_stdout:
+        return res.stdout.strip()
+    return res
 
 
 def assert_git_toplevel_dir(dir):
     cmd = ["git", "-C", dir, "rev-parse", "--show-toplevel"]
-    runned = subprocess.run(cmd, capture_output=True, text=True)
+    runned = run_cmd(cmd, return_stdout=False)
     if runned.returncode != 0:
         return "git top level directory was not found"
     if runned.stdout.strip() != dir:
@@ -101,63 +105,63 @@ def assert_git_toplevel_dir(dir):
 
 
 def git_remote_url(dir):
-    return __cmd_output__("git", "-C", dir, "remote", "get-url", "origin")
+    return run_cmd("git", "-C", dir, "remote", "get-url", "origin")
 
 
 def git_current_branch(dir, setBranch=None):
     if setBranch is not None:
-        return __cmd_output__("git", "-C", dir, "checkout", setBranch)
-    return __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
+        return run_cmd("git", "-C", dir, "checkout", setBranch)
+    return run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
 
 
 def git_email(dir, setEmail=None):
     if setEmail is not None:
-        return __cmd_output__("git", "-C", dir, "config", "user.email", setEmail)
-    return __cmd_output__("git", "-C", dir, "config", "user.email")
+        return run_cmd("git", "-C", dir, "config", "user.email", setEmail)
+    return run_cmd("git", "-C", dir, "config", "user.email")
 
 
 def git_is_branch_uptodate(dir, allow_behind=False):
-    remote = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-    branch = __cmd_output__("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
-    remote_hash = __cmd_output__("git", "-C", dir, "rev-parse", remote)
-    branch_hash = __cmd_output__("git", "-C", dir, "rev-parse", branch)
-    is_ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash]).returncode == 0
+    remote = run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    branch = run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
+    remote_hash = run_cmd("git", "-C", dir, "rev-parse", remote)
+    branch_hash = run_cmd("git", "-C", dir, "rev-parse", branch)
+    is_ancestor = run_cmd(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash], return_stdout=False).returncode == 0
     return remote_hash == branch_hash or (allow_behind and is_ancestor)
 
 
 def git_pull_and_check(dir):
-    subprocess.run(["git", "-C", dir, "pull", "--ff-only"])
+    run_cmd(["git", "-C", dir, "pull", "--ff-only"], capture_output=False)
     return git_is_branch_uptodate(dir, allow_behind=True)
 
 
 def git_push(dir):
     if not git_is_branch_uptodate(dir):
-        subprocess.run(["git", "-C", dir, "push"])
+        run_cmd(["git", "-C", dir, "push"], capture_output=False)
 
 
 def git_has_changes(dir):
-    return __cmd_output__("git", "-C", dir, "status", "-s") != ""
+    return run_cmd("git", "-C", dir, "status", "-s") != ""
 
 
 def git_diff(dir, reverse=False):
     cmd = ["git", "-C", dir, "diff", "HEAD", "--diff-filter=adcr"]
-    subprocess.run(cmd + ["-R"] if reverse else cmd)
+    run_cmd(cmd + ["-R"] if reverse else cmd, capture_output=False)
 
 
 def git_status(dir):
-    subprocess.run(["git", "-C", dir, "status", "-su"])
+    run_cmd(["git", "-C", dir, "status", "-su"], capture_output=False)
 
 
 def git_restore_all(dir):
-    subprocess.run(["git", "-C", dir, "reset", "HEAD"])
-    subprocess.run(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR])
-    subprocess.run(["git", "-C", dir, "restore", SCRIPT_DIR])
-    subprocess.run(["git", "-C", dir, "clean", "-fdq"])
+    run_cmd(["git", "-C", dir, "reset", "HEAD"], capture_output=False)
+    run_cmd(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR], capture_output=False)
+    run_cmd(["git", "-C", dir, "restore", SCRIPT_DIR], capture_output=False)
+    run_cmd(["git", "-C", dir, "clean", "-fdq"], capture_output=False)
 
 
 def git_commit_all(dir, commit_msg):
-    subprocess.run(["git", "-C", dir, "add", SCRIPT_DIR])
-    subprocess.run(["git", "-C", dir, "commit", "-m", commit_msg])
+    run_cmd(["git", "-C", dir, "add", SCRIPT_DIR], capture_output=False)
+    run_cmd(["git", "-C", dir, "commit", "-m", commit_msg], capture_output=False)
 
 
 def git_clone_pull_interactive(dir, url=None):
@@ -545,7 +549,7 @@ def run(flags):
             msg2 = color("file", relpath(file))
             if ask_user(msg1 + msg2 + msg3, flags):
                 try:
-                    if subprocess.run(["bash", file]).returncode:
+                    if run_cmd(["bash", file], capture_output=False, return_stdout=False).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!", True)
@@ -576,7 +580,7 @@ def edit(flags):
             if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     file_old_content = pathlib.Path(file).read_text()
-                    if subprocess.run([editor, file]).returncode:
+                    if run_cmd([editor, file], capture_output=False, return_stdout=False).returncode:
                         raise Exception()
                     file_new_content = pathlib.Path(file).read_text()
                     if file_old_content != file_new_content:
@@ -635,7 +639,7 @@ def backup(flags):
                             if opt_diff:
                                 old = ofile if act_backup else bfile
                                 new = bfile if act_backup else ofile
-                                subprocess.run(["diff", "--color", "-u", old, new])
+                                run_cmd(["diff", "--color", "-u", old, new], capture_output=False)
                             if act_save:
                                 if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                     copy_file(ofile, bfile, True)
