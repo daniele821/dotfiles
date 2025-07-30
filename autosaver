@@ -87,7 +87,7 @@ def ask_user(msg, flags=None):
 def __cmd_output__(*cmd):
     res = subprocess.run(list(cmd), capture_output=True, text=True)
     if res.stderr.strip():
-        dbg(res.stderr.strip())
+        dbg(f"command '{str(list(cmd))}' failed:\n {res.stderr.strip()}")
     return res.stdout.strip()
 
 
