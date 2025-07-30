@@ -15,10 +15,12 @@ def color(clr, str, output=False):
     match clr:
         case "err":
             result = "\033[1;31m" + str + "\033[m"
+        case "warn":
+            result = "\033[1;33m" + str + "\033[m"
         case "file":
             result = "\033[1;34m" + str + "\033[m"
         case "msg":
-            result = "\033[1;33m" + str + "\033[m"
+            result = "\033[1;37m" + str + "\033[m"
         case _:
             result = str
     if output:
@@ -34,7 +36,7 @@ def err_exit(msg, exc=False):
 
 
 def warn_msg(msg, exc=False):
-    color("msg", "WARNING: " + msg, True)
+    color("warn", "WARNING: " + msg, True)
     if exc:
         dbg_exc()
 
