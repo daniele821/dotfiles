@@ -7,7 +7,7 @@ user_pref("extensions.activeThemeID", "firefox-compact-dark@mozilla.org"); // se
 user_pref("browser.tabs.inTitlebar", 0); // use native title bar
 user_pref("browser.translations.automaticallyPopup", false); // no popups for translation
 user_pref("browser.tabs.hoverPreview.showThumbnails", false); // disable image preview on tab hover
-user_pref("browser.toolbars.bookmarks.visibility", "always"); // always show bookmarks
+user_pref("browser.toolbars.bookmarks.visibility", "never"); // never show bookmarks
 user_pref("sidebar.revamp.defaultLauncherVisible", false); // disable horizontal tabs icon
 user_pref("browser.uiCustomization.state", "{\"placements\":{\"widget-overflow-fixed-list\":[],\"unified-extensions-area\":[],\"nav-bar\":[\"back-button\",\"forward-button\",\"stop-reload-button\",\"customizableui-special-spring1\",\"vertical-spacer\",\"urlbar-container\",\"customizableui-special-spring2\",\"downloads-button\",\"unified-extensions-button\",\"ublock0_raymondhill_net-browser-action\",\"addon_darkreader_org-browser-action\",\"sponsorblocker_ajay_app-browser-action\",\"plasma-browser-integration_kde_org-browser-action\"],\"toolbar-menubar\":[\"menubar-items\"],\"TabsToolbar\":[\"firefox-view-button\",\"tabbrowser-tabs\",\"new-tab-button\"],\"vertical-tabs\":[],\"PersonalToolbar\":[\"personal-bookmarks\"]},\"seen\":[\"save-to-pocket-button\",\"developer-button\",\"screenshot-button\"],\"dirtyAreaCache\":[\"nav-bar\",\"vertical-tabs\",\"toolbar-menubar\",\"TabsToolbar\",\"PersonalToolbar\",\"unified-extensions-area\"],\"currentVersion\":23,\"newElementCount\":3}");
 
