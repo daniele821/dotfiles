@@ -849,15 +849,8 @@ def find_gitrepos(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
-    if ENV_BRANCH is not None and shutil.which("git") is None:
-        warn_msg("git command was not found, proceeding anyway in hope it's not a problem...")
-        return
-
     ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
     if ERR_MSG is not None:
-        if ENV_BRANCH is not None:
-            warn_msg(f"{ERR_MSG}, but proceeding anyway in hope it's not a problem...")
-            return
         err_exit(ERR_MSG)
 
     branch_file = FILES["branch"]
