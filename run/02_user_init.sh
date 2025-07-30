@@ -16,16 +16,18 @@ if ! [[ -f "$FIREFOX_INIT" ]]; then
     rm -rf ~/.mozilla
     firefox --headless --no-remote --safe-mode about:blank &>/dev/null &
     sleep 2 && kill $!
+    TMP_DIR="$(mktemp -d)"
+    cd "$TMP_DIR"
+    curl -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
+    curl -L "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/addon-406847-latest.xpi" -o sponsorBlocker@ajay.app.xpi
+    curl -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
     find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
-        echo -e "\e[1;37minitializing firefox profile '$profile'...\e[m"
         rm -rf "$profile"
         cp -r "$DOTFILES_ROOT/others/firefox/init/" "$profile"
         mkdir -p "$profile/extensions/"
-        cd "$profile/extensions/"
-        curl -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
-        curl -L "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/addon-406847-latest.xpi" -o sponsorBlocker@ajay.app.xpi
-        curl -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
+        cp "$TMP_DIR/"* "$profile/extensions"
     done
+    rm -rf "$TMP_DIR"
     mkdir -p "$INIT_DIR" && touch "$FIREFOX_INIT"
 fi
 
