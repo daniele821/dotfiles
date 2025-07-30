@@ -3,4 +3,3 @@
 .bashrc.d
 .config/mpv
 .gitconfig
-.ssh/config
