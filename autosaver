@@ -881,7 +881,12 @@ def find_gitrepos(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
-    ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
+    try:
+        ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
+    except BaseException as e:
+        if ENV_NO_CHECKS is None:
+            raise e
+        warn_msg("problem found, but continuing anyway (" + str(e.__class__.__name__) + ": " + str(e) + ")")
     if ERR_MSG is not None and ENV_NO_CHECKS is None:
         err_exit(ERR_MSG)
 
