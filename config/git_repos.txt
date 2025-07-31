@@ -2,7 +2,7 @@
 https://daniele821@github.com/daniele821/dotfiles.git
 danixgithub1@gmail.com
 fedora-kde
-SET_BRANCH= ~/.personal/repos/daniele821/dotfiles/autosaver help &>/dev/null
+echo 'fedora-kde' > ~/.personal/repos/daniele821/dotfiles/.branch
 
 .personal/repos/daniele821/github-website
 https://daniele821@github.com/daniele821/daniele821.github.io.git
@@ -15,7 +15,7 @@ https://daniele821@github.com/daniele821/nvim-config.git
 danixgithub1@gmail.com
 main
 rm -rf ~/.config/nvim && ln -s ~/.personal/repos/daniele821/nvim-config ~/.config/nvim && nvim --headless +qa
-! [[ -e ~/.config/nvim ]] && ln -s ~/.personal/repos/daniele821/nvim-config ~/.config/nvim || true
+rm -rf ~/.config/nvim && ln -s ~/.personal/repos/daniele821/nvim-config ~/.config/nvim
 .personal/repos/daniele821/nvim-full
 https://daniele821@github.com/daniele821/nvim-full.git
 danixgithub1@gmail.com
