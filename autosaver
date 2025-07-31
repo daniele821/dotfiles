@@ -881,6 +881,7 @@ def find_gitrepos(conf):
 
 # EXECUTION UTILITIES
 def assert_branch():
+    ERR_MSG = None
     try:
         ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
     except BaseException as e:
