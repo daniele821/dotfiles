@@ -2,53 +2,65 @@
 https://daniele821@github.com/daniele821/dotfiles.git
 danixgithub1@gmail.com
 fedora-kde
+SET_BRANCH= ~/.personal/repos/daniele821/dotfiles/autosaver help &>/dev/null
 
 .personal/repos/daniele821/github-website
 https://daniele821@github.com/daniele821/daniele821.github.io.git
 danixgithub1@gmail.com
 main
 
+
 .personal/repos/daniele821/nvim-config
 https://daniele821@github.com/daniele821/nvim-config.git
 danixgithub1@gmail.com
 main
-
+rm -rf ~/.config/nvim && ln -s ~/.personal/repos/daniele821/nvim-config ~/.config/nvim && nvim --headless +qa
+! [[ -e ~/.config/nvim ]] && ln -s ~/.personal/repos/daniele821/nvim-config ~/.config/nvim || true
 .personal/repos/daniele821/nvim-full
 https://daniele821@github.com/daniele821/nvim-full.git
 danixgithub1@gmail.com
 main
+
 
 .personal/repos/daniele821/ricette
 https://daniele821@github.com/daniele821/ricette.git
 danixgithub1@gmail.com
 main
 
+
 .personal/repos/danix1234/tesi_CRYPTO_2025
 https://danix1234@github.com/danix1234/tesi_CRYPTO_2025.git
 danixgithub1@gmail.com
 main
+
 
 .personal/repos/danix1234/unibo
 https://danix1234@github.com/danix1234/unibo.git
 daniele.muffato@studio.unibo.it
 main
 
+
 .personal/repos/danix1234/unibo-2a
 https://danix1234@github.com/danix1234/unibo-2a.git
 daniele.muffato@studio.unibo.it
 main
+
 
 .personal/repos/danix1234/unibo-2b
 https://danix1234@github.com/danix1234/unibo-2b.git
 daniele.muffato@studio.unibo.it
 main
 
+
 .personal/repos/danix1234/unibo-3a
 https://danix1234@github.com/danix1234/unibo-3a.git
 daniele.muffato@studio.unibo.it
 main
 
+
 .personal/repos/danix1234/unibo-3b
 https://danix1234@github.com/danix1234/unibo-3b.git
 daniele.muffato@studio.unibo.it
 main
+
+
