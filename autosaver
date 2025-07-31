@@ -738,7 +738,7 @@ def gitrepos(flags):
                 continue
             if branch == "HEAD":
                 branch = ""
-            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n"
+            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n\n"
             print(color("msg", "saving repository ") + color("file", repo_home) +
                   color("msg", " ( ") + color("file", url) +
                   color("msg", ", ") + color("file", email) +
@@ -790,7 +790,8 @@ def gitrepos(flags):
             if proc["clone"]:
                 git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
-            script = proc["repo"]["script"].strip()
+            script_type = "script-clone" if proc["clone"] else "script-pull"
+            script = proc["repo"][script_type].strip()
             if script != "":
                 color("msg", "running bash scriptlet...", output=True)
                 res = run_cmd(script, capture_output=False, return_stdout=False, shell=True)
@@ -828,9 +829,10 @@ def load_gitconf(conf):
     if not conf_file_exists(conf):
         return []
     pos = 0
+    qargs = 6
     repos = []
     lines = pathlib.Path(conf).read_text().rstrip().splitlines()
-    lines.extend([""] * ((5 - len(lines)) % 5))
+    lines.extend([""] * ((qargs - len(lines)) % qargs))
     for line in lines:
         if pos == 0:
             index = len(repos)
@@ -840,8 +842,9 @@ def load_gitconf(conf):
             case 1: repos[index]["url"] = line
             case 2: repos[index]["email"] = line
             case 3: repos[index]["branch"] = line
-            case 4:
-                repos[index]["script"] = line
+            case 4: repos[index]["script-clone"] = line
+            case 5:
+                repos[index]["script-pull"] = line
                 if isoriginal(repos[index]["dir"]):
                     warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
                     del repos[index]
@@ -853,7 +856,7 @@ def load_gitconf(conf):
                     del repos[index]
                 else:
                     repos[index]["dir"] = os.path.join(HOME, repos[index]["dir"])
-        pos = (pos + 1) % 5
+        pos = (pos + 1) % qargs
     return repos
 
 
