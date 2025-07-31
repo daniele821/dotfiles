@@ -405,7 +405,8 @@ DIRS = {
     "backup": os.path.join(SCRIPT_DIR, "backup"),
     "config": os.path.join(SCRIPT_DIR, "config"),
     "run": os.path.join(SCRIPT_DIR, "run"),
-    "others": os.path.join(SCRIPT_DIR, "others"),
+    "others-script": os.path.join(SCRIPT_DIR, "others-script"),
+    "others-user": os.path.join(SCRIPT_DIR, "others-user"),
 }
 FILES = {
     "branch": os.path.join(SCRIPT_DIR, ".branch"),
