@@ -5,10 +5,6 @@ set -e
 # global variables often reused
 DOTFILES_ROOT="$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"/../)"
 
-# early exit if init operations were already run
-[[ -f ~/.local/share/.script_runned_user ]] && exit 0
-touch ~/.local/share/.script_runned_user
-
 # restore firefox backup
 echo -e "\e[1;37minitializing firefox...\e[m"
 killall firefox 2>/dev/null || true
