@@ -2,6 +2,11 @@
 
 set -e
 
+# early exit if init operations were already run
+[[ -f ~/.local/share/.script_runned_packages ]] && exit 0
+touch ~/.local/share/.script_runned_packages
+
+# ask for sudo only once
 sudo bash -c ' set -e
 
 # remove bloat
