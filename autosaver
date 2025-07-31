@@ -796,7 +796,7 @@ def gitrepos(flags):
             script_type = "script-clone" if proc["clone"] else "script-pull"
             script = proc["repo"][script_type].strip()
             if script != "" and ENV_NO_SCRIPTS is None:
-                color("msg", "running bash scriptlet...", output=True)
+                color("msg", "running repository scriptlet...", output=True)
                 res = run_cmd(script, return_stdout=False, shell=True)
                 if res.returncode != 0:
                     warn_msg(f"scriptlet failed with code {res.returncode}")
