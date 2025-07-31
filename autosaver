@@ -419,6 +419,7 @@ ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
 ENV_NO_PROMPT = os.getenv("NO_PROMPT")
+ENV_NO_SCRIPTS = os.getenv("NO_SCRIPT")
 
 
 class Action(enum.Enum):
@@ -530,6 +531,7 @@ def help(flags):
   \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
   \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
+  \x1b[1mNO_SCRIPTS\x1b[m            disable running scripts from config files
   """)
 
 
@@ -793,9 +795,9 @@ def gitrepos(flags):
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
             script_type = "script-clone" if proc["clone"] else "script-pull"
             script = proc["repo"][script_type].strip()
-            if script != "":
+            if script != "" and ENV_NO_SCRIPTS is None:
                 color("msg", "running bash scriptlet...", output=True)
-                res = run_cmd(script, capture_output=False, return_stdout=False, shell=True)
+                res = run_cmd(script, return_stdout=False, shell=True)
                 if res.returncode != 0:
                     warn_msg(f"scriptlet failed with code {res.returncode}")
 
