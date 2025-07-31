@@ -48,13 +48,13 @@ fi
 # restore files
 if ! [[ -f "$DOTFILES_INIT" ]]; then
     echo -e "\e[1;37mrestoring dotfiles...\e[m"
-    "$DOTFILES_ROOT/autosaver" restoreall
+    BRANCH="" "$DOTFILES_ROOT/autosaver" restoreall
     mkdir -p "$INIT_DIR" && touch "$DOTFILES_INIT"
 fi
 
 # download git repos
 if ! [[ -f "$GITREPOS_INIT" ]]; then
     echo -e "\e[1;37mrestoring git repos...\e[m"
-    "$DOTFILES_ROOT/autosaver" git
+    BRANCH="" NO_PROMPT="" "$DOTFILES_ROOT/autosaver" git
     mkdir -p "$INIT_DIR" && touch "$GITREPOS_INIT"
 fi
