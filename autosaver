@@ -86,7 +86,7 @@ def ask_user(msg, flags=None):
 
 
 # GIT UTILITIES
-def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None, shell=False):
+def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
     if type(cmd) is tuple and type(cmd[0]) is list:
         cmd = cmd[0]
     if type(add_envvars) is dict:
@@ -94,10 +94,7 @@ def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None, she
         env.update(add_envvars)
     else:
         env = None
-    if not shell:
-        res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env, shell=False)
-    else:
-        res = subprocess.run(cmd[0], capture_output=capture_output, text=capture_output, env=env, shell=True)
+    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env)
     if res.returncode != 0:
         dbg(f"command '{str(list(cmd))}' failed")
         if res.stderr:
@@ -415,11 +412,10 @@ FILES = {
     "gitrepos": os.path.join(DIRS["config"], "git_repos.txt"),
     "gittopdirs": os.path.join(DIRS["config"], "git_topdirs.txt"),
 }
-ENV_DBG = os.getenv("DBG")
+ENV_DEBUG = os.getenv("DEBUG")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
 ENV_NO_CHECKS = os.getenv("NO_CHECKS")
 ENV_NO_PROMPT = os.getenv("NO_PROMPT")
-ENV_NO_SCRIPTS = os.getenv("NO_SCRIPT")
 
 
 class Action(enum.Enum):
@@ -531,7 +527,6 @@ def help(flags):
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
   \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
   \x1b[1mNO_CHECKS\x1b[m             bypass all checks (useful for first run)
-  \x1b[1mNO_SCRIPTS\x1b[m            disable running scripts from config files
   """)
 
 
@@ -741,7 +736,7 @@ def gitrepos(flags):
                 continue
             if branch == "HEAD":
                 branch = ""
-            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n\n"
+            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n"
             print(color("msg", "saving repository ") + color("file", repo_home) +
                   color("msg", " ( ") + color("file", url) +
                   color("msg", ", ") + color("file", email) +
@@ -793,13 +788,6 @@ def gitrepos(flags):
             if proc["clone"]:
                 git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
-            script_type = "script-clone" if proc["clone"] else "script-pull"
-            script = proc["repo"][script_type].strip()
-            if script != "" and ENV_NO_SCRIPTS is None:
-                color("msg", "running repository scriptlet...", output=True)
-                res = run_cmd(script, return_stdout=False, shell=True)
-                if res.returncode != 0:
-                    warn_msg(f"scriptlet failed with code {res.returncode}")
 
 
 # ACTION UTILITIES
@@ -832,7 +820,7 @@ def load_gitconf(conf):
     if not conf_file_exists(conf):
         return []
     pos = 0
-    qargs = 6
+    qargs = 5
     repos = []
     lines = pathlib.Path(conf).read_text().rstrip().splitlines()
     lines.extend([""] * ((qargs - len(lines)) % qargs))
@@ -845,9 +833,7 @@ def load_gitconf(conf):
             case 1: repos[index]["url"] = line
             case 2: repos[index]["email"] = line
             case 3: repos[index]["branch"] = line
-            case 4: repos[index]["script-clone"] = line
-            case 5:
-                repos[index]["script-pull"] = line
+            case 4:
                 if isoriginal(repos[index]["dir"]):
                     warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
                     del repos[index]
@@ -961,7 +947,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if ENV_DBG is None:
+    if ENV_DEBUG is None:
         sys.stderr = open(os.devnull, "w")
     try:
         assert_branch()
