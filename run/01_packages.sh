@@ -28,17 +28,4 @@ dnf --assumeyes install ffmpeg --allowerasing
 dnf --assumeyes install mpv-mpris libheif-freeworld
 dnf --assumeyes install mesa-va-drivers-freeworld libavcodec-freeworld # amd
 dnf --assumeyes install intel-media-driver                             # intel
-
-# update and cleanup
-dnf --assumeyes upgrade
-dnf --assumeyes autoremove
-
-# install flathub after removing fedora flatpak repos
-flatpak remote-delete fedora || true
-flatpak remote-delete fedora-testing || true
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 '
-
-# install flatpak apps
-flatpak install flathub com.protonvpn.www -y
-flatpak install flathub com.github.wwmm.easyeffects -y
