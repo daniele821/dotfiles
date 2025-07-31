@@ -142,7 +142,7 @@ def git_is_branch_uptodate(dir, allow_behind=False):
 
 
 def git_pull_and_check(dir):
-    if ENV_GIT_PROMPT is None:
+    if ENV_NO_PROMPT is not None:
         run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "pull", "--ff-only"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
     else:
         run_cmd(["git", "-C", dir, "pull", "--ff-only"], capture_output=False)
@@ -151,7 +151,7 @@ def git_pull_and_check(dir):
 
 def git_push(dir):
     if not git_is_branch_uptodate(dir):
-        if ENV_GIT_PROMPT is None:
+        if ENV_NO_PROMPT is not None:
             run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "push"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
         else:
             run_cmd(["git", "-C", dir, "push"], capture_output=False)
@@ -186,7 +186,7 @@ def git_clone_pull_interactive(dir, url=None):
     env = os.environ.copy()
     args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
     if url is not None:
-        if ENV_GIT_PROMPT is None:
+        if ENV_NO_PROMPT is not None:
             args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
             env.update({'GIT_TERMINAL_PROMPT': '0'})
         else:
@@ -418,7 +418,8 @@ FILES = {
 ENV_DBG = os.getenv("DBG")
 ENV_BRANCH = os.getenv("BRANCH")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
-ENV_GIT_PROMPT = os.getenv("GIT_PROMPT")
+ENV_NO_PROMPT = os.getenv("NO_PROMPT")
+ENV_NO_SCRIPTS = os.getenv("NO_SCRIPT")
 
 
 class Action(enum.Enum):
@@ -529,7 +530,8 @@ def help(flags):
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
   \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
-  \x1b[1mGIT_PROMPT\x1b[m            allow getting prompt asking for git passwords
+  \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
+  \x1b[1mNO_SCRIPTS\x1b[m            disable running scripts from config files
   """)
 
 
@@ -793,9 +795,9 @@ def gitrepos(flags):
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
             script_type = "script-clone" if proc["clone"] else "script-pull"
             script = proc["repo"][script_type].strip()
-            if script != "":
-                color("msg", "running bash scriptlet...", output=True)
-                res = run_cmd(script, capture_output=False, return_stdout=False, shell=True)
+            if script != "" and ENV_NO_SCRIPTS is None:
+                color("msg", "running repository scriptlet...", output=True)
+                res = run_cmd(script, return_stdout=False, shell=True)
                 if res.returncode != 0:
                     warn_msg(f"scriptlet failed with code {res.returncode}")
 
