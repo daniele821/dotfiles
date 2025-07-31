@@ -86,7 +86,7 @@ def ask_user(msg, flags=None):
 
 
 # GIT UTILITIES
-def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
+def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None, shell=False):
     if type(cmd) is tuple and type(cmd[0]) is list:
         cmd = cmd[0]
     if type(add_envvars) is dict:
@@ -94,9 +94,14 @@ def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
         env.update(add_envvars)
     else:
         env = None
-    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env)
+    if not shell:
+        res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env, shell=False)
+    else:
+        res = subprocess.run(cmd[0], capture_output=capture_output, text=capture_output, env=env, shell=True)
     if res.returncode != 0:
-        dbg(f"command '{str(list(cmd))}' failed:\n {res.stderr}")
+        dbg(f"command '{str(list(cmd))}' failed")
+        if res.stderr:
+            dbg(f":\n {res.stderr}")
     if capture_output and return_stdout:
         return res.stdout.strip()
     return res
@@ -722,7 +727,6 @@ def gitrepos(flags):
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
     if opt_toggle:
-        modified = False
         repoconf = ""
         for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
             repo_home = os.path.join(HOME, repo)
@@ -734,14 +738,11 @@ def gitrepos(flags):
                 continue
             if branch == "HEAD":
                 branch = ""
-            if modified:
-                repoconf += "\n"
-            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n"
+            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n"
             print(color("msg", "saving repository ") + color("file", repo_home) +
                   color("msg", " ( ") + color("file", url) +
                   color("msg", ", ") + color("file", email) +
                   color("msg", ", ") + color("file", branch) + color("msg", ")"))
-            modified = True
         if repoconf:
             create_file(FILES["gitrepos"])
             with open(FILES["gitrepos"], "w") as f:
@@ -789,6 +790,12 @@ def gitrepos(flags):
             if proc["clone"]:
                 git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
+            script = proc["repo"]["script"].strip()
+            if script != "":
+                color("msg", "running bash scriptlet...", output=True)
+                res = run_cmd(script, capture_output=False, return_stdout=False, shell=True)
+                if res.returncode != 0:
+                    warn_msg(f"scriptlet failed with code {res.returncode}")
 
 
 # ACTION UTILITIES
@@ -822,8 +829,8 @@ def load_gitconf(conf):
         return []
     pos = 0
     repos = []
-    lines = pathlib.Path(conf).read_text().splitlines()
-    lines.extend([""] * (5 - (len(lines) % 5) % 5))
+    lines = pathlib.Path(conf).read_text().rstrip().splitlines()
+    lines.extend([""] * ((5 - len(lines)) % 5))
     for line in lines:
         if pos == 0:
             index = len(repos)
@@ -834,6 +841,7 @@ def load_gitconf(conf):
             case 2: repos[index]["email"] = line
             case 3: repos[index]["branch"] = line
             case 4:
+                repos[index]["script"] = line
                 if isoriginal(repos[index]["dir"]):
                     warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
                     del repos[index]
