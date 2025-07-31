@@ -86,10 +86,15 @@ def ask_user(msg, flags=None):
 
 
 # GIT UTILITIES
-def run_cmd(*cmd, capture_output=True, return_stdout=True):
+def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
     if type(cmd) is tuple and type(cmd[0]) is list:
         cmd = cmd[0]
-    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output)
+    if type(add_envvars) is dict:
+        env = os.environ.copy()
+        env.update(add_envvars)
+    else:
+        env = None
+    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env)
     if res.returncode != 0:
         dbg(f"command '{str(list(cmd))}' failed:\n {res.stderr}")
     if capture_output and return_stdout:
@@ -101,7 +106,7 @@ def assert_git_toplevel_dir(dir):
     cmd = ["git", "-C", dir, "rev-parse", "--show-toplevel"]
     runned = run_cmd(cmd, return_stdout=False)
     if runned.returncode != 0:
-        return "git top level directory was not found"
+        return "git top level directory could not be found"
     if runned.stdout.strip() != dir:
         return "git top level directory is not the script directory"
 
@@ -132,13 +137,19 @@ def git_is_branch_uptodate(dir, allow_behind=False):
 
 
 def git_pull_and_check(dir):
-    run_cmd(["git", "-C", dir, "pull", "--ff-only"], capture_output=False)
+    if ENV_GIT_PROMPT is None:
+        run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "pull", "--ff-only"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
+    else:
+        run_cmd(["git", "-C", dir, "pull", "--ff-only"], capture_output=False)
     return git_is_branch_uptodate(dir, allow_behind=True)
 
 
 def git_push(dir):
     if not git_is_branch_uptodate(dir):
-        run_cmd(["git", "-C", dir, "push"], capture_output=False)
+        if ENV_GIT_PROMPT is None:
+            run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "push"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
+        else:
+            run_cmd(["git", "-C", dir, "push"], capture_output=False)
 
 
 def git_has_changes(dir):
