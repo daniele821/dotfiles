@@ -416,8 +416,8 @@ FILES = {
     "gittopdirs": os.path.join(DIRS["config"], "git_topdirs.txt"),
 }
 ENV_DBG = os.getenv("DBG")
-ENV_BRANCH = os.getenv("BRANCH")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
+ENV_NO_CHECKS = os.getenv("NO_CHECKS")
 ENV_NO_PROMPT = os.getenv("NO_PROMPT")
 ENV_NO_SCRIPTS = os.getenv("NO_SCRIPT")
 
@@ -528,9 +528,9 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
-  \x1b[1mBRANCH\x1b[m                bypass branch check
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
   \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
+  \x1b[1mNO_CHECKS\x1b[m             bypass all checks (useful for first run)
   \x1b[1mNO_SCRIPTS\x1b[m            disable running scripts from config files
   """)
 
@@ -882,7 +882,7 @@ def find_gitrepos(conf):
 # EXECUTION UTILITIES
 def assert_branch():
     ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
-    if ERR_MSG is not None:
+    if ERR_MSG is not None and ENV_NO_CHECKS is None:
         err_exit(ERR_MSG)
 
     branch_file = FILES["branch"]
@@ -895,7 +895,7 @@ def assert_branch():
         want_branch = want_branch[0]
     if curr_branch != want_branch:
         dbg_final_report("\x1b[35m~ WRONG BRANCH: '{}' (valid: '{}')\x1b[m\n".format(curr_branch, want_branch))
-        if ENV_BRANCH is not None:
+        if ENV_NO_CHECKS is not None:
             warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
         elif ENV_SET_BRANCH is not None:
             warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
