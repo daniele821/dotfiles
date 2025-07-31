@@ -24,7 +24,7 @@ if ! [[ -f "$FIREFOX_INIT" ]]; then
     curl -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
     find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
         rm -rf "$profile"
-        cp -r "$DOTFILES_ROOT/others/firefox/init/" "$profile"
+        cp -r "$DOTFILES_ROOT/others-script/firefox-init/" "$profile"
         mkdir -p "$profile/extensions/"
         cp "$TMP_DIR/"* "$profile/extensions"
     done
