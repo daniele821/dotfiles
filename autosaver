@@ -99,6 +99,7 @@ def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
         dbg(f"command '{str(list(cmd))}' failed")
         if res.stderr:
             dbg(f":\n {res.stderr}")
+        dbg("\n")
     if capture_output and return_stdout:
         return res.stdout.strip()
     return res
