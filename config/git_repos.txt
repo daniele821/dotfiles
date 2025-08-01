@@ -1,29 +1,29 @@
-.personal/repos/dotfiles
+.personal/repos/daniele821/dotfiles
 https://daniele821@github.com/daniele821/dotfiles.git
 danixgithub1@gmail.com
 fedora-kde
 
-.personal/repos/github-website
+.personal/repos/daniele821/github-website
 https://daniele821@github.com/daniele821/daniele821.github.io.git
 danixgithub1@gmail.com
 main
 
-.personal/repos/nvim-config
+.personal/repos/daniele821/nvim-config
 https://daniele821@github.com/daniele821/nvim-config.git
 danixgithub1@gmail.com
 main
 
-.personal/repos/nvim-full
+.personal/repos/daniele821/nvim-full
 https://daniele821@github.com/daniele821/nvim-full.git
 danixgithub1@gmail.com
 main
 
-.personal/repos/ricette
+.personal/repos/daniele821/ricette
 https://daniele821@github.com/daniele821/ricette.git
 danixgithub1@gmail.com
 main
 
-.personal/repos/tesi_CRYPTO_2025
+.personal/repos/danix1234/tesi_CRYPTO_2025
 https://danix1234@github.com/danix1234/tesi_CRYPTO_2025.git
 danixgithub1@gmail.com
 main
