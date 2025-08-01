@@ -523,7 +523,7 @@ def help(flags):
   \x1b[1mgit             \x1b[m      update or download tracked git repos
 
 \x1b[1;4mEnvironment variables:\x1b[m
-  \x1b[1mDBG\x1b[m                   show python stderr for debugging porpouses
+  \x1b[1mDEBUG\x1b[m                 show python stderr for debugging porpouses
   \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
   \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
   \x1b[1mNO_CHECKS\x1b[m             bypass all checks (useful for first run)
