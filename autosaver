@@ -114,8 +114,11 @@ def assert_git_toplevel_dir(dir):
         return "git top level directory is not the script directory"
 
 
-def git_remote_url(dir):
-    return run_cmd("git", "-C", dir, "remote", "get-url", "origin")
+def git_remote_urls(dir, addUrls=None):
+    if not addUrls:
+        return run_cmd("git", "-C", dir, "remote", "get-url", "origin", "--all").splitlines()
+    for url in addUrls:
+        run_cmd("git", "-C", dir, "remote", "set-url", "origin", "--add", url)
 
 
 def git_current_branch(dir, setBranch=None):
@@ -729,17 +732,18 @@ def gitrepos(flags):
         repoconf = ""
         for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
             repo_home = os.path.join(HOME, repo)
-            url = git_remote_url(repo_home)
+            url_arr = git_remote_urls(repo_home)
+            urls = " ".join(url_arr)
             branch = git_current_branch(repo_home)
             email = git_email(repo_home)
-            if not url:
+            if not urls:
                 warn_msg(f"no origin remote found for: '{repo_home}'")
                 continue
             if branch == "HEAD":
                 branch = ""
-            repoconf += f"{repo}\n{url}\n{email}\n{branch}\n\n"
+            repoconf += f"{repo}\n{urls}\n{email}\n{branch}\n\n"
             print(color("msg", "saving repository ") + color("file", repo_home) +
-                  color("msg", " ( ") + color("file", url) +
+                  color("msg", " ( ") + color("file", urls) +
                   color("msg", ", ") + color("file", email) +
                   color("msg", ", ") + color("file", branch) + color("msg", ")"))
         if repoconf:
@@ -762,9 +766,12 @@ def gitrepos(flags):
             procs[index]["ps"] = git_clone_pull_interactive(repo["dir"])
         elif not exist(repo["dir"]):
             procs.append({})
+            extra_urls_msg = ""
+            for url in repo["url-push"]:
+                extra_urls_msg += color("msg", ", ") + color("file", url)
             procs[index]["clone"] = True
             procs[index]["repo"] = repo
-            procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + \
+            procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + extra_urls_msg + \
                 color("msg", " into ") + color("file", repo["dir"]) + \
                 color("msg", " ( ") + color("file", repo["email"]) + \
                 color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
@@ -789,6 +796,7 @@ def gitrepos(flags):
             if proc["clone"]:
                 git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
                 git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
+                git_remote_urls(proc["repo"]["dir"], addUrls=proc["repo"]["url-push"])
 
 
 # ACTION UTILITIES
@@ -831,7 +839,9 @@ def load_gitconf(conf):
             repos.append({})
         match pos:
             case 0: repos[index]["dir"] = os.path.normpath(line) if line else line
-            case 1: repos[index]["url"] = line
+            case 1:
+                repos[index]["url"] = line.split(" ")[0]
+                repos[index]["url-push"] = line.split(" ")[1:]
             case 2: repos[index]["email"] = line
             case 3: repos[index]["branch"] = line
             case 4:
