@@ -27,7 +27,10 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 
 function edit(){
     case "$1" in
-        up|update|upgrade) podman image exists ghcr.io/daniele821/neovim && echo "purging current neovim container..."; podman rmi -f ghcr.io/daniele821/neovim ;;
+        up|update|upgrade) 
+            if podman image exists ghcr.io/daniele821/neovim; then 
+                echo "purging current neovim container..."; podman rmi -f ghcr.io/daniele821/neovim; podman system prune -f 
+            fi ;;
     esac
     BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim" -q)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
