@@ -25,6 +25,10 @@ alias ll='ls -l'
 alias lla='ls -lA'
 alias time='/usr/bin/time -f "time elapsed: %es"'
 
+function edit(){
+    podman run --detach-keys "" --rm -it -e "TZ=$(timedatectl show --property=Timezone --value)" -v neovim_data:/data -w "/data" ghcr.io/daniele821/neovim:latest 
+}
+
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
