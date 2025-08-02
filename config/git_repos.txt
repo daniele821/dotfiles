@@ -9,12 +9,12 @@ danixgithub1@gmail.com
 main
 
 .personal/repos/daniele821/nvim-config
-https://daniele821@github.com/daniele821/nvim-config.git
+https://daniele821@github.com/daniele821/nvim-config.git https://daniele821@gitlab.com/daniele821/nvim-config.git
 danixgithub1@gmail.com
 main
 
 .personal/repos/daniele821/nvim-full
-https://daniele821@github.com/daniele821/nvim-full.git
+https://daniele821@github.com/daniele821/nvim-full.git https://daniele821@gitlab.com/daniele821/nvim-full.git
 danixgithub1@gmail.com
 main
 
