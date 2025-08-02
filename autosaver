@@ -185,7 +185,7 @@ def git_commit_all(dir, commit_msg):
 
 def git_clone_pull_interactive(dir, url=None):
     env = os.environ.copy()
-    args = ["git", "-C", dir, "pull", "--ff-only", "--progress"]
+    args = ["git", "-C", dir, "-c", "color.ui=always", "pull", "--ff-only", "--progress"]
     if url is not None:
         if ENV_NO_PROMPT is not None:
             args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
