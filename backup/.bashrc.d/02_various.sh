@@ -28,7 +28,7 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit(){
     BG_CONTAINER="$(podman ps --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
     if [[ -z "$BG_CONTAINER" ]]; then
-        BG_CONTAINER="$(podman run --detach-keys "" --rm -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "ghcr.io/daniele821/neovim:latest" sleep infinity)"
+        BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "ghcr.io/daniele821/neovim:latest" sleep infinity)"
     fi
     podman exec -it -w /root "$BG_CONTAINER" bash -il
 }
