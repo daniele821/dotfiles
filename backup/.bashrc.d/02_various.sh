@@ -26,10 +26,21 @@ alias lla='ls -lA'
 alias time='/usr/bin/time -f "time elapsed: %es"'
 
 function edit(){
-    BG_CONTAINER="$(podman ps --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
+    BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
+    if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
+        while read -r ps; do 
+            podman rm -f $ps >/dev/null
+        done <<<"$BG_CONTAINER"
+    fi
+    BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
     if [[ -z "$BG_CONTAINER" ]]; then
         BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "ghcr.io/daniele821/neovim:latest" sleep infinity)"
     fi
+    case "$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")" in
+        running) ;;
+        exited) podman start "$BG_CONTAINER" >/dev/null ;;
+        *) podman rm -f "$BG_CONTAINER" >/dev/null ;;
+    esac
     podman exec -it -w /root "$BG_CONTAINER" bash -il
 }
 
