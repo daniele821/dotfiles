@@ -28,12 +28,15 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit(){
     BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
+        echo "multiple neovim containers detected:"
         while read -r ps; do 
+            echo "deleting '$ps'..."
             podman rm -f $ps >/dev/null
         done <<<"$BG_CONTAINER"
     fi
     BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim:latest" -q)"
     if [[ -z "$BG_CONTAINER" ]]; then
+        echo "zero neovim containers detected: launching new container..."
         BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "ghcr.io/daniele821/neovim:latest" sleep infinity)"
     fi
     case "$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")" in
