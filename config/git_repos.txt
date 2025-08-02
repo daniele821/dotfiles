@@ -1,5 +1,5 @@
 .personal/repos/daniele821/dotfiles
-https://daniele821@github.com/daniele821/dotfiles.git
+https://daniele821@github.com/daniele821/dotfiles.git https://daniele821@gitlab.com/daniele821/dotfiles.git
 danixgithub1@gmail.com
 fedora-kde
 
