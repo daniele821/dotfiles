@@ -26,13 +26,14 @@ alias lla='ls -lA'
 alias time='/usr/bin/time -f "time elapsed: %es"'
 
 function edit(){
+    local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
     case "$1" in
         up|update|upgrade) 
-            if podman image exists ghcr.io/daniele821/neovim; then 
-                echo "purging current neovim container..."; podman rmi -f ghcr.io/daniele821/neovim; podman system prune -f 
+            if podman image exists "$NEOVIM_IMAGE"; then 
+                echo "purging current neovim container..."; podman rmi -f "$NEOVIM_IMAGE"; podman system prune -f 
             fi ;;
     esac
-    BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim" -q)"
+    local BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
         echo "multiple neovim containers detected:"
         while read -r ps; do 
@@ -40,10 +41,10 @@ function edit(){
             podman rm -f $ps >/dev/null
         done <<<"$BG_CONTAINER"
     fi
-    BG_CONTAINER="$(podman ps -a --filter "ancestor=ghcr.io/daniele821/neovim" -q)"
+    local BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
     if [[ -z "$BG_CONTAINER" ]]; then
         echo "zero neovim containers detected: launching new container..."
-        BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "ghcr.io/daniele821/neovim" sleep infinity)"
+        local BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity)"
     fi
     case "$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")" in
         running) ;;
