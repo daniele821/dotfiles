@@ -53,7 +53,7 @@ function edit(){
         exited) echo "container found stopped: launching it..."; podman start "$BG_CONTAINER" >/dev/null ;;
         *) echo "countainer found in state '$state': starting a new one..."; podman rm -f "$BG_CONTAINER" >/dev/null ;;
     esac
-    podman exec -it -w /root "$BG_CONTAINER" bash -il
+    podman exec --detach-keys="" -it -w /root "$BG_CONTAINER" bash -il
 }
 
 unset command_not_found_handle
