@@ -46,10 +46,12 @@ function edit(){
         echo "zero neovim containers detected: launching new container..."
         local BG_CONTAINER="$(podman run --detach-keys "" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity)"
     fi
-    case "$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")" in
+    state="$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")"
+    case "$state" in
         running) ;;
-        exited) podman start "$BG_CONTAINER" >/dev/null ;;
-        *) podman rm -f "$BG_CONTAINER" >/dev/null ;;
+        paused) echo "container found paused: unpausing it..."; podman unpause "$BG_CONTAINER" >/dev/null ;;
+        exited) echo "container found stopped: launching it..."; podman start "$BG_CONTAINER" >/dev/null ;;
+        *) echo "countainer found in state '$state': starting a new one..."; podman rm -f "$BG_CONTAINER" >/dev/null ;;
     esac
     podman exec -it -w /root "$BG_CONTAINER" bash -il
 }
