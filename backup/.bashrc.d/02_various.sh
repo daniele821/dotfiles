@@ -37,6 +37,7 @@ function edit(){
             done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
             podman pull "$NEOVIM_IMAGE"
             podman system prune -f
+            return 0
             ;;
     esac
     local BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
