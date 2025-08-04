@@ -60,11 +60,7 @@ function edit(){
         exited) echo -e "\e[1;33mcontainer found stopped: launching it...\e[m"; podman start "$BG_CONTAINER" ;;
         *) echo -e "\e[1;33mcontainer found in state '$state': starting a new one...\e[m"; podman rm -f "$BG_CONTAINER" ;;
     esac
-    if ! podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il; then
-        echo -e "\e[1;33mrunning container cannot be used. starting a new one...\e[m"
-        local BG_CONTAINER="$(podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity)"
-        podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
-    fi
+    podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
 }
 
 unset command_not_found_handle
