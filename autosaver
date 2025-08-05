@@ -125,7 +125,7 @@ def git_current_branch(dir, setBranch=None):
 
 
 def git_email(dir, setEmail=None):
-    if setEmail.strip() == "":
+    if type(setEmail) == str and setEmail.strip() == "":
         return
     if setEmail is not None:
         return run_cmd("git", "-C", dir, "config", "user.email", setEmail)
