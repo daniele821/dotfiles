@@ -28,35 +28,27 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit() {
     local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
+
     case "$1" in
-    end | stop )
+    end | stop ) edit _stop && return 0 ;;
+    up | update | upgrade) edit stop && podman pull "$NEOVIM_IMAGE" && podman system prune -f && return 0 ;;
+    _stop )
         while read -r ps; do
             if [[ -n "$ps" ]]; then
                 echo -e "\e[1;33mdeleting '$ps'...\e[m"
-                podman rm -f "$ps"
+                podman rm -f "$ps" >/dev/null
             fi
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
         return 0
         ;;
-    up | update | upgrade)
-        edit stop
-        podman pull "$NEOVIM_IMAGE"
-        podman system prune -f
-        return 0
-        ;;
-    _list )
-        podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q
-        return 0
-        ;;
-    _launch )
-        podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity
-        return 0
-        ;;
+    _list ) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q && return 0 ;;
+    _launch ) podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity && return 0 ;;
     esac
+
     BG_CONTAINER="$(edit _list)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
         echo -e "\e[1;33mmultiple neovim containers detected:\e[m"
-        edit stop
+        edit _stop
     fi
     BG_CONTAINER="$(edit _list)"
     if [[ -z "$BG_CONTAINER" ]]; then
@@ -64,6 +56,7 @@ function edit() {
         BG_CONTAINER="$(edit _launch)"
     fi
     state="$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")"
+
     case "$state" in
     running) ;;
     paused)
@@ -80,6 +73,7 @@ function edit() {
         BG_CONTAINER="$(edit _launch)"
         ;;
     esac
+
     podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
 }
 
