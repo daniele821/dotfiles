@@ -29,6 +29,15 @@ function edit() {
     local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
     case "$1" in
+    end | stop )
+        while read -r ps; do
+            if [[ -n "$ps" ]]; then
+                echo -e "\e[1;33mdeleting '$ps'...\e[m"
+                podman rm -f "$ps"
+            fi
+        done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
+        return 0
+        ;;
     up | update | upgrade)
         while read -r ps; do
             if [[ -n "$ps" ]]; then
