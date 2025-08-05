@@ -1,2 +1,2 @@
-.personal/repos
+.personal/
 .config/nvim
