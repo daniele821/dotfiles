@@ -129,7 +129,7 @@ def git_email(dir, setEmail=None):
         return
     if setEmail is not None:
         return run_cmd("git", "-C", dir, "config", "user.email", setEmail)
-    return run_cmd("git", "-C", dir, "config", "user.email")
+    return run_cmd("git", "-C", dir, "config", "--local", "user.email")
 
 
 def git_is_branch_uptodate(dir, allow_behind=False):
