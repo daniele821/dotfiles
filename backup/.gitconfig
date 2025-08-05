@@ -1,6 +1,7 @@
 [user]
     useConfigOnly = true
-	name = Daniele Muffato
+    name = -
+    email = -
 [init]
     defaultBranch = main
 [core]
