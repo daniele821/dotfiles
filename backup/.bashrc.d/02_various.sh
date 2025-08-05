@@ -31,7 +31,14 @@ function edit() {
 
     case "$1" in
     end | stop ) edit _stop && return 0 ;;
-    up | update | upgrade) edit stop && podman pull "$NEOVIM_IMAGE" && podman system prune -f && return 0 ;;
+    up | update | upgrade) 
+        edit _stop 
+        podman pull "$NEOVIM_IMAGE" 
+        podman system prune -f 
+        echo -e "\e[1;33mlaunch new container...\e[m" 
+        edit _launch >/dev/null 
+        return 0 
+        ;;
     _stop )
         while read -r ps; do
             if [[ -n "$ps" ]]; then
