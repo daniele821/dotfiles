@@ -25,40 +25,50 @@ alias ll='ls -l'
 alias lla='ls -lA'
 alias time='/usr/bin/time -f "time elapsed: %es"'
 
-function edit(){
+function edit() {
+    local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
     case "$1" in
-        up|update|upgrade) 
-            while read -r ps; do 
-                if [[ -n "$ps" ]]; then
-                    echo -e "\e[1;33mdeleting '$ps'...\e[m"
-                    podman rm -f $ps
-                fi
-            done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
-            podman pull "$NEOVIM_IMAGE"
-            podman system prune -f
-            return 0
-            ;;
+    up | update | upgrade)
+        while read -r ps; do
+            if [[ -n "$ps" ]]; then
+                echo -e "\e[1;33mdeleting '$ps'...\e[m"
+                podman rm -f "$ps"
+            fi
+        done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
+        podman pull "$NEOVIM_IMAGE"
+        podman system prune -f
+        return 0
+        ;;
     esac
-    local BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
+    BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
         echo -e "\e[1;33mmultiple neovim containers detected:\e[m"
-        while read -r ps; do 
+        while read -r ps; do
             echo -e "\e[1;33mdeleting '$ps'...\e[m"
-            podman rm -f $ps
+            podman rm -f "$ps"
         done <<<"$BG_CONTAINER"
     fi
-    local BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
+    BG_CONTAINER="$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
     if [[ -z "$BG_CONTAINER" ]]; then
         echo -e "\e[1;33mzero neovim containers detected: launching new container...\e[m"
-        local BG_CONTAINER="$(podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity)"
+        BG_CONTAINER="$(podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity)"
     fi
     state="$(podman inspect --format '{{.State.Status}}' "$BG_CONTAINER")"
     case "$state" in
-        running) ;;
-        paused) echo -e "\e[1;33mcontainer found paused: unpausing it...\e[m"; podman unpause "$BG_CONTAINER" ;;
-        exited) echo -e "\e[1;33mcontainer found stopped: launching it...\e[m"; podman start "$BG_CONTAINER" ;;
-        *) echo -e "\e[1;33mcontainer found in state '$state': starting a new one...\e[m"; podman rm -f "$BG_CONTAINER" ;;
+    running) ;;
+    paused)
+        echo -e "\e[1;33mcontainer found paused: unpausing it...\e[m"
+        podman unpause "$BG_CONTAINER"
+        ;;
+    exited)
+        echo -e "\e[1;33mcontainer found stopped: launching it...\e[m"
+        podman start "$BG_CONTAINER"
+        ;;
+    *)
+        echo -e "\e[1;33mcontainer found in state '$state': starting a new one...\e[m"
+        podman rm -f "$BG_CONTAINER"
+        ;;
     esac
     podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
 }
