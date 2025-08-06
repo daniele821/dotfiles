@@ -86,7 +86,7 @@ function edit() {
         ;;
     esac
 
-    podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
+    podman exec --detach-keys="" -it -w /root "$BG_CONTAINER" bash -il
 }
 
 unset command_not_found_handle
