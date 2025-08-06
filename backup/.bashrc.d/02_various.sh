@@ -31,18 +31,18 @@ function edit() {
     local NEOVIM_VOLUME="data_neovim"
 
     case "$1" in
-    end | stop ) edit _stop ;;
-    up | update | upgrade) 
-        edit _stop 
-        podman pull "$NEOVIM_IMAGE" 
-        podman system prune -f 
-        echo -e "\e[1;33mlaunch new container...\e[m" 
-        edit _launch >/dev/null 
+    end | stop) edit _stop ;;
+    up | update | upgrade)
+        edit _stop
+        podman pull "$NEOVIM_IMAGE"
+        podman system prune -f
+        echo -e "\e[1;33mlaunch new container...\e[m"
+        edit _launch >/dev/null
         ;;
-    cd | files ) 
-        cd "$(podman volume inspect "$NEOVIM_VOLUME" -f {{.Mountpoint}})"
+    cd | files)
+        cd "$(podman volume inspect "$NEOVIM_VOLUME" -f '{{.Mountpoint}}')" || return 1
         ;;
-    _stop )
+    _stop)
         while read -r ps; do
             if [[ -n "$ps" ]]; then
                 echo -e "\e[1;33mdeleting '$ps'...\e[m"
@@ -50,8 +50,8 @@ function edit() {
             fi
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
         ;;
-    _list ) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
-    _launch ) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/data" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
+    _list) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
+    _launch) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/data" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
     "") ;;
     *) echo -e "\e[1;31minvalid arg: '$1'\e[m" && return 1 ;;
     esac
