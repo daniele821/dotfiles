@@ -28,16 +28,19 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit() {
     local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
+    local NEOVIM_VOLUME="data_neovim"
 
     case "$1" in
-    end | stop ) edit _stop && return 0 ;;
+    end | stop ) edit _stop ;;
     up | update | upgrade) 
         edit _stop 
         podman pull "$NEOVIM_IMAGE" 
         podman system prune -f 
         echo -e "\e[1;33mlaunch new container...\e[m" 
         edit _launch >/dev/null 
-        return 0 
+        ;;
+    cd | files ) 
+        cd "$(podman volume inspect "$NEOVIM_VOLUME" -f {{.Mountpoint}})"
         ;;
     _stop )
         while read -r ps; do
@@ -46,11 +49,13 @@ function edit() {
                 podman rm -f "$ps" >/dev/null
             fi
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
-        return 0
         ;;
-    _list ) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q && return 0 ;;
-    _launch ) podman run --detach-keys "" -v data_neovim:/data -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity && return 0 ;;
+    _list ) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
+    _launch ) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/data" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
+    "") ;;
+    *) echo -e "\e[1;31minvalid arg: '$1'\e[m" && return 1 ;;
     esac
+    [[ -n "$1" ]] && return 0
 
     BG_CONTAINER="$(edit _list)"
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
