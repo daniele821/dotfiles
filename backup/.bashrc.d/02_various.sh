@@ -51,7 +51,7 @@ function edit() {
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
         ;;
     _list) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
-    _launch) podman run --detach-keys "" --read-only --read-only -v "$NEOVIM_VOLUME:/root" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
+    _launch) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/data" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
     "") ;;
     *) echo -e "\e[1;31minvalid arg: '$1'\e[m" && return 1 ;;
     esac
@@ -61,8 +61,8 @@ function edit() {
     if [[ "$(echo "$BG_CONTAINER" | wc -l)" -gt 1 ]]; then
         echo -e "\e[1;33mmultiple neovim containers detected:\e[m"
         edit _stop
+        BG_CONTAINER="$(edit _list)"
     fi
-    BG_CONTAINER="$(edit _list)"
     if [[ -z "$BG_CONTAINER" ]]; then
         echo -e "\e[1;33mzero neovim containers detected: launching new container...\e[m"
         BG_CONTAINER="$(edit _launch)"
@@ -86,7 +86,7 @@ function edit() {
         ;;
     esac
 
-    podman exec --detach-keys="" -it -w /root "$BG_CONTAINER" bash -il
+    podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
 }
 
 unset command_not_found_handle
