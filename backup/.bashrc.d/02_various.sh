@@ -28,8 +28,8 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit() {
     local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
-    local NEOVIM_VOLUME_DATA="data_neovim"
-    local NEOVIM_VOLUME_CONFIG="config_neovim"
+    local NEOVIM_VOLUME_DATA="neovim_data"
+    local NEOVIM_VOLUME_CONFIG="neovim_config"
 
     case "$1" in
     end | stop) edit _stop ;;
