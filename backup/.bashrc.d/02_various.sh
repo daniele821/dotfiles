@@ -51,7 +51,7 @@ function edit() {
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
         ;;
     _list) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
-    _launch) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/root" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
+    _launch) podman run --detach-keys "" --read-only --read-only -v "$NEOVIM_VOLUME:/root" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
     "") ;;
     *) echo -e "\e[1;31minvalid arg: '$1'\e[m" && return 1 ;;
     esac
