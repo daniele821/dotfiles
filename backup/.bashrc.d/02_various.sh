@@ -28,8 +28,7 @@ alias time='/usr/bin/time -f "time elapsed: %es"'
 function edit() {
     local BG_CONTAINER=
     local NEOVIM_IMAGE="ghcr.io/daniele821/neovim"
-    local NEOVIM_VOLUME_DATA="neovim_data"
-    local NEOVIM_VOLUME_CONFIG="neovim_config"
+    local NEOVIM_VOLUME="neovim_data"
 
     case "$1" in
     end | stop) edit _stop ;;
@@ -41,7 +40,7 @@ function edit() {
         edit _launch >/dev/null
         ;;
     cd | files)
-        cd "$(podman volume inspect "$NEOVIM_VOLUME_DATA" -f '{{.Mountpoint}}')" || return 1
+        cd "$(podman volume inspect "$NEOVIM_VOLUME" -f '{{.Mountpoint}}')" || return 1
         ;;
     _stop)
         while read -r ps; do
@@ -52,7 +51,7 @@ function edit() {
         done <<<"$(podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q)"
         ;;
     _list) podman ps -a --filter "ancestor=$NEOVIM_IMAGE" -q ;;
-    _launch) podman run --detach-keys "" -v "$NEOVIM_VOLUME_CONFIG:/root" -v "$NEOVIM_VOLUME_DATA:/data" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
+    _launch) podman run --detach-keys "" -v "$NEOVIM_VOLUME:/root" -d --init -e "TZ=$(timedatectl show --property=Timezone --value)" "$NEOVIM_IMAGE" sleep infinity ;;
     "") ;;
     *) echo -e "\e[1;31minvalid arg: '$1'\e[m" && return 1 ;;
     esac
