@@ -9,18 +9,16 @@ DOTFILES_ROOT="$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"/../)"
 echo -e "\e[1;37minitializing firefox...\e[m"
 killall firefox 2>/dev/null || true
 rm -rf ~/.mozilla
-firefox --headless --no-remote --safe-mode about:blank &>/dev/null &
-sleep 2 && kill $!
+cp -r "$DOTFILES_ROOT/others-script/mozilla" ~/.mozilla
 TMP_DIR="$(mktemp -d)"
 cd "$TMP_DIR"
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/addon-406847-latest.xpi" -o sponsorBlocker@ajay.app.xpi
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
-find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
-    rm -rf "$profile"
-    cp -r "$DOTFILES_ROOT/others-script/firefox-init/" "$profile"
-    mkdir -p "$profile/extensions/"
-    cp "$TMP_DIR/"* "$profile/extensions"
+for profile in "hkjdcvhm.default" "kvgujw0x.default-release"; do
+    profile_path="$HOME/.mozilla/firefox/$profile"
+    mkdir -p "$profile_path/extensions/"
+    cp "$TMP_DIR/"* "$profile_path/extensions"
 done
 rm -rf "$TMP_DIR"
 
