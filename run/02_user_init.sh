@@ -15,10 +15,9 @@ cd "$TMP_DIR"
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/addon-406847-latest.xpi" -o sponsorBlocker@ajay.app.xpi
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi" -o uBlock0@raymondhill.net.xpi
-for profile in "hkjdcvhm.default" "kvgujw0x.default-release"; do
-    profile_path="$HOME/.mozilla/firefox/$profile"
-    mkdir -p "$profile_path/extensions/"
-    cp "$TMP_DIR/"* "$profile_path/extensions"
+find ~/.mozilla/firefox -maxdepth 1 -name '*.default*' | while read -r profile; do
+    mkdir -p "$profile/extensions/"
+    cp "$TMP_DIR/"* "$profile/extensions"
 done
 rm -rf "$TMP_DIR"
 
