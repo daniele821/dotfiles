@@ -1,3 +1,11 @@
+[AC][Display]
+DimDisplayIdleTimeoutSec=-1
+DimDisplayWhenIdle=false
+
+[Battery][Display]
+DimDisplayIdleTimeoutSec=-1
+DimDisplayWhenIdle=false
+
 [BatteryManagement]
 BatteryCriticalLevel=15
 BatteryLowLevel=30
