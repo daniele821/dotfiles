@@ -85,91 +85,6 @@ def ask_user(msg, flags=None):
                 return ask_user(msg, flags)
 
 
-# GIT UTILITIES
-def run_cmd(*cmd, capture_output=True, return_stdout=True, add_envvars=None):
-    if type(cmd) is tuple and type(cmd[0]) is list:
-        cmd = cmd[0]
-    if type(add_envvars) is dict:
-        env = os.environ.copy()
-        env.update(add_envvars)
-    else:
-        env = None
-    res = subprocess.run(list(cmd), capture_output=capture_output, text=capture_output, env=env)
-    if res.returncode != 0:
-        dbg(f"command '{str(list(cmd))}' failed")
-        if res.stderr:
-            dbg(f":\n {res.stderr}")
-        dbg("\n")
-    if capture_output and return_stdout:
-        return res.stdout.strip()
-    return res
-
-
-def assert_git_toplevel_dir(dir):
-    cmd = ["git", "-C", dir, "rev-parse", "--show-toplevel"]
-    runned = run_cmd(cmd, return_stdout=False)
-    if runned.returncode != 0:
-        return "git top level directory could not be found"
-    if runned.stdout.strip() != dir:
-        return "git top level directory is not the script directory"
-
-
-def git_current_branch(dir, setBranch=None):
-    if setBranch is not None:
-        return run_cmd("git", "-C", dir, "checkout", setBranch)
-    return run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
-
-
-def git_is_branch_uptodate(dir, allow_behind=False):
-    remote = run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-    branch = run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
-    remote_hash = run_cmd("git", "-C", dir, "rev-parse", remote)
-    branch_hash = run_cmd("git", "-C", dir, "rev-parse", branch)
-    is_ancestor = run_cmd(["git", "merge-base", "--is-ancestor", remote_hash, branch_hash], return_stdout=False).returncode == 0
-    return remote_hash == branch_hash or (allow_behind and is_ancestor)
-
-
-def git_pull_and_check(dir):
-    if ENV_NO_PROMPT is not None:
-        run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "pull", "--ff-only"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
-    else:
-        run_cmd(["git", "-C", dir, "pull", "--ff-only"], capture_output=False)
-    return git_is_branch_uptodate(dir, allow_behind=True)
-
-
-def git_push(dir):
-    if not git_is_branch_uptodate(dir):
-        if ENV_NO_PROMPT is not None:
-            run_cmd(["git", "-c", "core.askPass=''", "-C", dir, "push"], capture_output=False, add_envvars={'GIT_TERMINAL_PROMPT': '0'})
-        else:
-            run_cmd(["git", "-C", dir, "push"], capture_output=False)
-
-
-def git_has_changes(dir):
-    return run_cmd("git", "-C", dir, "status", "-s") != ""
-
-
-def git_diff(dir, reverse=False):
-    cmd = ["git", "-C", dir, "diff", "HEAD", "--diff-filter=adcr"]
-    run_cmd(cmd + ["-R"] if reverse else cmd, capture_output=False)
-
-
-def git_status(dir):
-    run_cmd(["git", "-C", dir, "status", "-su"], capture_output=False)
-
-
-def git_restore_all(dir):
-    run_cmd(["git", "-C", dir, "reset", "HEAD"], capture_output=False)
-    run_cmd(["git", "-C", dir, "restore", "--staged", SCRIPT_DIR], capture_output=False)
-    run_cmd(["git", "-C", dir, "restore", SCRIPT_DIR], capture_output=False)
-    run_cmd(["git", "-C", dir, "clean", "-fdq"], capture_output=False)
-
-
-def git_commit_all(dir, commit_msg):
-    run_cmd(["git", "-C", dir, "add", SCRIPT_DIR], capture_output=False)
-    run_cmd(["git", "-C", dir, "commit", "-m", commit_msg], capture_output=False)
-
-
 # FILESYSTEM OPERATIONS
 def __is_original__(path):
     path = os.path.normpath(path)
@@ -381,18 +296,13 @@ DIRS = {
     "backup": os.path.join(SCRIPT_DIR, "backup"),
     "config": os.path.join(SCRIPT_DIR, "config"),
     "run": os.path.join(SCRIPT_DIR, "run"),
-    "others-script": os.path.join(SCRIPT_DIR, "others-script"),
-    "others-user": os.path.join(SCRIPT_DIR, "others-user"),
+    "other": os.path.join(SCRIPT_DIR, "other"),
 }
 FILES = {
-    "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
 ENV_DEBUG = os.getenv("DEBUG")
-ENV_SET_BRANCH = os.getenv("SET_BRANCH")
-ENV_NO_CHECKS = os.getenv("NO_CHECKS")
-ENV_NO_PROMPT = os.getenv("NO_PROMPT")
 
 
 class Action(enum.Enum):
@@ -400,7 +310,6 @@ class Action(enum.Enum):
     UNTRACKED = enum.auto()
     SAVE = enum.auto()
     BACKUP = enum.auto()
-    COMMIT = enum.auto()
     EDIT = enum.auto()
     INIT = enum.auto()
     RUN = enum.auto()
@@ -419,7 +328,6 @@ class Option(enum.Enum):
 
 ACTIONS = {
     "b": Action.BACKUP,
-    "c": Action.COMMIT,
     "e": Action.EDIT,
     "h": Action.HELP,
     "i": Action.INIT,
@@ -440,8 +348,6 @@ SHORTCUTS = {
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
     "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "commit": Flag([Action.COMMIT], [Option.YES]),
-    "uncommit": Flag([Action.COMMIT], [Option.YES, Option.TOGGLE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
     "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
@@ -451,11 +357,10 @@ SHORTCUTS = {
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
-SHORTCUTS |= {"co": SHORTCUTS["commit"]}
-SHORTCUTS |= {"un": SHORTCUTS["uncommit"]}
-
 
 # ACTIONS
+
+
 def help(flags):
     print("""Program to backup dotfiles, with git integration
 
@@ -466,7 +371,6 @@ def help(flags):
   \x1b[1m-b\x1b[m                    list all tracked files, and for each one allows to restore from backup
   \x1b[1m-s\x1b[m                    list all tracked files, and for each one allows to save to backup
   \x1b[1m-u\x1b[m                    list all untracked files, and can allows to delete them
-  \x1b[1m-c\x1b[m                    allows to commit or restore all git changes
   \x1b[1m-e\x1b[m                    allows to edit files
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
@@ -485,8 +389,6 @@ def help(flags):
   \x1b[1msaveall         \x1b[m      save all files to backup (even the `notdiff` ones)
   \x1b[1mrestore       re\x1b[m      restore all files from backup
   \x1b[1mrestoreall      \x1b[m      restore all files from backup (even the `notdiff` ones)
-  \x1b[1mcommit        co\x1b[m      commit and push all changes in git repo
-  \x1b[1muncommit      un\x1b[m      delete all changes in git repo
   \x1b[1muntracked       \x1b[m      list untracked files
   \x1b[1minit            \x1b[m      initialize needed directories and config files
   \x1b[1mpurge           \x1b[m      delete all config file and directories managed by the script
@@ -496,9 +398,6 @@ def help(flags):
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDEBUG\x1b[m                 show python stderr for debugging porpouses
-  \x1b[1mSET_BRANCH\x1b[m            set the current branch as the valid branch
-  \x1b[1mNO_PROMPT\x1b[m             disable getting prompts asking for passwords
-  \x1b[1mNO_CHECKS\x1b[m             bypass all checks (useful for first run)
   """)
 
 
@@ -542,7 +441,7 @@ def run(flags):
             msg2 = color("file", relpath(file))
             if ask_user(msg1 + msg2 + msg3, flags):
                 try:
-                    if run_cmd(["bash", file], capture_output=False, return_stdout=False).returncode:
+                    if subprocess.run([file], capture_output=False).returncode:
                         raise Exception()
                 except Exception:
                     err_exit("init script failed!", True)
@@ -573,7 +472,7 @@ def edit(flags):
             if ask_user(msg1 + msg2 + msg3, flags):
                 try:
                     file_old_content = pathlib.Path(file).read_text()
-                    if run_cmd([editor, file], capture_output=False, return_stdout=False).returncode:
+                    if subprocess.run([editor, file], capture_output=False).returncode:
                         raise Exception()
                     file_new_content = pathlib.Path(file).read_text()
                     if file_old_content != file_new_content:
@@ -630,9 +529,10 @@ def backup(flags):
                         if not filecmp.cmp(ofile, bfile):
                             fout(ofile, "original and backup files", "differ")
                             if opt_diff:
-                                old = ofile if act_backup else bfile
-                                new = bfile if act_backup else ofile
-                                run_cmd(["diff", "--color", "-u", old, new], capture_output=False)
+                                # old = ofile if act_backup else bfile
+                                # new = bfile if act_backup else ofile
+                                # run_cmd(["diff", "--color", "-u", old, new], capture_output=False)
+                                warn_msg("TODO: diff files with a builtin python method!")
                             if act_save:
                                 if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                     copy_file(ofile, bfile, True)
@@ -667,32 +567,6 @@ def untracked(flags):
             warn_msg("operation failed!", True)
 
 
-def commit(flags):
-    opt_toggle = flags.has_option(Option.TOGGLE)
-    opt_diff = flags.has_option(Option.DIFF)
-    msg_commit = color("msg", "Do you really want to commit all? ")
-    msg_restore = color("msg", "Do you really want to restore all? ")
-    if not opt_toggle:
-        if not git_pull_and_check(SCRIPT_DIR):
-            err_exit("could not make current branch up to date with upstream!")
-    if git_has_changes(SCRIPT_DIR):
-        if opt_diff:
-            git_diff(SCRIPT_DIR, reverse=opt_toggle)
-        git_status(SCRIPT_DIR)
-        if opt_toggle:
-            if ask_user(msg_restore, flags):
-                git_restore_all(SCRIPT_DIR)
-        else:
-            if ask_user(msg_commit, flags):
-                if commit_msg := input(color("msg", "Write commit message: ")):
-                    git_commit_all(SCRIPT_DIR, commit_msg)
-    elif opt_toggle:
-        git_restore_all(SCRIPT_DIR)
-
-    if not opt_toggle:
-        git_push(SCRIPT_DIR)
-
-
 # ACTION UTILITIES
 def load_config(conf):
     if exist(conf) and not isrealfile(conf):
@@ -716,42 +590,6 @@ def load_config(conf):
 
 
 # EXECUTION UTILITIES
-def assert_branch():
-    if ENV_NO_CHECKS is not None:
-        warn_msg("skipping all checks...")
-        return
-
-    missing_deps = []
-    for dep in ["git", "diff"]:
-        if shutil.which(dep) is None:
-            missing_deps += [dep]
-    if len(missing_deps) > 0:
-        err_exit(f"missing dependencies '{", ".join(missing_deps)}'")
-
-    ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
-    if ERR_MSG is not None:
-        err_exit(ERR_MSG)
-
-    branch_file = FILES["branch"]
-    create_file(branch_file)
-    curr_branch = git_current_branch(SCRIPT_DIR)
-    want_branch = pathlib.Path(FILES["branch"]).read_text().splitlines()
-    if len(want_branch) == 0:
-        want_branch = ""
-    else:
-        want_branch = want_branch[0]
-    if curr_branch != want_branch:
-        dbg_final_report("\x1b[35m~ WRONG BRANCH: '{}' (valid: '{}')\x1b[m\n".format(curr_branch, want_branch))
-        if ENV_NO_CHECKS is not None:
-            warn_msg(f"'{curr_branch}' is not the valid branch ({want_branch})")
-        elif ENV_SET_BRANCH is not None:
-            warn_msg(f"changing valid branch: from '{want_branch}' to '{curr_branch}'")
-            pathlib.Path(FILES["branch"]).write_text(curr_branch)
-            dbg_final_report("\x1b[35m~ UPDATED BRANCH: '{}'\x1b[m\n".format(curr_branch))
-        else:
-            err_exit(f"'{curr_branch}' is not the valid branch ({want_branch})")
-
-
 def parse(args):
     flag = Flag()
     for word in args:
@@ -775,8 +613,6 @@ def execute(flags):
     match flags.get_action():
         case Action.BACKUP | Action.LIST | Action.SAVE:
             backup(flags)
-        case Action.COMMIT:
-            commit(flags)
         case Action.EDIT:
             edit(flags)
         case Action.HELP:
@@ -805,7 +641,6 @@ if __name__ == "__main__":
     if ENV_DEBUG is None:
         sys.stderr = open(os.devnull, "w")
     try:
-        assert_branch()
         main()
     except SystemExit:
         raise
