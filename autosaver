@@ -50,20 +50,6 @@ def dbg_exc():
     dbg("\n")
 
 
-def dbg_final_report(msg, printAll=False):
-    if not hasattr(dbg_final_report, "acc"):
-        dbg_final_report.acc = []
-    if msg is not None:
-        dbg_final_report.acc.append(msg)
-
-    if printAll:
-        if len(dbg_final_report.acc) > 0:
-            dbg("\nFINAL REPORT OF ALL OPERATIONS:\n")
-        for elem in dbg_final_report.acc:
-            dbg(elem)
-        dbg_final_report.acc = []
-
-
 def ask_user(msg, flags=None):
     print(msg, end="")
     opt_yes = flags is not None and flags.has_option(Option.YES)
@@ -150,7 +136,6 @@ def create_dir(path):
     __assert_valid__(path, ["sym", "none"])
     os.makedirs(path, exist_ok=True)
     __assert_valid__(path, ["sym", "dir"])
-    dbg_final_report("\x1b[32m+ CREATED DIRECTORY: {}\x1b[m\n".format(path))
 
 
 def create_file(path):
@@ -161,24 +146,17 @@ def create_file(path):
     with open(path, "w"):
         pass
     __assert_valid__(path, ["sym", "file"])
-    dbg_final_report("\x1b[32m+ CREATED FILE:      {}\x1b[m\n".format(path))
 
 
 def delete_dir(path, allow_force=False):
     if not exist(path):
         return
-    purge = False
     __assert_valid__(path, ["sym", "dir"])
     if not os.listdir(path):
         os.rmdir(path)
     elif allow_force:
         shutil.rmtree(path)
-        purge = True
     __assert_valid__(path, ["sym", "none"])
-    if purge:
-        dbg_final_report("\x1b[31m- \x1b[4mPURGED DIRECTORY:  {}\x1b[m\n".format(path))
-    else:
-        dbg_final_report("\x1b[31m- DELETED DIRECTORY: {}\x1b[m\n".format(path))
 
 
 def delete_file(path):
@@ -187,7 +165,6 @@ def delete_file(path):
     __assert_valid__(path, ["sym", "file"])
     os.remove(path)
     __assert_valid__(path, ["sym", "none"])
-    dbg_final_report("\x1b[31m+ CREATED FILE:      {}\x1b[m\n".format(path))
 
 
 def purge_path(path, allow_force=False):
@@ -209,7 +186,6 @@ def copy_file(src, dst, allow_force=False):
     create_dir(os.path.dirname(os.path.normpath(dst)))
     shutil.copyfile(src, dst)
     __assert_valid__(dst, ["sym", "file"])
-    dbg_final_report("\x1b[34m> COPIED FILE:       {} -> {}\x1b[m\n".format(src, dst))
 
 
 def relpath(path):
@@ -222,7 +198,6 @@ def make_executable(path):
     if os.stat(path).st_mode & 0o111 == 0o111:
         return
     os.chmod(path, os.stat(path).st_mode | 0o111)
-    dbg_final_report("\x1b[34m* MADE EXECUTABLE:   {}\x1b[m\n".format(path))
 
 
 def list_files(dir):
@@ -466,12 +441,8 @@ def edit(flags):
             msg2 = color("file", relpath(file))
             if ask_user(msg1 + msg2 + msg3, flags):
                 try:
-                    file_old_content = pathlib.Path(file).read_text()
                     if subprocess.run([editor, file], capture_output=False).returncode:
                         raise Exception()
-                    file_new_content = pathlib.Path(file).read_text()
-                    if file_old_content != file_new_content:
-                        dbg_final_report("\x1b[34m> MODIFIED FILE:     {}\x1b[m\n".format(file))
                 except Exception:
                     err_exit("unable to edit file!", True)
         else:
@@ -639,5 +610,3 @@ if __name__ == "__main__":
         raise
     except BaseException as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
-    finally:
-        dbg_final_report(None, True)
