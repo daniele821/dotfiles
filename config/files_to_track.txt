@@ -1,6 +1,0 @@
-// vim:commentstring=//\ %s
-
-.bashrc.d
-.config/mpv
-.config/nvim/init.lua
-.gitconfig
