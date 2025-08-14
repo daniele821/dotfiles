@@ -33,4 +33,4 @@ rm Firacode.zip LICENSE README.md
 
 # restore files
 echo -e "\e[1;37mrestoring dotfiles...\e[m"
-BRANCH="" "$DOTFILES_ROOT/autosaver" restoreall
+"$DOTFILES_ROOT/autosaver" restoreall
