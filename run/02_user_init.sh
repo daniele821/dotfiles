@@ -34,7 +34,3 @@ rm Firacode.zip LICENSE README.md
 # restore files
 echo -e "\e[1;37mrestoring dotfiles...\e[m"
 BRANCH="" "$DOTFILES_ROOT/autosaver" restoreall
-
-# download git repos
-echo -e "\e[1;37mrestoring git repos...\e[m"
-BRANCH="" NO_PROMPT="" "$DOTFILES_ROOT/autosaver" git
