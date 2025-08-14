@@ -302,7 +302,6 @@ FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
 }
-ENV_DEBUG = os.getenv("DEBUG")
 
 
 class Action(enum.Enum):
@@ -358,9 +357,8 @@ SHORTCUTS = {
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
 
+
 # ACTIONS
-
-
 def help(flags):
     print("""Program to backup dotfiles, with git integration
 
@@ -395,9 +393,6 @@ def help(flags):
   \x1b[1medit            \x1b[m      allow to edit all files
   \x1b[1mrun             \x1b[m      run all init scripts
   \x1b[1mhelp            \x1b[m      show this help message
-
-\x1b[1;4mEnvironment variables:\x1b[m
-  \x1b[1mDEBUG\x1b[m                 show python stderr for debugging porpouses
   """)
 
 
@@ -638,8 +633,6 @@ def main():
 
 
 if __name__ == "__main__":
-    if ENV_DEBUG is None:
-        sys.stderr = open(os.devnull, "w")
     try:
         main()
     except SystemExit:
