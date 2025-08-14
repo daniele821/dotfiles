@@ -9,7 +9,7 @@ DOTFILES_ROOT="$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]}")")"/../)"
 echo -e "\e[1;37minitializing firefox...\e[m"
 killall firefox 2>/dev/null || true
 rm -rf ~/.mozilla
-cp -r "$DOTFILES_ROOT/others-script/mozilla" ~/.mozilla
+cp -r "$DOTFILES_ROOT/others/mozilla" ~/.mozilla
 TMP_DIR="$(mktemp -d)"
 cd "$TMP_DIR"
 curl -L "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-953454-latest.xpi" -o addon@darkreader.org.xpi
