@@ -721,6 +721,13 @@ def assert_branch():
         warn_msg("skipping all checks...")
         return
 
+    missing_deps = []
+    for dep in ["git", "diff"]:
+        if shutil.which(dep) is None:
+            missing_deps += [dep]
+    if len(missing_deps) > 0:
+        err_exit(f"missing dependencies '{", ".join(missing_deps)}'")
+
     ERR_MSG = assert_git_toplevel_dir(SCRIPT_DIR)
     if ERR_MSG is not None:
         err_exit(ERR_MSG)
