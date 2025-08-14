@@ -114,25 +114,10 @@ def assert_git_toplevel_dir(dir):
         return "git top level directory is not the script directory"
 
 
-def git_remote_urls(dir, addUrls=None):
-    if not addUrls:
-        return run_cmd("git", "-C", dir, "remote", "get-url", "origin", "--all").splitlines()
-    for url in addUrls:
-        run_cmd("git", "-C", dir, "remote", "set-url", "origin", "--add", url)
-
-
 def git_current_branch(dir, setBranch=None):
     if setBranch is not None:
         return run_cmd("git", "-C", dir, "checkout", setBranch)
     return run_cmd("git", "-C", dir, "rev-parse", "--abbrev-ref", "HEAD")
-
-
-def git_email(dir, setEmail=None):
-    if type(setEmail) == str and setEmail.strip() == "":
-        return
-    if setEmail is not None:
-        return run_cmd("git", "-C", dir, "config", "user.email", setEmail)
-    return run_cmd("git", "-C", dir, "config", "--local", "user.email")
 
 
 def git_is_branch_uptodate(dir, allow_behind=False):
@@ -183,18 +168,6 @@ def git_restore_all(dir):
 def git_commit_all(dir, commit_msg):
     run_cmd(["git", "-C", dir, "add", SCRIPT_DIR], capture_output=False)
     run_cmd(["git", "-C", dir, "commit", "-m", commit_msg], capture_output=False)
-
-
-def git_clone_pull_interactive(dir, url=None):
-    env = os.environ.copy()
-    args = ["git", "-C", dir, "-c", "color.ui=always", "pull", "--ff-only", "--progress"]
-    if url is not None:
-        if ENV_NO_PROMPT is not None:
-            args = ["git",  "-c", "core.askPass=''", "-c", "color.ui=always", "clone", "--progress", url, dir]
-            env.update({'GIT_TERMINAL_PROMPT': '0'})
-        else:
-            args = ["git", "-c", "color.ui=always", "clone", "--progress", url, dir]
-    return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, env=env)
 
 
 # FILESYSTEM OPERATIONS
@@ -415,8 +388,6 @@ FILES = {
     "branch": os.path.join(SCRIPT_DIR, ".branch"),
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "gitrepos": os.path.join(DIRS["config"], "git_repos.txt"),
-    "gittopdirs": os.path.join(DIRS["config"], "git_topdirs.txt"),
 }
 ENV_DEBUG = os.getenv("DEBUG")
 ENV_SET_BRANCH = os.getenv("SET_BRANCH")
@@ -434,7 +405,6 @@ class Action(enum.Enum):
     INIT = enum.auto()
     RUN = enum.auto()
     HELP = enum.auto()
-    GIT = enum.auto()
     DEFAULT = LIST
 
 
@@ -453,7 +423,6 @@ ACTIONS = {
     "e": Action.EDIT,
     "h": Action.HELP,
     "i": Action.INIT,
-    "g": Action.GIT,
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
@@ -479,7 +448,6 @@ SHORTCUTS = {
     "run": Flag([Action.RUN], [Option.YES]),
     "edit": Flag([Action.EDIT], []),
     "help": Flag([Action.HELP], []),
-    "git": Flag([Action.GIT], [Option.FORCE]),
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
@@ -503,7 +471,6 @@ def help(flags):
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
   \x1b[1m-h\x1b[m                    show this help message
-  \x1b[1m-g\x1b[m                    update or download tracked git repos
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -526,7 +493,6 @@ def help(flags):
   \x1b[1medit            \x1b[m      allow to edit all files
   \x1b[1mrun             \x1b[m      run all init scripts
   \x1b[1mhelp            \x1b[m      show this help message
-  \x1b[1mgit             \x1b[m      update or download tracked git repos
 
 \x1b[1;4mEnvironment variables:\x1b[m
   \x1b[1mDEBUG\x1b[m                 show python stderr for debugging porpouses
@@ -727,90 +693,12 @@ def commit(flags):
         git_push(SCRIPT_DIR)
 
 
-def gitrepos(flags):
-    opt_toggle = flags.has_option(Option.TOGGLE)
-    opt_force = flags.has_option(Option.FORCE)
-    if opt_toggle:
-        repoconf = ""
-        for repo in sorted(set(find_gitrepos(FILES["gittopdirs"]))):
-            repo_home = os.path.join(HOME, repo)
-            url_arr = git_remote_urls(repo_home)
-            urls = " ".join(url_arr)
-            branch = git_current_branch(repo_home)
-            email = git_email(repo_home)
-            if not urls:
-                warn_msg(f"no origin remote found for: '{repo_home}'")
-                continue
-            if branch == "HEAD":
-                branch = ""
-            repoconf += f"{repo}\n{urls}\n{email}\n{branch}\n\n"
-            print(color("msg", "saving repository ") + color("file", repo_home) +
-                  color("msg", " ( ") + color("file", urls) +
-                  color("msg", ", ") + color("file", email) +
-                  color("msg", ", ") + color("file", branch) + color("msg", ")"))
-        if repoconf:
-            create_file(FILES["gitrepos"])
-            with open(FILES["gitrepos"], "w") as f:
-                f.write(repoconf)
-        return
-    repos = load_gitconf(FILES["gitrepos"])
-    procs = []
-    for repo in repos:
-        index = len(procs)
-        repo["dir"] = os.path.join(HOME, repo["dir"])
-        if isrealdir(repo["dir"]):
-            if not opt_force:
-                continue
-            procs.append({})
-            procs[index]["clone"] = False
-            procs[index]["repo"] = repo
-            procs[index]["msg"] = color("msg", "pulling ") + color("file", repo["dir"])
-            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"])
-        elif not exist(repo["dir"]):
-            procs.append({})
-            extra_urls_msg = ""
-            for url in repo["url-push"]:
-                extra_urls_msg += color("msg", ", ") + color("file", url)
-            procs[index]["clone"] = True
-            procs[index]["repo"] = repo
-            procs[index]["msg"] = color("msg", "cloning ") + color("file", repo["url"]) + extra_urls_msg + \
-                color("msg", " into ") + color("file", repo["dir"]) + \
-                color("msg", " ( ") + color("file", repo["email"]) + \
-                color("msg", ", ") + color("file", repo["branch"]) + color("msg", " )")
-            procs[index]["ps"] = git_clone_pull_interactive(repo["dir"], repo["url"])
-        else:
-            warn_msg(f"path exists but is not a directory: {repo["dir"]}")
-    for proc in procs:
-        try:
-            print(proc["msg"])
-            while True:
-                byte = proc["ps"].stdout.read(1)
-                if not byte:
-                    break
-                sys.stdout.buffer.write(byte)
-                sys.stdout.buffer.flush()
-        except KeyboardInterrupt:
-            proc["ps"].terminate()
-        finally:
-            proc["ps"].wait()
-            if proc["ps"].returncode != 0:
-                warn_msg(f"git process failed with {proc["ps"].returncode}")
-            if proc["clone"]:
-                git_current_branch(proc["repo"]["dir"], setBranch=proc["repo"]["branch"])
-                git_email(proc["repo"]["dir"], setEmail=proc["repo"]["email"])
-                git_remote_urls(proc["repo"]["dir"], addUrls=proc["repo"]["url-push"])
-
-
 # ACTION UTILITIES
-def conf_file_exists(conf):
+def load_config(conf):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: '{}'".format(relpath(conf)))
-        return False
-    return exist(conf) and os.path.getsize(conf) > 0
-
-
-def load_config(conf):
-    if not conf_file_exists(conf):
+        return set()
+    if not exist(conf) or os.path.getsize(conf) == 0:
         return set()
     odir = HOME
     bdir = DIRS["backup"]
@@ -825,57 +713,6 @@ def load_config(conf):
                 elif isrealdir(file):
                     files.update(all_files(file, dir))
     return files
-
-
-def load_gitconf(conf):
-    if not conf_file_exists(conf):
-        return []
-    pos = 0
-    qargs = 5
-    repos = []
-    lines = pathlib.Path(conf).read_text().rstrip().splitlines()
-    lines.extend([""] * ((qargs - len(lines)) % qargs))
-    for line in lines:
-        if pos == 0:
-            index = len(repos)
-            repos.append({})
-        match pos:
-            case 0: repos[index]["dir"] = os.path.normpath(line) if line else line
-            case 1:
-                repos[index]["url"] = line.split(" ")[0]
-                repos[index]["url-push"] = line.split(" ")[1:]
-            case 2: repos[index]["email"] = line
-            case 3: repos[index]["branch"] = line
-            case 4:
-                if isoriginal(repos[index]["dir"]):
-                    warn_msg(f"invalid directory: '{repos[index]["dir"]}'")
-                    del repos[index]
-                elif repos[index]["url"].strip() == "":
-                    warn_msg(f"missing url: '{repos[index]["dir"]}'")
-                    del repos[index]
-                elif len(list(filter(lambda x: x["dir"] == repos[index]["dir"], repos))) > 1:
-                    warn_msg(f"duplicated repo: '{repos[index]["dir"]}'")
-                    del repos[index]
-                else:
-                    repos[index]["dir"] = os.path.join(HOME, repos[index]["dir"])
-        pos = (pos + 1) % qargs
-    return repos
-
-
-def find_gitrepos(conf):
-    if not conf_file_exists(FILES["gittopdirs"]):
-        return []
-    git_dirs = []
-    for topdir in pathlib.Path(FILES["gittopdirs"]).read_text().splitlines():
-        if topdir.startswith("/") or topdir.strip() == "":
-            continue
-        topdir = os.path.normpath(topdir)
-        home_path = os.path.join(HOME, topdir)
-        for root, dirs, files in os.walk(home_path):
-            if '.git' in dirs:
-                git_dirs.append(os.path.relpath(root, HOME))
-                dirs.remove('.git')
-    return git_dirs
 
 
 # EXECUTION UTILITIES
@@ -939,8 +776,6 @@ def execute(flags):
             help(flags)
         case Action.INIT:
             init(flags)
-        case Action.GIT:
-            gitrepos(flags)
         case Action.RUN:
             run(flags)
         case Action.UNTRACKED:
