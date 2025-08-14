@@ -8,6 +8,7 @@ import subprocess
 import pathlib
 import filecmp
 import traceback
+import difflib
 
 
 # OUTPUT UTILITIES
@@ -495,10 +496,23 @@ def backup(flags):
                         if not filecmp.cmp(ofile, bfile):
                             fout(ofile, "original and backup files", "differ")
                             if opt_diff:
-                                # old = ofile if act_backup else bfile
-                                # new = bfile if act_backup else ofile
-                                # run_cmd(["diff", "--color", "-u", old, new], capture_output=False)
-                                warn_msg("TODO: diff files with a builtin python method!")
+                                old = ofile if act_backup else bfile
+                                new = bfile if act_backup else ofile
+                                diff = difflib.unified_diff(
+                                    pathlib.Path(new).read_text().splitlines(keepends=True),
+                                    pathlib.Path(old).read_text().splitlines(keepends=True),
+                                    fromfile=new,
+                                    tofile=old,
+                                )
+                                for line in diff:
+                                    if line.startswith("---") or line.startswith("+++") or line.startswith("@@"):
+                                        pass
+                                    elif line.startswith("-"):
+                                        print(f"\x1b[31m{line}\x1b[0m", end="")
+                                    elif line.startswith("+"):
+                                        print(f"\x1b[32m{line}\x1b[0m", end="")
+                                    else:
+                                        print(line, end="")
                             if act_save:
                                 if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                     copy_file(ofile, bfile, True)
