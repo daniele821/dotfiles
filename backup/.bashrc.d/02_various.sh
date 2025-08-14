@@ -40,8 +40,9 @@ function edit() {
         edit _launch >/dev/null
         ;;
     cd | files)
-        cd "$(podman volume inspect "$NEOVIM_VOLUME" -f '{{.Mountpoint}}')" || return 1
+        cd "$(edit _volume)" || return 1
         ;;
+    _volume) podman volume inspect "$NEOVIM_VOLUME" -f '{{.Mountpoint}}' ;;
     _stop)
         while read -r ps; do
             if [[ -n "$ps" ]]; then
@@ -86,6 +87,7 @@ function edit() {
         ;;
     esac
 
+    restorecon -R "$(edit _volume)"
     podman exec --detach-keys="" -it -w /data "$BG_CONTAINER" bash -il
 }
 
