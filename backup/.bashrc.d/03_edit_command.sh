@@ -14,9 +14,7 @@ function edit() {
         echo -e "\e[1;33mlaunch new container...\e[m"
         edit _launch >/dev/null
         ;;
-    cd | files)
-        cd "$(edit _volume)" || return 1
-        ;;
+    cd | files) cd "$(edit _volume)" || return 1 ;;
     fix) edit _fix ;;
     _fix) restorecon -R "$(edit _volume)" ;;
     _volume) podman volume inspect "$NEOVIM_VOLUME" -f '{{.Mountpoint}}' ;;
