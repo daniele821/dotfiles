@@ -498,21 +498,24 @@ def backup(flags):
                             if opt_diff:
                                 old = ofile if act_backup else bfile
                                 new = bfile if act_backup else ofile
-                                diff = difflib.unified_diff(
-                                    pathlib.Path(new).read_text().splitlines(keepends=True),
-                                    pathlib.Path(old).read_text().splitlines(keepends=True),
-                                    fromfile=new,
-                                    tofile=old,
-                                )
-                                for line in diff:
-                                    if line.startswith("---") or line.startswith("+++") or line.startswith("@@"):
-                                        pass
-                                    elif line.startswith("-"):
-                                        print(f"\x1b[31m{line}\x1b[0m", end="")
-                                    elif line.startswith("+"):
-                                        print(f"\x1b[32m{line}\x1b[0m", end="")
-                                    else:
-                                        print(line, end="")
+                                try:
+                                    diff = difflib.unified_diff(
+                                        pathlib.Path(new).read_text().splitlines(keepends=True),
+                                        pathlib.Path(old).read_text().splitlines(keepends=True),
+                                        fromfile=new,
+                                        tofile=old,
+                                    )
+                                    for line in diff:
+                                        if line.startswith("---") or line.startswith("+++") or line.startswith("@@"):
+                                            pass
+                                        elif line.startswith("-"):
+                                            print(f"\x1b[31m{line}\x1b[0m", end="")
+                                        elif line.startswith("+"):
+                                            print(f"\x1b[32m{line}\x1b[0m", end="")
+                                        else:
+                                            print(line, end="")
+                                except UnicodeDecodeError:
+                                    print("\x1b[33mbinary files differ\x1b[0m")
                             if act_save:
                                 if ask_user(color("msg", "Do you really want to update backup file? "), flags):
                                     copy_file(ofile, bfile, True)
