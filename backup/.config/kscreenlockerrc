@@ -1,5 +1,6 @@
 [Daemon]
-LockGrace=0
+Autolock=false
+Timeout=0
 
 [Greeter]
 WallpaperPlugin=org.kde.potd
