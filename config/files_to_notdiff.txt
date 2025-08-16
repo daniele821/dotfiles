@@ -31,8 +31,8 @@
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
 .local/share/fonts/FiraCode
-.mozilla/firefox/kvgujw0x.default-release/extension-settings.json
-.mozilla/firefox/kvgujw0x.default-release/places.sqlite
-.mozilla/firefox/kvgujw0x.default-release/prefs.js
-.mozilla/firefox/kvgujw0x.default-release/search.json.mozlz4
+.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+.mozilla/firefox/kvgujw0x.customized/places.sqlite
+.mozilla/firefox/kvgujw0x.customized/prefs.js
+.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
 .mozilla/firefox/profiles.ini
