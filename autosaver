@@ -502,8 +502,8 @@ def backup(flags):
                                 new = bfile if act_backup else ofile
                                 try:
                                     diff = difflib.unified_diff(
-                                        pathlib.Path(new).read_text().splitlines(keepends=True),
                                         pathlib.Path(old).read_text().splitlines(keepends=True),
+                                        pathlib.Path(new).read_text().splitlines(keepends=True),
                                         fromfile=new,
                                         tofile=old,
                                     )
@@ -627,5 +627,8 @@ if __name__ == "__main__":
         main()
     except SystemExit:
         raise
+    except KeyboardInterrupt:
+        print()
+        err_exit("program interrupted by user")
     except BaseException as e:
         err_exit(str(e.__class__.__name__) + ": " + str(e), True)
