@@ -11,6 +11,111 @@ import traceback
 import difflib
 
 
+# DATA STRUCTURES
+class Flag:
+    def __init__(self, actions=set(), options=set()):
+        self.actions = set()
+        self.options = set()
+        self.add_flags(actions, options)
+
+    def add_flags(self, actions, options):
+        self.actions.update(actions)
+        self.options.update(options)
+        return self
+
+    def add_all_flags(self, flag):
+        self.add_flags(flag.actions, flag.options)
+        return self
+
+    def validate(self):
+        if len(self.actions) > 1:
+            err_exit("multiple actions are not supported!")
+        elif len(self.actions) == 0:
+            self.actions = set([Action.DEFAULT])
+        return self
+
+    def get_action(self):
+        return next(iter(self.actions))
+
+    def has_option(self, option):
+        return option in self.options
+
+    def __str__(self):
+        actStr = ", ".join([i.__str__() for i in self.actions])
+        optStr = ", ".join([i.__str__() for i in self.options])
+        return "Flags: Actions [{}], Options [{}]".format(actStr, optStr)
+
+
+# CONFIGURABLE VARIABLES
+HOME = os.path.realpath(os.getenv("HOME"))
+SCRIPT_PATH = os.path.realpath(__file__)
+SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
+DIRS = {
+    "backup": os.path.join(SCRIPT_DIR, "backup"),
+    "config": os.path.join(SCRIPT_DIR, "config"),
+    "run": os.path.join(SCRIPT_DIR, "run"),
+    "other": os.path.join(SCRIPT_DIR, "other"),
+}
+FILES = {
+    "track": os.path.join(DIRS["config"], "files_to_track.txt"),
+    "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+}
+
+
+class Action(enum.Enum):
+    LIST = enum.auto()
+    UNTRACKED = enum.auto()
+    SAVE = enum.auto()
+    BACKUP = enum.auto()
+    EDIT = enum.auto()
+    INIT = enum.auto()
+    RUN = enum.auto()
+    HELP = enum.auto()
+    DEFAULT = LIST
+
+
+class Option(enum.Enum):
+    DIFF = enum.auto()
+    FORCE = enum.auto()
+    NO = enum.auto()
+    YES = enum.auto()
+    TOGGLE = enum.auto()
+    VERBOSE = enum.auto()
+
+
+ACTIONS = {
+    "b": Action.BACKUP,
+    "e": Action.EDIT,
+    "h": Action.HELP,
+    "i": Action.INIT,
+    "r": Action.RUN,
+    "s": Action.SAVE,
+    "u": Action.UNTRACKED,
+}
+OPTIONS = {
+    "d": Option.DIFF,
+    "f": Option.FORCE,
+    "n": Option.NO,
+    "t": Option.TOGGLE,
+    "v": Option.VERBOSE,
+    "y": Option.YES,
+}
+SHORTCUTS = {
+    "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
+    "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
+    "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "untracked": Flag([Action.UNTRACKED], []),
+    "init": Flag([Action.INIT], [Option.YES]),
+    "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
+    "run": Flag([Action.RUN], [Option.YES]),
+    "edit": Flag([Action.EDIT], []),
+    "help": Flag([Action.HELP], []),
+}
+SHORTCUTS |= {"sa": SHORTCUTS["save"]}
+SHORTCUTS |= {"re": SHORTCUTS["restore"]}
+
+
 # OUTPUT UTILITIES
 def color(clr, str, output=False):
     match clr:
@@ -227,111 +332,6 @@ def all_files(dir, relpath):
                 fname = os.path.relpath(fname, relpath)
                 files.add(fname)
     return files
-
-
-# DATA STRUCTURES
-class Flag:
-    def __init__(self, actions=set(), options=set()):
-        self.actions = set()
-        self.options = set()
-        self.add_flags(actions, options)
-
-    def add_flags(self, actions, options):
-        self.actions.update(actions)
-        self.options.update(options)
-        return self
-
-    def add_all_flags(self, flag):
-        self.add_flags(flag.actions, flag.options)
-        return self
-
-    def validate(self):
-        if len(self.actions) > 1:
-            err_exit("multiple actions are not supported!")
-        elif len(self.actions) == 0:
-            self.actions = set([Action.DEFAULT])
-        return self
-
-    def get_action(self):
-        return next(iter(self.actions))
-
-    def has_option(self, option):
-        return option in self.options
-
-    def __str__(self):
-        actStr = ", ".join([i.__str__() for i in self.actions])
-        optStr = ", ".join([i.__str__() for i in self.options])
-        return "Flags: Actions [{}], Options [{}]".format(actStr, optStr)
-
-
-# CONFIGURABLE VARIABLES
-HOME = os.path.realpath(os.getenv("HOME"))
-SCRIPT_PATH = os.path.realpath(__file__)
-SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
-DIRS = {
-    "backup": os.path.join(SCRIPT_DIR, "backup"),
-    "config": os.path.join(SCRIPT_DIR, "config"),
-    "run": os.path.join(SCRIPT_DIR, "run"),
-    "other": os.path.join(SCRIPT_DIR, "other"),
-}
-FILES = {
-    "track": os.path.join(DIRS["config"], "files_to_track.txt"),
-    "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-}
-
-
-class Action(enum.Enum):
-    LIST = enum.auto()
-    UNTRACKED = enum.auto()
-    SAVE = enum.auto()
-    BACKUP = enum.auto()
-    EDIT = enum.auto()
-    INIT = enum.auto()
-    RUN = enum.auto()
-    HELP = enum.auto()
-    DEFAULT = LIST
-
-
-class Option(enum.Enum):
-    DIFF = enum.auto()
-    FORCE = enum.auto()
-    NO = enum.auto()
-    YES = enum.auto()
-    TOGGLE = enum.auto()
-    VERBOSE = enum.auto()
-
-
-ACTIONS = {
-    "b": Action.BACKUP,
-    "e": Action.EDIT,
-    "h": Action.HELP,
-    "i": Action.INIT,
-    "r": Action.RUN,
-    "s": Action.SAVE,
-    "u": Action.UNTRACKED,
-}
-OPTIONS = {
-    "d": Option.DIFF,
-    "f": Option.FORCE,
-    "n": Option.NO,
-    "t": Option.TOGGLE,
-    "v": Option.VERBOSE,
-    "y": Option.YES,
-}
-SHORTCUTS = {
-    "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
-    "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
-    "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "untracked": Flag([Action.UNTRACKED], []),
-    "init": Flag([Action.INIT], [Option.YES]),
-    "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
-    "run": Flag([Action.RUN], [Option.YES]),
-    "edit": Flag([Action.EDIT], []),
-    "help": Flag([Action.HELP], []),
-}
-SHORTCUTS |= {"sa": SHORTCUTS["save"]}
-SHORTCUTS |= {"re": SHORTCUTS["restore"]}
 
 
 # ACTIONS
