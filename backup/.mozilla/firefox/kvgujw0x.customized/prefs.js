@@ -31,7 +31,6 @@ user_pref("extensions.formautofill.addresses.enabled", false);
 user_pref("extensions.formautofill.creditCards.enabled", false);
 
 // safety / privacy
-user_pref("network.trr.mode", 3); // maximum DNS safety possible
 user_pref("dom.security.https_only_mode", true); 
 user_pref("dom.security.https_only_mode_ever_enabled", true);
 user_pref("browser.contentblocking.category", "custom"); 
