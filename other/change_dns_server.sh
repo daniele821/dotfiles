@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if ! [[ -f "/etc/systemd/resolved.conf" ]]; then
+    echo "config file DOES NOT exists!"
+else
+    echo "config file DOES exist!"
+fi
+
 read -rp "Do you want to (1) set or (2) remove adblocking dns? " answer
 case "$answer" in
 1)
@@ -10,6 +16,6 @@ Domains=~.
 ' | sudo tee /etc/systemd/resolved.conf
     ;;
 2) sudo rm /etc/systemd/resolved.conf ;;
-*) echo "invalid answer!" && exit 1 ;;
+*) exit 0 ;;
 esac
 sudo systemctl restart systemd-resolved
