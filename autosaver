@@ -55,12 +55,10 @@ DIRS = {
     "config": os.path.join(SCRIPT_DIR, "config"),
     "run": os.path.join(SCRIPT_DIR, "run"),
     "other": os.path.join(SCRIPT_DIR, "other"),
-    "init": os.path.join(SCRIPT_DIR, "init"),
 }
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "initscript": os.path.join(DIRS["init"], "init_script.sh"),
 }
 
 
