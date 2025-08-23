@@ -1,4 +1,5 @@
 sudo -v &&
+    { while sleep 200; do sudo -v; done & } &&
     { systemd-inhibit --what=idle:sleep sleep 7200 & } &&
     tuned-adm profile throughput-performance &&
     TMP_DIR="$(mktemp -d)" &&
