@@ -1,8 +1,7 @@
 #!/bin/bash
 
-podman rm -f zerotier-client
-
-podman run -d --rm \
+[[ -z "$(podman ps -a -q --filter "name=zerotier")" ]] && \
+podman run -d \
     --name zerotier-client \
     --cap-add NET_ADMIN \
     --cap-add SYS_ADMIN \
@@ -12,3 +11,5 @@ podman run -d --rm \
     -p 5000:5000 \
     -v zerotier-data:/var/lib/zerotier-one \
     docker.io/zerotier/zerotier
+
+exit 0
