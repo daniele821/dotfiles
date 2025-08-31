@@ -1,14 +1,15 @@
 #!/bin/bash
 
-[[ -z "$(podman ps -a -q --filter "name=zerotier")" ]] && \
+[[ -z "$(podman ps -a -q --filter "name=netbird-client")" ]] && \
 podman run -d \
-    --name zerotier-client \
+    --name netbird-client \
     --cap-add NET_ADMIN \
     --cap-add SYS_ADMIN \
     --cap-add NET_RAW \
     --device /dev/net/tun \
     --security-opt label=type:container_runtime_t \
-    -v zerotier-data:/var/lib/zerotier-one \
-    docker.io/zerotier/zerotier
+    -v netbird-data:/var/lib/netbird \
+    docker.io/netbirdio/netbird
 
 exit 0
+
