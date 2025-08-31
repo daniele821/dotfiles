@@ -8,7 +8,6 @@ podman run -d \
     --cap-add NET_RAW \
     --device /dev/net/tun \
     --security-opt label=type:container_runtime_t \
-    -p 5000:5000 \
     -v zerotier-data:/var/lib/zerotier-one \
     docker.io/zerotier/zerotier
 
