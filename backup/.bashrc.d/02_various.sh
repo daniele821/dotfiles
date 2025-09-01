@@ -21,26 +21,6 @@ function run() {
     (: && nohup "$@" &>/dev/null &)
 }
 
-function dad(){
-    mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
-    echo "$PWD" >> "$DIRS_FILE"
-    dirs="$(sort -u "$DIRS_FILE")"
-    echo "$dirs" > "$DIRS_FILE"
-}
-function drm(){
-    [[ ! -s "$DIRS_FILE" ]] && return 0
-    mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
-    cat "$DIRS_FILE" | fzf --height 40% --border=sharp --reverse --multi | while read -r line; do
-        lines="$(grep -vFx "$line" "$DIRS_FILE")"
-        echo -n "$lines" > "$DIRS_FILE"
-    done
-}
-function dcd(){
-    [[ ! -s "$DIRS_FILE" ]] && return 0
-    mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
-    cd "$(cat "$DIRS_FILE" | fzf --height 40% --border=sharp --reverse)"
-}
-
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
