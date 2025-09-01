@@ -21,13 +21,13 @@ function run() {
     (: && nohup "$@" &>/dev/null &)
 }
 
-function d-add(){
+function dad(){
     mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
     echo "$PWD" >> "$DIRS_FILE"
     dirs="$(sort -u "$DIRS_FILE")"
     echo "$dirs" > "$DIRS_FILE"
 }
-function d-rm(){
+function drm(){
     [[ ! -s "$DIRS_FILE" ]] && return 0
     mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
     cat "$DIRS_FILE" | fzf --height 40% --border=sharp --reverse --multi | while read -r line; do
@@ -35,7 +35,7 @@ function d-rm(){
         echo -n "$lines" > "$DIRS_FILE"
     done
 }
-function d-cd(){
+function dcd(){
     [[ ! -s "$DIRS_FILE" ]] && return 0
     mkdir -p "$(dirname "$DIRS_FILE")" && touch "$DIRS_FILE"
     cd "$(cat "$DIRS_FILE" | fzf --height 40% --border=sharp --reverse)"
