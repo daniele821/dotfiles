@@ -10,5 +10,7 @@ podman run -d \
     -v neovim-data:/data \
     ghcr.io/daniele821/neovim
 
+podman exec --detach-keys "" -it -w /data neovim-client bash -il
+
 exit 0
 
