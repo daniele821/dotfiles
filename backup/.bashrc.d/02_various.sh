@@ -2,12 +2,11 @@
 
 export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
-export PYTHON_HISTORY="/dev/null"
-export NODE_REPL_HISTORY="/dev/null"
+export PYTHON_HISTORY="$HOME/.local/state/.python_history"
+export NODE_REPL_HISTORY="$HOME/.local/state/.node_history"
 export GOPATH="$HOME/.local/share/go"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
-export DIRS_FILE="$HOME/.local/share/fast_dir_switch"
 
 function open() {
     local file=
