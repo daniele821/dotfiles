@@ -59,6 +59,7 @@ DIRS = {
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+    "delete": os.path.join(DIRS["config"], "files_to_delete.txt"),
 }
 
 
@@ -71,6 +72,7 @@ class Action(enum.Enum):
     INIT = enum.auto()
     RUN = enum.auto()
     HELP = enum.auto()
+    DELETE = enum.auto()
     DEFAULT = LIST
 
 
@@ -91,6 +93,7 @@ ACTIONS = {
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
+    "p": Action.DELETE,
 }
 OPTIONS = {
     "d": Option.DIFF,
@@ -105,6 +108,7 @@ SHORTCUTS = {
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
     "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "delete": Flag([Action.DELETE], [Option.YES, Option.TOGGLE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
     "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
@@ -349,6 +353,7 @@ def help(flags):
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
   \x1b[1m-h\x1b[m                    show this help message
+  \x1b[1m-p\x1b[m                    delete paths listed in the specific config file
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -363,6 +368,7 @@ def help(flags):
   \x1b[1msaveall         \x1b[m      save all files to backup (even the `notdiff` ones)
   \x1b[1mrestore       re\x1b[m      restore all files from backup
   \x1b[1mrestoreall      \x1b[m      restore all files from backup (even the `notdiff` ones)
+  \x1b[1mdelete          \x1b[m      delete paths listed in the specific config file
   \x1b[1muntracked       \x1b[m      list untracked files
   \x1b[1minit            \x1b[m      initialize needed directories and config files
   \x1b[1mpurge           \x1b[m      delete all config file and directories managed by the script
@@ -450,6 +456,19 @@ def edit(flags):
             warn_msg("not a file: {}".format(relpath(file)))
 
 
+def delete(flags):
+    opt_toggle = flags.has_option(Option.TOGGLE)
+
+    delete = load_config_basic(FILES["delete"])
+
+    for delete_line in delete:
+        delete_path = os.path.join(HOME, delete_line)
+        if exist(delete_path):
+            color("file", delete_path, output=True)
+            if opt_toggle and ask_user(color("msg", "Do you really want to delete path? "), flags):
+                purge_path(delete_path, allow_force=True)
+
+
 def backup(flags):
     odir = HOME
     bdir = DIRS["backup"]
@@ -459,14 +478,14 @@ def backup(flags):
     opt_diff = flags.has_option(Option.DIFF)
     opt_force = flags.has_option(Option.FORCE)
     opt_verbose = flags.has_option(Option.VERBOSE)
-    tracked = load_config(FILES["track"])
-    notdiff = load_config(FILES["notdiff"])
+    tracked = load_config_files(FILES["track"])
+    notdiff = load_config_files(FILES["notdiff"])
     all = sorted(tracked | notdiff)
 
-    def fout(file, on=None, stat=None):
+    def fout(file, stat=None):
         msg_file = color("file", file)
-        if opt_verbose and on and stat:
-            print(msg_file + " : " + on + " " + stat)
+        if opt_verbose and stat:
+            print(msg_file + " : " + stat)
         else:
             print(msg_file)
 
@@ -476,7 +495,7 @@ def backup(flags):
             bfile = os.path.join(bdir, file)
             match isrealfile(ofile), isrealfile(bfile):
                 case True, False:
-                    fout(ofile, "backup file", "is missing")
+                    fout(ofile, "backup file is missing")
                     if act_save:
                         if ask_user(color("msg", "Do you really want to create backup file? "), flags):
                             copy_file(ofile, bfile, True)
@@ -484,7 +503,7 @@ def backup(flags):
                         if ask_user(color("msg", "[DANGER] Do you really want to delete original file? "), flags):
                             purge_path(ofile)
                 case False, True:
-                    fout(ofile, "original file", "is missing")
+                    fout(ofile, "original file is missing")
                     if act_save:
                         if ask_user(color("msg", "Do you really want to delete backup file? "), flags):
                             purge_path(bfile, True)
@@ -494,7 +513,7 @@ def backup(flags):
                 case True, True:
                     if opt_toggle or file not in notdiff:
                         if not filecmp.cmp(ofile, bfile):
-                            fout(ofile, "original and backup files", "differ")
+                            fout(ofile, "original and backup files differ")
                             if opt_diff:
                                 old = ofile if act_backup else bfile
                                 new = bfile if act_backup else ofile
@@ -527,7 +546,7 @@ def backup(flags):
 
 
 def untracked(flags):
-    tracked = load_config(FILES["track"]) | load_config(FILES["notdiff"])
+    tracked = load_config_files(FILES["track"]) | load_config_files(FILES["notdiff"])
     backup = all_files(DIRS["backup"], DIRS["backup"])
     opt_toggle = flags.has_option(Option.TOGGLE)
     opt_force = flags.has_option(Option.FORCE)
@@ -551,24 +570,32 @@ def untracked(flags):
 
 
 # ACTION UTILITIES
-def load_config(conf):
+def load_config_basic(conf):
     if exist(conf) and not isrealfile(conf):
         warn_msg("not a file: '{}'".format(relpath(conf)))
         return set()
     if not exist(conf) or os.path.getsize(conf) == 0:
         return set()
+    lines = set()
+    for line in pathlib.Path(conf).read_text().splitlines():
+        if not line.startswith("/") and line.strip():
+            lines.add(line)
+    return lines
+
+
+def load_config_files(conf):
     odir = HOME
     bdir = DIRS["backup"]
     files = set()
-    for line in pathlib.Path(conf).read_text().splitlines():
-        if not line.startswith("/") and line.strip():
-            ofile = os.path.join(odir, line)
-            bfile = os.path.join(bdir, line)
-            for file, dir in ((ofile, odir), (bfile, bdir)):
-                if isrealfile(file):
-                    files.add(line)
-                elif isrealdir(file):
-                    files.update(all_files(file, dir))
+    lines = load_config_basic(conf)
+    for line in lines:
+        ofile = os.path.join(odir, line)
+        bfile = os.path.join(bdir, line)
+        for file, dir in ((ofile, odir), (bfile, bdir)):
+            if isrealfile(file):
+                files.add(line)
+            elif isrealdir(file):
+                files.update(all_files(file, dir))
     return files
 
 
@@ -606,6 +633,8 @@ def execute(flags):
             run(flags)
         case Action.UNTRACKED:
             untracked(flags)
+        case Action.DELETE:
+            delete(flags)
 
 
 # EXECUTION
