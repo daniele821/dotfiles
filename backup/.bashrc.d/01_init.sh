@@ -27,11 +27,14 @@ fi
 if exist zoxide; then
     eval "$(zoxide init bash --no-cmd)"
     function z() {
-        { (cd "$@") && cd "$@" && return 0 ; } &>/dev/null
-        count="$(zoxide query -l "$@" | wc -l)"
-        [[ "$count" -le 1 ]] && __zoxide_z "$@" && return 0
-        [[ "$count" -gt 1 ]] && __zoxide_zi "$@" && return 0
-        return 0
+        if (cd "$@" &>/dev/null); then 
+            cd "$@" &>/dev/null
+        else
+            case "$(zoxide query -l "$@" | wc -l)" in
+                0|1) __zoxide_z "$@" &>/dev/null || return 1 ;;
+                *) __zoxide_zi "$@" &>/dev/null || return 1 ;;
+            esac
+        fi
     }
     alias zi="__zoxide_zi"
 fi
