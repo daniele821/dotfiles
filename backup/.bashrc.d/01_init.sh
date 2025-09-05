@@ -25,7 +25,15 @@ fi
 
 # zoxide init
 if exist zoxide; then
-    eval "$(zoxide init bash)"
+    eval "$(zoxide init bash --no-cmd)"
+    function z() {
+        { (cd "$@") && cd "$@" && return 0 ; } &>/dev/null
+        count="$(zoxide query -l "$@" | wc -l)"
+        [[ "$count" -le 1 ]] && __zoxide_z "$@" && return 0
+        [[ "$count" -gt 1 ]] && __zoxide_zi "$@" && return 0
+        return 0
+    }
+    alias zi="__zoxide_zi"
 fi
 
 # kitten init
