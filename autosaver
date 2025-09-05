@@ -466,7 +466,10 @@ def delete(flags):
         if exist(delete_path):
             color("file", delete_path, output=True)
             if opt_toggle and ask_user(color("msg", "Do you really want to delete path? "), flags):
-                purge_path(delete_path, allow_force=True)
+                try:
+                    purge_path(delete_path, allow_force=True)
+                except Exception:
+                    warn_msg("deletion failed!", True)
 
 
 def backup(flags):
