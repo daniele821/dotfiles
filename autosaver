@@ -59,7 +59,6 @@ DIRS = {
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
-    "delete": os.path.join(DIRS["config"], "files_to_delete.txt"),
 }
 
 
@@ -72,7 +71,6 @@ class Action(enum.Enum):
     INIT = enum.auto()
     RUN = enum.auto()
     HELP = enum.auto()
-    DELETE = enum.auto()
     DEFAULT = LIST
 
 
@@ -93,7 +91,6 @@ ACTIONS = {
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
-    "p": Action.DELETE,
 }
 OPTIONS = {
     "d": Option.DIFF,
@@ -108,7 +105,6 @@ SHORTCUTS = {
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
     "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "delete": Flag([Action.DELETE], [Option.YES, Option.TOGGLE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
     "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
@@ -353,7 +349,6 @@ def help(flags):
   \x1b[1m-i\x1b[m                    creates necessary directories and files
   \x1b[1m-r\x1b[m                    runs init scripts
   \x1b[1m-h\x1b[m                    show this help message
-  \x1b[1m-p\x1b[m                    delete paths listed in the specific config file
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -368,7 +363,6 @@ def help(flags):
   \x1b[1msaveall         \x1b[m      save all files to backup (even the `notdiff` ones)
   \x1b[1mrestore       re\x1b[m      restore all files from backup
   \x1b[1mrestoreall      \x1b[m      restore all files from backup (even the `notdiff` ones)
-  \x1b[1mdelete          \x1b[m      delete paths listed in the specific config file
   \x1b[1muntracked       \x1b[m      list untracked files
   \x1b[1minit            \x1b[m      initialize needed directories and config files
   \x1b[1mpurge           \x1b[m      delete all config file and directories managed by the script
@@ -454,22 +448,6 @@ def edit(flags):
                     err_exit("unable to edit file!", True)
         else:
             warn_msg("not a file: {}".format(relpath(file)))
-
-
-def delete(flags):
-    opt_toggle = flags.has_option(Option.TOGGLE)
-
-    delete = load_config_basic(FILES["delete"])
-
-    for delete_line in delete:
-        delete_path = os.path.join(HOME, delete_line)
-        if exist(delete_path):
-            color("file", delete_path, output=True)
-            if opt_toggle and ask_user(color("msg", "Do you really want to delete path? "), flags):
-                try:
-                    purge_path(delete_path, allow_force=True)
-                except Exception:
-                    warn_msg("deletion failed!", True)
 
 
 def backup(flags):
@@ -636,8 +614,6 @@ def execute(flags):
             run(flags)
         case Action.UNTRACKED:
             untracked(flags)
-        case Action.DELETE:
-            delete(flags)
 
 
 # EXECUTION
